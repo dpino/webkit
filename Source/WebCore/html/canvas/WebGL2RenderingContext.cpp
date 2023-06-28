@@ -99,6 +99,7 @@ WTF_MAKE_ISO_ALLOCATED_IMPL(WebGL2RenderingContext);
 
 std::unique_ptr<WebGL2RenderingContext> WebGL2RenderingContext::create(CanvasBase& canvas, GraphicsContextGLAttributes attributes)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto renderingContext = std::unique_ptr<WebGL2RenderingContext>(new WebGL2RenderingContext(canvas, attributes));
     // This context is pending policy resolution, so don't call initializeNewContext on it yet.
 
@@ -109,6 +110,7 @@ std::unique_ptr<WebGL2RenderingContext> WebGL2RenderingContext::create(CanvasBas
 
 std::unique_ptr<WebGL2RenderingContext> WebGL2RenderingContext::create(CanvasBase& canvas, Ref<GraphicsContextGL>&& context, GraphicsContextGLAttributes attributes)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto renderingContext = std::unique_ptr<WebGL2RenderingContext>(new WebGL2RenderingContext(canvas, WTFMove(context), attributes));
     // This is virtual and can't be called in the constructor.
     renderingContext->initializeNewContext();
@@ -121,11 +123,13 @@ std::unique_ptr<WebGL2RenderingContext> WebGL2RenderingContext::create(CanvasBas
 WebGL2RenderingContext::WebGL2RenderingContext(CanvasBase& canvas, GraphicsContextGLAttributes attributes)
     : WebGLRenderingContextBase(canvas, attributes)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 WebGL2RenderingContext::WebGL2RenderingContext(CanvasBase& canvas, Ref<GraphicsContextGL>&& context, GraphicsContextGLAttributes attributes)
     : WebGLRenderingContextBase(canvas, WTFMove(context), attributes)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 }
@@ -145,6 +149,7 @@ WebGL2RenderingContext::~WebGL2RenderingContext()
 
 void WebGL2RenderingContext::initializeNewContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // FIXME: NEEDS_PORT
     ASSERT(!isContextLost());
 
@@ -183,11 +188,13 @@ void WebGL2RenderingContext::initializeNewContext()
 
 long long WebGL2RenderingContext::getInt64Parameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_context->getInteger64(pname);
 }
 
 void WebGL2RenderingContext::initializeVertexArrayObjects()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_defaultVertexArrayObject = WebGLVertexArrayObject::create(*this, WebGLVertexArrayObject::Type::Default);
     addContextObject(*m_defaultVertexArrayObject);
     bindVertexArray(nullptr); // The default VAO was removed in OpenGL 3.3 but not from WebGL 2; bind the default for WebGL to use.
@@ -195,6 +202,7 @@ void WebGL2RenderingContext::initializeVertexArrayObjects()
 
 bool WebGL2RenderingContext::validateBufferTarget(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::ARRAY_BUFFER:
     case GraphicsContextGL::COPY_READ_BUFFER:
@@ -213,6 +221,7 @@ bool WebGL2RenderingContext::validateBufferTarget(const char* functionName, GCGL
 
 bool WebGL2RenderingContext::validateBufferTargetCompatibility(const char* functionName, GCGLenum target, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(buffer);
 
     switch (buffer->getTarget()) {
@@ -250,6 +259,7 @@ bool WebGL2RenderingContext::validateBufferTargetCompatibility(const char* funct
 
 WebGLBuffer* WebGL2RenderingContext::validateBufferDataParameters(const char* functionName, GCGLenum target, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLBuffer* buffer = validateBufferDataTarget(functionName, target);
     if (!buffer)
         return nullptr;
@@ -272,6 +282,7 @@ WebGLBuffer* WebGL2RenderingContext::validateBufferDataParameters(const char* fu
 
 WebGLBuffer* WebGL2RenderingContext::validateBufferDataTarget(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLBuffer* buffer = nullptr;
     switch (target) {
     case GraphicsContextGL::ELEMENT_ARRAY_BUFFER:
@@ -325,6 +336,7 @@ WebGLBuffer* WebGL2RenderingContext::validateBufferDataTarget(const char* functi
 
 bool WebGL2RenderingContext::validateAndCacheBufferBinding(const AbstractLocker& locker, const char* functionName, GCGLenum target, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateBufferTarget(functionName, target))
         return false;
 
@@ -368,11 +380,13 @@ bool WebGL2RenderingContext::validateAndCacheBufferBinding(const AbstractLocker&
 
 IntRect WebGL2RenderingContext::getTextureSourceSubRectangle(GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return IntRect(m_unpackParameters.skipPixels, m_unpackParameters.skipRows, width, height);
 }
 
 RefPtr<WebGLTexture> WebGL2RenderingContext::validateTexImageBinding(TexImageFunctionID functionID, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (functionID == TexImageFunctionID::TexImage3D || functionID == TexImageFunctionID::TexSubImage3D)
         return validateTexture3DBinding(texImageFunctionName(functionID), target);
     return validateTexture2DBinding(texImageFunctionName(functionID), target);
@@ -380,6 +394,7 @@ RefPtr<WebGLTexture> WebGL2RenderingContext::validateTexImageBinding(TexImageFun
 
 RefPtr<WebGLTexture> WebGL2RenderingContext::validateTextureStorage2DBinding(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<WebGLTexture> texture;
     switch (target) {
     case GraphicsContextGL::TEXTURE_2D:
@@ -400,6 +415,7 @@ RefPtr<WebGLTexture> WebGL2RenderingContext::validateTextureStorage2DBinding(con
 
 RefPtr<WebGLTexture> WebGL2RenderingContext::validateTexture3DBinding(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<WebGLTexture> texture;
     switch (target) {
     case GraphicsContextGL::TEXTURE_2D_ARRAY:
@@ -419,6 +435,7 @@ RefPtr<WebGLTexture> WebGL2RenderingContext::validateTexture3DBinding(const char
 
 bool WebGL2RenderingContext::validateTexFuncLayer(const char* functionName, GCGLenum texTarget, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (layer < 0) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "layer out of range");
         return false;
@@ -445,6 +462,7 @@ bool WebGL2RenderingContext::validateTexFuncLayer(const char* functionName, GCGL
 
 GCGLint WebGL2RenderingContext::maxTextureLevelForTarget(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::TEXTURE_3D:
         return m_max3DTextureLevel;
@@ -456,6 +474,7 @@ GCGLint WebGL2RenderingContext::maxTextureLevelForTarget(GCGLenum target)
 
 RefPtr<ArrayBufferView> WebGL2RenderingContext::arrayBufferViewSliceFactory(const char* const functionName, const ArrayBufferView& data, unsigned startByte,  unsigned numElements)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<ArrayBufferView> slice;
 
     switch (data.getType()) {
@@ -482,6 +501,7 @@ RefPtr<ArrayBufferView> WebGL2RenderingContext::arrayBufferViewSliceFactory(cons
 
 RefPtr<ArrayBufferView> WebGL2RenderingContext::sliceArrayBufferView(const char* const functionName, const ArrayBufferView& data, GCGLuint srcOffset, GCGLuint length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (data.getType() == JSC::NotTypedArray) {
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, functionName, "Invalid type of Array Buffer View");
         return nullptr;
@@ -514,6 +534,7 @@ RefPtr<ArrayBufferView> WebGL2RenderingContext::sliceArrayBufferView(const char*
 
 void WebGL2RenderingContext::pixelStorei(GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (param < 0) {
@@ -554,18 +575,21 @@ void WebGL2RenderingContext::pixelStorei(GCGLenum pname, GCGLint param)
 
 void WebGL2RenderingContext::bufferData(GCGLenum target, const ArrayBufferView& data, GCGLenum usage, GCGLuint srcOffset, GCGLuint length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (auto slice = sliceArrayBufferView("bufferData", data, srcOffset, length))
         WebGLRenderingContextBase::bufferData(target, BufferDataSource(slice.get()), usage);
 }
 
 void WebGL2RenderingContext::bufferSubData(GCGLenum target, long long offset, const ArrayBufferView& data, GCGLuint srcOffset, GCGLuint length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (auto slice = sliceArrayBufferView("bufferSubData", data, srcOffset, length))
         WebGLRenderingContextBase::bufferSubData(target, offset, BufferDataSource(slice.get()));
 }
 
 void WebGL2RenderingContext::copyBufferSubData(GCGLenum readTarget, GCGLenum writeTarget, GCGLint64 readOffset, GCGLint64 writeOffset, GCGLint64 size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -601,6 +625,7 @@ void WebGL2RenderingContext::copyBufferSubData(GCGLenum readTarget, GCGLenum wri
 
 void WebGL2RenderingContext::getBufferSubData(GCGLenum target, long long srcByteOffset, RefPtr<ArrayBufferView>&& dstData, GCGLuint dstOffset, GCGLuint length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     RefPtr<WebGLBuffer> buffer = validateBufferDataParameters("getBufferSubData", target, GraphicsContextGL::STATIC_DRAW);
@@ -656,6 +681,7 @@ void WebGL2RenderingContext::getBufferSubData(GCGLenum target, long long srcByte
 
 void WebGL2RenderingContext::bindFramebuffer(GCGLenum target, WebGLFramebuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindFramebuffer", buffer))
@@ -678,6 +704,7 @@ void WebGL2RenderingContext::bindFramebuffer(GCGLenum target, WebGLFramebuffer* 
 
 void WebGL2RenderingContext::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
@@ -686,6 +713,7 @@ void WebGL2RenderingContext::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
 
 void WebGL2RenderingContext::deleteFramebuffer(WebGLFramebuffer* framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!deleteObject(locker, framebuffer))
@@ -712,6 +740,7 @@ void WebGL2RenderingContext::deleteFramebuffer(WebGLFramebuffer* framebuffer)
 
 void WebGL2RenderingContext::framebufferTextureLayer(GCGLenum target, GCGLenum attachment, WebGLTexture* texture, GCGLint level, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateFramebufferFuncParameters("framebufferTextureLayer", target, attachment))
         return;
 
@@ -739,6 +768,7 @@ void WebGL2RenderingContext::framebufferTextureLayer(GCGLenum target, GCGLenum a
 
 WebGLAny WebGL2RenderingContext::getInternalformatParameter(GCGLenum target, GCGLenum internalformat, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -769,6 +799,7 @@ WebGLAny WebGL2RenderingContext::getInternalformatParameter(GCGLenum target, GCG
 
 void WebGL2RenderingContext::invalidateFramebuffer(GCGLenum target, const Vector<GCGLenum>& attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -780,6 +811,7 @@ void WebGL2RenderingContext::invalidateFramebuffer(GCGLenum target, const Vector
 
 void WebGL2RenderingContext::invalidateSubFramebuffer(GCGLenum target, const Vector<GCGLenum>& attachments, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -791,6 +823,7 @@ void WebGL2RenderingContext::invalidateSubFramebuffer(GCGLenum target, const Vec
 
 void WebGL2RenderingContext::readBuffer(GCGLenum src)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -811,6 +844,7 @@ void WebGL2RenderingContext::readBuffer(GCGLenum src)
 
 void WebGL2RenderingContext::renderbufferStorageMultisample(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = "renderbufferStorageMultisample";
     if (isContextLost())
         return;
@@ -829,6 +863,7 @@ void WebGL2RenderingContext::renderbufferStorageMultisample(GCGLenum target, GCG
 
 WebGLAny WebGL2RenderingContext::getTexParameter(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateTextureBinding("getTexParameter", target))
         return nullptr;
     switch (pname) {
@@ -851,6 +886,7 @@ WebGLAny WebGL2RenderingContext::getTexParameter(GCGLenum target, GCGLenum pname
 
 void WebGL2RenderingContext::texStorage2D(GCGLenum target, GCGLsizei levels, GCGLenum internalFormat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -866,6 +902,7 @@ void WebGL2RenderingContext::texStorage2D(GCGLenum target, GCGLsizei levels, GCG
 
 void WebGL2RenderingContext::texStorage3D(GCGLenum target, GCGLsizei levels, GCGLenum internalFormat, GCGLsizei width, GCGLsizei height, GCGLsizei depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -881,6 +918,7 @@ void WebGL2RenderingContext::texStorage3D(GCGLenum target, GCGLsizei levels, GCG
 
 void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -892,6 +930,7 @@ void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLenum
 
 ExceptionOr<void> WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLenum format, GCGLenum type, std::optional<TexImageSource> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -903,6 +942,7 @@ ExceptionOr<void> WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture2DBinding("texImage2D", target))
@@ -923,6 +963,7 @@ void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLint 
 
 ExceptionOr<void> WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, TexImageSource&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -935,6 +976,7 @@ ExceptionOr<void> WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -947,6 +989,7 @@ void WebGL2RenderingContext::texImage2D(GCGLenum target, GCGLint level, GCGLint 
 
 void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture3DBinding("texImage3D", target))
@@ -967,6 +1010,7 @@ void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint 
 
 ExceptionOr<void> WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, TexImageSource&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -979,6 +1023,7 @@ ExceptionOr<void> WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -995,6 +1040,7 @@ void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint 
 
 void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1011,6 +1057,7 @@ void WebGL2RenderingContext::texImage3D(GCGLenum target, GCGLint level, GCGLint 
 
 void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1022,6 +1069,7 @@ void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLi
 
 ExceptionOr<void> WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLenum format, GCGLenum type, std::optional<TexImageSource>&& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -1033,6 +1081,7 @@ ExceptionOr<void> WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint
 
 void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format , GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture2DBinding("texSubImage2D", target))
@@ -1053,6 +1102,7 @@ void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLi
 
 ExceptionOr<void> WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, TexImageSource&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -1065,6 +1115,7 @@ ExceptionOr<void> WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint
 
 void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1077,6 +1128,7 @@ void WebGL2RenderingContext::texSubImage2D(GCGLenum target, GCGLint level, GCGLi
 
 void WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture3DBinding("texSubImage3D", target))
@@ -1097,6 +1149,7 @@ void WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint level, GCGLi
 
 void WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& srcData, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1113,6 +1166,7 @@ void WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint level, GCGLi
 
 ExceptionOr<void> WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, TexImageSource&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     if (m_boundPixelUnpackBuffer) {
@@ -1125,6 +1179,7 @@ ExceptionOr<void> WebGL2RenderingContext::texSubImage3D(GCGLenum target, GCGLint
 
 void WebGL2RenderingContext::copyTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture3DBinding("copyTexSubImage3D", target))
@@ -1135,6 +1190,7 @@ void WebGL2RenderingContext::copyTexSubImage3D(GCGLenum target, GCGLint level, G
 
 void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, ArrayBufferView& srcData)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1148,6 +1204,7 @@ void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level
 
 void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLsizei imageSize, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!m_boundPixelUnpackBuffer) {
@@ -1165,6 +1222,7 @@ void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level
 
 void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, ArrayBufferView& srcData, GCGLuint srcOffset, GCGLuint srcLengthOverride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1183,6 +1241,7 @@ void WebGL2RenderingContext::compressedTexImage2D(GCGLenum target, GCGLint level
 
 void WebGL2RenderingContext::compressedTexImage3D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLsizei imageSize, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!m_boundPixelUnpackBuffer) {
@@ -1198,6 +1257,7 @@ void WebGL2RenderingContext::compressedTexImage3D(GCGLenum target, GCGLint level
 
 void WebGL2RenderingContext::compressedTexImage3D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, ArrayBufferView& srcData, GCGLuint srcOffset, GCGLuint srcLengthOverride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1216,6 +1276,7 @@ void WebGL2RenderingContext::compressedTexImage3D(GCGLenum target, GCGLint level
 
 void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, ArrayBufferView& srcData)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1229,6 +1290,7 @@ void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!m_boundPixelUnpackBuffer) {
@@ -1244,6 +1306,7 @@ void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, ArrayBufferView& srcData, GCGLuint srcOffset, GCGLuint srcLengthOverride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1262,6 +1325,7 @@ void WebGL2RenderingContext::compressedTexSubImage2D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::compressedTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLsizei imageSize, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!m_boundPixelUnpackBuffer) {
@@ -1277,6 +1341,7 @@ void WebGL2RenderingContext::compressedTexSubImage3D(GCGLenum target, GCGLint le
 
 void WebGL2RenderingContext::compressedTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, ArrayBufferView& srcData, GCGLuint srcOffset, GCGLuint srcLengthOverride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelUnpackBuffer) {
@@ -1295,6 +1360,7 @@ void WebGL2RenderingContext::compressedTexSubImage3D(GCGLenum target, GCGLint le
 
 GCGLint WebGL2RenderingContext::getFragDataLocation(WebGLProgram& program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getFragDataLocation", &program))
         return -1;
     return m_context->getFragDataLocation(program.object(), name);
@@ -1302,6 +1368,7 @@ GCGLint WebGL2RenderingContext::getFragDataLocation(WebGLProgram& program, const
 
 void WebGL2RenderingContext::uniform1ui(const WebGLUniformLocation* location, GCGLuint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform1ui", location))
         return;
     m_context->uniform1ui(location->location(), v0);
@@ -1309,6 +1376,7 @@ void WebGL2RenderingContext::uniform1ui(const WebGLUniformLocation* location, GC
 
 void WebGL2RenderingContext::uniform2ui(const WebGLUniformLocation* location, GCGLuint v0, GCGLuint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform2ui", location))
         return;
     m_context->uniform2ui(location->location(), v0, v1);
@@ -1316,6 +1384,7 @@ void WebGL2RenderingContext::uniform2ui(const WebGLUniformLocation* location, GC
 
 void WebGL2RenderingContext::uniform3ui(const WebGLUniformLocation* location, GCGLuint v0, GCGLuint v1, GCGLuint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform3ui", location))
         return;
     m_context->uniform3ui(location->location(), v0, v1, v2);
@@ -1323,6 +1392,7 @@ void WebGL2RenderingContext::uniform3ui(const WebGLUniformLocation* location, GC
 
 void WebGL2RenderingContext::uniform4ui(const WebGLUniformLocation* location, GCGLuint v0, GCGLuint v1, GCGLuint v2, GCGLuint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform4ui", location))
         return;
     m_context->uniform4ui(location->location(), v0, v1, v2, v3);
@@ -1330,6 +1400,7 @@ void WebGL2RenderingContext::uniform4ui(const WebGLUniformLocation* location, GC
 
 void WebGL2RenderingContext::uniform1uiv(const WebGLUniformLocation* location, Uint32List&& value, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform1uiv", location, value, 1, srcOffset, srcLength);
@@ -1340,6 +1411,7 @@ void WebGL2RenderingContext::uniform1uiv(const WebGLUniformLocation* location, U
 
 void WebGL2RenderingContext::uniform2uiv(const WebGLUniformLocation* location, Uint32List&& value, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform2uiv", location, value, 2, srcOffset, srcLength);
@@ -1350,6 +1422,7 @@ void WebGL2RenderingContext::uniform2uiv(const WebGLUniformLocation* location, U
 
 void WebGL2RenderingContext::uniform3uiv(const WebGLUniformLocation* location, Uint32List&& value, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform3uiv", location, value, 3, srcOffset, srcLength);
@@ -1360,6 +1433,7 @@ void WebGL2RenderingContext::uniform3uiv(const WebGLUniformLocation* location, U
 
 void WebGL2RenderingContext::uniform4uiv(const WebGLUniformLocation* location, Uint32List&& value, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform4uiv", location, value, 4, srcOffset, srcLength);
@@ -1370,6 +1444,7 @@ void WebGL2RenderingContext::uniform4uiv(const WebGLUniformLocation* location, U
 
 void WebGL2RenderingContext::uniformMatrix2x3fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix2x3fv", location, transpose, v, 6, srcOffset, srcLength);
@@ -1380,6 +1455,7 @@ void WebGL2RenderingContext::uniformMatrix2x3fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::uniformMatrix3x2fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix3x2fv", location, transpose, v, 6, srcOffset, srcLength);
@@ -1390,6 +1466,7 @@ void WebGL2RenderingContext::uniformMatrix3x2fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::uniformMatrix2x4fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix2x4fv", location, transpose, v, 8, srcOffset, srcLength);
@@ -1400,6 +1477,7 @@ void WebGL2RenderingContext::uniformMatrix2x4fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::uniformMatrix4x2fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix4x2fv", location, transpose, v, 8, srcOffset, srcLength);
@@ -1410,6 +1488,7 @@ void WebGL2RenderingContext::uniformMatrix4x2fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::uniformMatrix3x4fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix3x4fv", location, transpose, v, 12, srcOffset, srcLength);
@@ -1420,6 +1499,7 @@ void WebGL2RenderingContext::uniformMatrix3x4fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::uniformMatrix4x3fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix4x3fv", location, transpose, v, 12, srcOffset, srcLength);
@@ -1430,6 +1510,7 @@ void WebGL2RenderingContext::uniformMatrix4x3fv(const WebGLUniformLocation* loca
 
 void WebGL2RenderingContext::vertexAttribI4i(GCGLuint index, GCGLint x, GCGLint y, GCGLint z, GCGLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->vertexAttribI4i(index, x, y, z, w);
@@ -1444,6 +1525,7 @@ void WebGL2RenderingContext::vertexAttribI4i(GCGLuint index, GCGLint x, GCGLint 
 
 void WebGL2RenderingContext::vertexAttribI4iv(GCGLuint index, Int32List&& list)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = list.data();
@@ -1468,6 +1550,7 @@ void WebGL2RenderingContext::vertexAttribI4iv(GCGLuint index, Int32List&& list)
 
 void WebGL2RenderingContext::vertexAttribI4ui(GCGLuint index, GCGLuint x, GCGLuint y, GCGLuint z, GCGLuint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->vertexAttribI4ui(index, x, y, z, w);
@@ -1482,6 +1565,7 @@ void WebGL2RenderingContext::vertexAttribI4ui(GCGLuint index, GCGLuint x, GCGLui
 
 void WebGL2RenderingContext::vertexAttribI4uiv(GCGLuint index, Uint32List&& list)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = list.data();
@@ -1506,6 +1590,7 @@ void WebGL2RenderingContext::vertexAttribI4uiv(GCGLuint index, Uint32List&& list
 
 void WebGL2RenderingContext::vertexAttribIPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLsizei stride, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (isContextLost())
@@ -1562,6 +1647,7 @@ void WebGL2RenderingContext::vertexAttribIPointer(GCGLuint index, GCGLint size, 
 
 void WebGL2RenderingContext::vertexAttribDivisor(GCGLuint index, GCGLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1570,6 +1656,7 @@ void WebGL2RenderingContext::vertexAttribDivisor(GCGLuint index, GCGLuint diviso
 
 void WebGL2RenderingContext::drawArraysInstanced(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei instanceCount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1578,6 +1665,7 @@ void WebGL2RenderingContext::drawArraysInstanced(GCGLenum mode, GCGLint first, G
 
 void WebGL2RenderingContext::drawElementsInstanced(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLint64 offset, GCGLsizei instanceCount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1586,6 +1674,7 @@ void WebGL2RenderingContext::drawElementsInstanced(GCGLenum mode, GCGLsizei coun
 
 void WebGL2RenderingContext::drawRangeElements(GCGLenum mode, GCGLuint start, GCGLuint end, GCGLsizei count, GCGLenum type, GCGLint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateVertexArrayObject("drawRangeElements"))
@@ -1607,6 +1696,7 @@ void WebGL2RenderingContext::drawRangeElements(GCGLenum mode, GCGLuint start, GC
 
 void WebGL2RenderingContext::drawBuffers(const Vector<GCGLenum>& buffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     GCGLsizei n = buffers.size();
@@ -1656,6 +1746,7 @@ void WebGL2RenderingContext::drawBuffers(const Vector<GCGLenum>& buffers)
 
 void WebGL2RenderingContext::clearBufferiv(GCGLenum buffer, GCGLint drawbuffer, Int32List&& values, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateClearBuffer("clearBufferiv", buffer, values, srcOffset);
@@ -1671,6 +1762,7 @@ void WebGL2RenderingContext::clearBufferiv(GCGLenum buffer, GCGLint drawbuffer, 
 
 void WebGL2RenderingContext::clearBufferuiv(GCGLenum buffer, GCGLint drawbuffer, Uint32List&& values, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateClearBuffer("clearBufferuiv", buffer, values, srcOffset);
@@ -1685,6 +1777,7 @@ void WebGL2RenderingContext::clearBufferuiv(GCGLenum buffer, GCGLint drawbuffer,
 
 void WebGL2RenderingContext::clearBufferfv(GCGLenum buffer, GCGLint drawbuffer, Float32List&& values, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateClearBuffer("clearBufferfv", buffer, values, srcOffset);
@@ -1704,6 +1797,7 @@ void WebGL2RenderingContext::clearBufferfv(GCGLenum buffer, GCGLint drawbuffer, 
 
 void WebGL2RenderingContext::clearBufferfi(GCGLenum buffer, GCGLint drawbuffer, GCGLfloat depth, GCGLint stencil)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1716,6 +1810,7 @@ void WebGL2RenderingContext::clearBufferfi(GCGLenum buffer, GCGLint drawbuffer, 
 
 RefPtr<WebGLQuery> WebGL2RenderingContext::createQuery()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -1726,6 +1821,7 @@ RefPtr<WebGLQuery> WebGL2RenderingContext::createQuery()
 
 void WebGL2RenderingContext::deleteQuery(WebGLQuery* query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (isContextLost() || !query || !query->object() || !validateWebGLObject("deleteQuery", query))
@@ -1744,6 +1840,7 @@ void WebGL2RenderingContext::deleteQuery(WebGLQuery* query)
 
 GCGLboolean WebGL2RenderingContext::isQuery(WebGLQuery* query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !query || !query->validate(contextGroup(), *this))
         return false;
 
@@ -1755,6 +1852,7 @@ GCGLboolean WebGL2RenderingContext::isQuery(WebGLQuery* query)
 
 std::optional<WebGL2RenderingContext::ActiveQueryKey> WebGL2RenderingContext::validateQueryTarget(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::ANY_SAMPLES_PASSED:
     case GraphicsContextGL::ANY_SAMPLES_PASSED_CONSERVATIVE:
@@ -1773,6 +1871,7 @@ std::optional<WebGL2RenderingContext::ActiveQueryKey> WebGL2RenderingContext::va
 
 void WebGL2RenderingContext::beginQuery(GCGLenum target, WebGLQuery& query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
     if (!validateWebGLObject("beginQuery", &query))
         return;
@@ -1796,6 +1895,7 @@ void WebGL2RenderingContext::beginQuery(GCGLenum target, WebGLQuery& query)
 
 void WebGL2RenderingContext::endQuery(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
     if (isContextLost() || !scriptExecutionContext())
         return;
@@ -1816,6 +1916,7 @@ void WebGL2RenderingContext::endQuery(GCGLenum target)
 
 WebGLAny WebGL2RenderingContext::getQuery(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !scriptExecutionContext())
         return nullptr;
 
@@ -1853,6 +1954,7 @@ WebGLAny WebGL2RenderingContext::getQuery(GCGLenum target, GCGLenum pname)
 
 WebGLAny WebGL2RenderingContext::getQueryParameter(WebGLQuery& query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("getQueryParameter", &query))
         return nullptr;
     if (!query.target()) {
@@ -1860,6 +1962,7 @@ WebGLAny WebGL2RenderingContext::getQueryParameter(WebGLQuery& query, GCGLenum p
         return nullptr;
     }
     if (std::find(std::begin(m_activeQueries), std::end(m_activeQueries), &query) != std::end(m_activeQueries)) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "getQueryParameter", "query is currently active");
         return nullptr;
     }
@@ -1881,6 +1984,7 @@ WebGLAny WebGL2RenderingContext::getQueryParameter(WebGLQuery& query, GCGLenum p
 
 RefPtr<WebGLSampler> WebGL2RenderingContext::createSampler()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -1891,6 +1995,7 @@ RefPtr<WebGLSampler> WebGL2RenderingContext::createSampler()
 
 void WebGL2RenderingContext::deleteSampler(WebGLSampler* sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!deleteObject(locker, sampler))
@@ -1907,6 +2012,7 @@ void WebGL2RenderingContext::deleteSampler(WebGLSampler* sampler)
 
 GCGLboolean WebGL2RenderingContext::isSampler(WebGLSampler* sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !sampler || !sampler->validate(contextGroup(), *this) || sampler->isDeleted())
         return false;
 
@@ -1915,6 +2021,7 @@ GCGLboolean WebGL2RenderingContext::isSampler(WebGLSampler* sampler)
 
 void WebGL2RenderingContext::bindSampler(GCGLuint unit, WebGLSampler* sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindSampler", sampler))
@@ -1933,6 +2040,7 @@ void WebGL2RenderingContext::bindSampler(GCGLuint unit, WebGLSampler* sampler)
 
 void WebGL2RenderingContext::samplerParameteri(WebGLSampler& sampler, GCGLenum pname, GCGLint value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("samplerParameteri", &sampler))
         return;
 
@@ -1941,6 +2049,7 @@ void WebGL2RenderingContext::samplerParameteri(WebGLSampler& sampler, GCGLenum p
 
 void WebGL2RenderingContext::samplerParameterf(WebGLSampler& sampler, GCGLenum pname, GCGLfloat value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("samplerParameterf", &sampler))
         return;
 
@@ -1949,6 +2058,7 @@ void WebGL2RenderingContext::samplerParameterf(WebGLSampler& sampler, GCGLenum p
 
 WebGLAny WebGL2RenderingContext::getSamplerParameter(WebGLSampler& sampler, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("getSamplerParameter", &sampler))
         return nullptr;
 
@@ -1979,6 +2089,7 @@ WebGLAny WebGL2RenderingContext::getSamplerParameter(WebGLSampler& sampler, GCGL
 
 RefPtr<WebGLSync> WebGL2RenderingContext::fenceSync(GCGLenum condition, GCGLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -1998,6 +2109,7 @@ RefPtr<WebGLSync> WebGL2RenderingContext::fenceSync(GCGLenum condition, GCGLbitf
 
 GCGLboolean WebGL2RenderingContext::isSync(WebGLSync* sync)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !sync || !sync->validate(contextGroup(), *this))
         return false;
 
@@ -2009,6 +2121,7 @@ GCGLboolean WebGL2RenderingContext::isSync(WebGLSync* sync)
 
 void WebGL2RenderingContext::deleteSync(WebGLSync* sync)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     deleteObject(locker, sync);
@@ -2016,6 +2129,7 @@ void WebGL2RenderingContext::deleteSync(WebGLSync* sync)
 
 GCGLenum WebGL2RenderingContext::clientWaitSync(WebGLSync& sync, GCGLbitfield flags, GCGLuint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("clientWaitSync", &sync))
         return GraphicsContextGL::WAIT_FAILED_WEBGL;
 
@@ -2041,6 +2155,7 @@ GCGLenum WebGL2RenderingContext::clientWaitSync(WebGLSync& sync, GCGLbitfield fl
 
 void WebGL2RenderingContext::waitSync(WebGLSync& sync, GCGLbitfield flags, GCGLint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("waitSync", &sync))
         return;
 
@@ -2054,6 +2169,7 @@ void WebGL2RenderingContext::waitSync(WebGLSync& sync, GCGLbitfield flags, GCGLi
 
 WebGLAny WebGL2RenderingContext::getSyncParameter(WebGLSync& sync, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLObject("getSyncParameter", &sync))
         return nullptr;
 
@@ -2072,6 +2188,7 @@ WebGLAny WebGL2RenderingContext::getSyncParameter(WebGLSync& sync, GCGLenum pnam
 
 RefPtr<WebGLTransformFeedback> WebGL2RenderingContext::createTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2082,6 +2199,7 @@ RefPtr<WebGLTransformFeedback> WebGL2RenderingContext::createTransformFeedback()
 
 void WebGL2RenderingContext::deleteTransformFeedback(WebGLTransformFeedback* feedbackObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     // We have to short-circuit the deletion process if the transform feedback is
@@ -2113,6 +2231,7 @@ void WebGL2RenderingContext::deleteTransformFeedback(WebGLTransformFeedback* fee
 
 GCGLboolean WebGL2RenderingContext::isTransformFeedback(WebGLTransformFeedback* feedbackObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !feedbackObject || !feedbackObject->validate(contextGroup(), *this))
         return false;
 
@@ -2126,6 +2245,7 @@ GCGLboolean WebGL2RenderingContext::isTransformFeedback(WebGLTransformFeedback* 
 
 void WebGL2RenderingContext::bindTransformFeedback(GCGLenum target, WebGLTransformFeedback* feedbackObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindTransformFeedback", feedbackObject))
@@ -2148,6 +2268,7 @@ void WebGL2RenderingContext::bindTransformFeedback(GCGLenum target, WebGLTransfo
 
 static bool ValidateTransformFeedbackPrimitiveMode(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (mode) {
     case GraphicsContextGL::POINTS:
     case GraphicsContextGL::LINES:
@@ -2160,6 +2281,7 @@ static bool ValidateTransformFeedbackPrimitiveMode(GCGLenum mode)
 
 void WebGL2RenderingContext::beginTransformFeedback(GCGLenum primitiveMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     
@@ -2195,6 +2317,7 @@ void WebGL2RenderingContext::beginTransformFeedback(GCGLenum primitiveMode)
 
 void WebGL2RenderingContext::endTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -2211,6 +2334,7 @@ void WebGL2RenderingContext::endTransformFeedback()
 
 void WebGL2RenderingContext::transformFeedbackVaryings(WebGLProgram& program, const Vector<String>& varyings, GCGLenum bufferMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("transformFeedbackVaryings", &program))
         return;
     
@@ -2234,6 +2358,7 @@ void WebGL2RenderingContext::transformFeedbackVaryings(WebGLProgram& program, co
 
 RefPtr<WebGLActiveInfo> WebGL2RenderingContext::getTransformFeedbackVarying(WebGLProgram& program, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getTransformFeedbackVarying", &program))
         return nullptr;
     if (!program.getLinkStatus()) {
@@ -2251,6 +2376,7 @@ RefPtr<WebGLActiveInfo> WebGL2RenderingContext::getTransformFeedbackVarying(WebG
 
 void WebGL2RenderingContext::pauseTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -2270,6 +2396,7 @@ void WebGL2RenderingContext::pauseTransformFeedback()
 
 void WebGL2RenderingContext::resumeTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -2288,11 +2415,13 @@ void WebGL2RenderingContext::resumeTransformFeedback()
 
 bool WebGL2RenderingContext::isTransformFeedbackActiveAndNotPaused()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_boundTransformFeedback->isActive() && !m_boundTransformFeedback->isPaused();
 }
 
 bool WebGL2RenderingContext::setIndexedBufferBinding(const char *functionName, GCGLenum target, GCGLuint index, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject(functionName, buffer))
@@ -2335,12 +2464,14 @@ bool WebGL2RenderingContext::setIndexedBufferBinding(const char *functionName, G
 
 void WebGL2RenderingContext::bindBufferBase(GCGLenum target, GCGLuint index, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (setIndexedBufferBinding("bindBufferBase", target, index, buffer))
         m_context->bindBufferBase(target, index, objectOrZero(buffer));
 }
 
 void WebGL2RenderingContext::bindBufferRange(GCGLenum target, GCGLuint index, WebGLBuffer* buffer, GCGLint64 offset, GCGLint64 size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (target == GraphicsContextGL::TRANSFORM_FEEDBACK_BUFFER && (offset % 4 || size % 4)) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, "bindBufferRange", "invalid offset or size");
         return;
@@ -2355,6 +2486,7 @@ void WebGL2RenderingContext::bindBufferRange(GCGLenum target, GCGLuint index, We
 
 WebGLAny WebGL2RenderingContext::getIndexedParameter(GCGLenum target, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2402,6 +2534,7 @@ WebGLAny WebGL2RenderingContext::getIndexedParameter(GCGLenum target, GCGLuint i
 
 Vector<bool> WebGL2RenderingContext::getIndexedBooleanArrayParameter(GCGLenum pname, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(pname == GraphicsContextGL::COLOR_WRITEMASK);
     GCGLint value[4];
     m_context->getIntegeri_v(pname, index, value);
@@ -2413,6 +2546,7 @@ Vector<bool> WebGL2RenderingContext::getIndexedBooleanArrayParameter(GCGLenum pn
 
 std::optional<Vector<GCGLuint>> WebGL2RenderingContext::getUniformIndices(WebGLProgram& program, const Vector<String>& names)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getUniformIndices", &program))
         return std::nullopt;
     return m_context->getUniformIndices(program.object(), names);
@@ -2420,6 +2554,7 @@ std::optional<Vector<GCGLuint>> WebGL2RenderingContext::getUniformIndices(WebGLP
 
 WebGLAny WebGL2RenderingContext::getActiveUniforms(WebGLProgram& program, const Vector<GCGLuint>& uniformIndices, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getActiveUniforms", &program))
         return nullptr;
 
@@ -2449,6 +2584,7 @@ WebGLAny WebGL2RenderingContext::getActiveUniforms(WebGLProgram& program, const 
 
 GCGLuint WebGL2RenderingContext::getUniformBlockIndex(WebGLProgram& program, const String& uniformBlockName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getUniformBlockIndex", &program))
         return 0;
     return m_context->getUniformBlockIndex(program.object(), uniformBlockName);
@@ -2456,6 +2592,7 @@ GCGLuint WebGL2RenderingContext::getUniformBlockIndex(WebGLProgram& program, con
 
 WebGLAny WebGL2RenderingContext::getActiveUniformBlockParameter(WebGLProgram& program, GCGLuint uniformBlockIndex, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getActiveUniformBlockParameter", &program))
         return nullptr;
     switch (pname) {
@@ -2480,6 +2617,7 @@ WebGLAny WebGL2RenderingContext::getActiveUniformBlockParameter(WebGLProgram& pr
 
 WebGLAny WebGL2RenderingContext::getActiveUniformBlockName(WebGLProgram& program, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getActiveUniformBlockName", &program))
         return String();
     if (!program.getLinkStatus()) {
@@ -2494,6 +2632,7 @@ WebGLAny WebGL2RenderingContext::getActiveUniformBlockName(WebGLProgram& program
 
 void WebGL2RenderingContext::uniformBlockBinding(WebGLProgram& program, GCGLuint uniformBlockIndex, GCGLuint uniformBlockBinding)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("uniformBlockBinding", &program))
         return;
     m_context->uniformBlockBinding(program.object(), uniformBlockIndex, uniformBlockBinding);
@@ -2501,6 +2640,7 @@ void WebGL2RenderingContext::uniformBlockBinding(WebGLProgram& program, GCGLuint
 
 RefPtr<WebGLVertexArrayObject> WebGL2RenderingContext::createVertexArray()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2511,6 +2651,7 @@ RefPtr<WebGLVertexArrayObject> WebGL2RenderingContext::createVertexArray()
 
 void WebGL2RenderingContext::deleteVertexArray(WebGLVertexArrayObject* arrayObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     // validateWebGLObject generates an error if the object has already been
@@ -2537,6 +2678,7 @@ void WebGL2RenderingContext::deleteVertexArray(WebGLVertexArrayObject* arrayObje
 
 GCGLboolean WebGL2RenderingContext::isVertexArray(WebGLVertexArrayObject* arrayObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !arrayObject || !arrayObject->validate(contextGroup(), *this))
         return false;
 
@@ -2550,6 +2692,7 @@ GCGLboolean WebGL2RenderingContext::isVertexArray(WebGLVertexArrayObject* arrayO
 
 void WebGL2RenderingContext::bindVertexArray(WebGLVertexArrayObject* arrayObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindVertexArray", arrayObject))
@@ -2568,6 +2711,7 @@ void WebGL2RenderingContext::bindVertexArray(WebGLVertexArrayObject* arrayObject
 
 WebGLExtension* WebGL2RenderingContext::getExtension(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2616,6 +2760,7 @@ WebGLExtension* WebGL2RenderingContext::getExtension(const String& name)
 
 std::optional<Vector<String>> WebGL2RenderingContext::getSupportedExtensions()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return std::nullopt;
 
@@ -2660,6 +2805,7 @@ std::optional<Vector<String>> WebGL2RenderingContext::getSupportedExtensions()
 
 static bool validateDefaultFramebufferAttachment(GCGLenum attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (attachment) {
     case GraphicsContextGL::BACK:
     case GraphicsContextGL::DEPTH:
@@ -2672,6 +2818,7 @@ static bool validateDefaultFramebufferAttachment(GCGLenum attachment)
 
 WebGLAny WebGL2RenderingContext::getFramebufferAttachmentParameter(GCGLenum target, GCGLenum attachment, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2728,6 +2875,7 @@ WebGLAny WebGL2RenderingContext::getFramebufferAttachmentParameter(GCGLenum targ
 
 #if ENABLE(WEBXR)
     if (targetFramebuffer->isOpaque()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "getFramebufferAttachmentParameter", "An opaque framebuffer's attachments cannot be inspected or changed");
         return nullptr;
     }
@@ -2793,6 +2941,7 @@ WebGLAny WebGL2RenderingContext::getFramebufferAttachmentParameter(GCGLenum targ
 
 bool WebGL2RenderingContext::validateFramebufferTarget(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::FRAMEBUFFER:
     case GraphicsContextGL::DRAW_FRAMEBUFFER:
@@ -2804,6 +2953,7 @@ bool WebGL2RenderingContext::validateFramebufferTarget(GCGLenum target)
 
 WebGLFramebuffer* WebGL2RenderingContext::getFramebufferBinding(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::READ_FRAMEBUFFER:
         return m_readFramebufferBinding.get();
@@ -2815,17 +2965,20 @@ WebGLFramebuffer* WebGL2RenderingContext::getFramebufferBinding(GCGLenum target)
 
 WebGLFramebuffer* WebGL2RenderingContext::getReadFramebufferBinding()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_readFramebufferBinding.get();
 }
 
 void WebGL2RenderingContext::restoreCurrentFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindFramebuffer(GraphicsContextGL::DRAW_FRAMEBUFFER, m_framebufferBinding.get());
     bindFramebuffer(GraphicsContextGL::READ_FRAMEBUFFER, m_readFramebufferBinding.get());
 }
 
 bool WebGL2RenderingContext::validateNonDefaultFramebufferAttachment(const char* functionName, GCGLenum attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (attachment) {
     case GraphicsContextGL::DEPTH_ATTACHMENT:
     case GraphicsContextGL::STENCIL_ATTACHMENT:
@@ -2842,6 +2995,7 @@ bool WebGL2RenderingContext::validateNonDefaultFramebufferAttachment(const char*
 
 GCGLint WebGL2RenderingContext::getMaxDrawBuffers()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_maxDrawBuffers)
         m_maxDrawBuffers = m_context->getInteger(GraphicsContextGL::MAX_DRAW_BUFFERS);
     return m_maxDrawBuffers;
@@ -2849,6 +3003,7 @@ GCGLint WebGL2RenderingContext::getMaxDrawBuffers()
 
 GCGLint WebGL2RenderingContext::getMaxColorAttachments()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // DrawBuffers requires MAX_COLOR_ATTACHMENTS == MAX_DRAW_BUFFERS
     if (!m_maxColorAttachments)
         m_maxColorAttachments = m_context->getInteger(GraphicsContextGL::MAX_DRAW_BUFFERS);
@@ -2857,6 +3012,7 @@ GCGLint WebGL2RenderingContext::getMaxColorAttachments()
 
 void WebGL2RenderingContext::renderbufferStorageImpl(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (internalformat) {
     case GraphicsContextGL::R8UI:
     case GraphicsContextGL::R8I:
@@ -2946,6 +3102,7 @@ void WebGL2RenderingContext::renderbufferStorageImpl(GCGLenum target, GCGLsizei 
 
 void WebGL2RenderingContext::renderbufferStorageHelper(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (samples)
         m_context->renderbufferStorageMultisample(target, samples, internalformat, width, height);
     else
@@ -2954,11 +3111,13 @@ void WebGL2RenderingContext::renderbufferStorageHelper(GCGLenum target, GCGLsize
 
 GCGLuint WebGL2RenderingContext::maxTransformFeedbackSeparateAttribs() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_maxTransformFeedbackSeparateAttribs;
 }
 
 bool WebGL2RenderingContext::checkAndTranslateAttachments(const char* functionName, GCGLenum target, Vector<GCGLenum>& attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateFramebufferTarget(target)) {
         synthesizeGLError(GraphicsContextGL::INVALID_ENUM, functionName, "invalid target");
         return false;
@@ -2989,6 +3148,7 @@ bool WebGL2RenderingContext::checkAndTranslateAttachments(const char* functionNa
 
 void WebGL2RenderingContext::addMembersToOpaqueRoots(JSC::AbstractSlotVisitor& visitor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLRenderingContextBase::addMembersToOpaqueRoots(visitor);
 
     Locker locker { objectGraphLock() };
@@ -3019,6 +3179,7 @@ void WebGL2RenderingContext::addMembersToOpaqueRoots(JSC::AbstractSlotVisitor& v
 
 WebGLAny WebGL2RenderingContext::getParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     switch (pname) {
@@ -3174,6 +3335,7 @@ WebGLAny WebGL2RenderingContext::getParameter(GCGLenum pname)
 
 bool WebGL2RenderingContext::validateBlendEquation(const char* functionName, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (mode) {
     case GraphicsContextGL::FUNC_ADD:
     case GraphicsContextGL::FUNC_SUBTRACT:
@@ -3189,6 +3351,7 @@ bool WebGL2RenderingContext::validateBlendEquation(const char* functionName, GCG
 
 bool WebGL2RenderingContext::validateCapability(const char* functionName, GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (cap) {
     case GraphicsContextGL::CLIP_DISTANCE0_ANGLE:
     case GraphicsContextGL::CLIP_DISTANCE1_ANGLE:
@@ -3212,6 +3375,7 @@ bool WebGL2RenderingContext::validateCapability(const char* functionName, GCGLen
 template<typename T, typename TypedArrayType>
 std::optional<std::span<const T>> WebGL2RenderingContext::validateClearBuffer(const char* functionName, GCGLenum buffer, TypedList<TypedArrayType, T>& values, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Checked<GCGLsizei, RecordOverflow> checkedSize(values.length());
     checkedSize -= srcOffset;
     if (checkedSize.hasOverflowed()) {
@@ -3241,6 +3405,7 @@ std::optional<std::span<const T>> WebGL2RenderingContext::validateClearBuffer(co
 
 void WebGL2RenderingContext::uniform1fv(const WebGLUniformLocation* location, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform1fv", location, data, 1, srcOffset, srcLength);
@@ -3251,6 +3416,7 @@ void WebGL2RenderingContext::uniform1fv(const WebGLUniformLocation* location, Fl
 
 void WebGL2RenderingContext::uniform2fv(const WebGLUniformLocation* location, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform2fv", location, data, 2, srcOffset, srcLength);
@@ -3261,6 +3427,7 @@ void WebGL2RenderingContext::uniform2fv(const WebGLUniformLocation* location, Fl
 
 void WebGL2RenderingContext::uniform3fv(const WebGLUniformLocation* location, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform3fv", location, data, 3, srcOffset, srcLength);
@@ -3271,6 +3438,7 @@ void WebGL2RenderingContext::uniform3fv(const WebGLUniformLocation* location, Fl
 
 void WebGL2RenderingContext::uniform4fv(const WebGLUniformLocation* location, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform4fv", location, data, 4, srcOffset, srcLength);
@@ -3281,6 +3449,7 @@ void WebGL2RenderingContext::uniform4fv(const WebGLUniformLocation* location, Fl
 
 void WebGL2RenderingContext::uniform1iv(const WebGLUniformLocation* location, Int32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform1iv", location, data, 1, srcOffset, srcLength);
@@ -3291,6 +3460,7 @@ void WebGL2RenderingContext::uniform1iv(const WebGLUniformLocation* location, In
 
 void WebGL2RenderingContext::uniform2iv(const WebGLUniformLocation* location, Int32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform2iv", location, data, 2, srcOffset, srcLength);
@@ -3301,6 +3471,7 @@ void WebGL2RenderingContext::uniform2iv(const WebGLUniformLocation* location, In
 
 void WebGL2RenderingContext::uniform3iv(const WebGLUniformLocation* location, Int32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform3iv", location, data, 3, srcOffset, srcLength);
@@ -3311,6 +3482,7 @@ void WebGL2RenderingContext::uniform3iv(const WebGLUniformLocation* location, In
 
 void WebGL2RenderingContext::uniform4iv(const WebGLUniformLocation* location, Int32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform4iv", location, data, 4, srcOffset, srcLength);
@@ -3321,6 +3493,7 @@ void WebGL2RenderingContext::uniform4iv(const WebGLUniformLocation* location, In
 
 void WebGL2RenderingContext::uniformMatrix2fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformMatrixParameters("uniformMatrix2fv", location, transpose, data, 2*2, srcOffset, srcLength);
@@ -3331,6 +3504,7 @@ void WebGL2RenderingContext::uniformMatrix2fv(const WebGLUniformLocation* locati
 
 void WebGL2RenderingContext::uniformMatrix3fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformMatrixParameters("uniformMatrix3fv", location, transpose, data, 3*3, srcOffset, srcLength);
@@ -3341,6 +3515,7 @@ void WebGL2RenderingContext::uniformMatrix3fv(const WebGLUniformLocation* locati
 
 void WebGL2RenderingContext::uniformMatrix4fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& data, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformMatrixParameters("uniformMatrix4fv", location, transpose, data, 4*4, srcOffset, srcLength);
@@ -3351,6 +3526,7 @@ void WebGL2RenderingContext::uniformMatrix4fv(const WebGLUniformLocation* locati
 
 void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelPackBuffer) {
@@ -3364,6 +3540,7 @@ void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, G
 
 void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!m_boundPixelPackBuffer) {
@@ -3409,6 +3586,7 @@ void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, G
 
 void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, ArrayBufferView& dstData, GCGLuint dstOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (m_boundPixelPackBuffer) {
@@ -3429,6 +3607,7 @@ void WebGL2RenderingContext::readPixels(GCGLint x, GCGLint y, GCGLsizei width, G
 
 void WebGL2RenderingContext::uncacheDeletedBuffer(const AbstractLocker& locker, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(buffer);
 
     REMOVE_BUFFER_FROM_BINDING(m_boundCopyReadBuffer);
@@ -3451,6 +3630,7 @@ void WebGL2RenderingContext::uncacheDeletedBuffer(const AbstractLocker& locker, 
 
 void WebGL2RenderingContext::updateBuffersToAutoClear(ClearBufferCaller caller, GCGLenum buffer, GCGLint drawbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // This method makes sure that we don't auto-clear any buffers which the
     // user has manually cleared using the new ES 3.0 clearBuffer* APIs.
 
@@ -3477,6 +3657,7 @@ void WebGL2RenderingContext::updateBuffersToAutoClear(ClearBufferCaller caller, 
     // color buffer. TODO(crbug.com/829632): this needs to be
     // generalized.
     switch (caller) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     case ClearBufferCaller::ClearBufferiv:
         if (buffer != GraphicsContextGL::STENCIL)
             return;

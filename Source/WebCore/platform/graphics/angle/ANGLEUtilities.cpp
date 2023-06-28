@@ -34,12 +34,14 @@ namespace WebCore {
 #if !PLATFORM(COCOA)
 bool platformIsANGLEAvailable()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return true;
 }
 #endif
 
 ScopedRestoreTextureBinding::ScopedRestoreTextureBinding(GCGLenum bindingPointQuery, GCGLenum bindingPoint, bool condition)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(bindingPoint != static_cast<GCGLenum>(0u));
     if (condition) {
         m_bindingPoint = bindingPoint;
@@ -55,6 +57,7 @@ ScopedRestoreTextureBinding::~ScopedRestoreTextureBinding()
 
 ScopedBufferBinding::ScopedBufferBinding(GCGLenum bindingPoint, GCGLuint bindingValue, bool condition)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!condition)
         return;
     GL_GetIntegerv(query(bindingPoint), reinterpret_cast<GCGLint*>(&m_bindingValue));
@@ -72,6 +75,7 @@ ScopedBufferBinding::~ScopedBufferBinding()
 
 void ScopedRestoreReadFramebufferBinding::bindFramebuffer(GCGLuint bindingValue)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_bindingChanged && m_bindingValue == bindingValue)
         return;
     GL_BindFramebuffer(m_framebufferTarget, bindingValue);
@@ -87,6 +91,7 @@ ScopedRestoreReadFramebufferBinding::~ScopedRestoreReadFramebufferBinding()
 ScopedPixelStorageMode::ScopedPixelStorageMode(GCGLenum name, bool condition)
     : m_name(condition ? name : 0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_name)
         GL_GetIntegerv(m_name, &m_originalValue);
 }
@@ -94,6 +99,7 @@ ScopedPixelStorageMode::ScopedPixelStorageMode(GCGLenum name, bool condition)
 ScopedPixelStorageMode::ScopedPixelStorageMode(GCGLenum name, GCGLint value, bool condition)
     : m_name(condition ? name : 0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_name) {
         GL_GetIntegerv(m_name, &m_originalValue);
         pixelStore(value);
@@ -108,6 +114,7 @@ ScopedPixelStorageMode::~ScopedPixelStorageMode()
 
 void ScopedPixelStorageMode::pixelStore(GCGLint value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(m_name);
     if (!m_valueChanged && m_originalValue == value)
         return;
@@ -117,6 +124,7 @@ void ScopedPixelStorageMode::pixelStore(GCGLint value)
 
 ScopedTexture::ScopedTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GL_GenTextures(1, &m_object);
 }
 
@@ -127,6 +135,7 @@ ScopedTexture::~ScopedTexture()
 
 ScopedFramebuffer::ScopedFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GL_GenFramebuffers(1, &m_object);
 }
 
@@ -137,6 +146,7 @@ ScopedFramebuffer::~ScopedFramebuffer()
 
 void ScopedGLFence::reset()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_object) {
         GL_DeleteSync(static_cast<GLsync>(m_object));
         m_object = { };
@@ -145,6 +155,7 @@ void ScopedGLFence::reset()
 
 void ScopedGLFence::fenceSync()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     reset();
     m_object = GL_FenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
@@ -154,6 +165,7 @@ ScopedGLCapability::ScopedGLCapability(GCGLenum capability, bool enable)
     : m_capability(capability)
     , m_original(GL_IsEnabled(m_capability) == enable ? std::nullopt : std::optional<bool>(!enable))
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_original)
         return;
     if (enable)

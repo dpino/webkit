@@ -43,6 +43,7 @@ static void ValidateStateHelper(const FunctionsGL *functions,
                                 const char *localName,
                                 const char *driverName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint queryValue;
     functions->getIntegerv(pname, &queryValue);
     if (localValue != static_cast<GLuint>(queryValue))
@@ -60,6 +61,7 @@ VertexArrayStateGL::VertexArrayStateGL(size_t maxAttribs, size_t maxBindings)
     : attributes(std::min<size_t>(maxAttribs, gl::MAX_VERTEX_ATTRIBS)),
       bindings(std::min<size_t>(maxBindings, gl::MAX_VERTEX_ATTRIBS))
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Set the cached vertex attribute array and vertex attribute binding array size
     for (GLuint i = 0; i < attributes.size(); i++)
     {
@@ -166,6 +168,7 @@ StateManagerGL::StateManagerGL(const FunctionsGL *functions,
       mLogicOpEnabled(false),
       mLogicOp(gl::LogicalOperation::Copy)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mFunctions);
     ASSERT(rendererCaps.maxViews >= 1u);
 
@@ -207,6 +210,7 @@ StateManagerGL::StateManagerGL(const FunctionsGL *functions,
     if (features.syncVertexArraysToDefault.enabled &&
         !nativegl::CanUseDefaultVertexArrayObject(mFunctions))
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         ASSERT(nativegl::SupportsVertexArrayObjects(mFunctions));
         mFunctions->genVertexArrays(1, &mDefaultVAO);
         mFunctions->bindVertexArray(mDefaultVAO);
@@ -236,6 +240,7 @@ StateManagerGL::~StateManagerGL()
 
 void StateManagerGL::deleteProgram(GLuint program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (program != 0)
     {
         if (mProgram == program)
@@ -249,6 +254,7 @@ void StateManagerGL::deleteProgram(GLuint program)
 
 void StateManagerGL::deleteVertexArray(GLuint vao)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (vao != 0)
     {
         if (mVAO == vao)
@@ -261,6 +267,7 @@ void StateManagerGL::deleteVertexArray(GLuint vao)
 
 void StateManagerGL::deleteTexture(GLuint texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (texture != 0)
     {
         for (gl::TextureType type : angle::AllEnums<gl::TextureType>())
@@ -291,6 +298,7 @@ void StateManagerGL::deleteTexture(GLuint texture)
 
 void StateManagerGL::deleteSampler(GLuint sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (sampler != 0)
     {
         for (size_t unit = 0; unit < mSamplers.size(); unit++)
@@ -307,6 +315,7 @@ void StateManagerGL::deleteSampler(GLuint sampler)
 
 void StateManagerGL::deleteBuffer(GLuint buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (buffer == 0)
     {
         return;
@@ -350,6 +359,7 @@ void StateManagerGL::deleteBuffer(GLuint buffer)
 
 void StateManagerGL::deleteFramebuffer(GLuint fbo)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (fbo != 0)
     {
         if (mHasSeparateFramebufferBindings)
@@ -379,6 +389,7 @@ void StateManagerGL::deleteFramebuffer(GLuint fbo)
 
 void StateManagerGL::deleteRenderbuffer(GLuint rbo)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (rbo != 0)
     {
         if (mRenderbuffer == rbo)
@@ -392,6 +403,7 @@ void StateManagerGL::deleteRenderbuffer(GLuint rbo)
 
 void StateManagerGL::deleteTransformFeedback(GLuint transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (transformFeedback != 0)
     {
         if (mTransformFeedback == transformFeedback)
@@ -411,6 +423,7 @@ void StateManagerGL::deleteTransformFeedback(GLuint transformFeedback)
 
 void StateManagerGL::useProgram(GLuint program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mProgram != program)
     {
         forceUseProgram(program);
@@ -419,6 +432,7 @@ void StateManagerGL::useProgram(GLuint program)
 
 void StateManagerGL::forceUseProgram(GLuint program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mProgram = program;
     mFunctions->useProgram(mProgram);
     mLocalDirtyBits.set(gl::State::DIRTY_BIT_PROGRAM_BINDING);
@@ -426,6 +440,7 @@ void StateManagerGL::forceUseProgram(GLuint program)
 
 void StateManagerGL::bindVertexArray(GLuint vao, VertexArrayStateGL *vaoState)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mVAO != vao)
     {
         ASSERT(!mFeatures.syncVertexArraysToDefault.enabled);
@@ -442,6 +457,7 @@ void StateManagerGL::bindVertexArray(GLuint vao, VertexArrayStateGL *vaoState)
 
 void StateManagerGL::bindBuffer(gl::BufferBinding target, GLuint buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // GL drivers differ in whether the transform feedback bind point is modified when
     // glBindTransformFeedback is called. To avoid these behavior differences we shouldn't try to
     // use it.
@@ -455,6 +471,7 @@ void StateManagerGL::bindBuffer(gl::BufferBinding target, GLuint buffer)
 
 void StateManagerGL::bindBufferBase(gl::BufferBinding target, size_t index, GLuint buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Transform feedback buffer bindings are tracked in TransformFeedbackGL
     ASSERT(target != gl::BufferBinding::TransformFeedback);
 
@@ -477,6 +494,7 @@ void StateManagerGL::bindBufferRange(gl::BufferBinding target,
                                      size_t offset,
                                      size_t size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Transform feedback buffer bindings are tracked in TransformFeedbackGL
     ASSERT(target != gl::BufferBinding::TransformFeedback);
 
@@ -494,6 +512,7 @@ void StateManagerGL::bindBufferRange(gl::BufferBinding target,
 
 void StateManagerGL::activeTexture(size_t unit)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mTextureUnitIndex != unit)
     {
         mTextureUnitIndex = unit;
@@ -503,6 +522,7 @@ void StateManagerGL::activeTexture(size_t unit)
 
 void StateManagerGL::bindTexture(gl::TextureType type, GLuint texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::TextureType nativeType = nativegl::GetNativeTextureType(type);
     if (mTextures[nativeType][mTextureUnitIndex] != texture)
     {
@@ -514,6 +534,7 @@ void StateManagerGL::bindTexture(gl::TextureType type, GLuint texture)
 
 void StateManagerGL::invalidateTexture(gl::TextureType type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Assume the tracked texture binding is incorrect, query the real bound texture from GL.
     GLint boundTexture = 0;
     mFunctions->getIntegerv(nativegl::GetTextureBindingQuery(type), &boundTexture);
@@ -523,6 +544,7 @@ void StateManagerGL::invalidateTexture(gl::TextureType type)
 
 void StateManagerGL::bindSampler(size_t unit, GLuint sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSamplers[unit] != sampler)
     {
         mSamplers[unit] = sampler;
@@ -539,6 +561,7 @@ void StateManagerGL::bindImageTexture(size_t unit,
                                       GLenum access,
                                       GLenum format)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto &binding = mImages[unit];
     if (binding.texture != texture || binding.level != level || binding.layered != layered ||
         binding.layer != layer || binding.access != access || binding.format != format)
@@ -557,6 +580,7 @@ void StateManagerGL::bindImageTexture(size_t unit,
 angle::Result StateManagerGL::setPixelUnpackState(const gl::Context *context,
                                                   const gl::PixelUnpackState &unpack)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mUnpackAlignment != unpack.alignment)
     {
         mUnpackAlignment = unpack.alignment;
@@ -611,6 +635,7 @@ angle::Result StateManagerGL::setPixelUnpackState(const gl::Context *context,
 angle::Result StateManagerGL::setPixelUnpackBuffer(const gl::Context *context,
                                                    const gl::Buffer *pixelBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint bufferID = 0;
     if (pixelBuffer != nullptr)
     {
@@ -624,6 +649,7 @@ angle::Result StateManagerGL::setPixelUnpackBuffer(const gl::Context *context,
 angle::Result StateManagerGL::setPixelPackState(const gl::Context *context,
                                                 const gl::PixelPackState &pack)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPackAlignment != pack.alignment)
     {
         mPackAlignment = pack.alignment;
@@ -662,6 +688,7 @@ angle::Result StateManagerGL::setPixelPackState(const gl::Context *context,
 angle::Result StateManagerGL::setPixelPackBuffer(const gl::Context *context,
                                                  const gl::Buffer *pixelBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint bufferID = 0;
     if (pixelBuffer != nullptr)
     {
@@ -674,6 +701,7 @@ angle::Result StateManagerGL::setPixelPackBuffer(const gl::Context *context,
 
 void StateManagerGL::bindFramebuffer(GLenum type, GLuint framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool framebufferChanged = false;
     switch (type)
     {
@@ -731,6 +759,7 @@ void StateManagerGL::bindFramebuffer(GLenum type, GLuint framebuffer)
 
 void StateManagerGL::bindRenderbuffer(GLenum type, GLuint renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(type == GL_RENDERBUFFER);
     if (mRenderbuffer != renderbuffer)
     {
@@ -741,6 +770,7 @@ void StateManagerGL::bindRenderbuffer(GLenum type, GLuint renderbuffer)
 
 void StateManagerGL::bindTransformFeedback(GLenum type, GLuint transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(type == GL_TRANSFORM_FEEDBACK);
     if (mTransformFeedback != transformFeedback)
     {
@@ -762,11 +792,13 @@ void StateManagerGL::bindTransformFeedback(GLenum type, GLuint transformFeedback
 
 void StateManagerGL::onTransformFeedbackStateChange()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mLocalDirtyBits.set(gl::State::DIRTY_BIT_TRANSFORM_FEEDBACK_BINDING);
 }
 
 void StateManagerGL::beginQuery(gl::QueryType type, QueryGL *queryObject, GLuint queryId)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Make sure this is a valid query type and there is no current active query of this type
     ASSERT(mQueries[type] == nullptr);
     ASSERT(queryId != 0);
@@ -788,6 +820,7 @@ void StateManagerGL::beginQuery(gl::QueryType type, QueryGL *queryObject, GLuint
 
 void StateManagerGL::endQuery(gl::QueryType type, QueryGL *queryObject, GLuint queryId)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(queryObject != nullptr);
     ASSERT(mQueries[type] == queryObject);
     mQueries[type] = nullptr;
@@ -796,6 +829,7 @@ void StateManagerGL::endQuery(gl::QueryType type, QueryGL *queryObject, GLuint q
 
 void StateManagerGL::updateDrawIndirectBufferBinding(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::Buffer *drawIndirectBuffer =
         context->getState().getTargetBuffer(gl::BufferBinding::DrawIndirect);
     if (drawIndirectBuffer != nullptr)
@@ -807,6 +841,7 @@ void StateManagerGL::updateDrawIndirectBufferBinding(const gl::Context *context)
 
 void StateManagerGL::updateDispatchIndirectBufferBinding(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::Buffer *dispatchIndirectBuffer =
         context->getState().getTargetBuffer(gl::BufferBinding::DispatchIndirect);
     if (dispatchIndirectBuffer != nullptr)
@@ -818,6 +853,7 @@ void StateManagerGL::updateDispatchIndirectBufferBinding(const gl::Context *cont
 
 void StateManagerGL::pauseTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mCurrentTransformFeedback != nullptr)
     {
         mCurrentTransformFeedback->syncPausedState(true);
@@ -827,6 +863,7 @@ void StateManagerGL::pauseTransformFeedback()
 
 angle::Result StateManagerGL::pauseAllQueries(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (gl::QueryType type : angle::AllEnums<gl::QueryType>())
     {
         QueryGL *previousQuery = mQueries[type];
@@ -844,6 +881,7 @@ angle::Result StateManagerGL::pauseAllQueries(const gl::Context *context)
 
 angle::Result StateManagerGL::pauseQuery(const gl::Context *context, gl::QueryType type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     QueryGL *previousQuery = mQueries[type];
 
     if (previousQuery)
@@ -858,6 +896,7 @@ angle::Result StateManagerGL::pauseQuery(const gl::Context *context, gl::QueryTy
 
 angle::Result StateManagerGL::resumeAllQueries(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (gl::QueryType type : angle::AllEnums<gl::QueryType>())
     {
         QueryGL *pausedQuery = mTemporaryPausedQueries[type];
@@ -875,6 +914,7 @@ angle::Result StateManagerGL::resumeAllQueries(const gl::Context *context)
 
 angle::Result StateManagerGL::resumeQuery(const gl::Context *context, gl::QueryType type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     QueryGL *pausedQuery = mTemporaryPausedQueries[type];
 
     if (pausedQuery != nullptr)
@@ -888,12 +928,14 @@ angle::Result StateManagerGL::resumeQuery(const gl::Context *context, gl::QueryT
 
 angle::Result StateManagerGL::onMakeCurrent(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &glState = context->getState();
 
 #if defined(ANGLE_ENABLE_ASSERTS)
     // Temporarily pausing queries during context switch is not supported
     for (QueryGL *pausedQuery : mTemporaryPausedQueries)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         ASSERT(pausedQuery == nullptr);
     }
 #endif
@@ -933,6 +975,7 @@ angle::Result StateManagerGL::onMakeCurrent(const gl::Context *context)
 
 void StateManagerGL::updateProgramTextureBindings(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &glState                = context->getState();
     const gl::ProgramExecutable *executable = glState.getProgramExecutable();
 
@@ -974,6 +1017,7 @@ void StateManagerGL::updateProgramTextureBindings(const gl::Context *context)
 
 void StateManagerGL::updateProgramStorageBufferBindings(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &glState   = context->getState();
     const gl::Program *program = glState.getProgram();
 
@@ -1002,6 +1046,7 @@ void StateManagerGL::updateProgramStorageBufferBindings(const gl::Context *conte
 
 void StateManagerGL::updateProgramUniformBufferBindings(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Sync the current program state
     const gl::State &glState   = context->getState();
     const gl::Program *program = glState.getProgram();
@@ -1031,6 +1076,7 @@ void StateManagerGL::updateProgramUniformBufferBindings(const gl::Context *conte
 
 void StateManagerGL::updateProgramAtomicCounterBufferBindings(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &glState   = context->getState();
     const gl::Program *program = glState.getProgram();
 
@@ -1058,6 +1104,7 @@ void StateManagerGL::updateProgramAtomicCounterBufferBindings(const gl::Context 
 
 void StateManagerGL::updateProgramImageBindings(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &glState                = context->getState();
     const gl::ProgramExecutable *executable = glState.getProgramExecutable();
     const gl::Program *program              = glState.getProgram();
@@ -1090,6 +1137,7 @@ void StateManagerGL::updateProgramImageBindings(const gl::Context *context)
 void StateManagerGL::setAttributeCurrentData(size_t index,
                                              const gl::VertexAttribCurrentValueData &data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mVertexAttribCurrentValues[index] != data)
     {
         mVertexAttribCurrentValues[index] = data;
@@ -1119,6 +1167,7 @@ void StateManagerGL::setAttributeCurrentData(size_t index,
 
 void StateManagerGL::setScissorTestEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mScissorTestEnabled != enabled)
     {
         mScissorTestEnabled = enabled;
@@ -1137,6 +1186,7 @@ void StateManagerGL::setScissorTestEnabled(bool enabled)
 
 void StateManagerGL::setScissor(const gl::Rectangle &scissor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (scissor != mScissor)
     {
         mScissor = scissor;
@@ -1148,6 +1198,7 @@ void StateManagerGL::setScissor(const gl::Rectangle &scissor)
 
 void StateManagerGL::setViewport(const gl::Rectangle &viewport)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (viewport != mViewport)
     {
         mViewport = viewport;
@@ -1159,6 +1210,7 @@ void StateManagerGL::setViewport(const gl::Rectangle &viewport)
 
 void StateManagerGL::setDepthRange(float near, float far)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mNear = near;
     mFar  = far;
 
@@ -1179,6 +1231,7 @@ void StateManagerGL::setDepthRange(float near, float far)
 
 void StateManagerGL::setClipControl(gl::ClipOrigin origin, gl::ClipDepthMode depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mClipOrigin == origin && mClipDepthMode == depth)
     {
         return;
@@ -1196,6 +1249,7 @@ void StateManagerGL::setClipControl(gl::ClipOrigin origin, gl::ClipDepthMode dep
 
 void StateManagerGL::setBlendEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::DrawBufferMask mask =
         enabled ? mBlendStateExt.getAllEnabledMask() : gl::DrawBufferMask::Zero();
     if (mBlendStateExt.getEnabledMask() == mask)
@@ -1218,6 +1272,7 @@ void StateManagerGL::setBlendEnabled(bool enabled)
 
 void StateManagerGL::setBlendEnabledIndexed(const gl::DrawBufferMask enabledMask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mBlendStateExt.getEnabledMask() == enabledMask)
     {
         return;
@@ -1269,6 +1324,7 @@ void StateManagerGL::setBlendEnabledIndexed(const gl::DrawBufferMask enabledMask
 
 void StateManagerGL::setBlendColor(const gl::ColorF &blendColor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mBlendColor != blendColor)
     {
         mBlendColor = blendColor;
@@ -1281,6 +1337,7 @@ void StateManagerGL::setBlendColor(const gl::ColorF &blendColor)
 
 void StateManagerGL::setBlendFuncs(const gl::BlendStateExt &blendStateExt)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mBlendStateExt.getSrcColorBits() == blendStateExt.getSrcColorBits() &&
         mBlendStateExt.getDstColorBits() == blendStateExt.getDstColorBits() &&
         mBlendStateExt.getSrcAlphaBits() == blendStateExt.getSrcAlphaBits() &&
@@ -1369,6 +1426,7 @@ void StateManagerGL::setBlendFuncs(const gl::BlendStateExt &blendStateExt)
 
 void StateManagerGL::setBlendEquations(const gl::BlendStateExt &blendStateExt)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mBlendStateExt.getEquationColorBits() == blendStateExt.getEquationColorBits() &&
         mBlendStateExt.getEquationAlphaBits() == blendStateExt.getEquationAlphaBits())
     {
@@ -1443,6 +1501,7 @@ void StateManagerGL::setBlendEquations(const gl::BlendStateExt &blendStateExt)
 
 void StateManagerGL::setColorMask(bool red, bool green, bool blue, bool alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::BlendStateExt::ColorMaskStorage::Type mask =
         mBlendStateExt.expandColorMaskValue(red, green, blue, alpha);
     if (mBlendStateExt.getColorMaskBits() != mask)
@@ -1455,6 +1514,7 @@ void StateManagerGL::setColorMask(bool red, bool green, bool blue, bool alpha)
 
 void StateManagerGL::setSampleAlphaToCoverageEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSampleAlphaToCoverageEnabled != enabled)
     {
         mSampleAlphaToCoverageEnabled = enabled;
@@ -1473,6 +1533,7 @@ void StateManagerGL::setSampleAlphaToCoverageEnabled(bool enabled)
 
 void StateManagerGL::setSampleCoverageEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSampleCoverageEnabled != enabled)
     {
         mSampleCoverageEnabled = enabled;
@@ -1491,6 +1552,7 @@ void StateManagerGL::setSampleCoverageEnabled(bool enabled)
 
 void StateManagerGL::setSampleCoverage(float value, bool invert)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSampleCoverageValue != value || mSampleCoverageInvert != invert)
     {
         mSampleCoverageValue  = value;
@@ -1503,6 +1565,7 @@ void StateManagerGL::setSampleCoverage(float value, bool invert)
 
 void StateManagerGL::setSampleMaskEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSampleMaskEnabled != enabled)
     {
         mSampleMaskEnabled = enabled;
@@ -1521,6 +1584,7 @@ void StateManagerGL::setSampleMaskEnabled(bool enabled)
 
 void StateManagerGL::setSampleMaski(GLuint maskNumber, GLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(maskNumber < mSampleMaskValues.size());
     if (mSampleMaskValues[maskNumber] != mask)
     {
@@ -1536,6 +1600,7 @@ void StateManagerGL::setSampleMaski(GLuint maskNumber, GLbitfield mask)
 // and update backend states.
 void StateManagerGL::setDepthTestEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mDepthTestEnabled = enabled;
     if (mDepthTestEnabled)
     {
@@ -1551,6 +1616,7 @@ void StateManagerGL::setDepthTestEnabled(bool enabled)
 
 void StateManagerGL::setDepthFunc(GLenum depthFunc)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mDepthFunc = depthFunc;
     mFunctions->depthFunc(mDepthFunc);
 
@@ -1559,6 +1625,7 @@ void StateManagerGL::setDepthFunc(GLenum depthFunc)
 
 void StateManagerGL::setDepthMask(bool mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mDepthMask = mask;
     mFunctions->depthMask(mDepthMask);
 
@@ -1567,6 +1634,7 @@ void StateManagerGL::setDepthMask(bool mask)
 
 void StateManagerGL::setStencilTestEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilTestEnabled = enabled;
     if (mStencilTestEnabled)
     {
@@ -1582,6 +1650,7 @@ void StateManagerGL::setStencilTestEnabled(bool enabled)
 
 void StateManagerGL::setStencilFrontWritemask(GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilFrontWritemask = mask;
     mFunctions->stencilMaskSeparate(GL_FRONT, mStencilFrontWritemask);
 
@@ -1590,6 +1659,7 @@ void StateManagerGL::setStencilFrontWritemask(GLuint mask)
 
 void StateManagerGL::setStencilBackWritemask(GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilBackWritemask = mask;
     mFunctions->stencilMaskSeparate(GL_BACK, mStencilBackWritemask);
 
@@ -1598,6 +1668,7 @@ void StateManagerGL::setStencilBackWritemask(GLuint mask)
 
 void StateManagerGL::setStencilFrontFuncs(GLenum func, GLint ref, GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilFrontFunc      = func;
     mStencilFrontRef       = ref;
     mStencilFrontValueMask = mask;
@@ -1609,6 +1680,7 @@ void StateManagerGL::setStencilFrontFuncs(GLenum func, GLint ref, GLuint mask)
 
 void StateManagerGL::setStencilBackFuncs(GLenum func, GLint ref, GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilBackFunc      = func;
     mStencilBackRef       = ref;
     mStencilBackValueMask = mask;
@@ -1620,6 +1692,7 @@ void StateManagerGL::setStencilBackFuncs(GLenum func, GLint ref, GLuint mask)
 
 void StateManagerGL::setStencilFrontOps(GLenum sfail, GLenum dpfail, GLenum dppass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilFrontStencilFailOp          = sfail;
     mStencilFrontStencilPassDepthFailOp = dpfail;
     mStencilFrontStencilPassDepthPassOp = dppass;
@@ -1632,6 +1705,7 @@ void StateManagerGL::setStencilFrontOps(GLenum sfail, GLenum dpfail, GLenum dppa
 
 void StateManagerGL::setStencilBackOps(GLenum sfail, GLenum dpfail, GLenum dppass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mStencilBackStencilFailOp          = sfail;
     mStencilBackStencilPassDepthFailOp = dpfail;
     mStencilBackStencilPassDepthPassOp = dppass;
@@ -1644,6 +1718,7 @@ void StateManagerGL::setStencilBackOps(GLenum sfail, GLenum dpfail, GLenum dppas
 
 void StateManagerGL::setCullFaceEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mCullFaceEnabled != enabled)
     {
         mCullFaceEnabled = enabled;
@@ -1662,6 +1737,7 @@ void StateManagerGL::setCullFaceEnabled(bool enabled)
 
 void StateManagerGL::setCullFace(gl::CullFaceMode cullFace)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mCullFace != cullFace)
     {
         mCullFace = cullFace;
@@ -1673,6 +1749,7 @@ void StateManagerGL::setCullFace(gl::CullFaceMode cullFace)
 
 void StateManagerGL::setFrontFace(GLenum frontFace)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mFrontFace != frontFace)
     {
         mFrontFace = frontFace;
@@ -1684,6 +1761,7 @@ void StateManagerGL::setFrontFace(GLenum frontFace)
 
 void StateManagerGL::setPolygonOffsetFillEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPolygonOffsetFillEnabled != enabled)
     {
         mPolygonOffsetFillEnabled = enabled;
@@ -1702,6 +1780,7 @@ void StateManagerGL::setPolygonOffsetFillEnabled(bool enabled)
 
 void StateManagerGL::setPolygonOffset(float factor, float units, float clamp)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPolygonOffsetFactor != factor || mPolygonOffsetUnits != units ||
         mPolygonOffsetClamp != clamp)
     {
@@ -1726,6 +1805,7 @@ void StateManagerGL::setPolygonOffset(float factor, float units, float clamp)
 
 void StateManagerGL::setDepthClampEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mDepthClampEnabled != enabled)
     {
         mDepthClampEnabled = enabled;
@@ -1745,6 +1825,7 @@ void StateManagerGL::setDepthClampEnabled(bool enabled)
 
 void StateManagerGL::setRasterizerDiscardEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mRasterizerDiscardEnabled != enabled)
     {
         mRasterizerDiscardEnabled = enabled;
@@ -1763,6 +1844,7 @@ void StateManagerGL::setRasterizerDiscardEnabled(bool enabled)
 
 void StateManagerGL::setLineWidth(float width)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mLineWidth != width)
     {
         mLineWidth = width;
@@ -1774,6 +1856,7 @@ void StateManagerGL::setLineWidth(float width)
 
 angle::Result StateManagerGL::setPrimitiveRestartEnabled(const gl::Context *context, bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPrimitiveRestartEnabled != enabled)
     {
         GLenum cap = mFeatures.emulatePrimitiveRestartFixedIndex.enabled
@@ -1798,6 +1881,7 @@ angle::Result StateManagerGL::setPrimitiveRestartEnabled(const gl::Context *cont
 
 angle::Result StateManagerGL::setPrimitiveRestartIndex(const gl::Context *context, GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPrimitiveRestartIndex != index)
     {
         ANGLE_GL_TRY(context, mFunctions->primitiveRestartIndex(index));
@@ -1811,6 +1895,7 @@ angle::Result StateManagerGL::setPrimitiveRestartIndex(const gl::Context *contex
 
 void StateManagerGL::setClearDepth(float clearDepth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mClearDepth != clearDepth)
     {
         mClearDepth = clearDepth;
@@ -1833,6 +1918,7 @@ void StateManagerGL::setClearDepth(float clearDepth)
 
 void StateManagerGL::setClearColor(const gl::ColorF &clearColor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::ColorF modifiedClearColor = clearColor;
     if (mFeatures.clearToZeroOrOneBroken.enabled &&
         (clearColor.red == 1.0f || clearColor.red == 0.0f) &&
@@ -1862,6 +1948,7 @@ void StateManagerGL::setClearColor(const gl::ColorF &clearColor)
 
 void StateManagerGL::setClearStencil(GLint clearStencil)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mClearStencil != clearStencil)
     {
         mClearStencil = clearStencil;
@@ -1877,6 +1964,7 @@ angle::Result StateManagerGL::syncState(const gl::Context *context,
                                         const gl::State::ExtendedDirtyBits &extendedDirtyBits,
                                         const gl::State::ExtendedDirtyBits &extendedBitMask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::State &state = context->getState();
 
     const gl::State::DirtyBits glAndLocalDirtyBits = (glDirtyBits | mLocalDirtyBits) & bitMask;
@@ -2324,6 +2412,7 @@ angle::Result StateManagerGL::syncState(const gl::Context *context,
 
 void StateManagerGL::setFramebufferSRGBEnabled(const gl::Context *context, bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mFramebufferSRGBAvailable)
     {
         return;
@@ -2348,6 +2437,7 @@ void StateManagerGL::setFramebufferSRGBEnabledForFramebuffer(const gl::Context *
                                                              bool enabled,
                                                              const FramebufferGL *framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (framebuffer->isDefault())
     {
         // Obey the framebuffer sRGB state for blending on all framebuffers except the default
@@ -2366,6 +2456,7 @@ void StateManagerGL::setFramebufferSRGBEnabledForFramebuffer(const gl::Context *
 void StateManagerGL::setColorMaskForFramebuffer(const gl::BlendStateExt &blendStateExt,
                                                 const bool disableAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool r, g, b, a;
 
     // Given that disableAlpha can be true only on macOS backbuffers and color mask is re-synced on
@@ -2436,6 +2527,7 @@ void StateManagerGL::setColorMaskForFramebuffer(const gl::BlendStateExt &blendSt
 
 void StateManagerGL::setDitherEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mDitherEnabled != enabled)
     {
         mDitherEnabled = enabled;
@@ -2452,6 +2544,7 @@ void StateManagerGL::setDitherEnabled(bool enabled)
 
 void StateManagerGL::setMultisamplingStateEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mMultisamplingEnabled != enabled)
     {
         mMultisamplingEnabled = enabled;
@@ -2469,6 +2562,7 @@ void StateManagerGL::setMultisamplingStateEnabled(bool enabled)
 
 void StateManagerGL::setSampleAlphaToOneStateEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mSampleAlphaToOneEnabled != enabled)
     {
         mSampleAlphaToOneEnabled = enabled;
@@ -2486,6 +2580,7 @@ void StateManagerGL::setSampleAlphaToOneStateEnabled(bool enabled)
 
 void StateManagerGL::setCoverageModulation(GLenum components)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mCoverageModulation != components)
     {
         mCoverageModulation = components;
@@ -2497,6 +2592,7 @@ void StateManagerGL::setCoverageModulation(GLenum components)
 
 void StateManagerGL::setProvokingVertex(GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mode != mProvokingVertex)
     {
         mFunctions->provokingVertex(mode);
@@ -2508,6 +2604,7 @@ void StateManagerGL::setProvokingVertex(GLenum mode)
 
 void StateManagerGL::setClipDistancesEnable(const gl::State::ClipDistanceEnableBits &enables)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (enables == mEnabledClipDistances)
     {
         return;
@@ -2534,6 +2631,7 @@ void StateManagerGL::setClipDistancesEnable(const gl::State::ClipDistanceEnableB
 
 void StateManagerGL::setLogicOpEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (enabled == mLogicOpEnabled)
     {
         return;
@@ -2555,6 +2653,7 @@ void StateManagerGL::setLogicOpEnabled(bool enabled)
 
 void StateManagerGL::setLogicOp(gl::LogicalOperation opcode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (opcode == mLogicOp)
     {
         return;
@@ -2569,9 +2668,11 @@ void StateManagerGL::setLogicOp(gl::LogicalOperation opcode)
 
 void StateManagerGL::setTextureCubemapSeamlessEnabled(bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // TODO(jmadill): Also check for seamless extension.
     if (!mFunctions->isAtLeastGL(gl::Version(3, 2)))
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return;
     }
 
@@ -2593,6 +2694,7 @@ angle::Result StateManagerGL::propagateProgramToVAO(const gl::Context *context,
                                                     const gl::Program *program,
                                                     VertexArrayGL *vao)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (vao == nullptr)
     {
         return angle::Result::Continue;
@@ -2623,6 +2725,7 @@ void StateManagerGL::updateMultiviewBaseViewLayerIndexUniformImpl(
     const gl::Program *program,
     const gl::FramebufferState &drawFramebufferState) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mIsMultiviewEnabled && program && program->usesMultiview());
     const ProgramGL *programGL = GetImplAs<ProgramGL>(program);
     if (drawFramebufferState.isMultiview())
@@ -2636,6 +2739,7 @@ void StateManagerGL::updateEmulatedClipDistanceState(
     const gl::Program *program,
     const gl::State::ClipDistanceEnableBits enables) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mFeatures.emulateClipDistanceState.enabled);
     if (executable && executable->hasClipDistance())
     {
@@ -2646,6 +2750,7 @@ void StateManagerGL::updateEmulatedClipDistanceState(
 
 void StateManagerGL::syncSamplersState(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const gl::SamplerBindingVector &samplers = context->getState().getSamplers();
 
     // This could be optimized by using a separate binding dirty bit per sampler.
@@ -2666,6 +2771,7 @@ void StateManagerGL::syncSamplersState(const gl::Context *context)
 
 void StateManagerGL::syncTransformFeedbackState(const gl::Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Set the current transform feedback state
     gl::TransformFeedback *transformFeedback = context->getState().getCurrentTransformFeedback();
     if (transformFeedback)
@@ -2687,16 +2793,19 @@ void StateManagerGL::syncTransformFeedbackState(const gl::Context *context)
 
 GLuint StateManagerGL::getDefaultVAO() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDefaultVAO;
 }
 
 VertexArrayStateGL *StateManagerGL::getDefaultVAOState()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return &mDefaultVAOState;
 }
 
 void StateManagerGL::validateState() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Current program
     ValidateStateHelper(mFunctions, mProgram, GL_CURRENT_PROGRAM, "mProgram", "GL_CURRENT_PROGRAM");
 
@@ -2710,6 +2819,7 @@ void StateManagerGL::validateState() const
         {
             if (!nativegl::SupportsCompute(mFunctions))
             {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
                 continue;
             }
         }
@@ -2734,6 +2844,7 @@ void StateManagerGL::validateState() const
 template <>
 void StateManagerGL::get(GLenum name, GLboolean *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mFunctions->getBooleanv(name, value);
     ASSERT(mFunctions->getError() == GL_NO_ERROR);
 }
@@ -2741,6 +2852,7 @@ void StateManagerGL::get(GLenum name, GLboolean *value)
 template <>
 void StateManagerGL::get(GLenum name, bool *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLboolean v;
     get(name, &v);
     *value = (v == GL_TRUE);
@@ -2749,6 +2861,7 @@ void StateManagerGL::get(GLenum name, bool *value)
 template <>
 void StateManagerGL::get(GLenum name, std::array<bool, 4> *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLboolean v[4];
     get(name, v);
     for (size_t i = 0; i < 4; i++)
@@ -2760,6 +2873,7 @@ void StateManagerGL::get(GLenum name, std::array<bool, 4> *values)
 template <>
 void StateManagerGL::get(GLenum name, GLint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mFunctions->getIntegerv(name, value);
     ASSERT(mFunctions->getError() == GL_NO_ERROR);
 }
@@ -2767,6 +2881,7 @@ void StateManagerGL::get(GLenum name, GLint *value)
 template <>
 void StateManagerGL::get(GLenum name, GLenum *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint v;
     get(name, &v);
     *value = static_cast<GLenum>(v);
@@ -2775,6 +2890,7 @@ void StateManagerGL::get(GLenum name, GLenum *value)
 template <>
 void StateManagerGL::get(GLenum name, gl::Rectangle *rect)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint v[4];
     get(name, v);
     *rect = gl::Rectangle(v[0], v[1], v[2], v[3]);
@@ -2783,6 +2899,7 @@ void StateManagerGL::get(GLenum name, gl::Rectangle *rect)
 template <>
 void StateManagerGL::get(GLenum name, GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mFunctions->getFloatv(name, value);
     ASSERT(mFunctions->getError() == GL_NO_ERROR);
 }
@@ -2790,6 +2907,7 @@ void StateManagerGL::get(GLenum name, GLfloat *value)
 template <>
 void StateManagerGL::get(GLenum name, gl::ColorF *color)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat v[4];
     get(name, v);
     *color = gl::ColorF(v[0], v[1], v[2], v[3]);
@@ -2798,6 +2916,7 @@ void StateManagerGL::get(GLenum name, gl::ColorF *color)
 void StateManagerGL::syncFromNativeContext(const gl::Extensions &extensions,
                                            ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mFunctions->getError() == GL_NO_ERROR);
 
     get(GL_VIEWPORT, &state->viewport);
@@ -3015,6 +3134,7 @@ void StateManagerGL::syncFromNativeContext(const gl::Extensions &extensions,
 void StateManagerGL::restoreNativeContext(const gl::Extensions &extensions,
                                           const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mFunctions->getError() == GL_NO_ERROR);
 
     setViewport(state->viewport);
@@ -3086,10 +3206,12 @@ void StateManagerGL::restoreNativeContext(const gl::Extensions &extensions,
 void StateManagerGL::syncBlendFromNativeContext(const gl::Extensions &extensions,
                                                 ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_BLEND, &state->blendEnabled);
     if (mBlendStateExt.getEnabledMask() !=
         (state->blendEnabled ? mBlendStateExt.getAllEnabledMask() : gl::DrawBufferMask::Zero()))
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         mBlendStateExt.setEnabled(state->blendEnabled);
         mLocalDirtyBits.set(gl::State::DIRTY_BIT_BLEND_ENABLED);
     }
@@ -3131,6 +3253,7 @@ void StateManagerGL::syncBlendFromNativeContext(const gl::Extensions &extensions
 void StateManagerGL::restoreBlendNativeContext(const gl::Extensions &extensions,
                                                const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setBlendEnabled(state->blendEnabled);
 
     mFunctions->blendFuncSeparate(state->blendSrcRgb, state->blendDestRgb, state->blendSrcAlpha,
@@ -3149,6 +3272,7 @@ void StateManagerGL::restoreBlendNativeContext(const gl::Extensions &extensions,
 void StateManagerGL::syncFramebufferFromNativeContext(const gl::Extensions &extensions,
                                                       ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // TODO: wrap fbo into an EGLSurface
     get(GL_FRAMEBUFFER_BINDING, &state->framebufferBinding);
     if (mFramebuffers[angle::FramebufferBindingDraw] !=
@@ -3170,12 +3294,14 @@ void StateManagerGL::syncFramebufferFromNativeContext(const gl::Extensions &exte
 void StateManagerGL::restoreFramebufferNativeContext(const gl::Extensions &extensions,
                                                      const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindFramebuffer(GL_FRAMEBUFFER, state->framebufferBinding);
 }
 
 void StateManagerGL::syncPixelPackUnpackFromNativeContext(const gl::Extensions &extensions,
                                                           ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_PACK_ALIGNMENT, &state->packAlignment);
     if (mPackAlignment != state->packAlignment)
     {
@@ -3194,6 +3320,7 @@ void StateManagerGL::syncPixelPackUnpackFromNativeContext(const gl::Extensions &
 void StateManagerGL::restorePixelPackUnpackNativeContext(const gl::Extensions &extensions,
                                                          const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mPackAlignment != state->packAlignment)
     {
         mFunctions->pixelStorei(GL_PACK_ALIGNMENT, state->packAlignment);
@@ -3212,6 +3339,7 @@ void StateManagerGL::restorePixelPackUnpackNativeContext(const gl::Extensions &e
 void StateManagerGL::syncStencilFromNativeContext(const gl::Extensions &extensions,
                                                   ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_STENCIL_TEST, &state->stencilState.stencilTestEnabled);
     if (state->stencilState.stencilTestEnabled != mStencilTestEnabled)
     {
@@ -3304,6 +3432,7 @@ void StateManagerGL::syncStencilFromNativeContext(const gl::Extensions &extensio
 void StateManagerGL::restoreStencilNativeContext(const gl::Extensions &extensions,
                                                  const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setStencilTestEnabled(state->stencilState.stencilTestEnabled);
     setStencilFrontFuncs(state->stencilState.stencilFrontFunc, state->stencilState.stencilFrontMask,
                          state->stencilState.stencilFrontRef);
@@ -3322,6 +3451,7 @@ void StateManagerGL::restoreStencilNativeContext(const gl::Extensions &extension
 void StateManagerGL::syncBufferBindingsFromNativeContext(const gl::Extensions &extensions,
                                                          ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_ARRAY_BUFFER_BINDING, &state->vertexArrayBufferBinding);
     mBuffers[gl::BufferBinding::Array] = state->vertexArrayBufferBinding;
 
@@ -3332,6 +3462,7 @@ void StateManagerGL::syncBufferBindingsFromNativeContext(const gl::Extensions &e
 void StateManagerGL::restoreBufferBindingsNativeContext(const gl::Extensions &extensions,
                                                         const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindBuffer(gl::BufferBinding::Array, state->vertexArrayBufferBinding);
     bindBuffer(gl::BufferBinding::ElementArray, state->elementArrayBufferBinding);
 }
@@ -3339,6 +3470,7 @@ void StateManagerGL::restoreBufferBindingsNativeContext(const gl::Extensions &ex
 void StateManagerGL::syncTextureUnitsFromNativeContext(const gl::Extensions &extensions,
                                                        ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_ACTIVE_TEXTURE, &state->activeTexture);
 
     for (size_t i = 0; i < state->textureBindings.size(); ++i)
@@ -3365,6 +3497,7 @@ void StateManagerGL::syncTextureUnitsFromNativeContext(const gl::Extensions &ext
 void StateManagerGL::restoreTextureUnitsNativeContext(const gl::Extensions &extensions,
                                                       const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (size_t i = 0; i < state->textureBindings.size(); ++i)
     {
         const auto &bindings = state->textureBindings[i];
@@ -3380,6 +3513,7 @@ void StateManagerGL::restoreTextureUnitsNativeContext(const gl::Extensions &exte
 void StateManagerGL::syncVertexArraysFromNativeContext(const gl::Extensions &extensions,
                                                        ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     get(GL_VERTEX_ARRAY_BINDING, &state->vertexArrayBinding);
     if (mVAO != static_cast<GLuint>(state->vertexArrayBinding))
     {
@@ -3392,11 +3526,13 @@ void StateManagerGL::syncVertexArraysFromNativeContext(const gl::Extensions &ext
 void StateManagerGL::restoreVertexArraysNativeContext(const gl::Extensions &extensions,
                                                       const ExternalContextState *state)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindVertexArray(state->vertexArrayBinding, 0);
 }
 
 void StateManagerGL::setDefaultVAOStateDirty()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mLocalDirtyBits.set(gl::State::DIRTY_BIT_VERTEX_ARRAY_BINDING);
 }
 
