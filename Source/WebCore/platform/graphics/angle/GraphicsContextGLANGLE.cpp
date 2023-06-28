@@ -66,6 +66,7 @@ static HashSet<GCGLDisplay>& usedDisplays()
 #if PLATFORM(MAC) || PLATFORM(IOS_FAMILY)
 static void wipeAlphaChannelFromPixels(int width, int height, unsigned char* pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // We can assume this doesn't overflow because the calling functions
     // use checked arithmetic.
     int totalBytes = width * height * 4;
@@ -77,10 +78,12 @@ static void wipeAlphaChannelFromPixels(int width, int height, unsigned char* pix
 GraphicsContextGLANGLE::GraphicsContextGLANGLE(GraphicsContextGLAttributes attributes)
     : GraphicsContextGL(attributes)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 bool GraphicsContextGLANGLE::initialize()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (contextAttributes().failPlatformContextCreationForTesting)
         return false;
     if (!platformInitializeContext())
@@ -96,11 +99,13 @@ bool GraphicsContextGLANGLE::initialize()
 
 bool GraphicsContextGLANGLE::platformInitializeContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return true;
 }
 
 bool GraphicsContextGLANGLE::platformInitialize()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // EGL resources are only ever released if we run in process mode where EGL is used on host app threads, e.g. WK1
     // mode.
     static bool tracksUsedDisplays = !(isInWebProcess() || isInGPUProcess());
@@ -114,6 +119,7 @@ bool GraphicsContextGLANGLE::platformInitialize()
 
 GCGLenum GraphicsContextGLANGLE::drawingBufferTextureTarget()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto [textureTarget, _] = externalImageTextureBindingPoint();
     UNUSED_VARIABLE(_);
     return textureTarget;
@@ -121,11 +127,13 @@ GCGLenum GraphicsContextGLANGLE::drawingBufferTextureTarget()
 
 std::tuple<GCGLenum, GCGLenum> GraphicsContextGLANGLE::drawingBufferTextureBindingPoint()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return externalImageTextureBindingPoint();
 }
 
 GCGLint GraphicsContextGLANGLE::EGLDrawingBufferTextureTargetForDrawingTarget(GCGLenum drawingTarget)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (drawingTarget) {
     case TEXTURE_2D:
         return EGL_TEXTURE_2D;
@@ -138,6 +146,7 @@ GCGLint GraphicsContextGLANGLE::EGLDrawingBufferTextureTargetForDrawingTarget(GC
 
 bool GraphicsContextGLANGLE::releaseThreadResources(ReleaseThreadResourceBehavior releaseBehavior)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     platformReleaseThreadResources();
 
     if (!platformIsANGLEAvailable())
@@ -173,6 +182,7 @@ bool GraphicsContextGLANGLE::releaseThreadResources(ReleaseThreadResourceBehavio
 
 RefPtr<PixelBuffer> GraphicsContextGLANGLE::readPixelsForPaintResults()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     PixelBufferFormat format { AlphaPremultiplication::Unpremultiplied, PixelFormat::RGBA8, DestinationColorSpace::SRGB() };
     auto pixelBuffer = ByteArrayPixelBuffer::tryCreate(format, getInternalFramebufferSize());
     if (!pixelBuffer)
@@ -193,6 +203,7 @@ RefPtr<PixelBuffer> GraphicsContextGLANGLE::readPixelsForPaintResults()
 
 void GraphicsContextGLANGLE::validateAttributes()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_internalColorFormat = contextAttributes().alpha ? GL_RGBA8 : GL_RGB8;
 
     validateDepthStencil("GL_OES_packed_depth_stencil"_s);
@@ -200,6 +211,7 @@ void GraphicsContextGLANGLE::validateAttributes()
 
 bool GraphicsContextGLANGLE::reshapeFBOs(const IntSize& size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto attrs = contextAttributes();
     const int width = size.width();
     const int height = size.height();
@@ -281,6 +293,7 @@ bool GraphicsContextGLANGLE::reshapeFBOs(const IntSize& size)
 
 void GraphicsContextGLANGLE::attachDepthAndStencilBufferIfNeeded(GLuint internalDepthStencilFormat, int width, int height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto attrs = contextAttributes();
 
     if (!attrs.antialias && (attrs.stencil || attrs.depth)) {
@@ -308,6 +321,7 @@ void GraphicsContextGLANGLE::attachDepthAndStencilBufferIfNeeded(GLuint internal
 
 void GraphicsContextGLANGLE::resolveMultisamplingIfNecessary(const IntRect& rect)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ScopedGLCapability scopedScissor(GL_SCISSOR_TEST, GL_FALSE);
     ScopedGLCapability scopedDither(GL_DITHER, GL_FALSE);
 
@@ -339,6 +353,7 @@ void GraphicsContextGLANGLE::resolveMultisamplingIfNecessary(const IntRect& rect
 
 void GraphicsContextGLANGLE::renderbufferStorage(GCGLenum target, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -347,6 +362,7 @@ void GraphicsContextGLANGLE::renderbufferStorage(GCGLenum target, GCGLenum inter
 
 void GraphicsContextGLANGLE::getIntegerv(GCGLenum pname, std::span<GCGLint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_GetIntegervRobustANGLE(pname, value.size(), nullptr, value.data());
@@ -354,6 +370,7 @@ void GraphicsContextGLANGLE::getIntegerv(GCGLenum pname, std::span<GCGLint> valu
 
 void GraphicsContextGLANGLE::getIntegeri_v(GCGLenum pname, GCGLuint index, std::span<GCGLint, 4> value) // NOLINT
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_GetIntegeri_vRobustANGLE(pname, index, value.size(), nullptr, value.data());
@@ -361,6 +378,7 @@ void GraphicsContextGLANGLE::getIntegeri_v(GCGLenum pname, GCGLuint index, std::
 
 void GraphicsContextGLANGLE::getShaderPrecisionFormat(GCGLenum shaderType, GCGLenum precisionType, std::span<GCGLint, 2> range, GCGLint* precision)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -369,6 +387,7 @@ void GraphicsContextGLANGLE::getShaderPrecisionFormat(GCGLenum shaderType, GCGLe
 
 void GraphicsContextGLANGLE::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_isForWebGL2)
         internalformat = adjustWebGL1TextureInternalFormat(internalformat, format, type);
     if (!makeContextCurrent())
@@ -379,6 +398,7 @@ void GraphicsContextGLANGLE::texImage2D(GCGLenum target, GCGLint level, GCGLenum
 
 void GraphicsContextGLANGLE::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_isForWebGL2)
         internalformat = adjustWebGL1TextureInternalFormat(internalformat, format, type);
     if (!makeContextCurrent())
@@ -389,6 +409,7 @@ void GraphicsContextGLANGLE::texImage2D(GCGLenum target, GCGLint level, GCGLenum
 
 void GraphicsContextGLANGLE::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoff, GCGLint yoff, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     // FIXME: we will need to deal with PixelStore params when dealing with image buffers that differ from the subimage size.
@@ -398,6 +419,7 @@ void GraphicsContextGLANGLE::texSubImage2D(GCGLenum target, GCGLint level, GCGLi
 
 void GraphicsContextGLANGLE::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoff, GCGLint yoff, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     // FIXME: we will need to deal with PixelStore params when dealing with image buffers that differ from the subimage size.
@@ -407,6 +429,7 @@ void GraphicsContextGLANGLE::texSubImage2D(GCGLenum target, GCGLint level, GCGLi
 
 void GraphicsContextGLANGLE::compressedTexImage2D(GCGLenum target, int level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, int border, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexImage2DRobustANGLE(target, level, internalformat, width, height, border, imageSize, data.size(), data.data());
@@ -415,6 +438,7 @@ void GraphicsContextGLANGLE::compressedTexImage2D(GCGLenum target, int level, GC
 
 void GraphicsContextGLANGLE::compressedTexImage2D(GCGLenum target, int level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, int border, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexImage2DRobustANGLE(target, level, internalformat, width, height, border, imageSize, 0, reinterpret_cast<GLvoid*>(offset));
@@ -423,6 +447,7 @@ void GraphicsContextGLANGLE::compressedTexImage2D(GCGLenum target, int level, GC
 
 void GraphicsContextGLANGLE::compressedTexSubImage2D(GCGLenum target, int level, int xoffset, int yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexSubImage2DRobustANGLE(target, level, xoffset, yoffset, width, height, format, imageSize, data.size(), data.data());
@@ -431,6 +456,7 @@ void GraphicsContextGLANGLE::compressedTexSubImage2D(GCGLenum target, int level,
 
 void GraphicsContextGLANGLE::compressedTexSubImage2D(GCGLenum target, int level, int xoffset, int yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexSubImage2DRobustANGLE(target, level, xoffset, yoffset, width, height, format, imageSize, 0, reinterpret_cast<GLvoid*>(offset));
@@ -439,6 +465,7 @@ void GraphicsContextGLANGLE::compressedTexSubImage2D(GCGLenum target, int level,
 
 void GraphicsContextGLANGLE::depthRange(GCGLclampf zNear, GCGLclampf zFar)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -447,6 +474,7 @@ void GraphicsContextGLANGLE::depthRange(GCGLclampf zNear, GCGLclampf zFar)
 
 void GraphicsContextGLANGLE::clearDepth(GCGLclampf depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -455,6 +483,7 @@ void GraphicsContextGLANGLE::clearDepth(GCGLclampf depth)
 
 void GraphicsContextGLANGLE::readPixels(IntRect rect, GCGLenum format, GCGLenum type, std::span<uint8_t> data, GCGLint alignment, GCGLint rowLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     ScopedBufferBinding scopedPixelPackBufferReset(GL_PIXEL_PACK_BUFFER, 0, m_isForWebGL2);
@@ -464,6 +493,7 @@ void GraphicsContextGLANGLE::readPixels(IntRect rect, GCGLenum format, GCGLenum 
 
 std::optional<IntSize> GraphicsContextGLANGLE::readPixelsWithStatus(IntRect rect, GCGLenum format, GCGLenum type, std::span<uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return std::nullopt;
     ScopedBufferBinding scopedPixelPackBufferReset(GL_PIXEL_PACK_BUFFER, 0, m_isForWebGL2);
@@ -473,6 +503,7 @@ std::optional<IntSize> GraphicsContextGLANGLE::readPixelsWithStatus(IntRect rect
 
 void GraphicsContextGLANGLE::readPixelsBufferObject(IntRect rect, GCGLenum format, GCGLenum type, GCGLintptr offset, GCGLint alignment, GCGLint rowLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     setPackParameters(alignment, rowLength);
@@ -481,6 +512,7 @@ void GraphicsContextGLANGLE::readPixelsBufferObject(IntRect rect, GCGLenum forma
 
 std::optional<IntSize> GraphicsContextGLANGLE::readPixelsImpl(IntRect rect, GCGLenum format, GCGLenum type, GCGLsizei bufSize, uint8_t* data, bool readingToPixelBufferObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // FIXME: remove the two glFlush calls when the driver bug is fixed, i.e.,
     // all previous rendering calls should be done before reading pixels.
     GL_Flush();
@@ -516,6 +548,7 @@ std::optional<IntSize> GraphicsContextGLANGLE::readPixelsImpl(IntRect rect, GCGL
 
 void GraphicsContextGLANGLE::validateDepthStencil(ASCIILiteral packedDepthStencilExtension)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto attrs = contextAttributes();
     if (attrs.stencil && attrs.depth) {
         ASSERT(packedDepthStencilExtension == "GL_OES_packed_depth_stencil"_s);
@@ -561,11 +594,13 @@ void GraphicsContextGLANGLE::validateDepthStencil(ASCIILiteral packedDepthStenci
 
 void GraphicsContextGLANGLE::prepareTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (contextAttributes().antialias)
         resolveMultisamplingIfNecessary();
 
 #if PLATFORM(COCOA)
     if (m_preserveDrawingBufferTexture) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         // Blit m_preserveDrawingBufferTexture into m_texture.
         ScopedGLCapability scopedScissor(GL_SCISSOR_TEST, GL_FALSE);
         ScopedGLCapability scopedDither(GL_DITHER, GL_FALSE);
@@ -591,6 +626,7 @@ void GraphicsContextGLANGLE::prepareTexture()
 
 RefPtr<PixelBuffer> GraphicsContextGLANGLE::readRenderingResults()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ScopedRestoreReadFramebufferBinding fboBinding(m_isForWebGL2, m_state.boundReadFBO);
     if (contextAttributes().antialias) {
         resolveMultisamplingIfNecessary();
@@ -602,6 +638,7 @@ RefPtr<PixelBuffer> GraphicsContextGLANGLE::readRenderingResults()
 
 void GraphicsContextGLANGLE::reshape(int width, int height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (width == m_currentWidth && height == m_currentHeight)
         return;
 
@@ -688,6 +725,7 @@ void GraphicsContextGLANGLE::reshape(int width, int height)
 
 void GraphicsContextGLANGLE::activeTexture(GCGLenum texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -697,6 +735,7 @@ void GraphicsContextGLANGLE::activeTexture(GCGLenum texture)
 
 void GraphicsContextGLANGLE::attachShader(PlatformGLObject program, PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     ASSERT(shader);
     if (!makeContextCurrent())
@@ -707,6 +746,7 @@ void GraphicsContextGLANGLE::attachShader(PlatformGLObject program, PlatformGLOb
 
 void GraphicsContextGLANGLE::bindAttribLocation(PlatformGLObject program, GCGLuint index, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return;
@@ -716,6 +756,7 @@ void GraphicsContextGLANGLE::bindAttribLocation(PlatformGLObject program, GCGLui
 
 void GraphicsContextGLANGLE::bindBuffer(GCGLenum target, PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -724,6 +765,7 @@ void GraphicsContextGLANGLE::bindBuffer(GCGLenum target, PlatformGLObject buffer
 
 void GraphicsContextGLANGLE::bindFramebuffer(GCGLenum target, PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -745,6 +787,7 @@ void GraphicsContextGLANGLE::bindFramebuffer(GCGLenum target, PlatformGLObject b
 
 void GraphicsContextGLANGLE::bindRenderbuffer(GCGLenum target, PlatformGLObject renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -754,6 +797,7 @@ void GraphicsContextGLANGLE::bindRenderbuffer(GCGLenum target, PlatformGLObject 
 
 void GraphicsContextGLANGLE::bindTexture(GCGLenum target, PlatformGLObject texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -763,6 +807,7 @@ void GraphicsContextGLANGLE::bindTexture(GCGLenum target, PlatformGLObject textu
 
 void GraphicsContextGLANGLE::blendColor(GCGLclampf red, GCGLclampf green, GCGLclampf blue, GCGLclampf alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -771,6 +816,7 @@ void GraphicsContextGLANGLE::blendColor(GCGLclampf red, GCGLclampf green, GCGLcl
 
 void GraphicsContextGLANGLE::blendEquation(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -779,6 +825,7 @@ void GraphicsContextGLANGLE::blendEquation(GCGLenum mode)
 
 void GraphicsContextGLANGLE::blendEquationSeparate(GCGLenum modeRGB, GCGLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -788,6 +835,7 @@ void GraphicsContextGLANGLE::blendEquationSeparate(GCGLenum modeRGB, GCGLenum mo
 
 void GraphicsContextGLANGLE::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -796,6 +844,7 @@ void GraphicsContextGLANGLE::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 
 void GraphicsContextGLANGLE::blendFuncSeparate(GCGLenum srcRGB, GCGLenum dstRGB, GCGLenum srcAlpha, GCGLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -804,6 +853,7 @@ void GraphicsContextGLANGLE::blendFuncSeparate(GCGLenum srcRGB, GCGLenum dstRGB,
 
 void GraphicsContextGLANGLE::bufferData(GCGLenum target, GCGLsizeiptr size, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -812,6 +862,7 @@ void GraphicsContextGLANGLE::bufferData(GCGLenum target, GCGLsizeiptr size, GCGL
 
 void GraphicsContextGLANGLE::bufferData(GCGLenum target, std::span<const uint8_t> data, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -820,6 +871,7 @@ void GraphicsContextGLANGLE::bufferData(GCGLenum target, std::span<const uint8_t
 
 void GraphicsContextGLANGLE::bufferSubData(GCGLenum target, GCGLintptr offset, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -828,6 +880,7 @@ void GraphicsContextGLANGLE::bufferSubData(GCGLenum target, GCGLintptr offset, s
 
 void GraphicsContextGLANGLE::getBufferSubData(GCGLenum target, GCGLintptr offset, std::span<uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     void* ptr = GL_MapBufferRange(target, offset, data.size(), GraphicsContextGL::MAP_READ_BIT);
@@ -840,6 +893,7 @@ void GraphicsContextGLANGLE::getBufferSubData(GCGLenum target, GCGLintptr offset
 
 void GraphicsContextGLANGLE::copyBufferSubData(GCGLenum readTarget, GCGLenum writeTarget, GCGLintptr readOffset, GCGLintptr writeOffset, GCGLsizeiptr size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -848,6 +902,7 @@ void GraphicsContextGLANGLE::copyBufferSubData(GCGLenum readTarget, GCGLenum wri
 
 void GraphicsContextGLANGLE::getInternalformativ(GCGLenum target, GCGLenum internalformat, GCGLenum pname, std::span<GCGLint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_GetInternalformativRobustANGLE(target, internalformat, pname, data.size(), nullptr, data.data());
@@ -855,6 +910,7 @@ void GraphicsContextGLANGLE::getInternalformativ(GCGLenum target, GCGLenum inter
 
 void GraphicsContextGLANGLE::renderbufferStorageMultisample(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -863,6 +919,7 @@ void GraphicsContextGLANGLE::renderbufferStorageMultisample(GCGLenum target, GCG
 
 void GraphicsContextGLANGLE::renderbufferStorageMultisampleANGLE(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -871,6 +928,7 @@ void GraphicsContextGLANGLE::renderbufferStorageMultisampleANGLE(GCGLenum target
 
 void GraphicsContextGLANGLE::texStorage2D(GCGLenum target, GCGLsizei levels, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -880,6 +938,7 @@ void GraphicsContextGLANGLE::texStorage2D(GCGLenum target, GCGLsizei levels, GCG
 
 void GraphicsContextGLANGLE::texStorage3D(GCGLenum target, GCGLsizei levels, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -889,6 +948,7 @@ void GraphicsContextGLANGLE::texStorage3D(GCGLenum target, GCGLsizei levels, GCG
 
 void GraphicsContextGLANGLE::texImage3D(GCGLenum target, int level, int internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, int border, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_TexImage3DRobustANGLE(target, level, internalformat, width, height, depth, border, format, type, pixels.size(), pixels.data());
@@ -896,6 +956,7 @@ void GraphicsContextGLANGLE::texImage3D(GCGLenum target, int level, int internal
 
 void GraphicsContextGLANGLE::texImage3D(GCGLenum target, int level, int internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, int border, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_TexImage3DRobustANGLE(target, level, internalformat, width, height, depth, border, format, type, 0, reinterpret_cast<GLvoid*>(offset));
@@ -903,6 +964,7 @@ void GraphicsContextGLANGLE::texImage3D(GCGLenum target, int level, int internal
 
 void GraphicsContextGLANGLE::texSubImage3D(GCGLenum target, int level, int xoffset, int yoffset, int zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_TexSubImage3DRobustANGLE(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels.size(), pixels.data());
@@ -910,6 +972,7 @@ void GraphicsContextGLANGLE::texSubImage3D(GCGLenum target, int level, int xoffs
 
 void GraphicsContextGLANGLE::texSubImage3D(GCGLenum target, int level, int xoffset, int yoffset, int zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_TexSubImage3DRobustANGLE(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, 0, reinterpret_cast<GLvoid*>(offset));
@@ -917,6 +980,7 @@ void GraphicsContextGLANGLE::texSubImage3D(GCGLenum target, int level, int xoffs
 
 void GraphicsContextGLANGLE::compressedTexImage3D(GCGLenum target, int level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, int border, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexImage3DRobustANGLE(target, level, internalformat, width, height, depth, border, imageSize, data.size(), data.data());
@@ -924,6 +988,7 @@ void GraphicsContextGLANGLE::compressedTexImage3D(GCGLenum target, int level, GC
 
 void GraphicsContextGLANGLE::compressedTexImage3D(GCGLenum target, int level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, int border, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexImage3DRobustANGLE(target, level, internalformat, width, height, depth, border, imageSize, 0, reinterpret_cast<GLvoid*>(offset));
@@ -931,6 +996,7 @@ void GraphicsContextGLANGLE::compressedTexImage3D(GCGLenum target, int level, GC
 
 void GraphicsContextGLANGLE::compressedTexSubImage3D(GCGLenum target, int level, int xoffset, int yoffset, int zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexSubImage3DRobustANGLE(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data.size(), data.data());
@@ -938,6 +1004,7 @@ void GraphicsContextGLANGLE::compressedTexSubImage3D(GCGLenum target, int level,
 
 void GraphicsContextGLANGLE::compressedTexSubImage3D(GCGLenum target, int level, int xoffset, int yoffset, int zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_CompressedTexSubImage3DRobustANGLE(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, 0, reinterpret_cast<GLvoid*>(offset));
@@ -945,6 +1012,7 @@ void GraphicsContextGLANGLE::compressedTexSubImage3D(GCGLenum target, int level,
 
 Vector<GCGLint> GraphicsContextGLANGLE::getActiveUniforms(PlatformGLObject program, const Vector<GCGLuint>& uniformIndices, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Vector<GCGLint> result(uniformIndices.size(), 0);
     ASSERT(program);
     if (!makeContextCurrent())
@@ -956,6 +1024,7 @@ Vector<GCGLint> GraphicsContextGLANGLE::getActiveUniforms(PlatformGLObject progr
 
 GCGLenum GraphicsContextGLANGLE::checkFramebufferStatus(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_INVALID_OPERATION;
 
@@ -964,6 +1033,7 @@ GCGLenum GraphicsContextGLANGLE::checkFramebufferStatus(GCGLenum target)
 
 void GraphicsContextGLANGLE::clearColor(GCGLclampf r, GCGLclampf g, GCGLclampf b, GCGLclampf a)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -972,6 +1042,7 @@ void GraphicsContextGLANGLE::clearColor(GCGLclampf r, GCGLclampf g, GCGLclampf b
 
 void GraphicsContextGLANGLE::clear(GCGLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -981,6 +1052,7 @@ void GraphicsContextGLANGLE::clear(GCGLbitfield mask)
 
 void GraphicsContextGLANGLE::clearStencil(GCGLint s)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -989,6 +1061,7 @@ void GraphicsContextGLANGLE::clearStencil(GCGLint s)
 
 void GraphicsContextGLANGLE::colorMask(GCGLboolean red, GCGLboolean green, GCGLboolean blue, GCGLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -997,6 +1070,7 @@ void GraphicsContextGLANGLE::colorMask(GCGLboolean red, GCGLboolean green, GCGLb
 
 void GraphicsContextGLANGLE::compileShader(PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(shader);
     if (!makeContextCurrent())
         return;
@@ -1015,6 +1089,7 @@ void GraphicsContextGLANGLE::compileShader(PlatformGLObject shader)
 
 void GraphicsContextGLANGLE::copyTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLint border)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1032,6 +1107,7 @@ void GraphicsContextGLANGLE::copyTexImage2D(GCGLenum target, GCGLint level, GCGL
 
 void GraphicsContextGLANGLE::copyTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1049,6 +1125,7 @@ void GraphicsContextGLANGLE::copyTexSubImage2D(GCGLenum target, GCGLint level, G
 
 void GraphicsContextGLANGLE::cullFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1057,6 +1134,7 @@ void GraphicsContextGLANGLE::cullFace(GCGLenum mode)
 
 void GraphicsContextGLANGLE::depthFunc(GCGLenum func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1065,6 +1143,7 @@ void GraphicsContextGLANGLE::depthFunc(GCGLenum func)
 
 void GraphicsContextGLANGLE::depthMask(GCGLboolean flag)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1073,6 +1152,7 @@ void GraphicsContextGLANGLE::depthMask(GCGLboolean flag)
 
 void GraphicsContextGLANGLE::detachShader(PlatformGLObject program, PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     ASSERT(shader);
     if (!makeContextCurrent())
@@ -1083,6 +1163,7 @@ void GraphicsContextGLANGLE::detachShader(PlatformGLObject program, PlatformGLOb
 
 void GraphicsContextGLANGLE::disable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1091,6 +1172,7 @@ void GraphicsContextGLANGLE::disable(GCGLenum cap)
 
 void GraphicsContextGLANGLE::disableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1099,6 +1181,7 @@ void GraphicsContextGLANGLE::disableVertexAttribArray(GCGLuint index)
 
 void GraphicsContextGLANGLE::drawArrays(GCGLenum mode, GCGLint first, GCGLsizei count)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1108,6 +1191,7 @@ void GraphicsContextGLANGLE::drawArrays(GCGLenum mode, GCGLint first, GCGLsizei 
 
 void GraphicsContextGLANGLE::drawElements(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1117,6 +1201,7 @@ void GraphicsContextGLANGLE::drawElements(GCGLenum mode, GCGLsizei count, GCGLen
 
 void GraphicsContextGLANGLE::enable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1125,6 +1210,7 @@ void GraphicsContextGLANGLE::enable(GCGLenum cap)
 
 void GraphicsContextGLANGLE::enableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1133,6 +1219,7 @@ void GraphicsContextGLANGLE::enableVertexAttribArray(GCGLuint index)
 
 void GraphicsContextGLANGLE::finish()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1141,6 +1228,7 @@ void GraphicsContextGLANGLE::finish()
 
 void GraphicsContextGLANGLE::flush()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1149,6 +1237,7 @@ void GraphicsContextGLANGLE::flush()
 
 void GraphicsContextGLANGLE::framebufferRenderbuffer(GCGLenum target, GCGLenum attachment, GCGLenum renderbuffertarget, PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1157,6 +1246,7 @@ void GraphicsContextGLANGLE::framebufferRenderbuffer(GCGLenum target, GCGLenum a
 
 void GraphicsContextGLANGLE::framebufferTexture2D(GCGLenum target, GCGLenum attachment, GCGLenum textarget, PlatformGLObject texture, GCGLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1166,6 +1256,7 @@ void GraphicsContextGLANGLE::framebufferTexture2D(GCGLenum target, GCGLenum atta
 
 void GraphicsContextGLANGLE::frontFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1174,6 +1265,7 @@ void GraphicsContextGLANGLE::frontFace(GCGLenum mode)
 
 void GraphicsContextGLANGLE::generateMipmap(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1182,6 +1274,7 @@ void GraphicsContextGLANGLE::generateMipmap(GCGLenum target)
 
 bool GraphicsContextGLANGLE::getActiveAttribImpl(PlatformGLObject program, GCGLuint index, GraphicsContextGLActiveInfo& info)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program) {
         addError(GCGLErrorCode::InvalidValue);
         return false;
@@ -1207,11 +1300,13 @@ bool GraphicsContextGLANGLE::getActiveAttribImpl(PlatformGLObject program, GCGLu
 
 bool GraphicsContextGLANGLE::getActiveAttrib(PlatformGLObject program, GCGLuint index, GraphicsContextGLActiveInfo& info)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return getActiveAttribImpl(program, index, info);
 }
 
 bool GraphicsContextGLANGLE::getActiveUniformImpl(PlatformGLObject program, GCGLuint index, GraphicsContextGLActiveInfo& info)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program) {
         addError(GCGLErrorCode::InvalidValue);
         return false;
@@ -1238,11 +1333,13 @@ bool GraphicsContextGLANGLE::getActiveUniformImpl(PlatformGLObject program, GCGL
 
 bool GraphicsContextGLANGLE::getActiveUniform(PlatformGLObject program, GCGLuint index, GraphicsContextGLActiveInfo& info)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return getActiveUniformImpl(program, index, info);
 }
 
 void GraphicsContextGLANGLE::getAttachedShaders(PlatformGLObject program, GCGLsizei maxCount, GCGLsizei* count, PlatformGLObject* shaders)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program) {
         addError(GCGLErrorCode::InvalidValue);
         return;
@@ -1255,6 +1352,7 @@ void GraphicsContextGLANGLE::getAttachedShaders(PlatformGLObject program, GCGLsi
 
 int GraphicsContextGLANGLE::getAttribLocation(PlatformGLObject program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program)
         return -1;
 
@@ -1266,6 +1364,7 @@ int GraphicsContextGLANGLE::getAttribLocation(PlatformGLObject program, const St
 
 bool GraphicsContextGLANGLE::updateErrors()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return false;
 
@@ -1287,6 +1386,7 @@ bool GraphicsContextGLANGLE::updateErrors()
 
 GCGLErrorCodeSet GraphicsContextGLANGLE::getErrors()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GCGLErrorCode::InvalidOperation;
 
@@ -1296,6 +1396,7 @@ GCGLErrorCodeSet GraphicsContextGLANGLE::getErrors()
 
 String GraphicsContextGLANGLE::getString(GCGLenum name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return String();
 
@@ -1304,6 +1405,7 @@ String GraphicsContextGLANGLE::getString(GCGLenum name)
 
 void GraphicsContextGLANGLE::hint(GCGLenum target, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1312,6 +1414,7 @@ void GraphicsContextGLANGLE::hint(GCGLenum target, GCGLenum mode)
 
 GCGLboolean GraphicsContextGLANGLE::isBuffer(PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!buffer)
         return GL_FALSE;
 
@@ -1323,6 +1426,7 @@ GCGLboolean GraphicsContextGLANGLE::isBuffer(PlatformGLObject buffer)
 
 GCGLboolean GraphicsContextGLANGLE::isEnabled(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -1331,6 +1435,7 @@ GCGLboolean GraphicsContextGLANGLE::isEnabled(GCGLenum cap)
 
 GCGLboolean GraphicsContextGLANGLE::isFramebuffer(PlatformGLObject framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!framebuffer)
         return GL_FALSE;
 
@@ -1342,6 +1447,7 @@ GCGLboolean GraphicsContextGLANGLE::isFramebuffer(PlatformGLObject framebuffer)
 
 GCGLboolean GraphicsContextGLANGLE::isProgram(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program)
         return GL_FALSE;
 
@@ -1353,6 +1459,7 @@ GCGLboolean GraphicsContextGLANGLE::isProgram(PlatformGLObject program)
 
 GCGLboolean GraphicsContextGLANGLE::isRenderbuffer(PlatformGLObject renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!renderbuffer)
         return GL_FALSE;
 
@@ -1364,6 +1471,7 @@ GCGLboolean GraphicsContextGLANGLE::isRenderbuffer(PlatformGLObject renderbuffer
 
 GCGLboolean GraphicsContextGLANGLE::isShader(PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!shader)
         return GL_FALSE;
 
@@ -1375,6 +1483,7 @@ GCGLboolean GraphicsContextGLANGLE::isShader(PlatformGLObject shader)
 
 GCGLboolean GraphicsContextGLANGLE::isTexture(PlatformGLObject texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!texture)
         return GL_FALSE;
 
@@ -1386,6 +1495,7 @@ GCGLboolean GraphicsContextGLANGLE::isTexture(PlatformGLObject texture)
 
 void GraphicsContextGLANGLE::lineWidth(GCGLfloat width)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1394,6 +1504,7 @@ void GraphicsContextGLANGLE::lineWidth(GCGLfloat width)
 
 void GraphicsContextGLANGLE::linkProgram(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return;
@@ -1403,6 +1514,7 @@ void GraphicsContextGLANGLE::linkProgram(PlatformGLObject program)
 
 void GraphicsContextGLANGLE::pixelStorei(GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1411,6 +1523,7 @@ void GraphicsContextGLANGLE::pixelStorei(GCGLenum pname, GCGLint param)
 
 void GraphicsContextGLANGLE::polygonOffset(GCGLfloat factor, GCGLfloat units)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1419,6 +1532,7 @@ void GraphicsContextGLANGLE::polygonOffset(GCGLfloat factor, GCGLfloat units)
 
 void GraphicsContextGLANGLE::sampleCoverage(GCGLclampf value, GCGLboolean invert)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1427,6 +1541,7 @@ void GraphicsContextGLANGLE::sampleCoverage(GCGLclampf value, GCGLboolean invert
 
 void GraphicsContextGLANGLE::scissor(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1435,6 +1550,7 @@ void GraphicsContextGLANGLE::scissor(GCGLint x, GCGLint y, GCGLsizei width, GCGL
 
 void GraphicsContextGLANGLE::shaderSource(PlatformGLObject shader, const String& string)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(shader);
 
     if (!makeContextCurrent())
@@ -1448,6 +1564,7 @@ void GraphicsContextGLANGLE::shaderSource(PlatformGLObject shader, const String&
 
 void GraphicsContextGLANGLE::stencilFunc(GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1456,6 +1573,7 @@ void GraphicsContextGLANGLE::stencilFunc(GCGLenum func, GCGLint ref, GCGLuint ma
 
 void GraphicsContextGLANGLE::stencilFuncSeparate(GCGLenum face, GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1464,6 +1582,7 @@ void GraphicsContextGLANGLE::stencilFuncSeparate(GCGLenum face, GCGLenum func, G
 
 void GraphicsContextGLANGLE::stencilMask(GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1472,6 +1591,7 @@ void GraphicsContextGLANGLE::stencilMask(GCGLuint mask)
 
 void GraphicsContextGLANGLE::stencilMaskSeparate(GCGLenum face, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1480,6 +1600,7 @@ void GraphicsContextGLANGLE::stencilMaskSeparate(GCGLenum face, GCGLuint mask)
 
 void GraphicsContextGLANGLE::stencilOp(GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1488,6 +1609,7 @@ void GraphicsContextGLANGLE::stencilOp(GCGLenum fail, GCGLenum zfail, GCGLenum z
 
 void GraphicsContextGLANGLE::stencilOpSeparate(GCGLenum face, GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1496,6 +1618,7 @@ void GraphicsContextGLANGLE::stencilOpSeparate(GCGLenum face, GCGLenum fail, GCG
 
 void GraphicsContextGLANGLE::texParameterf(GCGLenum target, GCGLenum pname, GCGLfloat value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1504,6 +1627,7 @@ void GraphicsContextGLANGLE::texParameterf(GCGLenum target, GCGLenum pname, GCGL
 
 void GraphicsContextGLANGLE::texParameteri(GCGLenum target, GCGLenum pname, GCGLint value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1512,6 +1636,7 @@ void GraphicsContextGLANGLE::texParameteri(GCGLenum target, GCGLenum pname, GCGL
 
 void GraphicsContextGLANGLE::uniform1f(GCGLint location, GCGLfloat v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1520,6 +1645,7 @@ void GraphicsContextGLANGLE::uniform1f(GCGLint location, GCGLfloat v0)
 
 void GraphicsContextGLANGLE::uniform1fv(GCGLint location, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1528,6 +1654,7 @@ void GraphicsContextGLANGLE::uniform1fv(GCGLint location, std::span<const GCGLfl
 
 void GraphicsContextGLANGLE::uniform2f(GCGLint location, GCGLfloat v0, GCGLfloat v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1536,6 +1663,7 @@ void GraphicsContextGLANGLE::uniform2f(GCGLint location, GCGLfloat v0, GCGLfloat
 
 void GraphicsContextGLANGLE::uniform2fv(GCGLint location, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 2));
     if (!makeContextCurrent())
         return;
@@ -1545,6 +1673,7 @@ void GraphicsContextGLANGLE::uniform2fv(GCGLint location, std::span<const GCGLfl
 
 void GraphicsContextGLANGLE::uniform3f(GCGLint location, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1553,6 +1682,7 @@ void GraphicsContextGLANGLE::uniform3f(GCGLint location, GCGLfloat v0, GCGLfloat
 
 void GraphicsContextGLANGLE::uniform3fv(GCGLint location, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 3));
     if (!makeContextCurrent())
         return;
@@ -1562,6 +1692,7 @@ void GraphicsContextGLANGLE::uniform3fv(GCGLint location, std::span<const GCGLfl
 
 void GraphicsContextGLANGLE::uniform4f(GCGLint location, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2, GCGLfloat v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1570,6 +1701,7 @@ void GraphicsContextGLANGLE::uniform4f(GCGLint location, GCGLfloat v0, GCGLfloat
 
 void GraphicsContextGLANGLE::uniform4fv(GCGLint location, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 4));
     if (!makeContextCurrent())
         return;
@@ -1579,6 +1711,7 @@ void GraphicsContextGLANGLE::uniform4fv(GCGLint location, std::span<const GCGLfl
 
 void GraphicsContextGLANGLE::uniform1i(GCGLint location, GCGLint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1587,6 +1720,7 @@ void GraphicsContextGLANGLE::uniform1i(GCGLint location, GCGLint v0)
 
 void GraphicsContextGLANGLE::uniform1iv(GCGLint location, std::span<const GCGLint> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1595,6 +1729,7 @@ void GraphicsContextGLANGLE::uniform1iv(GCGLint location, std::span<const GCGLin
 
 void GraphicsContextGLANGLE::uniform2i(GCGLint location, GCGLint v0, GCGLint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1603,6 +1738,7 @@ void GraphicsContextGLANGLE::uniform2i(GCGLint location, GCGLint v0, GCGLint v1)
 
 void GraphicsContextGLANGLE::uniform2iv(GCGLint location, std::span<const GCGLint> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 2));
     if (!makeContextCurrent())
         return;
@@ -1612,6 +1748,7 @@ void GraphicsContextGLANGLE::uniform2iv(GCGLint location, std::span<const GCGLin
 
 void GraphicsContextGLANGLE::uniform3i(GCGLint location, GCGLint v0, GCGLint v1, GCGLint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1620,6 +1757,7 @@ void GraphicsContextGLANGLE::uniform3i(GCGLint location, GCGLint v0, GCGLint v1,
 
 void GraphicsContextGLANGLE::uniform3iv(GCGLint location, std::span<const GCGLint> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 3));
     if (!makeContextCurrent())
         return;
@@ -1629,6 +1767,7 @@ void GraphicsContextGLANGLE::uniform3iv(GCGLint location, std::span<const GCGLin
 
 void GraphicsContextGLANGLE::uniform4i(GCGLint location, GCGLint v0, GCGLint v1, GCGLint v2, GCGLint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1637,6 +1776,7 @@ void GraphicsContextGLANGLE::uniform4i(GCGLint location, GCGLint v0, GCGLint v1,
 
 void GraphicsContextGLANGLE::uniform4iv(GCGLint location, std::span<const GCGLint> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 4));
     if (!makeContextCurrent())
         return;
@@ -1646,6 +1786,7 @@ void GraphicsContextGLANGLE::uniform4iv(GCGLint location, std::span<const GCGLin
 
 void GraphicsContextGLANGLE::uniformMatrix2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1654,6 +1795,7 @@ void GraphicsContextGLANGLE::uniformMatrix2fv(GCGLint location, GCGLboolean tran
 
 void GraphicsContextGLANGLE::uniformMatrix3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 9));
     if (!makeContextCurrent())
         return;
@@ -1663,6 +1805,7 @@ void GraphicsContextGLANGLE::uniformMatrix3fv(GCGLint location, GCGLboolean tran
 
 void GraphicsContextGLANGLE::uniformMatrix4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(array.size() % 16));
     if (!makeContextCurrent())
         return;
@@ -1672,6 +1815,7 @@ void GraphicsContextGLANGLE::uniformMatrix4fv(GCGLint location, GCGLboolean tran
 
 void GraphicsContextGLANGLE::useProgram(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1680,6 +1824,7 @@ void GraphicsContextGLANGLE::useProgram(PlatformGLObject program)
 
 void GraphicsContextGLANGLE::validateProgram(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
 
     if (!makeContextCurrent())
@@ -1690,6 +1835,7 @@ void GraphicsContextGLANGLE::validateProgram(PlatformGLObject program)
 
 void GraphicsContextGLANGLE::vertexAttrib1f(GCGLuint index, GCGLfloat v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1698,6 +1844,7 @@ void GraphicsContextGLANGLE::vertexAttrib1f(GCGLuint index, GCGLfloat v0)
 
 void GraphicsContextGLANGLE::vertexAttrib1fv(GCGLuint index, std::span<const GCGLfloat, 1> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1706,6 +1853,7 @@ void GraphicsContextGLANGLE::vertexAttrib1fv(GCGLuint index, std::span<const GCG
 
 void GraphicsContextGLANGLE::vertexAttrib2f(GCGLuint index, GCGLfloat v0, GCGLfloat v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1714,6 +1862,7 @@ void GraphicsContextGLANGLE::vertexAttrib2f(GCGLuint index, GCGLfloat v0, GCGLfl
 
 void GraphicsContextGLANGLE::vertexAttrib2fv(GCGLuint index, std::span<const GCGLfloat, 2> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1722,6 +1871,7 @@ void GraphicsContextGLANGLE::vertexAttrib2fv(GCGLuint index, std::span<const GCG
 
 void GraphicsContextGLANGLE::vertexAttrib3f(GCGLuint index, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1730,6 +1880,7 @@ void GraphicsContextGLANGLE::vertexAttrib3f(GCGLuint index, GCGLfloat v0, GCGLfl
 
 void GraphicsContextGLANGLE::vertexAttrib3fv(GCGLuint index, std::span<const GCGLfloat, 3> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1738,6 +1889,7 @@ void GraphicsContextGLANGLE::vertexAttrib3fv(GCGLuint index, std::span<const GCG
 
 void GraphicsContextGLANGLE::vertexAttrib4f(GCGLuint index, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2, GCGLfloat v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1746,6 +1898,7 @@ void GraphicsContextGLANGLE::vertexAttrib4f(GCGLuint index, GCGLfloat v0, GCGLfl
 
 void GraphicsContextGLANGLE::vertexAttrib4fv(GCGLuint index, std::span<const GCGLfloat, 4> array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1754,6 +1907,7 @@ void GraphicsContextGLANGLE::vertexAttrib4fv(GCGLuint index, std::span<const GCG
 
 void GraphicsContextGLANGLE::vertexAttribPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLboolean normalized, GCGLsizei stride, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1762,6 +1916,7 @@ void GraphicsContextGLANGLE::vertexAttribPointer(GCGLuint index, GCGLint size, G
 
 void GraphicsContextGLANGLE::vertexAttribIPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLsizei stride, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1770,6 +1925,7 @@ void GraphicsContextGLANGLE::vertexAttribIPointer(GCGLuint index, GCGLint size, 
 
 void GraphicsContextGLANGLE::viewport(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1778,6 +1934,7 @@ void GraphicsContextGLANGLE::viewport(GCGLint x, GCGLint y, GCGLsizei width, GCG
 
 PlatformGLObject GraphicsContextGLANGLE::createVertexArray()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -1791,6 +1948,7 @@ PlatformGLObject GraphicsContextGLANGLE::createVertexArray()
 
 void GraphicsContextGLANGLE::deleteVertexArray(PlatformGLObject array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!array)
         return;
     if (!makeContextCurrent())
@@ -1803,6 +1961,7 @@ void GraphicsContextGLANGLE::deleteVertexArray(PlatformGLObject array)
 
 GCGLboolean GraphicsContextGLANGLE::isVertexArray(PlatformGLObject array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!array)
         return GL_FALSE;
     if (!makeContextCurrent())
@@ -1815,6 +1974,7 @@ GCGLboolean GraphicsContextGLANGLE::isVertexArray(PlatformGLObject array)
 
 void GraphicsContextGLANGLE::bindVertexArray(PlatformGLObject array)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     if (m_isForWebGL2)
@@ -1825,6 +1985,7 @@ void GraphicsContextGLANGLE::bindVertexArray(PlatformGLObject array)
 
 void GraphicsContextGLANGLE::getBooleanv(GCGLenum pname, std::span<GCGLboolean> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1833,6 +1994,7 @@ void GraphicsContextGLANGLE::getBooleanv(GCGLenum pname, std::span<GCGLboolean> 
 
 GCGLint GraphicsContextGLANGLE::getBufferParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1842,6 +2004,7 @@ GCGLint GraphicsContextGLANGLE::getBufferParameteri(GCGLenum target, GCGLenum pn
 
 void GraphicsContextGLANGLE::getFloatv(GCGLenum pname, std::span<GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -1850,6 +2013,7 @@ void GraphicsContextGLANGLE::getFloatv(GCGLenum pname, std::span<GCGLfloat> valu
     
 GCGLint64 GraphicsContextGLANGLE::getInteger64(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint64 value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1859,6 +2023,7 @@ GCGLint64 GraphicsContextGLANGLE::getInteger64(GCGLenum pname)
 
 GCGLint64 GraphicsContextGLANGLE::getInteger64i(GCGLenum pname, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint64 value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1868,6 +2033,7 @@ GCGLint64 GraphicsContextGLANGLE::getInteger64i(GCGLenum pname, GCGLuint index)
 
 GCGLint GraphicsContextGLANGLE::getFramebufferAttachmentParameteri(GCGLenum target, GCGLenum attachment, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1879,6 +2045,7 @@ GCGLint GraphicsContextGLANGLE::getFramebufferAttachmentParameteri(GCGLenum targ
 
 GCGLint GraphicsContextGLANGLE::getProgrami(PlatformGLObject program, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1888,6 +2055,7 @@ GCGLint GraphicsContextGLANGLE::getProgrami(PlatformGLObject program, GCGLenum p
 
 String GraphicsContextGLANGLE::getUnmangledInfoLog(PlatformGLObject shaders[2], GCGLsizei count, const String& log)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNUSED_PARAM(shaders);
     UNUSED_PARAM(count);
     LOG(WebGL, "Original ShaderInfoLog:\n%s", log.utf8().data());
@@ -1908,6 +2076,7 @@ String GraphicsContextGLANGLE::getUnmangledInfoLog(PlatformGLObject shaders[2], 
 
 String GraphicsContextGLANGLE::getProgramInfoLog(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
 
     if (!makeContextCurrent())
@@ -1931,6 +2100,7 @@ String GraphicsContextGLANGLE::getProgramInfoLog(PlatformGLObject program)
 
 GCGLint GraphicsContextGLANGLE::getRenderbufferParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1940,6 +2110,7 @@ GCGLint GraphicsContextGLANGLE::getRenderbufferParameteri(GCGLenum target, GCGLe
 
 GCGLint GraphicsContextGLANGLE::getShaderi(PlatformGLObject shader, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(shader);
     GCGLint value = 0;
     if (!makeContextCurrent())
@@ -1950,6 +2121,7 @@ GCGLint GraphicsContextGLANGLE::getShaderi(PlatformGLObject shader, GCGLenum pna
 
 String GraphicsContextGLANGLE::getShaderInfoLog(PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(shader);
 
     if (!makeContextCurrent())
@@ -1970,11 +2142,13 @@ String GraphicsContextGLANGLE::getShaderInfoLog(PlatformGLObject shader)
 
 String GraphicsContextGLANGLE::getShaderSource(PlatformGLObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return emptyString();
 }
 
 GCGLfloat GraphicsContextGLANGLE::getTexParameterf(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLfloat value = 0.f;
     if (!makeContextCurrent())
         return value;
@@ -1984,6 +2158,7 @@ GCGLfloat GraphicsContextGLANGLE::getTexParameterf(GCGLenum target, GCGLenum pna
 
 GCGLint GraphicsContextGLANGLE::getTexParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -1993,6 +2168,7 @@ GCGLint GraphicsContextGLANGLE::getTexParameteri(GCGLenum target, GCGLenum pname
 
 void GraphicsContextGLANGLE::getUniformfv(PlatformGLObject program, GCGLint location, std::span<GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     // FIXME: Bug in ANGLE bufSize validation for uniforms. See https://bugs.webkit.org/show_bug.cgi?id=219069.
@@ -2002,6 +2178,7 @@ void GraphicsContextGLANGLE::getUniformfv(PlatformGLObject program, GCGLint loca
 
 void GraphicsContextGLANGLE::getUniformiv(PlatformGLObject program, GCGLint location, std::span<GCGLint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     // FIXME: Bug in ANGLE bufSize validation for uniforms. See https://bugs.webkit.org/show_bug.cgi?id=219069.
@@ -2011,6 +2188,7 @@ void GraphicsContextGLANGLE::getUniformiv(PlatformGLObject program, GCGLint loca
 
 void GraphicsContextGLANGLE::getUniformuiv(PlatformGLObject program, GCGLint location, std::span<GCGLuint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     // FIXME: Bug in ANGLE bufSize validation for uniforms. See https://bugs.webkit.org/show_bug.cgi?id=219069.
@@ -2020,6 +2198,7 @@ void GraphicsContextGLANGLE::getUniformuiv(PlatformGLObject program, GCGLint loc
 
 GCGLint GraphicsContextGLANGLE::getUniformLocation(PlatformGLObject program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
 
     if (!makeContextCurrent())
@@ -2030,6 +2209,7 @@ GCGLint GraphicsContextGLANGLE::getUniformLocation(PlatformGLObject program, con
 
 GCGLsizeiptr GraphicsContextGLANGLE::getVertexAttribOffset(GCGLuint index, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2040,6 +2220,7 @@ GCGLsizeiptr GraphicsContextGLANGLE::getVertexAttribOffset(GCGLuint index, GCGLe
 
 PlatformGLObject GraphicsContextGLANGLE::createBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2050,6 +2231,7 @@ PlatformGLObject GraphicsContextGLANGLE::createBuffer()
 
 PlatformGLObject GraphicsContextGLANGLE::createFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2060,6 +2242,7 @@ PlatformGLObject GraphicsContextGLANGLE::createFramebuffer()
 
 PlatformGLObject GraphicsContextGLANGLE::createProgram()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2068,6 +2251,7 @@ PlatformGLObject GraphicsContextGLANGLE::createProgram()
 
 PlatformGLObject GraphicsContextGLANGLE::createRenderbuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2078,6 +2262,7 @@ PlatformGLObject GraphicsContextGLANGLE::createRenderbuffer()
 
 PlatformGLObject GraphicsContextGLANGLE::createShader(GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2086,6 +2271,7 @@ PlatformGLObject GraphicsContextGLANGLE::createShader(GCGLenum type)
 
 PlatformGLObject GraphicsContextGLANGLE::createTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2097,6 +2283,7 @@ PlatformGLObject GraphicsContextGLANGLE::createTexture()
 
 void GraphicsContextGLANGLE::deleteBuffer(PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2105,6 +2292,7 @@ void GraphicsContextGLANGLE::deleteBuffer(PlatformGLObject buffer)
 
 void GraphicsContextGLANGLE::deleteFramebuffer(PlatformGLObject framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2122,6 +2310,7 @@ void GraphicsContextGLANGLE::deleteFramebuffer(PlatformGLObject framebuffer)
 
 void GraphicsContextGLANGLE::deleteProgram(PlatformGLObject program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2130,6 +2319,7 @@ void GraphicsContextGLANGLE::deleteProgram(PlatformGLObject program)
 
 void GraphicsContextGLANGLE::deleteRenderbuffer(PlatformGLObject renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2138,6 +2328,7 @@ void GraphicsContextGLANGLE::deleteRenderbuffer(PlatformGLObject renderbuffer)
 
 void GraphicsContextGLANGLE::deleteShader(PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2146,6 +2337,7 @@ void GraphicsContextGLANGLE::deleteShader(PlatformGLObject shader)
 
 void GraphicsContextGLANGLE::deleteTexture(PlatformGLObject texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2158,6 +2350,7 @@ void GraphicsContextGLANGLE::deleteTexture(PlatformGLObject texture)
 
 void GraphicsContextGLANGLE::drawArraysInstanced(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2170,6 +2363,7 @@ void GraphicsContextGLANGLE::drawArraysInstanced(GCGLenum mode, GCGLint first, G
 
 void GraphicsContextGLANGLE::drawElementsInstanced(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2182,6 +2376,7 @@ void GraphicsContextGLANGLE::drawElementsInstanced(GCGLenum mode, GCGLsizei coun
 
 void GraphicsContextGLANGLE::vertexAttribDivisor(GCGLuint index, GCGLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2193,6 +2388,7 @@ void GraphicsContextGLANGLE::vertexAttribDivisor(GCGLuint index, GCGLuint diviso
 
 GCGLuint GraphicsContextGLANGLE::getUniformBlockIndex(PlatformGLObject program, const String& uniformBlockName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return GL_INVALID_INDEX;
@@ -2202,6 +2398,7 @@ GCGLuint GraphicsContextGLANGLE::getUniformBlockIndex(PlatformGLObject program, 
 
 String GraphicsContextGLANGLE::getActiveUniformBlockName(PlatformGLObject program, GCGLuint uniformBlockIndex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return String();
@@ -2222,6 +2419,7 @@ String GraphicsContextGLANGLE::getActiveUniformBlockName(PlatformGLObject progra
 
 void GraphicsContextGLANGLE::uniformBlockBinding(PlatformGLObject program, GCGLuint uniformBlockIndex, GCGLuint uniformBlockBinding)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return;
@@ -2233,6 +2431,7 @@ void GraphicsContextGLANGLE::uniformBlockBinding(PlatformGLObject program, GCGLu
 
 PlatformGLObject GraphicsContextGLANGLE::createQuery()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2243,6 +2442,7 @@ PlatformGLObject GraphicsContextGLANGLE::createQuery()
 
 void GraphicsContextGLANGLE::beginQuery(GCGLenum target, PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2251,6 +2451,7 @@ void GraphicsContextGLANGLE::beginQuery(GCGLenum target, PlatformGLObject query)
 
 void GraphicsContextGLANGLE::endQuery(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2259,6 +2460,7 @@ void GraphicsContextGLANGLE::endQuery(GCGLenum target)
 
 GCGLuint GraphicsContextGLANGLE::getQueryObjectui(GCGLuint id, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLuint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -2270,6 +2472,7 @@ GCGLuint GraphicsContextGLANGLE::getQueryObjectui(GCGLuint id, GCGLenum pname)
 
 PlatformGLObject GraphicsContextGLANGLE::createTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2280,6 +2483,7 @@ PlatformGLObject GraphicsContextGLANGLE::createTransformFeedback()
 
 void GraphicsContextGLANGLE::deleteTransformFeedback(PlatformGLObject transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2288,6 +2492,7 @@ void GraphicsContextGLANGLE::deleteTransformFeedback(PlatformGLObject transformF
 
 GCGLboolean GraphicsContextGLANGLE::isTransformFeedback(PlatformGLObject transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -2296,6 +2501,7 @@ GCGLboolean GraphicsContextGLANGLE::isTransformFeedback(PlatformGLObject transfo
 
 void GraphicsContextGLANGLE::bindTransformFeedback(GCGLenum target, PlatformGLObject transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2304,6 +2510,7 @@ void GraphicsContextGLANGLE::bindTransformFeedback(GCGLenum target, PlatformGLOb
 
 void GraphicsContextGLANGLE::beginTransformFeedback(GCGLenum primitiveMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2312,6 +2519,7 @@ void GraphicsContextGLANGLE::beginTransformFeedback(GCGLenum primitiveMode)
 
 void GraphicsContextGLANGLE::endTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2320,6 +2528,7 @@ void GraphicsContextGLANGLE::endTransformFeedback()
 
 void GraphicsContextGLANGLE::transformFeedbackVaryings(PlatformGLObject program, const Vector<String>& varyings, GCGLenum bufferMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2335,6 +2544,7 @@ void GraphicsContextGLANGLE::transformFeedbackVaryings(PlatformGLObject program,
 
 void GraphicsContextGLANGLE::getTransformFeedbackVarying(PlatformGLObject program, GCGLuint index, GraphicsContextGLActiveInfo& info)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2357,6 +2567,7 @@ void GraphicsContextGLANGLE::getTransformFeedbackVarying(PlatformGLObject progra
 
 void GraphicsContextGLANGLE::bindBufferBase(GCGLenum target, GCGLuint index, PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2365,6 +2576,7 @@ void GraphicsContextGLANGLE::bindBufferBase(GCGLenum target, GCGLuint index, Pla
 
 void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2373,6 +2585,7 @@ void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
 
 void GraphicsContextGLANGLE::blitFramebufferANGLE(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2381,6 +2594,7 @@ void GraphicsContextGLANGLE::blitFramebufferANGLE(GCGLint srcX0, GCGLint srcY0, 
 
 void GraphicsContextGLANGLE::framebufferTextureLayer(GCGLenum target, GCGLenum attachment, PlatformGLObject texture, GCGLint level, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2389,6 +2603,7 @@ void GraphicsContextGLANGLE::framebufferTextureLayer(GCGLenum target, GCGLenum a
 
 void GraphicsContextGLANGLE::invalidateFramebuffer(GCGLenum target, std::span<const GCGLenum> attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2397,6 +2612,7 @@ void GraphicsContextGLANGLE::invalidateFramebuffer(GCGLenum target, std::span<co
 
 void GraphicsContextGLANGLE::invalidateSubFramebuffer(GCGLenum target, std::span<const GCGLenum> attachments, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2405,6 +2621,7 @@ void GraphicsContextGLANGLE::invalidateSubFramebuffer(GCGLenum target, std::span
 
 void GraphicsContextGLANGLE::readBuffer(GCGLenum src)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2413,6 +2630,7 @@ void GraphicsContextGLANGLE::readBuffer(GCGLenum src)
 
 void GraphicsContextGLANGLE::copyTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2430,6 +2648,7 @@ void GraphicsContextGLANGLE::copyTexSubImage3D(GCGLenum target, GCGLint level, G
 
 GCGLint GraphicsContextGLANGLE::getFragDataLocation(PlatformGLObject program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return -1;
 
@@ -2438,6 +2657,7 @@ GCGLint GraphicsContextGLANGLE::getFragDataLocation(PlatformGLObject program, co
 
 void GraphicsContextGLANGLE::uniform1ui(GCGLint location, GCGLuint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2446,6 +2666,7 @@ void GraphicsContextGLANGLE::uniform1ui(GCGLint location, GCGLuint v0)
 
 void GraphicsContextGLANGLE::uniform2ui(GCGLint location, GCGLuint v0, GCGLuint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2454,6 +2675,7 @@ void GraphicsContextGLANGLE::uniform2ui(GCGLint location, GCGLuint v0, GCGLuint 
 
 void GraphicsContextGLANGLE::uniform3ui(GCGLint location, GCGLuint v0, GCGLuint v1, GCGLuint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2462,6 +2684,7 @@ void GraphicsContextGLANGLE::uniform3ui(GCGLint location, GCGLuint v0, GCGLuint 
 
 void GraphicsContextGLANGLE::uniform4ui(GCGLint location, GCGLuint v0, GCGLuint v1, GCGLuint v2, GCGLuint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2470,6 +2693,7 @@ void GraphicsContextGLANGLE::uniform4ui(GCGLint location, GCGLuint v0, GCGLuint 
 
 void GraphicsContextGLANGLE::uniform1uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2478,6 +2702,7 @@ void GraphicsContextGLANGLE::uniform1uiv(GCGLint location, std::span<const GCGLu
 
 void GraphicsContextGLANGLE::uniform2uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 2));
     if (!makeContextCurrent())
         return;
@@ -2487,6 +2712,7 @@ void GraphicsContextGLANGLE::uniform2uiv(GCGLint location, std::span<const GCGLu
 
 void GraphicsContextGLANGLE::uniform3uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 3));
     if (!makeContextCurrent())
         return;
@@ -2496,6 +2722,7 @@ void GraphicsContextGLANGLE::uniform3uiv(GCGLint location, std::span<const GCGLu
 
 void GraphicsContextGLANGLE::uniform4uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 4));
     if (!makeContextCurrent())
         return;
@@ -2505,6 +2732,7 @@ void GraphicsContextGLANGLE::uniform4uiv(GCGLint location, std::span<const GCGLu
 
 void GraphicsContextGLANGLE::uniformMatrix2x3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 6));
     if (!makeContextCurrent())
         return;
@@ -2514,6 +2742,7 @@ void GraphicsContextGLANGLE::uniformMatrix2x3fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::uniformMatrix3x2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 6));
     if (!makeContextCurrent())
         return;
@@ -2523,6 +2752,7 @@ void GraphicsContextGLANGLE::uniformMatrix3x2fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::uniformMatrix2x4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 8));
     if (!makeContextCurrent())
         return;
@@ -2532,6 +2762,7 @@ void GraphicsContextGLANGLE::uniformMatrix2x4fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::uniformMatrix4x2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 8));
     if (!makeContextCurrent())
         return;
@@ -2541,6 +2772,7 @@ void GraphicsContextGLANGLE::uniformMatrix4x2fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::uniformMatrix3x4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 12));
     if (!makeContextCurrent())
         return;
@@ -2550,6 +2782,7 @@ void GraphicsContextGLANGLE::uniformMatrix3x4fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::uniformMatrix4x3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!(data.size() % 12));
     if (!makeContextCurrent())
         return;
@@ -2559,6 +2792,7 @@ void GraphicsContextGLANGLE::uniformMatrix4x3fv(GCGLint location, GCGLboolean tr
 
 void GraphicsContextGLANGLE::vertexAttribI4i(GCGLuint index, GCGLint x, GCGLint y, GCGLint z, GCGLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2567,6 +2801,7 @@ void GraphicsContextGLANGLE::vertexAttribI4i(GCGLuint index, GCGLint x, GCGLint 
 
 void GraphicsContextGLANGLE::vertexAttribI4iv(GCGLuint index, std::span<const GCGLint, 4> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2575,6 +2810,7 @@ void GraphicsContextGLANGLE::vertexAttribI4iv(GCGLuint index, std::span<const GC
 
 void GraphicsContextGLANGLE::vertexAttribI4ui(GCGLuint index, GCGLuint x, GCGLuint y, GCGLuint z, GCGLuint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2583,6 +2819,7 @@ void GraphicsContextGLANGLE::vertexAttribI4ui(GCGLuint index, GCGLuint x, GCGLui
 
 void GraphicsContextGLANGLE::vertexAttribI4uiv(GCGLuint index, std::span<const GCGLuint, 4> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2591,6 +2828,7 @@ void GraphicsContextGLANGLE::vertexAttribI4uiv(GCGLuint index, std::span<const G
 
 void GraphicsContextGLANGLE::drawRangeElements(GCGLenum mode, GCGLuint start, GCGLuint end, GCGLsizei count, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2600,6 +2838,7 @@ void GraphicsContextGLANGLE::drawRangeElements(GCGLenum mode, GCGLuint start, GC
 
 void GraphicsContextGLANGLE::drawBuffers(std::span<const GCGLenum> bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2608,6 +2847,7 @@ void GraphicsContextGLANGLE::drawBuffers(std::span<const GCGLenum> bufs)
 
 void GraphicsContextGLANGLE::clearBufferiv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLint> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2617,6 +2857,7 @@ void GraphicsContextGLANGLE::clearBufferiv(GCGLenum buffer, GCGLint drawbuffer, 
 
 void GraphicsContextGLANGLE::clearBufferuiv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLuint> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2626,6 +2867,7 @@ void GraphicsContextGLANGLE::clearBufferuiv(GCGLenum buffer, GCGLint drawbuffer,
 
 void GraphicsContextGLANGLE::clearBufferfv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLfloat> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2635,6 +2877,7 @@ void GraphicsContextGLANGLE::clearBufferfv(GCGLenum buffer, GCGLint drawbuffer, 
 
 void GraphicsContextGLANGLE::clearBufferfi(GCGLenum buffer, GCGLint drawbuffer, GCGLfloat depth, GCGLint stencil)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2644,6 +2887,7 @@ void GraphicsContextGLANGLE::clearBufferfi(GCGLenum buffer, GCGLint drawbuffer, 
 
 void GraphicsContextGLANGLE::deleteQuery(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2652,6 +2896,7 @@ void GraphicsContextGLANGLE::deleteQuery(PlatformGLObject query)
 
 GCGLboolean GraphicsContextGLANGLE::isQuery(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -2660,6 +2905,7 @@ GCGLboolean GraphicsContextGLANGLE::isQuery(PlatformGLObject query)
 
 GCGLint GraphicsContextGLANGLE::getQuery(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2670,6 +2916,7 @@ GCGLint GraphicsContextGLANGLE::getQuery(GCGLenum target, GCGLenum pname)
 
 PlatformGLObject GraphicsContextGLANGLE::createSampler()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2680,6 +2927,7 @@ PlatformGLObject GraphicsContextGLANGLE::createSampler()
 
 void GraphicsContextGLANGLE::deleteSampler(PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2688,6 +2936,7 @@ void GraphicsContextGLANGLE::deleteSampler(PlatformGLObject sampler)
 
 GCGLboolean GraphicsContextGLANGLE::isSampler(PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -2696,6 +2945,7 @@ GCGLboolean GraphicsContextGLANGLE::isSampler(PlatformGLObject sampler)
 
 void GraphicsContextGLANGLE::bindSampler(GCGLuint unit, PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2704,6 +2954,7 @@ void GraphicsContextGLANGLE::bindSampler(GCGLuint unit, PlatformGLObject sampler
 
 void GraphicsContextGLANGLE::samplerParameteri(PlatformGLObject sampler, GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2712,6 +2963,7 @@ void GraphicsContextGLANGLE::samplerParameteri(PlatformGLObject sampler, GCGLenu
 
 void GraphicsContextGLANGLE::samplerParameterf(PlatformGLObject sampler, GCGLenum pname, GCGLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2720,6 +2972,7 @@ void GraphicsContextGLANGLE::samplerParameterf(PlatformGLObject sampler, GCGLenu
 
 GCGLfloat GraphicsContextGLANGLE::getSamplerParameterf(PlatformGLObject sampler, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLfloat value = 0.f;
     if (!makeContextCurrent())
         return value;
@@ -2730,6 +2983,7 @@ GCGLfloat GraphicsContextGLANGLE::getSamplerParameterf(PlatformGLObject sampler,
 
 GCGLint GraphicsContextGLANGLE::getSamplerParameteri(PlatformGLObject sampler, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -2740,6 +2994,7 @@ GCGLint GraphicsContextGLANGLE::getSamplerParameteri(PlatformGLObject sampler, G
 
 GCGLsync GraphicsContextGLANGLE::fenceSync(GCGLenum condition, GCGLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2748,6 +3003,7 @@ GCGLsync GraphicsContextGLANGLE::fenceSync(GCGLenum condition, GCGLbitfield flag
 
 GCGLboolean GraphicsContextGLANGLE::isSync(GCGLsync sync)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -2756,6 +3012,7 @@ GCGLboolean GraphicsContextGLANGLE::isSync(GCGLsync sync)
 
 void GraphicsContextGLANGLE::deleteSync(GCGLsync sync)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2764,6 +3021,7 @@ void GraphicsContextGLANGLE::deleteSync(GCGLsync sync)
 
 GCGLenum GraphicsContextGLANGLE::clientWaitSync(GCGLsync sync, GCGLbitfield flags, GCGLuint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_WAIT_FAILED;
 
@@ -2772,6 +3030,7 @@ GCGLenum GraphicsContextGLANGLE::clientWaitSync(GCGLsync sync, GCGLbitfield flag
 
 void GraphicsContextGLANGLE::waitSync(GCGLsync sync, GCGLbitfield flags, GCGLint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2780,6 +3039,7 @@ void GraphicsContextGLANGLE::waitSync(GCGLsync sync, GCGLbitfield flags, GCGLint
 
 GCGLint GraphicsContextGLANGLE::getSynci(GCGLsync sync, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value = 0;
     if (!makeContextCurrent())
         return value;
@@ -2790,6 +3050,7 @@ GCGLint GraphicsContextGLANGLE::getSynci(GCGLsync sync, GCGLenum pname)
 
 void GraphicsContextGLANGLE::pauseTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2798,6 +3059,7 @@ void GraphicsContextGLANGLE::pauseTransformFeedback()
 
 void GraphicsContextGLANGLE::resumeTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2806,6 +3068,7 @@ void GraphicsContextGLANGLE::resumeTransformFeedback()
 
 void GraphicsContextGLANGLE::bindBufferRange(GCGLenum target, GCGLuint index, PlatformGLObject buffer, GCGLintptr offset, GCGLsizeiptr size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2814,6 +3077,7 @@ void GraphicsContextGLANGLE::bindBufferRange(GCGLenum target, GCGLuint index, Pl
 
 Vector<GCGLuint> GraphicsContextGLANGLE::getUniformIndices(PlatformGLObject program, const Vector<String>& uniformNames)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(program);
     if (!makeContextCurrent())
         return { };
@@ -2827,6 +3091,7 @@ Vector<GCGLuint> GraphicsContextGLANGLE::getUniformIndices(PlatformGLObject prog
 
 void GraphicsContextGLANGLE::getActiveUniformBlockiv(GCGLuint program, GCGLuint uniformBlockIndex, GCGLenum pname, std::span<GCGLint> params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     GL_GetActiveUniformBlockivRobustANGLE(program, uniformBlockIndex, pname, params.size(), nullptr, params.data());
@@ -2834,34 +3099,40 @@ void GraphicsContextGLANGLE::getActiveUniformBlockiv(GCGLuint program, GCGLuint 
 
 std::optional<GraphicsContextGL::EGLImageAttachResult> GraphicsContextGLANGLE::createAndBindEGLImage(GCGLenum, EGLImageSource)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     notImplemented();
     return std::nullopt;
 }
 
 void GraphicsContextGLANGLE::destroyEGLImage(GCEGLImage handle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     EGL_DestroyImageKHR(platformDisplay(), handle);
 }
 
 GCEGLSync GraphicsContextGLANGLE::createEGLSync(ExternalEGLSyncEvent)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     notImplemented();
     return nullptr;
 }
 
 bool GraphicsContextGLANGLE::destroyEGLSync(GCEGLSync sync)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return !!EGL_DestroySync(platformDisplay(), sync);
 }
 
 void GraphicsContextGLANGLE::clientWaitEGLSyncWithFlush(GCEGLSync sync, uint64_t timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto ret = EGL_ClientWaitSync(platformDisplay(), sync, EGL_SYNC_FLUSH_COMMANDS_BIT, timeout);
     ASSERT_UNUSED(ret, ret == EGL_CONDITION_SATISFIED);
 }
 
 void GraphicsContextGLANGLE::multiDrawArraysANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLint, const GCGLsizei> firstsAndCounts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2871,6 +3142,7 @@ void GraphicsContextGLANGLE::multiDrawArraysANGLE(GCGLenum mode, GCGLSpanTuple<c
 
 void GraphicsContextGLANGLE::multiDrawArraysInstancedANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLint, const GCGLsizei, const GCGLsizei> firstsCountsAndInstanceCounts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2880,6 +3152,7 @@ void GraphicsContextGLANGLE::multiDrawArraysInstancedANGLE(GCGLenum mode, GCGLSp
 
 void GraphicsContextGLANGLE::multiDrawElementsANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLsizei, const GCGLsizei> countsAndOffsets, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2895,6 +3168,7 @@ void GraphicsContextGLANGLE::multiDrawElementsANGLE(GCGLenum mode, GCGLSpanTuple
 
 void GraphicsContextGLANGLE::multiDrawElementsInstancedANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLsizei, const GCGLsizei, const GCGLsizei> countsOffsetsAndInstanceCounts, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2910,13 +3184,16 @@ void GraphicsContextGLANGLE::multiDrawElementsInstancedANGLE(GCGLenum mode, GCGL
 
 bool GraphicsContextGLANGLE::supportsExtension(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_availableExtensions.contains(name) || m_requestableExtensions.contains(name);
 }
 
 void GraphicsContextGLANGLE::ensureExtensionEnabled(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Enable support in ANGLE (if not enabled already).
     if (m_requestableExtensions.contains(name) && !m_enabledExtensions.contains(name)) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (!makeContextCurrent())
             return;
         GL_RequestExtensionANGLE(name.ascii().data());
@@ -2931,11 +3208,13 @@ void GraphicsContextGLANGLE::ensureExtensionEnabled(const String& name)
 
 bool GraphicsContextGLANGLE::isExtensionEnabled(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_availableExtensions.contains(name) || m_enabledExtensions.contains(name);
 }
 
 String GraphicsContextGLANGLE::getTranslatedShaderSourceANGLE(PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return String();
 
@@ -2955,6 +3234,7 @@ String GraphicsContextGLANGLE::getTranslatedShaderSourceANGLE(PlatformGLObject s
 
 void GraphicsContextGLANGLE::drawBuffersEXT(std::span<const GCGLenum> bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2963,6 +3243,7 @@ void GraphicsContextGLANGLE::drawBuffersEXT(std::span<const GCGLenum> bufs)
 
 PlatformGLObject GraphicsContextGLANGLE::createQueryEXT()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -2973,6 +3254,7 @@ PlatformGLObject GraphicsContextGLANGLE::createQueryEXT()
 
 void GraphicsContextGLANGLE::deleteQueryEXT(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2981,6 +3263,7 @@ void GraphicsContextGLANGLE::deleteQueryEXT(PlatformGLObject query)
 
 GCGLboolean GraphicsContextGLANGLE::isQueryEXT(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return GL_FALSE;
 
@@ -2989,6 +3272,7 @@ GCGLboolean GraphicsContextGLANGLE::isQueryEXT(PlatformGLObject query)
 
 void GraphicsContextGLANGLE::beginQueryEXT(GCGLenum target, PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -2997,6 +3281,7 @@ void GraphicsContextGLANGLE::beginQueryEXT(GCGLenum target, PlatformGLObject que
 
 void GraphicsContextGLANGLE::endQueryEXT(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3005,6 +3290,7 @@ void GraphicsContextGLANGLE::endQueryEXT(GCGLenum target)
 
 void GraphicsContextGLANGLE::queryCounterEXT(PlatformGLObject query, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3013,6 +3299,7 @@ void GraphicsContextGLANGLE::queryCounterEXT(PlatformGLObject query, GCGLenum ta
 
 GCGLint GraphicsContextGLANGLE::getQueryiEXT(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -3023,6 +3310,7 @@ GCGLint GraphicsContextGLANGLE::getQueryiEXT(GCGLenum target, GCGLenum pname)
 
 GCGLint GraphicsContextGLANGLE::getQueryObjectiEXT(PlatformGLObject query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -3033,6 +3321,7 @@ GCGLint GraphicsContextGLANGLE::getQueryObjectiEXT(PlatformGLObject query, GCGLe
 
 GCGLuint64 GraphicsContextGLANGLE::getQueryObjectui64EXT(PlatformGLObject query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -3043,6 +3332,7 @@ GCGLuint64 GraphicsContextGLANGLE::getQueryObjectui64EXT(PlatformGLObject query,
 
 GCGLint64 GraphicsContextGLANGLE::getInteger64EXT(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return 0;
 
@@ -3053,6 +3343,7 @@ GCGLint64 GraphicsContextGLANGLE::getInteger64EXT(GCGLenum pname)
 
 void GraphicsContextGLANGLE::enableiOES(GCGLenum target, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3061,6 +3352,7 @@ void GraphicsContextGLANGLE::enableiOES(GCGLenum target, GCGLuint index)
 
 void GraphicsContextGLANGLE::disableiOES(GCGLenum target, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3069,6 +3361,7 @@ void GraphicsContextGLANGLE::disableiOES(GCGLenum target, GCGLuint index)
 
 void GraphicsContextGLANGLE::blendEquationiOES(GCGLuint buf, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3077,6 +3370,7 @@ void GraphicsContextGLANGLE::blendEquationiOES(GCGLuint buf, GCGLenum mode)
 
 void GraphicsContextGLANGLE::blendEquationSeparateiOES(GCGLuint buf, GCGLenum modeRGB, GCGLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3085,6 +3379,7 @@ void GraphicsContextGLANGLE::blendEquationSeparateiOES(GCGLuint buf, GCGLenum mo
 
 void GraphicsContextGLANGLE::blendFunciOES(GCGLuint buf, GCGLenum src, GCGLenum dst)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3093,6 +3388,7 @@ void GraphicsContextGLANGLE::blendFunciOES(GCGLuint buf, GCGLenum src, GCGLenum 
 
 void GraphicsContextGLANGLE::blendFuncSeparateiOES(GCGLuint buf, GCGLenum srcRGB, GCGLenum dstRGB, GCGLenum srcAlpha, GCGLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3101,6 +3397,7 @@ void GraphicsContextGLANGLE::blendFuncSeparateiOES(GCGLuint buf, GCGLenum srcRGB
 
 void GraphicsContextGLANGLE::colorMaskiOES(GCGLuint buf, GCGLboolean red, GCGLboolean green, GCGLboolean blue, GCGLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3109,6 +3406,7 @@ void GraphicsContextGLANGLE::colorMaskiOES(GCGLuint buf, GCGLboolean red, GCGLbo
 
 void GraphicsContextGLANGLE::drawArraysInstancedBaseInstanceANGLE(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei instanceCount, GCGLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3118,6 +3416,7 @@ void GraphicsContextGLANGLE::drawArraysInstancedBaseInstanceANGLE(GCGLenum mode,
 
 void GraphicsContextGLANGLE::drawElementsInstancedBaseVertexBaseInstanceANGLE(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset, GCGLsizei instanceCount, GCGLint baseVertex, GCGLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3127,6 +3426,7 @@ void GraphicsContextGLANGLE::drawElementsInstancedBaseVertexBaseInstanceANGLE(GC
 
 void GraphicsContextGLANGLE::multiDrawArraysInstancedBaseInstanceANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLint, const GCGLsizei, const GCGLsizei, const GCGLuint> firstsCountsInstanceCountsAndBaseInstances)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3136,6 +3436,7 @@ void GraphicsContextGLANGLE::multiDrawArraysInstancedBaseInstanceANGLE(GCGLenum 
 
 void GraphicsContextGLANGLE::multiDrawElementsInstancedBaseVertexBaseInstanceANGLE(GCGLenum mode, GCGLSpanTuple<const GCGLsizei, const GCGLsizei, const GCGLsizei, const GCGLint, const GCGLuint> countsOffsetsInstanceCountsBaseVerticesAndBaseInstances, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3151,6 +3452,7 @@ void GraphicsContextGLANGLE::multiDrawElementsInstancedBaseVertexBaseInstanceANG
 
 void GraphicsContextGLANGLE::provokingVertexANGLE(GCGLenum provokeMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3159,6 +3461,7 @@ void GraphicsContextGLANGLE::provokingVertexANGLE(GCGLenum provokeMode)
 
 void GraphicsContextGLANGLE::polygonOffsetClampEXT(GCGLfloat factor, GCGLfloat units, GCGLfloat clamp)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
 
@@ -3167,6 +3470,7 @@ void GraphicsContextGLANGLE::polygonOffsetClampEXT(GCGLfloat factor, GCGLfloat u
 
 void GraphicsContextGLANGLE::simulateEventForTesting(SimulatedEventForTesting event)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (event == SimulatedEventForTesting::ContextChange) {
         dispatchContextChangedNotification();
         return;
@@ -3179,11 +3483,13 @@ void GraphicsContextGLANGLE::simulateEventForTesting(SimulatedEventForTesting ev
 
 bool GraphicsContextGLANGLE::isGLES2Compliant() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_isForWebGL2;
 }
 
 void GraphicsContextGLANGLE::paintRenderingResultsToCanvas(ImageBuffer& imageBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     withDrawingBufferAsNativeImage([&](NativeImage& image) {
         paintToCanvas(image, imageBuffer.backendSize(), imageBuffer.context());
     });
@@ -3191,6 +3497,7 @@ void GraphicsContextGLANGLE::paintRenderingResultsToCanvas(ImageBuffer& imageBuf
 
 void GraphicsContextGLANGLE::paintCompositedResultsToCanvas(ImageBuffer& imageBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     withDisplayBufferAsNativeImage([&](NativeImage& image) {
         paintToCanvas(image, imageBuffer.backendSize(), imageBuffer.context());
     });
@@ -3198,6 +3505,7 @@ void GraphicsContextGLANGLE::paintCompositedResultsToCanvas(ImageBuffer& imageBu
 
 void GraphicsContextGLANGLE::withDrawingBufferAsNativeImage(Function<void(NativeImage&)> func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     if (getInternalFramebufferSize().isEmpty())
@@ -3215,6 +3523,7 @@ void GraphicsContextGLANGLE::withDrawingBufferAsNativeImage(Function<void(Native
 
 void GraphicsContextGLANGLE::withDisplayBufferAsNativeImage(Function<void(NativeImage&)> func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return;
     if (getInternalFramebufferSize().isEmpty())
@@ -3232,6 +3541,7 @@ void GraphicsContextGLANGLE::withDisplayBufferAsNativeImage(Function<void(Native
 
 RefPtr<PixelBuffer> GraphicsContextGLANGLE::paintRenderingResultsToPixelBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Reading premultiplied alpha would involve unpremultiplying, which is lossy.
     if (contextAttributes().premultipliedAlpha)
         return nullptr;
@@ -3255,6 +3565,7 @@ RefPtr<PixelBuffer> GraphicsContextGLANGLE::paintRenderingResultsToPixelBuffer()
 
 RefPtr<PixelBuffer> GraphicsContextGLANGLE::readRenderingResultsForPainting()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!makeContextCurrent())
         return nullptr;
     if (getInternalFramebufferSize().isEmpty())
@@ -3264,15 +3575,18 @@ RefPtr<PixelBuffer> GraphicsContextGLANGLE::readRenderingResultsForPainting()
 
 void GraphicsContextGLANGLE::addError(GCGLErrorCode errorCode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_errors.add(errorCode);
 }
 
 void GraphicsContextGLANGLE::invalidateKnownTextureContent(GCGLuint)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 GCGLenum GraphicsContextGLANGLE::adjustWebGL1TextureInternalFormat(GCGLenum internalformat, GCGLenum format, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // The implementation of WEBGL_color_buffer_float for WebGL 1.0 / ES 2.0 requires a sized
     // internal format. Adjust it if necessary at this lowest level.
     if (type == GL_FLOAT) {
@@ -3286,6 +3600,7 @@ GCGLenum GraphicsContextGLANGLE::adjustWebGL1TextureInternalFormat(GCGLenum inte
 
 void GraphicsContextGLANGLE::setPackParameters(GCGLint alignment, GCGLint rowLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_packAlignment != alignment) {
         GL_PixelStorei(GL_PACK_ALIGNMENT, alignment);
         m_packAlignment = alignment;

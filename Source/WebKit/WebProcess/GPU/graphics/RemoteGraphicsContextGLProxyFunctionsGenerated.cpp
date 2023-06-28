@@ -32,6 +32,7 @@ namespace WebKit {
 
 void RemoteGraphicsContextGLProxy::activeTexture(GCGLenum texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ActiveTexture(texture));
@@ -43,6 +44,7 @@ void RemoteGraphicsContextGLProxy::activeTexture(GCGLenum texture)
 
 void RemoteGraphicsContextGLProxy::attachShader(PlatformGLObject program, PlatformGLObject shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::AttachShader(program, shader));
@@ -54,6 +56,7 @@ void RemoteGraphicsContextGLProxy::attachShader(PlatformGLObject program, Platfo
 
 void RemoteGraphicsContextGLProxy::bindAttribLocation(PlatformGLObject arg0, GCGLuint index, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindAttribLocation(arg0, index, name));
@@ -65,6 +68,7 @@ void RemoteGraphicsContextGLProxy::bindAttribLocation(PlatformGLObject arg0, GCG
 
 void RemoteGraphicsContextGLProxy::bindBuffer(GCGLenum target, PlatformGLObject arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindBuffer(target, arg1));
@@ -76,6 +80,7 @@ void RemoteGraphicsContextGLProxy::bindBuffer(GCGLenum target, PlatformGLObject 
 
 void RemoteGraphicsContextGLProxy::bindFramebuffer(GCGLenum target, PlatformGLObject arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindFramebuffer(target, arg1));
@@ -87,6 +92,7 @@ void RemoteGraphicsContextGLProxy::bindFramebuffer(GCGLenum target, PlatformGLOb
 
 void RemoteGraphicsContextGLProxy::bindRenderbuffer(GCGLenum target, PlatformGLObject arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindRenderbuffer(target, arg1));
@@ -98,6 +104,7 @@ void RemoteGraphicsContextGLProxy::bindRenderbuffer(GCGLenum target, PlatformGLO
 
 void RemoteGraphicsContextGLProxy::bindTexture(GCGLenum target, PlatformGLObject arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindTexture(target, arg1));
@@ -109,6 +116,7 @@ void RemoteGraphicsContextGLProxy::bindTexture(GCGLenum target, PlatformGLObject
 
 void RemoteGraphicsContextGLProxy::blendColor(GCGLclampf red, GCGLclampf green, GCGLclampf blue, GCGLclampf alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendColor(red, green, blue, alpha));
@@ -120,6 +128,7 @@ void RemoteGraphicsContextGLProxy::blendColor(GCGLclampf red, GCGLclampf green, 
 
 void RemoteGraphicsContextGLProxy::blendEquation(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendEquation(mode));
@@ -131,6 +140,7 @@ void RemoteGraphicsContextGLProxy::blendEquation(GCGLenum mode)
 
 void RemoteGraphicsContextGLProxy::blendEquationSeparate(GCGLenum modeRGB, GCGLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendEquationSeparate(modeRGB, modeAlpha));
@@ -142,6 +152,7 @@ void RemoteGraphicsContextGLProxy::blendEquationSeparate(GCGLenum modeRGB, GCGLe
 
 void RemoteGraphicsContextGLProxy::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendFunc(sfactor, dfactor));
@@ -153,6 +164,7 @@ void RemoteGraphicsContextGLProxy::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 
 void RemoteGraphicsContextGLProxy::blendFuncSeparate(GCGLenum srcRGB, GCGLenum dstRGB, GCGLenum srcAlpha, GCGLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha));
@@ -164,6 +176,7 @@ void RemoteGraphicsContextGLProxy::blendFuncSeparate(GCGLenum srcRGB, GCGLenum d
 
 GCGLenum RemoteGraphicsContextGLProxy::checkFramebufferStatus(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CheckFramebufferStatus(target));
@@ -177,6 +190,7 @@ GCGLenum RemoteGraphicsContextGLProxy::checkFramebufferStatus(GCGLenum target)
 
 void RemoteGraphicsContextGLProxy::clear(GCGLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Clear(mask));
@@ -188,6 +202,7 @@ void RemoteGraphicsContextGLProxy::clear(GCGLbitfield mask)
 
 void RemoteGraphicsContextGLProxy::clearColor(GCGLclampf red, GCGLclampf green, GCGLclampf blue, GCGLclampf alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearColor(red, green, blue, alpha));
@@ -199,6 +214,7 @@ void RemoteGraphicsContextGLProxy::clearColor(GCGLclampf red, GCGLclampf green, 
 
 void RemoteGraphicsContextGLProxy::clearDepth(GCGLclampf depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearDepth(depth));
@@ -210,6 +226,7 @@ void RemoteGraphicsContextGLProxy::clearDepth(GCGLclampf depth)
 
 void RemoteGraphicsContextGLProxy::clearStencil(GCGLint s)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearStencil(s));
@@ -221,6 +238,7 @@ void RemoteGraphicsContextGLProxy::clearStencil(GCGLint s)
 
 void RemoteGraphicsContextGLProxy::colorMask(GCGLboolean red, GCGLboolean green, GCGLboolean blue, GCGLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ColorMask(static_cast<bool>(red), static_cast<bool>(green), static_cast<bool>(blue), static_cast<bool>(alpha)));
@@ -232,6 +250,7 @@ void RemoteGraphicsContextGLProxy::colorMask(GCGLboolean red, GCGLboolean green,
 
 void RemoteGraphicsContextGLProxy::compileShader(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompileShader(arg0));
@@ -243,6 +262,7 @@ void RemoteGraphicsContextGLProxy::compileShader(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::copyTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLint border)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CopyTexImage2D(target, level, internalformat, x, y, width, height, border));
@@ -254,6 +274,7 @@ void RemoteGraphicsContextGLProxy::copyTexImage2D(GCGLenum target, GCGLint level
 
 void RemoteGraphicsContextGLProxy::copyTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height));
@@ -265,6 +286,7 @@ void RemoteGraphicsContextGLProxy::copyTexSubImage2D(GCGLenum target, GCGLint le
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateBuffer());
@@ -278,6 +300,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createBuffer()
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateFramebuffer());
@@ -291,6 +314,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createFramebuffer()
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createProgram()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateProgram());
@@ -304,6 +328,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createProgram()
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createRenderbuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateRenderbuffer());
@@ -317,6 +342,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createRenderbuffer()
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createShader(GCGLenum arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateShader(arg0));
@@ -330,6 +356,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createShader(GCGLenum arg0)
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateTexture());
@@ -343,6 +370,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createTexture()
 
 void RemoteGraphicsContextGLProxy::cullFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CullFace(mode));
@@ -354,6 +382,7 @@ void RemoteGraphicsContextGLProxy::cullFace(GCGLenum mode)
 
 void RemoteGraphicsContextGLProxy::deleteBuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteBuffer(arg0));
@@ -365,6 +394,7 @@ void RemoteGraphicsContextGLProxy::deleteBuffer(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::deleteFramebuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteFramebuffer(arg0));
@@ -376,6 +406,7 @@ void RemoteGraphicsContextGLProxy::deleteFramebuffer(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::deleteProgram(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteProgram(arg0));
@@ -387,6 +418,7 @@ void RemoteGraphicsContextGLProxy::deleteProgram(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::deleteRenderbuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteRenderbuffer(arg0));
@@ -398,6 +430,7 @@ void RemoteGraphicsContextGLProxy::deleteRenderbuffer(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::deleteShader(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteShader(arg0));
@@ -409,6 +442,7 @@ void RemoteGraphicsContextGLProxy::deleteShader(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::deleteTexture(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteTexture(arg0));
@@ -420,6 +454,7 @@ void RemoteGraphicsContextGLProxy::deleteTexture(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::depthFunc(GCGLenum func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DepthFunc(func));
@@ -431,6 +466,7 @@ void RemoteGraphicsContextGLProxy::depthFunc(GCGLenum func)
 
 void RemoteGraphicsContextGLProxy::depthMask(GCGLboolean flag)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DepthMask(static_cast<bool>(flag)));
@@ -442,6 +478,7 @@ void RemoteGraphicsContextGLProxy::depthMask(GCGLboolean flag)
 
 void RemoteGraphicsContextGLProxy::depthRange(GCGLclampf zNear, GCGLclampf zFar)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DepthRange(zNear, zFar));
@@ -453,6 +490,7 @@ void RemoteGraphicsContextGLProxy::depthRange(GCGLclampf zNear, GCGLclampf zFar)
 
 void RemoteGraphicsContextGLProxy::destroyEGLImage(GCEGLImage handle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DestroyEGLImage(static_cast<uint64_t>(reinterpret_cast<intptr_t>(handle))));
@@ -464,6 +502,7 @@ void RemoteGraphicsContextGLProxy::destroyEGLImage(GCEGLImage handle)
 
 void RemoteGraphicsContextGLProxy::detachShader(PlatformGLObject arg0, PlatformGLObject arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DetachShader(arg0, arg1));
@@ -475,6 +514,7 @@ void RemoteGraphicsContextGLProxy::detachShader(PlatformGLObject arg0, PlatformG
 
 void RemoteGraphicsContextGLProxy::disable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Disable(cap));
@@ -486,6 +526,7 @@ void RemoteGraphicsContextGLProxy::disable(GCGLenum cap)
 
 void RemoteGraphicsContextGLProxy::disableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DisableVertexAttribArray(index));
@@ -497,6 +538,7 @@ void RemoteGraphicsContextGLProxy::disableVertexAttribArray(GCGLuint index)
 
 void RemoteGraphicsContextGLProxy::drawArrays(GCGLenum mode, GCGLint first, GCGLsizei count)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawArrays(mode, first, count));
@@ -508,6 +550,7 @@ void RemoteGraphicsContextGLProxy::drawArrays(GCGLenum mode, GCGLint first, GCGL
 
 void RemoteGraphicsContextGLProxy::drawElements(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawElements(mode, count, type, static_cast<uint64_t>(offset)));
@@ -519,6 +562,7 @@ void RemoteGraphicsContextGLProxy::drawElements(GCGLenum mode, GCGLsizei count, 
 
 void RemoteGraphicsContextGLProxy::enable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Enable(cap));
@@ -530,6 +574,7 @@ void RemoteGraphicsContextGLProxy::enable(GCGLenum cap)
 
 void RemoteGraphicsContextGLProxy::enableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::EnableVertexAttribArray(index));
@@ -541,6 +586,7 @@ void RemoteGraphicsContextGLProxy::enableVertexAttribArray(GCGLuint index)
 
 void RemoteGraphicsContextGLProxy::finish()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Finish());
@@ -552,6 +598,7 @@ void RemoteGraphicsContextGLProxy::finish()
 
 void RemoteGraphicsContextGLProxy::flush()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Flush());
@@ -563,6 +610,7 @@ void RemoteGraphicsContextGLProxy::flush()
 
 void RemoteGraphicsContextGLProxy::framebufferRenderbuffer(GCGLenum target, GCGLenum attachment, GCGLenum renderbuffertarget, PlatformGLObject arg3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::FramebufferRenderbuffer(target, attachment, renderbuffertarget, arg3));
@@ -574,6 +622,7 @@ void RemoteGraphicsContextGLProxy::framebufferRenderbuffer(GCGLenum target, GCGL
 
 void RemoteGraphicsContextGLProxy::framebufferTexture2D(GCGLenum target, GCGLenum attachment, GCGLenum textarget, PlatformGLObject arg3, GCGLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::FramebufferTexture2D(target, attachment, textarget, arg3, level));
@@ -585,6 +634,7 @@ void RemoteGraphicsContextGLProxy::framebufferTexture2D(GCGLenum target, GCGLenu
 
 void RemoteGraphicsContextGLProxy::frontFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::FrontFace(mode));
@@ -596,6 +646,7 @@ void RemoteGraphicsContextGLProxy::frontFace(GCGLenum mode)
 
 void RemoteGraphicsContextGLProxy::generateMipmap(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::GenerateMipmap(target));
@@ -607,6 +658,7 @@ void RemoteGraphicsContextGLProxy::generateMipmap(GCGLenum target)
 
 bool RemoteGraphicsContextGLProxy::getActiveAttrib(PlatformGLObject program, GCGLuint index, struct WebCore::GraphicsContextGLActiveInfo& arg2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetActiveAttrib(program, index));
@@ -621,6 +673,7 @@ bool RemoteGraphicsContextGLProxy::getActiveAttrib(PlatformGLObject program, GCG
 
 bool RemoteGraphicsContextGLProxy::getActiveUniform(PlatformGLObject program, GCGLuint index, struct WebCore::GraphicsContextGLActiveInfo& arg2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetActiveUniform(program, index));
@@ -635,6 +688,7 @@ bool RemoteGraphicsContextGLProxy::getActiveUniform(PlatformGLObject program, GC
 
 GCGLint RemoteGraphicsContextGLProxy::getAttribLocation(PlatformGLObject arg0, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetAttribLocation(arg0, name));
@@ -648,6 +702,7 @@ GCGLint RemoteGraphicsContextGLProxy::getAttribLocation(PlatformGLObject arg0, c
 
 GCGLint RemoteGraphicsContextGLProxy::getBufferParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetBufferParameteri(target, pname));
@@ -661,6 +716,7 @@ GCGLint RemoteGraphicsContextGLProxy::getBufferParameteri(GCGLenum target, GCGLe
 
 String RemoteGraphicsContextGLProxy::getString(GCGLenum name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetString(name));
@@ -674,6 +730,7 @@ String RemoteGraphicsContextGLProxy::getString(GCGLenum name)
 
 void RemoteGraphicsContextGLProxy::getFloatv(GCGLenum pname, std::span<GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetFloatv(pname, value.size()));
@@ -687,6 +744,7 @@ void RemoteGraphicsContextGLProxy::getFloatv(GCGLenum pname, std::span<GCGLfloat
 
 void RemoteGraphicsContextGLProxy::getIntegerv(GCGLenum pname, std::span<GCGLint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetIntegerv(pname, value.size()));
@@ -700,6 +758,7 @@ void RemoteGraphicsContextGLProxy::getIntegerv(GCGLenum pname, std::span<GCGLint
 
 void RemoteGraphicsContextGLProxy::getIntegeri_v(GCGLenum pname, GCGLuint index, std::span<GCGLint, 4> value) // NOLINT
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetIntegeri_v(pname, index));
@@ -713,6 +772,7 @@ void RemoteGraphicsContextGLProxy::getIntegeri_v(GCGLenum pname, GCGLuint index,
 
 GCGLint64 RemoteGraphicsContextGLProxy::getInteger64(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetInteger64(pname));
@@ -726,6 +786,7 @@ GCGLint64 RemoteGraphicsContextGLProxy::getInteger64(GCGLenum pname)
 
 GCGLint64 RemoteGraphicsContextGLProxy::getInteger64i(GCGLenum pname, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetInteger64i(pname, index));
@@ -739,6 +800,7 @@ GCGLint64 RemoteGraphicsContextGLProxy::getInteger64i(GCGLenum pname, GCGLuint i
 
 GCGLint RemoteGraphicsContextGLProxy::getProgrami(PlatformGLObject program, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetProgrami(program, pname));
@@ -752,6 +814,7 @@ GCGLint RemoteGraphicsContextGLProxy::getProgrami(PlatformGLObject program, GCGL
 
 void RemoteGraphicsContextGLProxy::getBooleanv(GCGLenum pname, std::span<GCGLboolean> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetBooleanv(pname, value.size()));
@@ -765,6 +828,7 @@ void RemoteGraphicsContextGLProxy::getBooleanv(GCGLenum pname, std::span<GCGLboo
 
 GCGLint RemoteGraphicsContextGLProxy::getFramebufferAttachmentParameteri(GCGLenum target, GCGLenum attachment, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetFramebufferAttachmentParameteri(target, attachment, pname));
@@ -778,6 +842,7 @@ GCGLint RemoteGraphicsContextGLProxy::getFramebufferAttachmentParameteri(GCGLenu
 
 String RemoteGraphicsContextGLProxy::getProgramInfoLog(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetProgramInfoLog(arg0));
@@ -791,6 +856,7 @@ String RemoteGraphicsContextGLProxy::getProgramInfoLog(PlatformGLObject arg0)
 
 GCGLint RemoteGraphicsContextGLProxy::getRenderbufferParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetRenderbufferParameteri(target, pname));
@@ -804,6 +870,7 @@ GCGLint RemoteGraphicsContextGLProxy::getRenderbufferParameteri(GCGLenum target,
 
 GCGLint RemoteGraphicsContextGLProxy::getShaderi(PlatformGLObject arg0, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetShaderi(arg0, pname));
@@ -817,6 +884,7 @@ GCGLint RemoteGraphicsContextGLProxy::getShaderi(PlatformGLObject arg0, GCGLenum
 
 String RemoteGraphicsContextGLProxy::getShaderInfoLog(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetShaderInfoLog(arg0));
@@ -830,6 +898,7 @@ String RemoteGraphicsContextGLProxy::getShaderInfoLog(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::getShaderPrecisionFormat(GCGLenum shaderType, GCGLenum precisionType, std::span<GCGLint, 2> range, GCGLint* precision)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetShaderPrecisionFormat(shaderType, precisionType));
@@ -845,6 +914,7 @@ void RemoteGraphicsContextGLProxy::getShaderPrecisionFormat(GCGLenum shaderType,
 
 String RemoteGraphicsContextGLProxy::getShaderSource(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetShaderSource(arg0));
@@ -858,6 +928,7 @@ String RemoteGraphicsContextGLProxy::getShaderSource(PlatformGLObject arg0)
 
 GCGLfloat RemoteGraphicsContextGLProxy::getTexParameterf(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetTexParameterf(target, pname));
@@ -871,6 +942,7 @@ GCGLfloat RemoteGraphicsContextGLProxy::getTexParameterf(GCGLenum target, GCGLen
 
 GCGLint RemoteGraphicsContextGLProxy::getTexParameteri(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetTexParameteri(target, pname));
@@ -884,6 +956,7 @@ GCGLint RemoteGraphicsContextGLProxy::getTexParameteri(GCGLenum target, GCGLenum
 
 void RemoteGraphicsContextGLProxy::getUniformfv(PlatformGLObject program, GCGLint location, std::span<GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformfv(program, location, value.size()));
@@ -897,6 +970,7 @@ void RemoteGraphicsContextGLProxy::getUniformfv(PlatformGLObject program, GCGLin
 
 void RemoteGraphicsContextGLProxy::getUniformiv(PlatformGLObject program, GCGLint location, std::span<GCGLint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformiv(program, location, value.size()));
@@ -910,6 +984,7 @@ void RemoteGraphicsContextGLProxy::getUniformiv(PlatformGLObject program, GCGLin
 
 void RemoteGraphicsContextGLProxy::getUniformuiv(PlatformGLObject program, GCGLint location, std::span<GCGLuint> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformuiv(program, location, value.size()));
@@ -923,6 +998,7 @@ void RemoteGraphicsContextGLProxy::getUniformuiv(PlatformGLObject program, GCGLi
 
 GCGLint RemoteGraphicsContextGLProxy::getUniformLocation(PlatformGLObject arg0, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformLocation(arg0, name));
@@ -936,6 +1012,7 @@ GCGLint RemoteGraphicsContextGLProxy::getUniformLocation(PlatformGLObject arg0, 
 
 GCGLsizeiptr RemoteGraphicsContextGLProxy::getVertexAttribOffset(GCGLuint index, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetVertexAttribOffset(index, pname));
@@ -949,6 +1026,7 @@ GCGLsizeiptr RemoteGraphicsContextGLProxy::getVertexAttribOffset(GCGLuint index,
 
 void RemoteGraphicsContextGLProxy::hint(GCGLenum target, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Hint(target, mode));
@@ -960,6 +1038,7 @@ void RemoteGraphicsContextGLProxy::hint(GCGLenum target, GCGLenum mode)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isBuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsBuffer(arg0));
@@ -973,6 +1052,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isBuffer(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isEnabled(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsEnabled(cap));
@@ -986,6 +1066,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isEnabled(GCGLenum cap)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isFramebuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsFramebuffer(arg0));
@@ -999,6 +1080,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isFramebuffer(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isProgram(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsProgram(arg0));
@@ -1012,6 +1094,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isProgram(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isRenderbuffer(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsRenderbuffer(arg0));
@@ -1025,6 +1108,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isRenderbuffer(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isShader(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsShader(arg0));
@@ -1038,6 +1122,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isShader(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isTexture(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsTexture(arg0));
@@ -1051,6 +1136,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isTexture(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::lineWidth(GCGLfloat arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::LineWidth(arg0));
@@ -1062,6 +1148,7 @@ void RemoteGraphicsContextGLProxy::lineWidth(GCGLfloat arg0)
 
 void RemoteGraphicsContextGLProxy::linkProgram(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::LinkProgram(arg0));
@@ -1073,6 +1160,7 @@ void RemoteGraphicsContextGLProxy::linkProgram(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::pixelStorei(GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::PixelStorei(pname, param));
@@ -1084,6 +1172,7 @@ void RemoteGraphicsContextGLProxy::pixelStorei(GCGLenum pname, GCGLint param)
 
 void RemoteGraphicsContextGLProxy::polygonOffset(GCGLfloat factor, GCGLfloat units)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::PolygonOffset(factor, units));
@@ -1095,6 +1184,7 @@ void RemoteGraphicsContextGLProxy::polygonOffset(GCGLfloat factor, GCGLfloat uni
 
 void RemoteGraphicsContextGLProxy::renderbufferStorage(GCGLenum target, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::RenderbufferStorage(target, internalformat, width, height));
@@ -1106,6 +1196,7 @@ void RemoteGraphicsContextGLProxy::renderbufferStorage(GCGLenum target, GCGLenum
 
 void RemoteGraphicsContextGLProxy::sampleCoverage(GCGLclampf value, GCGLboolean invert)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::SampleCoverage(value, static_cast<bool>(invert)));
@@ -1117,6 +1208,7 @@ void RemoteGraphicsContextGLProxy::sampleCoverage(GCGLclampf value, GCGLboolean 
 
 void RemoteGraphicsContextGLProxy::scissor(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Scissor(x, y, width, height));
@@ -1128,6 +1220,7 @@ void RemoteGraphicsContextGLProxy::scissor(GCGLint x, GCGLint y, GCGLsizei width
 
 void RemoteGraphicsContextGLProxy::shaderSource(PlatformGLObject arg0, const String& arg1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ShaderSource(arg0, arg1));
@@ -1139,6 +1232,7 @@ void RemoteGraphicsContextGLProxy::shaderSource(PlatformGLObject arg0, const Str
 
 void RemoteGraphicsContextGLProxy::stencilFunc(GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilFunc(func, ref, mask));
@@ -1150,6 +1244,7 @@ void RemoteGraphicsContextGLProxy::stencilFunc(GCGLenum func, GCGLint ref, GCGLu
 
 void RemoteGraphicsContextGLProxy::stencilFuncSeparate(GCGLenum face, GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilFuncSeparate(face, func, ref, mask));
@@ -1161,6 +1256,7 @@ void RemoteGraphicsContextGLProxy::stencilFuncSeparate(GCGLenum face, GCGLenum f
 
 void RemoteGraphicsContextGLProxy::stencilMask(GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilMask(mask));
@@ -1172,6 +1268,7 @@ void RemoteGraphicsContextGLProxy::stencilMask(GCGLuint mask)
 
 void RemoteGraphicsContextGLProxy::stencilMaskSeparate(GCGLenum face, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilMaskSeparate(face, mask));
@@ -1183,6 +1280,7 @@ void RemoteGraphicsContextGLProxy::stencilMaskSeparate(GCGLenum face, GCGLuint m
 
 void RemoteGraphicsContextGLProxy::stencilOp(GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilOp(fail, zfail, zpass));
@@ -1194,6 +1292,7 @@ void RemoteGraphicsContextGLProxy::stencilOp(GCGLenum fail, GCGLenum zfail, GCGL
 
 void RemoteGraphicsContextGLProxy::stencilOpSeparate(GCGLenum face, GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::StencilOpSeparate(face, fail, zfail, zpass));
@@ -1205,6 +1304,7 @@ void RemoteGraphicsContextGLProxy::stencilOpSeparate(GCGLenum face, GCGLenum fai
 
 void RemoteGraphicsContextGLProxy::texParameterf(GCGLenum target, GCGLenum pname, GCGLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexParameterf(target, pname, param));
@@ -1216,6 +1316,7 @@ void RemoteGraphicsContextGLProxy::texParameterf(GCGLenum target, GCGLenum pname
 
 void RemoteGraphicsContextGLProxy::texParameteri(GCGLenum target, GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexParameteri(target, pname, param));
@@ -1227,6 +1328,7 @@ void RemoteGraphicsContextGLProxy::texParameteri(GCGLenum target, GCGLenum pname
 
 void RemoteGraphicsContextGLProxy::uniform1f(GCGLint location, GCGLfloat x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1f(location, x));
@@ -1238,6 +1340,7 @@ void RemoteGraphicsContextGLProxy::uniform1f(GCGLint location, GCGLfloat x)
 
 void RemoteGraphicsContextGLProxy::uniform1fv(GCGLint location, std::span<const GCGLfloat> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1fv(location, IPC::ArrayReference<float>(reinterpret_cast<const float*>(v.data()), v.size())));
@@ -1249,6 +1352,7 @@ void RemoteGraphicsContextGLProxy::uniform1fv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform1i(GCGLint location, GCGLint x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1i(location, x));
@@ -1260,6 +1364,7 @@ void RemoteGraphicsContextGLProxy::uniform1i(GCGLint location, GCGLint x)
 
 void RemoteGraphicsContextGLProxy::uniform1iv(GCGLint location, std::span<const GCGLint> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1iv(location, IPC::ArrayReference<int32_t>(reinterpret_cast<const int32_t*>(v.data()), v.size())));
@@ -1271,6 +1376,7 @@ void RemoteGraphicsContextGLProxy::uniform1iv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform2f(GCGLint location, GCGLfloat x, GCGLfloat y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2f(location, x, y));
@@ -1282,6 +1388,7 @@ void RemoteGraphicsContextGLProxy::uniform2f(GCGLint location, GCGLfloat x, GCGL
 
 void RemoteGraphicsContextGLProxy::uniform2fv(GCGLint location, std::span<const GCGLfloat> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2fv(location, IPC::ArrayReference<float>(reinterpret_cast<const float*>(v.data()), v.size())));
@@ -1293,6 +1400,7 @@ void RemoteGraphicsContextGLProxy::uniform2fv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform2i(GCGLint location, GCGLint x, GCGLint y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2i(location, x, y));
@@ -1304,6 +1412,7 @@ void RemoteGraphicsContextGLProxy::uniform2i(GCGLint location, GCGLint x, GCGLin
 
 void RemoteGraphicsContextGLProxy::uniform2iv(GCGLint location, std::span<const GCGLint> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2iv(location, IPC::ArrayReference<int32_t>(reinterpret_cast<const int32_t*>(v.data()), v.size())));
@@ -1315,6 +1424,7 @@ void RemoteGraphicsContextGLProxy::uniform2iv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform3f(GCGLint location, GCGLfloat x, GCGLfloat y, GCGLfloat z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3f(location, x, y, z));
@@ -1326,6 +1436,7 @@ void RemoteGraphicsContextGLProxy::uniform3f(GCGLint location, GCGLfloat x, GCGL
 
 void RemoteGraphicsContextGLProxy::uniform3fv(GCGLint location, std::span<const GCGLfloat> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3fv(location, IPC::ArrayReference<float>(reinterpret_cast<const float*>(v.data()), v.size())));
@@ -1337,6 +1448,7 @@ void RemoteGraphicsContextGLProxy::uniform3fv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform3i(GCGLint location, GCGLint x, GCGLint y, GCGLint z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3i(location, x, y, z));
@@ -1348,6 +1460,7 @@ void RemoteGraphicsContextGLProxy::uniform3i(GCGLint location, GCGLint x, GCGLin
 
 void RemoteGraphicsContextGLProxy::uniform3iv(GCGLint location, std::span<const GCGLint> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3iv(location, IPC::ArrayReference<int32_t>(reinterpret_cast<const int32_t*>(v.data()), v.size())));
@@ -1359,6 +1472,7 @@ void RemoteGraphicsContextGLProxy::uniform3iv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform4f(GCGLint location, GCGLfloat x, GCGLfloat y, GCGLfloat z, GCGLfloat w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4f(location, x, y, z, w));
@@ -1370,6 +1484,7 @@ void RemoteGraphicsContextGLProxy::uniform4f(GCGLint location, GCGLfloat x, GCGL
 
 void RemoteGraphicsContextGLProxy::uniform4fv(GCGLint location, std::span<const GCGLfloat> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4fv(location, IPC::ArrayReference<float>(reinterpret_cast<const float*>(v.data()), v.size())));
@@ -1381,6 +1496,7 @@ void RemoteGraphicsContextGLProxy::uniform4fv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniform4i(GCGLint location, GCGLint x, GCGLint y, GCGLint z, GCGLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4i(location, x, y, z, w));
@@ -1392,6 +1508,7 @@ void RemoteGraphicsContextGLProxy::uniform4i(GCGLint location, GCGLint x, GCGLin
 
 void RemoteGraphicsContextGLProxy::uniform4iv(GCGLint location, std::span<const GCGLint> v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4iv(location, IPC::ArrayReference<int32_t>(reinterpret_cast<const int32_t*>(v.data()), v.size())));
@@ -1403,6 +1520,7 @@ void RemoteGraphicsContextGLProxy::uniform4iv(GCGLint location, std::span<const 
 
 void RemoteGraphicsContextGLProxy::uniformMatrix2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix2fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(value.data()), value.size())));
@@ -1414,6 +1532,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix2fv(GCGLint location, GCGLboolea
 
 void RemoteGraphicsContextGLProxy::uniformMatrix3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix3fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(value.data()), value.size())));
@@ -1425,6 +1544,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix3fv(GCGLint location, GCGLboolea
 
 void RemoteGraphicsContextGLProxy::uniformMatrix4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix4fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(value.data()), value.size())));
@@ -1436,6 +1556,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix4fv(GCGLint location, GCGLboolea
 
 void RemoteGraphicsContextGLProxy::useProgram(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UseProgram(arg0));
@@ -1447,6 +1568,7 @@ void RemoteGraphicsContextGLProxy::useProgram(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::validateProgram(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ValidateProgram(arg0));
@@ -1458,6 +1580,7 @@ void RemoteGraphicsContextGLProxy::validateProgram(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::vertexAttrib1f(GCGLuint index, GCGLfloat x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib1f(index, x));
@@ -1469,6 +1592,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib1f(GCGLuint index, GCGLfloat x)
 
 void RemoteGraphicsContextGLProxy::vertexAttrib1fv(GCGLuint index, std::span<const GCGLfloat, 1> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib1fv(index, IPC::ArrayReference<float, 1>(reinterpret_cast<const float*>(values.data()), values.size())));
@@ -1480,6 +1604,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib1fv(GCGLuint index, std::span<con
 
 void RemoteGraphicsContextGLProxy::vertexAttrib2f(GCGLuint index, GCGLfloat x, GCGLfloat y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib2f(index, x, y));
@@ -1491,6 +1616,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib2f(GCGLuint index, GCGLfloat x, G
 
 void RemoteGraphicsContextGLProxy::vertexAttrib2fv(GCGLuint index, std::span<const GCGLfloat, 2> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib2fv(index, IPC::ArrayReference<float, 2>(reinterpret_cast<const float*>(values.data()), values.size())));
@@ -1502,6 +1628,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib2fv(GCGLuint index, std::span<con
 
 void RemoteGraphicsContextGLProxy::vertexAttrib3f(GCGLuint index, GCGLfloat x, GCGLfloat y, GCGLfloat z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib3f(index, x, y, z));
@@ -1513,6 +1640,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib3f(GCGLuint index, GCGLfloat x, G
 
 void RemoteGraphicsContextGLProxy::vertexAttrib3fv(GCGLuint index, std::span<const GCGLfloat, 3> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib3fv(index, IPC::ArrayReference<float, 3>(reinterpret_cast<const float*>(values.data()), values.size())));
@@ -1524,6 +1652,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib3fv(GCGLuint index, std::span<con
 
 void RemoteGraphicsContextGLProxy::vertexAttrib4f(GCGLuint index, GCGLfloat x, GCGLfloat y, GCGLfloat z, GCGLfloat w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib4f(index, x, y, z, w));
@@ -1535,6 +1664,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib4f(GCGLuint index, GCGLfloat x, G
 
 void RemoteGraphicsContextGLProxy::vertexAttrib4fv(GCGLuint index, std::span<const GCGLfloat, 4> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttrib4fv(index, IPC::ArrayReference<float, 4>(reinterpret_cast<const float*>(values.data()), values.size())));
@@ -1546,6 +1676,7 @@ void RemoteGraphicsContextGLProxy::vertexAttrib4fv(GCGLuint index, std::span<con
 
 void RemoteGraphicsContextGLProxy::vertexAttribPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLboolean normalized, GCGLsizei stride, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribPointer(index, size, type, static_cast<bool>(normalized), stride, static_cast<uint64_t>(offset)));
@@ -1557,6 +1688,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribPointer(GCGLuint index, GCGLint s
 
 void RemoteGraphicsContextGLProxy::viewport(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Viewport(x, y, width, height));
@@ -1568,6 +1700,7 @@ void RemoteGraphicsContextGLProxy::viewport(GCGLint x, GCGLint y, GCGLsizei widt
 
 void RemoteGraphicsContextGLProxy::bufferData(GCGLenum target, GCGLsizeiptr arg1, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BufferData0(target, static_cast<uint64_t>(arg1), usage));
@@ -1579,6 +1712,7 @@ void RemoteGraphicsContextGLProxy::bufferData(GCGLenum target, GCGLsizeiptr arg1
 
 void RemoteGraphicsContextGLProxy::bufferData(GCGLenum target, std::span<const uint8_t> data, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BufferData1(target, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size()), usage));
@@ -1590,6 +1724,7 @@ void RemoteGraphicsContextGLProxy::bufferData(GCGLenum target, std::span<const u
 
 void RemoteGraphicsContextGLProxy::bufferSubData(GCGLenum target, GCGLintptr offset, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BufferSubData(target, static_cast<uint64_t>(offset), IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size())));
@@ -1601,6 +1736,7 @@ void RemoteGraphicsContextGLProxy::bufferSubData(GCGLenum target, GCGLintptr off
 
 void RemoteGraphicsContextGLProxy::readPixelsBufferObject(WebCore::IntRect arg0, GCGLenum format, GCGLenum type, GCGLintptr offset, GCGLint alignment, GCGLint rowLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ReadPixelsBufferObject(arg0, format, type, static_cast<uint64_t>(offset), alignment, rowLength));
@@ -1612,6 +1748,7 @@ void RemoteGraphicsContextGLProxy::readPixelsBufferObject(WebCore::IntRect arg0,
 
 void RemoteGraphicsContextGLProxy::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexImage2D0(target, level, internalformat, width, height, border, format, type, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(pixels.data()), pixels.size())));
@@ -1623,6 +1760,7 @@ void RemoteGraphicsContextGLProxy::texImage2D(GCGLenum target, GCGLint level, GC
 
 void RemoteGraphicsContextGLProxy::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexImage2D1(target, level, internalformat, width, height, border, format, type, static_cast<uint64_t>(offset)));
@@ -1634,6 +1772,7 @@ void RemoteGraphicsContextGLProxy::texImage2D(GCGLenum target, GCGLint level, GC
 
 void RemoteGraphicsContextGLProxy::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexSubImage2D0(target, level, xoffset, yoffset, width, height, format, type, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(pixels.data()), pixels.size())));
@@ -1645,6 +1784,7 @@ void RemoteGraphicsContextGLProxy::texSubImage2D(GCGLenum target, GCGLint level,
 
 void RemoteGraphicsContextGLProxy::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexSubImage2D1(target, level, xoffset, yoffset, width, height, format, type, static_cast<uint64_t>(offset)));
@@ -1656,6 +1796,7 @@ void RemoteGraphicsContextGLProxy::texSubImage2D(GCGLenum target, GCGLint level,
 
 void RemoteGraphicsContextGLProxy::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexImage2D0(target, level, internalformat, width, height, border, imageSize, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size())));
@@ -1667,6 +1808,7 @@ void RemoteGraphicsContextGLProxy::compressedTexImage2D(GCGLenum target, GCGLint
 
 void RemoteGraphicsContextGLProxy::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexImage2D1(target, level, internalformat, width, height, border, imageSize, static_cast<uint64_t>(offset)));
@@ -1678,6 +1820,7 @@ void RemoteGraphicsContextGLProxy::compressedTexImage2D(GCGLenum target, GCGLint
 
 void RemoteGraphicsContextGLProxy::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexSubImage2D0(target, level, xoffset, yoffset, width, height, format, imageSize, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size())));
@@ -1689,6 +1832,7 @@ void RemoteGraphicsContextGLProxy::compressedTexSubImage2D(GCGLenum target, GCGL
 
 void RemoteGraphicsContextGLProxy::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexSubImage2D1(target, level, xoffset, yoffset, width, height, format, imageSize, static_cast<uint64_t>(offset)));
@@ -1700,6 +1844,7 @@ void RemoteGraphicsContextGLProxy::compressedTexSubImage2D(GCGLenum target, GCGL
 
 void RemoteGraphicsContextGLProxy::drawArraysInstanced(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawArraysInstanced(mode, first, count, primcount));
@@ -1711,6 +1856,7 @@ void RemoteGraphicsContextGLProxy::drawArraysInstanced(GCGLenum mode, GCGLint fi
 
 void RemoteGraphicsContextGLProxy::drawElementsInstanced(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawElementsInstanced(mode, count, type, static_cast<uint64_t>(offset), primcount));
@@ -1722,6 +1868,7 @@ void RemoteGraphicsContextGLProxy::drawElementsInstanced(GCGLenum mode, GCGLsize
 
 void RemoteGraphicsContextGLProxy::vertexAttribDivisor(GCGLuint index, GCGLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribDivisor(index, divisor));
@@ -1733,6 +1880,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribDivisor(GCGLuint index, GCGLuint 
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createVertexArray()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateVertexArray());
@@ -1746,6 +1894,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createVertexArray()
 
 void RemoteGraphicsContextGLProxy::deleteVertexArray(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteVertexArray(arg0));
@@ -1757,6 +1906,7 @@ void RemoteGraphicsContextGLProxy::deleteVertexArray(PlatformGLObject arg0)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isVertexArray(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsVertexArray(arg0));
@@ -1770,6 +1920,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isVertexArray(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::bindVertexArray(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindVertexArray(arg0));
@@ -1781,6 +1932,7 @@ void RemoteGraphicsContextGLProxy::bindVertexArray(PlatformGLObject arg0)
 
 void RemoteGraphicsContextGLProxy::copyBufferSubData(GCGLenum readTarget, GCGLenum writeTarget, GCGLintptr readOffset, GCGLintptr writeOffset, GCGLsizeiptr arg4)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CopyBufferSubData(readTarget, writeTarget, static_cast<uint64_t>(readOffset), static_cast<uint64_t>(writeOffset), static_cast<uint64_t>(arg4)));
@@ -1792,6 +1944,7 @@ void RemoteGraphicsContextGLProxy::copyBufferSubData(GCGLenum readTarget, GCGLen
 
 void RemoteGraphicsContextGLProxy::getBufferSubData(GCGLenum target, GCGLintptr offset, std::span<uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetBufferSubData(target, static_cast<uint64_t>(offset), data.size()));
@@ -1805,6 +1958,7 @@ void RemoteGraphicsContextGLProxy::getBufferSubData(GCGLenum target, GCGLintptr 
 
 void RemoteGraphicsContextGLProxy::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
@@ -1816,6 +1970,7 @@ void RemoteGraphicsContextGLProxy::blitFramebuffer(GCGLint srcX0, GCGLint srcY0,
 
 void RemoteGraphicsContextGLProxy::framebufferTextureLayer(GCGLenum target, GCGLenum attachment, PlatformGLObject texture, GCGLint level, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::FramebufferTextureLayer(target, attachment, texture, level, layer));
@@ -1827,6 +1982,7 @@ void RemoteGraphicsContextGLProxy::framebufferTextureLayer(GCGLenum target, GCGL
 
 void RemoteGraphicsContextGLProxy::invalidateFramebuffer(GCGLenum target, std::span<const GCGLenum> attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::InvalidateFramebuffer(target, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(attachments.data()), attachments.size())));
@@ -1838,6 +1994,7 @@ void RemoteGraphicsContextGLProxy::invalidateFramebuffer(GCGLenum target, std::s
 
 void RemoteGraphicsContextGLProxy::invalidateSubFramebuffer(GCGLenum target, std::span<const GCGLenum> attachments, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::InvalidateSubFramebuffer(target, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(attachments.data()), attachments.size()), x, y, width, height));
@@ -1849,6 +2006,7 @@ void RemoteGraphicsContextGLProxy::invalidateSubFramebuffer(GCGLenum target, std
 
 void RemoteGraphicsContextGLProxy::readBuffer(GCGLenum src)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ReadBuffer(src));
@@ -1860,6 +2018,7 @@ void RemoteGraphicsContextGLProxy::readBuffer(GCGLenum src)
 
 void RemoteGraphicsContextGLProxy::renderbufferStorageMultisample(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::RenderbufferStorageMultisample(target, samples, internalformat, width, height));
@@ -1871,6 +2030,7 @@ void RemoteGraphicsContextGLProxy::renderbufferStorageMultisample(GCGLenum targe
 
 void RemoteGraphicsContextGLProxy::texStorage2D(GCGLenum target, GCGLsizei levels, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexStorage2D(target, levels, internalformat, width, height));
@@ -1882,6 +2042,7 @@ void RemoteGraphicsContextGLProxy::texStorage2D(GCGLenum target, GCGLsizei level
 
 void RemoteGraphicsContextGLProxy::texStorage3D(GCGLenum target, GCGLsizei levels, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexStorage3D(target, levels, internalformat, width, height, depth));
@@ -1893,6 +2054,7 @@ void RemoteGraphicsContextGLProxy::texStorage3D(GCGLenum target, GCGLsizei level
 
 void RemoteGraphicsContextGLProxy::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexImage3D0(target, level, internalformat, width, height, depth, border, format, type, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(pixels.data()), pixels.size())));
@@ -1904,6 +2066,7 @@ void RemoteGraphicsContextGLProxy::texImage3D(GCGLenum target, GCGLint level, GC
 
 void RemoteGraphicsContextGLProxy::texImage3D(GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexImage3D1(target, level, internalformat, width, height, depth, border, format, type, static_cast<uint64_t>(offset)));
@@ -1915,6 +2078,7 @@ void RemoteGraphicsContextGLProxy::texImage3D(GCGLenum target, GCGLint level, GC
 
 void RemoteGraphicsContextGLProxy::texSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexSubImage3D0(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(pixels.data()), pixels.size())));
@@ -1926,6 +2090,7 @@ void RemoteGraphicsContextGLProxy::texSubImage3D(GCGLenum target, GCGLint level,
 
 void RemoteGraphicsContextGLProxy::texSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TexSubImage3D1(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, static_cast<uint64_t>(offset)));
@@ -1937,6 +2102,7 @@ void RemoteGraphicsContextGLProxy::texSubImage3D(GCGLenum target, GCGLint level,
 
 void RemoteGraphicsContextGLProxy::copyTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height));
@@ -1948,6 +2114,7 @@ void RemoteGraphicsContextGLProxy::copyTexSubImage3D(GCGLenum target, GCGLint le
 
 void RemoteGraphicsContextGLProxy::compressedTexImage3D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexImage3D0(target, level, internalformat, width, height, depth, border, imageSize, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size())));
@@ -1959,6 +2126,7 @@ void RemoteGraphicsContextGLProxy::compressedTexImage3D(GCGLenum target, GCGLint
 
 void RemoteGraphicsContextGLProxy::compressedTexImage3D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexImage3D1(target, level, internalformat, width, height, depth, border, imageSize, static_cast<uint64_t>(offset)));
@@ -1970,6 +2138,7 @@ void RemoteGraphicsContextGLProxy::compressedTexImage3D(GCGLenum target, GCGLint
 
 void RemoteGraphicsContextGLProxy::compressedTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLsizei imageSize, std::span<const uint8_t> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexSubImage3D0(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, IPC::ArrayReference<uint8_t>(reinterpret_cast<const uint8_t*>(data.data()), data.size())));
@@ -1981,6 +2150,7 @@ void RemoteGraphicsContextGLProxy::compressedTexSubImage3D(GCGLenum target, GCGL
 
 void RemoteGraphicsContextGLProxy::compressedTexSubImage3D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLsizei imageSize, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::CompressedTexSubImage3D1(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, static_cast<uint64_t>(offset)));
@@ -1992,6 +2162,7 @@ void RemoteGraphicsContextGLProxy::compressedTexSubImage3D(GCGLenum target, GCGL
 
 GCGLint RemoteGraphicsContextGLProxy::getFragDataLocation(PlatformGLObject program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetFragDataLocation(program, name));
@@ -2005,6 +2176,7 @@ GCGLint RemoteGraphicsContextGLProxy::getFragDataLocation(PlatformGLObject progr
 
 void RemoteGraphicsContextGLProxy::uniform1ui(GCGLint location, GCGLuint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1ui(location, v0));
@@ -2016,6 +2188,7 @@ void RemoteGraphicsContextGLProxy::uniform1ui(GCGLint location, GCGLuint v0)
 
 void RemoteGraphicsContextGLProxy::uniform2ui(GCGLint location, GCGLuint v0, GCGLuint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2ui(location, v0, v1));
@@ -2027,6 +2200,7 @@ void RemoteGraphicsContextGLProxy::uniform2ui(GCGLint location, GCGLuint v0, GCG
 
 void RemoteGraphicsContextGLProxy::uniform3ui(GCGLint location, GCGLuint v0, GCGLuint v1, GCGLuint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3ui(location, v0, v1, v2));
@@ -2038,6 +2212,7 @@ void RemoteGraphicsContextGLProxy::uniform3ui(GCGLint location, GCGLuint v0, GCG
 
 void RemoteGraphicsContextGLProxy::uniform4ui(GCGLint location, GCGLuint v0, GCGLuint v1, GCGLuint v2, GCGLuint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4ui(location, v0, v1, v2, v3));
@@ -2049,6 +2224,7 @@ void RemoteGraphicsContextGLProxy::uniform4ui(GCGLint location, GCGLuint v0, GCG
 
 void RemoteGraphicsContextGLProxy::uniform1uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform1uiv(location, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(data.data()), data.size())));
@@ -2060,6 +2236,7 @@ void RemoteGraphicsContextGLProxy::uniform1uiv(GCGLint location, std::span<const
 
 void RemoteGraphicsContextGLProxy::uniform2uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform2uiv(location, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(data.data()), data.size())));
@@ -2071,6 +2248,7 @@ void RemoteGraphicsContextGLProxy::uniform2uiv(GCGLint location, std::span<const
 
 void RemoteGraphicsContextGLProxy::uniform3uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform3uiv(location, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(data.data()), data.size())));
@@ -2082,6 +2260,7 @@ void RemoteGraphicsContextGLProxy::uniform3uiv(GCGLint location, std::span<const
 
 void RemoteGraphicsContextGLProxy::uniform4uiv(GCGLint location, std::span<const GCGLuint> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::Uniform4uiv(location, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(data.data()), data.size())));
@@ -2093,6 +2272,7 @@ void RemoteGraphicsContextGLProxy::uniform4uiv(GCGLint location, std::span<const
 
 void RemoteGraphicsContextGLProxy::uniformMatrix2x3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix2x3fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2104,6 +2284,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix2x3fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::uniformMatrix3x2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix3x2fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2115,6 +2296,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix3x2fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::uniformMatrix2x4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix2x4fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2126,6 +2308,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix2x4fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::uniformMatrix4x2fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix4x2fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2137,6 +2320,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix4x2fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::uniformMatrix3x4fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix3x4fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2148,6 +2332,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix3x4fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::uniformMatrix4x3fv(GCGLint location, GCGLboolean transpose, std::span<const GCGLfloat> data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformMatrix4x3fv(location, static_cast<bool>(transpose), IPC::ArrayReference<float>(reinterpret_cast<const float*>(data.data()), data.size())));
@@ -2159,6 +2344,7 @@ void RemoteGraphicsContextGLProxy::uniformMatrix4x3fv(GCGLint location, GCGLbool
 
 void RemoteGraphicsContextGLProxy::vertexAttribI4i(GCGLuint index, GCGLint x, GCGLint y, GCGLint z, GCGLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribI4i(index, x, y, z, w));
@@ -2170,6 +2356,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribI4i(GCGLuint index, GCGLint x, GC
 
 void RemoteGraphicsContextGLProxy::vertexAttribI4iv(GCGLuint index, std::span<const GCGLint, 4> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribI4iv(index, IPC::ArrayReference<int32_t, 4>(reinterpret_cast<const int32_t*>(values.data()), values.size())));
@@ -2181,6 +2368,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribI4iv(GCGLuint index, std::span<co
 
 void RemoteGraphicsContextGLProxy::vertexAttribI4ui(GCGLuint index, GCGLuint x, GCGLuint y, GCGLuint z, GCGLuint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribI4ui(index, x, y, z, w));
@@ -2192,6 +2380,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribI4ui(GCGLuint index, GCGLuint x, 
 
 void RemoteGraphicsContextGLProxy::vertexAttribI4uiv(GCGLuint index, std::span<const GCGLuint, 4> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribI4uiv(index, IPC::ArrayReference<uint32_t, 4>(reinterpret_cast<const uint32_t*>(values.data()), values.size())));
@@ -2203,6 +2392,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribI4uiv(GCGLuint index, std::span<c
 
 void RemoteGraphicsContextGLProxy::vertexAttribIPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLsizei stride, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::VertexAttribIPointer(index, size, type, stride, static_cast<uint64_t>(offset)));
@@ -2214,6 +2404,7 @@ void RemoteGraphicsContextGLProxy::vertexAttribIPointer(GCGLuint index, GCGLint 
 
 void RemoteGraphicsContextGLProxy::drawRangeElements(GCGLenum mode, GCGLuint start, GCGLuint end, GCGLsizei count, GCGLenum type, GCGLintptr offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawRangeElements(mode, start, end, count, type, static_cast<uint64_t>(offset)));
@@ -2225,6 +2416,7 @@ void RemoteGraphicsContextGLProxy::drawRangeElements(GCGLenum mode, GCGLuint sta
 
 void RemoteGraphicsContextGLProxy::drawBuffers(std::span<const GCGLenum> bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawBuffers(IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(bufs.data()), bufs.size())));
@@ -2236,6 +2428,7 @@ void RemoteGraphicsContextGLProxy::drawBuffers(std::span<const GCGLenum> bufs)
 
 void RemoteGraphicsContextGLProxy::clearBufferiv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLint> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearBufferiv(buffer, drawbuffer, IPC::ArrayReference<int32_t>(reinterpret_cast<const int32_t*>(values.data()), values.size())));
@@ -2247,6 +2440,7 @@ void RemoteGraphicsContextGLProxy::clearBufferiv(GCGLenum buffer, GCGLint drawbu
 
 void RemoteGraphicsContextGLProxy::clearBufferuiv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLuint> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearBufferuiv(buffer, drawbuffer, IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(values.data()), values.size())));
@@ -2258,6 +2452,7 @@ void RemoteGraphicsContextGLProxy::clearBufferuiv(GCGLenum buffer, GCGLint drawb
 
 void RemoteGraphicsContextGLProxy::clearBufferfv(GCGLenum buffer, GCGLint drawbuffer, std::span<const GCGLfloat> values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearBufferfv(buffer, drawbuffer, IPC::ArrayReference<float>(reinterpret_cast<const float*>(values.data()), values.size())));
@@ -2269,6 +2464,7 @@ void RemoteGraphicsContextGLProxy::clearBufferfv(GCGLenum buffer, GCGLint drawbu
 
 void RemoteGraphicsContextGLProxy::clearBufferfi(GCGLenum buffer, GCGLint drawbuffer, GCGLfloat depth, GCGLint stencil)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClearBufferfi(buffer, drawbuffer, depth, stencil));
@@ -2280,6 +2476,7 @@ void RemoteGraphicsContextGLProxy::clearBufferfi(GCGLenum buffer, GCGLint drawbu
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createQuery()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateQuery());
@@ -2293,6 +2490,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createQuery()
 
 void RemoteGraphicsContextGLProxy::deleteQuery(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteQuery(query));
@@ -2304,6 +2502,7 @@ void RemoteGraphicsContextGLProxy::deleteQuery(PlatformGLObject query)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isQuery(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsQuery(query));
@@ -2317,6 +2516,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isQuery(PlatformGLObject query)
 
 void RemoteGraphicsContextGLProxy::beginQuery(GCGLenum target, PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BeginQuery(target, query));
@@ -2328,6 +2528,7 @@ void RemoteGraphicsContextGLProxy::beginQuery(GCGLenum target, PlatformGLObject 
 
 void RemoteGraphicsContextGLProxy::endQuery(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::EndQuery(target));
@@ -2339,6 +2540,7 @@ void RemoteGraphicsContextGLProxy::endQuery(GCGLenum target)
 
 GCGLint RemoteGraphicsContextGLProxy::getQuery(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetQuery(target, pname));
@@ -2352,6 +2554,7 @@ GCGLint RemoteGraphicsContextGLProxy::getQuery(GCGLenum target, GCGLenum pname)
 
 GCGLuint RemoteGraphicsContextGLProxy::getQueryObjectui(PlatformGLObject query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetQueryObjectui(query, pname));
@@ -2365,6 +2568,7 @@ GCGLuint RemoteGraphicsContextGLProxy::getQueryObjectui(PlatformGLObject query, 
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createSampler()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateSampler());
@@ -2378,6 +2582,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createSampler()
 
 void RemoteGraphicsContextGLProxy::deleteSampler(PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteSampler(sampler));
@@ -2389,6 +2594,7 @@ void RemoteGraphicsContextGLProxy::deleteSampler(PlatformGLObject sampler)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isSampler(PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsSampler(sampler));
@@ -2402,6 +2608,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isSampler(PlatformGLObject sampler)
 
 void RemoteGraphicsContextGLProxy::bindSampler(GCGLuint unit, PlatformGLObject sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindSampler(unit, sampler));
@@ -2413,6 +2620,7 @@ void RemoteGraphicsContextGLProxy::bindSampler(GCGLuint unit, PlatformGLObject s
 
 void RemoteGraphicsContextGLProxy::samplerParameteri(PlatformGLObject sampler, GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::SamplerParameteri(sampler, pname, param));
@@ -2424,6 +2632,7 @@ void RemoteGraphicsContextGLProxy::samplerParameteri(PlatformGLObject sampler, G
 
 void RemoteGraphicsContextGLProxy::samplerParameterf(PlatformGLObject sampler, GCGLenum pname, GCGLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::SamplerParameterf(sampler, pname, param));
@@ -2435,6 +2644,7 @@ void RemoteGraphicsContextGLProxy::samplerParameterf(PlatformGLObject sampler, G
 
 GCGLfloat RemoteGraphicsContextGLProxy::getSamplerParameterf(PlatformGLObject sampler, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetSamplerParameterf(sampler, pname));
@@ -2448,6 +2658,7 @@ GCGLfloat RemoteGraphicsContextGLProxy::getSamplerParameterf(PlatformGLObject sa
 
 GCGLint RemoteGraphicsContextGLProxy::getSamplerParameteri(PlatformGLObject sampler, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetSamplerParameteri(sampler, pname));
@@ -2461,6 +2672,7 @@ GCGLint RemoteGraphicsContextGLProxy::getSamplerParameteri(PlatformGLObject samp
 
 GCGLsync RemoteGraphicsContextGLProxy::fenceSync(GCGLenum condition, GCGLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::FenceSync(condition, flags));
@@ -2474,6 +2686,7 @@ GCGLsync RemoteGraphicsContextGLProxy::fenceSync(GCGLenum condition, GCGLbitfiel
 
 GCGLboolean RemoteGraphicsContextGLProxy::isSync(GCGLsync arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsSync(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0))));
@@ -2487,6 +2700,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isSync(GCGLsync arg0)
 
 void RemoteGraphicsContextGLProxy::deleteSync(GCGLsync arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteSync(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0))));
@@ -2498,6 +2712,7 @@ void RemoteGraphicsContextGLProxy::deleteSync(GCGLsync arg0)
 
 GCGLenum RemoteGraphicsContextGLProxy::clientWaitSync(GCGLsync arg0, GCGLbitfield flags, GCGLuint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::ClientWaitSync(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0)), flags, static_cast<uint64_t>(timeout)));
@@ -2511,6 +2726,7 @@ GCGLenum RemoteGraphicsContextGLProxy::clientWaitSync(GCGLsync arg0, GCGLbitfiel
 
 void RemoteGraphicsContextGLProxy::waitSync(GCGLsync arg0, GCGLbitfield flags, GCGLint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::WaitSync(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0)), flags, static_cast<int64_t>(timeout)));
@@ -2522,6 +2738,7 @@ void RemoteGraphicsContextGLProxy::waitSync(GCGLsync arg0, GCGLbitfield flags, G
 
 GCGLint RemoteGraphicsContextGLProxy::getSynci(GCGLsync arg0, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetSynci(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0)), pname));
@@ -2535,6 +2752,7 @@ GCGLint RemoteGraphicsContextGLProxy::getSynci(GCGLsync arg0, GCGLenum pname)
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateTransformFeedback());
@@ -2548,6 +2766,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createTransformFeedback()
 
 void RemoteGraphicsContextGLProxy::deleteTransformFeedback(PlatformGLObject id)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteTransformFeedback(id));
@@ -2559,6 +2778,7 @@ void RemoteGraphicsContextGLProxy::deleteTransformFeedback(PlatformGLObject id)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isTransformFeedback(PlatformGLObject id)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsTransformFeedback(id));
@@ -2572,6 +2792,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isTransformFeedback(PlatformGLObject i
 
 void RemoteGraphicsContextGLProxy::bindTransformFeedback(GCGLenum target, PlatformGLObject id)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindTransformFeedback(target, id));
@@ -2583,6 +2804,7 @@ void RemoteGraphicsContextGLProxy::bindTransformFeedback(GCGLenum target, Platfo
 
 void RemoteGraphicsContextGLProxy::beginTransformFeedback(GCGLenum primitiveMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BeginTransformFeedback(primitiveMode));
@@ -2594,6 +2816,7 @@ void RemoteGraphicsContextGLProxy::beginTransformFeedback(GCGLenum primitiveMode
 
 void RemoteGraphicsContextGLProxy::endTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::EndTransformFeedback());
@@ -2605,6 +2828,7 @@ void RemoteGraphicsContextGLProxy::endTransformFeedback()
 
 void RemoteGraphicsContextGLProxy::transformFeedbackVaryings(PlatformGLObject program, const Vector<String>& varyings, GCGLenum bufferMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::TransformFeedbackVaryings(program, varyings, bufferMode));
@@ -2616,6 +2840,7 @@ void RemoteGraphicsContextGLProxy::transformFeedbackVaryings(PlatformGLObject pr
 
 void RemoteGraphicsContextGLProxy::getTransformFeedbackVarying(PlatformGLObject program, GCGLuint index, struct WebCore::GraphicsContextGLActiveInfo& arg2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetTransformFeedbackVarying(program, index));
@@ -2629,6 +2854,7 @@ void RemoteGraphicsContextGLProxy::getTransformFeedbackVarying(PlatformGLObject 
 
 void RemoteGraphicsContextGLProxy::pauseTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::PauseTransformFeedback());
@@ -2640,6 +2866,7 @@ void RemoteGraphicsContextGLProxy::pauseTransformFeedback()
 
 void RemoteGraphicsContextGLProxy::resumeTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ResumeTransformFeedback());
@@ -2651,6 +2878,7 @@ void RemoteGraphicsContextGLProxy::resumeTransformFeedback()
 
 void RemoteGraphicsContextGLProxy::bindBufferBase(GCGLenum target, GCGLuint index, PlatformGLObject buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindBufferBase(target, index, buffer));
@@ -2662,6 +2890,7 @@ void RemoteGraphicsContextGLProxy::bindBufferBase(GCGLenum target, GCGLuint inde
 
 void RemoteGraphicsContextGLProxy::bindBufferRange(GCGLenum target, GCGLuint index, PlatformGLObject buffer, GCGLintptr offset, GCGLsizeiptr arg4)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BindBufferRange(target, index, buffer, static_cast<uint64_t>(offset), static_cast<uint64_t>(arg4)));
@@ -2673,6 +2902,7 @@ void RemoteGraphicsContextGLProxy::bindBufferRange(GCGLenum target, GCGLuint ind
 
 Vector<GCGLuint> RemoteGraphicsContextGLProxy::getUniformIndices(PlatformGLObject program, const Vector<String>& uniformNames)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformIndices(program, uniformNames));
@@ -2686,6 +2916,7 @@ Vector<GCGLuint> RemoteGraphicsContextGLProxy::getUniformIndices(PlatformGLObjec
 
 Vector<GCGLint> RemoteGraphicsContextGLProxy::getActiveUniforms(PlatformGLObject program, const Vector<GCGLuint>& uniformIndices, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetActiveUniforms(program, uniformIndices, pname));
@@ -2699,6 +2930,7 @@ Vector<GCGLint> RemoteGraphicsContextGLProxy::getActiveUniforms(PlatformGLObject
 
 GCGLuint RemoteGraphicsContextGLProxy::getUniformBlockIndex(PlatformGLObject program, const String& uniformBlockName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetUniformBlockIndex(program, uniformBlockName));
@@ -2712,6 +2944,7 @@ GCGLuint RemoteGraphicsContextGLProxy::getUniformBlockIndex(PlatformGLObject pro
 
 String RemoteGraphicsContextGLProxy::getActiveUniformBlockName(PlatformGLObject program, GCGLuint uniformBlockIndex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetActiveUniformBlockName(program, uniformBlockIndex));
@@ -2725,6 +2958,7 @@ String RemoteGraphicsContextGLProxy::getActiveUniformBlockName(PlatformGLObject 
 
 void RemoteGraphicsContextGLProxy::uniformBlockBinding(PlatformGLObject program, GCGLuint uniformBlockIndex, GCGLuint uniformBlockBinding)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::UniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding));
@@ -2736,6 +2970,7 @@ void RemoteGraphicsContextGLProxy::uniformBlockBinding(PlatformGLObject program,
 
 void RemoteGraphicsContextGLProxy::getActiveUniformBlockiv(GCGLuint program, GCGLuint uniformBlockIndex, GCGLenum pname, std::span<GCGLint> params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetActiveUniformBlockiv(program, uniformBlockIndex, pname, params.size()));
@@ -2749,6 +2984,7 @@ void RemoteGraphicsContextGLProxy::getActiveUniformBlockiv(GCGLuint program, GCG
 
 String RemoteGraphicsContextGLProxy::getTranslatedShaderSourceANGLE(PlatformGLObject arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetTranslatedShaderSourceANGLE(arg0));
@@ -2762,6 +2998,7 @@ String RemoteGraphicsContextGLProxy::getTranslatedShaderSourceANGLE(PlatformGLOb
 
 void RemoteGraphicsContextGLProxy::drawBuffersEXT(std::span<const GCGLenum> bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawBuffersEXT(IPC::ArrayReference<uint32_t>(reinterpret_cast<const uint32_t*>(bufs.data()), bufs.size())));
@@ -2773,6 +3010,7 @@ void RemoteGraphicsContextGLProxy::drawBuffersEXT(std::span<const GCGLenum> bufs
 
 PlatformGLObject RemoteGraphicsContextGLProxy::createQueryEXT()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::CreateQueryEXT());
@@ -2786,6 +3024,7 @@ PlatformGLObject RemoteGraphicsContextGLProxy::createQueryEXT()
 
 void RemoteGraphicsContextGLProxy::deleteQueryEXT(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DeleteQueryEXT(query));
@@ -2797,6 +3036,7 @@ void RemoteGraphicsContextGLProxy::deleteQueryEXT(PlatformGLObject query)
 
 GCGLboolean RemoteGraphicsContextGLProxy::isQueryEXT(PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::IsQueryEXT(query));
@@ -2810,6 +3050,7 @@ GCGLboolean RemoteGraphicsContextGLProxy::isQueryEXT(PlatformGLObject query)
 
 void RemoteGraphicsContextGLProxy::beginQueryEXT(GCGLenum target, PlatformGLObject query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BeginQueryEXT(target, query));
@@ -2821,6 +3062,7 @@ void RemoteGraphicsContextGLProxy::beginQueryEXT(GCGLenum target, PlatformGLObje
 
 void RemoteGraphicsContextGLProxy::endQueryEXT(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::EndQueryEXT(target));
@@ -2832,6 +3074,7 @@ void RemoteGraphicsContextGLProxy::endQueryEXT(GCGLenum target)
 
 void RemoteGraphicsContextGLProxy::queryCounterEXT(PlatformGLObject query, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::QueryCounterEXT(query, target));
@@ -2843,6 +3086,7 @@ void RemoteGraphicsContextGLProxy::queryCounterEXT(PlatformGLObject query, GCGLe
 
 GCGLint RemoteGraphicsContextGLProxy::getQueryiEXT(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetQueryiEXT(target, pname));
@@ -2856,6 +3100,7 @@ GCGLint RemoteGraphicsContextGLProxy::getQueryiEXT(GCGLenum target, GCGLenum pna
 
 GCGLint RemoteGraphicsContextGLProxy::getQueryObjectiEXT(PlatformGLObject query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetQueryObjectiEXT(query, pname));
@@ -2869,6 +3114,7 @@ GCGLint RemoteGraphicsContextGLProxy::getQueryObjectiEXT(PlatformGLObject query,
 
 GCGLuint64 RemoteGraphicsContextGLProxy::getQueryObjectui64EXT(PlatformGLObject query, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetQueryObjectui64EXT(query, pname));
@@ -2882,6 +3128,7 @@ GCGLuint64 RemoteGraphicsContextGLProxy::getQueryObjectui64EXT(PlatformGLObject 
 
 GCGLint64 RemoteGraphicsContextGLProxy::getInteger64EXT(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetInteger64EXT(pname));
@@ -2895,6 +3142,7 @@ GCGLint64 RemoteGraphicsContextGLProxy::getInteger64EXT(GCGLenum pname)
 
 void RemoteGraphicsContextGLProxy::enableiOES(GCGLenum target, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::EnableiOES(target, index));
@@ -2906,6 +3154,7 @@ void RemoteGraphicsContextGLProxy::enableiOES(GCGLenum target, GCGLuint index)
 
 void RemoteGraphicsContextGLProxy::disableiOES(GCGLenum target, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DisableiOES(target, index));
@@ -2917,6 +3166,7 @@ void RemoteGraphicsContextGLProxy::disableiOES(GCGLenum target, GCGLuint index)
 
 void RemoteGraphicsContextGLProxy::blendEquationiOES(GCGLuint buf, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendEquationiOES(buf, mode));
@@ -2928,6 +3178,7 @@ void RemoteGraphicsContextGLProxy::blendEquationiOES(GCGLuint buf, GCGLenum mode
 
 void RemoteGraphicsContextGLProxy::blendEquationSeparateiOES(GCGLuint buf, GCGLenum modeRGB, GCGLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendEquationSeparateiOES(buf, modeRGB, modeAlpha));
@@ -2939,6 +3190,7 @@ void RemoteGraphicsContextGLProxy::blendEquationSeparateiOES(GCGLuint buf, GCGLe
 
 void RemoteGraphicsContextGLProxy::blendFunciOES(GCGLuint buf, GCGLenum src, GCGLenum dst)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendFunciOES(buf, src, dst));
@@ -2950,6 +3202,7 @@ void RemoteGraphicsContextGLProxy::blendFunciOES(GCGLuint buf, GCGLenum src, GCG
 
 void RemoteGraphicsContextGLProxy::blendFuncSeparateiOES(GCGLuint buf, GCGLenum srcRGB, GCGLenum dstRGB, GCGLenum srcAlpha, GCGLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlendFuncSeparateiOES(buf, srcRGB, dstRGB, srcAlpha, dstAlpha));
@@ -2961,6 +3214,7 @@ void RemoteGraphicsContextGLProxy::blendFuncSeparateiOES(GCGLuint buf, GCGLenum 
 
 void RemoteGraphicsContextGLProxy::colorMaskiOES(GCGLuint buf, GCGLboolean red, GCGLboolean green, GCGLboolean blue, GCGLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ColorMaskiOES(buf, static_cast<bool>(red), static_cast<bool>(green), static_cast<bool>(blue), static_cast<bool>(alpha)));
@@ -2972,6 +3226,7 @@ void RemoteGraphicsContextGLProxy::colorMaskiOES(GCGLuint buf, GCGLboolean red, 
 
 void RemoteGraphicsContextGLProxy::drawArraysInstancedBaseInstanceANGLE(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei instanceCount, GCGLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawArraysInstancedBaseInstanceANGLE(mode, first, count, instanceCount, baseInstance));
@@ -2983,6 +3238,7 @@ void RemoteGraphicsContextGLProxy::drawArraysInstancedBaseInstanceANGLE(GCGLenum
 
 void RemoteGraphicsContextGLProxy::drawElementsInstancedBaseVertexBaseInstanceANGLE(GCGLenum mode, GCGLsizei count, GCGLenum type, GCGLintptr offset, GCGLsizei instanceCount, GCGLint baseVertex, GCGLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::DrawElementsInstancedBaseVertexBaseInstanceANGLE(mode, count, type, static_cast<uint64_t>(offset), instanceCount, baseVertex, baseInstance));
@@ -2994,6 +3250,7 @@ void RemoteGraphicsContextGLProxy::drawElementsInstancedBaseVertexBaseInstanceAN
 
 void RemoteGraphicsContextGLProxy::provokingVertexANGLE(GCGLenum provokeMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ProvokingVertexANGLE(provokeMode));
@@ -3005,6 +3262,7 @@ void RemoteGraphicsContextGLProxy::provokingVertexANGLE(GCGLenum provokeMode)
 
 void RemoteGraphicsContextGLProxy::polygonOffsetClampEXT(GCGLfloat factor, GCGLfloat units, GCGLfloat clamp)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::PolygonOffsetClampEXT(factor, units, clamp));
@@ -3016,6 +3274,7 @@ void RemoteGraphicsContextGLProxy::polygonOffsetClampEXT(GCGLfloat factor, GCGLf
 
 void RemoteGraphicsContextGLProxy::renderbufferStorageMultisampleANGLE(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::RenderbufferStorageMultisampleANGLE(target, samples, internalformat, width, height));
@@ -3027,6 +3286,7 @@ void RemoteGraphicsContextGLProxy::renderbufferStorageMultisampleANGLE(GCGLenum 
 
 void RemoteGraphicsContextGLProxy::blitFramebufferANGLE(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::BlitFramebufferANGLE(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
@@ -3038,6 +3298,7 @@ void RemoteGraphicsContextGLProxy::blitFramebufferANGLE(GCGLint srcX0, GCGLint s
 
 void RemoteGraphicsContextGLProxy::getInternalformativ(GCGLenum target, GCGLenum internalformat, GCGLenum pname, std::span<GCGLint> params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::GetInternalformativ(target, internalformat, pname, params.size()));
@@ -3051,6 +3312,7 @@ void RemoteGraphicsContextGLProxy::getInternalformativ(GCGLenum target, GCGLenum
 
 void RemoteGraphicsContextGLProxy::setDrawingBufferColorSpace(const WebCore::DestinationColorSpace& arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::SetDrawingBufferColorSpace(arg0));
@@ -3062,6 +3324,7 @@ void RemoteGraphicsContextGLProxy::setDrawingBufferColorSpace(const WebCore::Des
 
 RefPtr<WebCore::PixelBuffer> RemoteGraphicsContextGLProxy::paintRenderingResultsToPixelBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::PaintRenderingResultsToPixelBuffer());
@@ -3075,6 +3338,7 @@ RefPtr<WebCore::PixelBuffer> RemoteGraphicsContextGLProxy::paintRenderingResults
 
 bool RemoteGraphicsContextGLProxy::destroyEGLSync(GCEGLSync arg0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
     auto sendResult = sendSync(Messages::RemoteGraphicsContextGL::DestroyEGLSync(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0))));
@@ -3088,6 +3352,7 @@ bool RemoteGraphicsContextGLProxy::destroyEGLSync(GCEGLSync arg0)
 
 void RemoteGraphicsContextGLProxy::clientWaitEGLSyncWithFlush(GCEGLSync arg0, uint64_t timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto sendResult = send(Messages::RemoteGraphicsContextGL::ClientWaitEGLSyncWithFlush(static_cast<uint64_t>(reinterpret_cast<intptr_t>(arg0)), timeout));

@@ -172,6 +172,7 @@ static constexpr size_t maxActiveWorkerContexts = 4;
 
 template <typename T> static IntRect texImageSourceSize(T& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return { 0, 0, static_cast<int>(source.width()), static_cast<int>(source.height()) };
 }
 
@@ -179,6 +180,7 @@ template <typename T> static IntRect texImageSourceSize(T& source)
 // GLSL ES 1.0 spec section 3.1.
 static bool validateCharacter(unsigned char c)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Printing characters are valid except " $ ` @ \ ' DEL.
     if (c >= 32 && c <= 126
         && c != '"' && c != '$' && c != '`' && c != '@' && c != '\\' && c != '\'')
@@ -192,6 +194,7 @@ static bool validateCharacter(unsigned char c)
 
 static bool isPrefixReserved(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (name.startsWith("gl_"_s) || name.startsWith("webgl_"_s) || name.startsWith("_webgl_"_s))
         return true;
     return false;
@@ -290,6 +293,7 @@ public:
     explicit ScopedTightUnpackParameters(WebGLRenderingContextBase& context, bool enabled = true)
         : m_context(enabled ? &context : nullptr)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (!m_context)
             return;
         set(m_context->unpackPixelStoreParameters(), tightUnpack);
@@ -306,6 +310,7 @@ private:
     static constexpr PixelStoreParameters tightUnpack { 1, 0, 0, 0, 0 };
     void set(const PixelStoreParameters& oldValues, const PixelStoreParameters& newValues)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         auto* context = m_context->graphicsContextGL();
         if (oldValues.alignment != newValues.alignment)
             context->pixelStorei(GraphicsContextGL::UNPACK_ALIGNMENT, newValues.alignment);
@@ -329,6 +334,7 @@ public:
         : m_context(context)
         , m_wasEnabled(wasEnabled)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (m_wasEnabled)
             m_context->disable(GraphicsContextGL::RASTERIZER_DISCARD);
     }
@@ -351,6 +357,7 @@ public:
         , m_backDrawBufferDisabled(backDrawBuffer == GraphicsContextGL::NONE)
         , m_isWebGL2(isWebGL2)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         ASSERT(backDrawBuffer == GraphicsContextGL::NONE || backDrawBuffer == GraphicsContextGL::BACK);
         if (m_backDrawBufferDisabled) {
             GCGLenum value[1] { GraphicsContextGL::COLOR_ATTACHMENT0 };
@@ -385,6 +392,7 @@ InspectorScopedShaderProgramHighlight::InspectorScopedShaderProgramHighlight(Web
     : m_context(context)
     , m_program(program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     showHighlight();
 }
 
@@ -395,6 +403,7 @@ InspectorScopedShaderProgramHighlight::~InspectorScopedShaderProgramHighlight()
 
 void InspectorScopedShaderProgramHighlight::showHighlight()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_program || LIKELY(!InspectorInstrumentation::isWebGLProgramHighlighted(m_context, *m_program)))
         return;
 
@@ -436,6 +445,7 @@ void InspectorScopedShaderProgramHighlight::showHighlight()
 
 void InspectorScopedShaderProgramHighlight::hideHighlight()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_didApply)
         return;
 
@@ -460,6 +470,7 @@ void InspectorScopedShaderProgramHighlight::hideHighlight()
 
 static bool isHighPerformanceContext(const RefPtr<GraphicsContextGL>& context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return context->contextAttributes().powerPreference == WebGLPowerPreference::HighPerformance;
 }
 
@@ -481,6 +492,7 @@ static WebGLRenderingContextBaseSet& activeContexts()
     static LazyNeverDestroyed<ThreadSpecific<WebGLRenderingContextBaseSet>> s_activeContexts;
     static std::once_flag s_onceFlag;
     std::call_once(s_onceFlag, [] {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         s_activeContexts.construct();
     });
     return *s_activeContexts.get();
@@ -488,10 +500,12 @@ static WebGLRenderingContextBaseSet& activeContexts()
 
 static void addActiveContext(WebGLRenderingContextBase& newContext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto& contexts = activeContexts();
     auto maxContextsSize = isMainThread() ? maxActiveContexts : maxActiveWorkerContexts;
     if (contexts.size() >= maxContextsSize) {
         auto* earliest = *std::min_element(contexts.begin(), contexts.end(), [] (auto& a, auto& b) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             return a->activeOrdinal() < b->activeOrdinal();
         });
         earliest->recycleContext();
@@ -504,6 +518,7 @@ static void addActiveContext(WebGLRenderingContextBase& newContext)
 
 static void removeActiveContext(WebGLRenderingContextBase& context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool didContain = activeContexts().remove(&context);
     ASSERT_UNUSED(didContain, didContain);
 }
@@ -550,6 +565,7 @@ static constexpr GCGLenum errorCodeToGLenum(GCGLErrorCode error)
 
 std::unique_ptr<WebGLRenderingContextBase> WebGLRenderingContextBase::create(CanvasBase& canvas, WebGLContextAttributes& attributes, WebGLVersion type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto scriptExecutionContext = canvas.scriptExecutionContext();
     if (!scriptExecutionContext)
         return nullptr;
@@ -632,6 +648,7 @@ WebGLRenderingContextBase::WebGLRenderingContextBase(CanvasBase& canvas, WebGLCo
     , m_isXRCompatible(attributes.xrCompatible)
 #endif
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_restoreTimer.suspendIfNeeded();
 
     registerWithWebGLStateTracker();
@@ -650,6 +667,7 @@ WebGLRenderingContextBase::WebGLRenderingContextBase(CanvasBase& canvas, Ref<Gra
     , m_isXRCompatible(attributes.xrCompatible)
 #endif
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setGraphicsContextGL(WTFMove(context));
 
     m_restoreTimer.suspendIfNeeded();
@@ -670,6 +688,7 @@ WebGLRenderingContextBase::WebGLRenderingContextBase(CanvasBase& canvas, Ref<Gra
 
 WebGLCanvas WebGLRenderingContextBase::canvas()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto& base = canvasBase();
 #if ENABLE(OFFSCREEN_CANVAS)
     if (is<OffscreenCanvas>(base))
@@ -681,6 +700,7 @@ WebGLCanvas WebGLRenderingContextBase::canvas()
 #if ENABLE(OFFSCREEN_CANVAS)
 OffscreenCanvas* WebGLRenderingContextBase::offscreenCanvas()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto& base = canvasBase();
     if (!is<OffscreenCanvas>(base))
         return nullptr;
@@ -692,6 +712,7 @@ OffscreenCanvas* WebGLRenderingContextBase::offscreenCanvas()
 // and to discard temporary GL contexts (e.g. feature detection).
 void WebGLRenderingContextBase::checkForContextLossHandling()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto canvas = htmlCanvas();
     if (!canvas)
         return;
@@ -709,6 +730,7 @@ void WebGLRenderingContextBase::checkForContextLossHandling()
 
 void WebGLRenderingContextBase::registerWithWebGLStateTracker()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto canvas = htmlCanvas();
     if (!canvas)
         return;
@@ -726,6 +748,7 @@ void WebGLRenderingContextBase::registerWithWebGLStateTracker()
 
 void WebGLRenderingContextBase::initializeNewContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!isContextLost());
     m_errors = { };
     m_needsUpdate = true;
@@ -820,6 +843,7 @@ void WebGLRenderingContextBase::initializeNewContext()
 
 void WebGLRenderingContextBase::setupFlags()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(m_context);
 
     auto canvas = htmlCanvas();
@@ -843,12 +867,14 @@ void WebGLRenderingContextBase::setupFlags()
 
 void WebGLRenderingContextBase::addCompressedTextureFormat(GCGLenum format)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_compressedTextureFormats.contains(format))
         m_compressedTextureFormats.append(format);
 }
 
 void WebGLRenderingContextBase::addActivityStateChangeObserverIfNecessary()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // We are only interested in visibility changes for contexts
     // that are using the high-performance GPU.
     if (!isHighPerformanceContext(m_context))
@@ -872,6 +898,7 @@ void WebGLRenderingContextBase::addActivityStateChangeObserverIfNecessary()
 
 void WebGLRenderingContextBase::removeActivityStateChangeObserver()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto* canvas = htmlCanvas();
     if (canvas) {
         if (auto* page = canvas->document().page())
@@ -906,6 +933,7 @@ WebGLRenderingContextBase::~WebGLRenderingContextBase()
     {
         Locker locker { WebGLProgram::instancesLock() };
         for (auto& entry : WebGLProgram::instances()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             if (entry.value == this) {
                 // Don't remove any WebGLProgram from the instances list, as they may still exist.
                 // Only remove the association with a WebGL context.
@@ -917,6 +945,7 @@ WebGLRenderingContextBase::~WebGLRenderingContextBase()
 
 void WebGLRenderingContextBase::setGraphicsContextGL(Ref<GraphicsContextGL>&& context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool wasActive = m_context;
     if (m_context) {
         m_context->setClient(nullptr);
@@ -931,6 +960,7 @@ void WebGLRenderingContextBase::setGraphicsContextGL(Ref<GraphicsContextGL>&& co
 
 void WebGLRenderingContextBase::destroyGraphicsContextGL()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     removeActivityStateChangeObserver();
 
     if (m_context) {
@@ -942,6 +972,7 @@ void WebGLRenderingContextBase::destroyGraphicsContextGL()
 
 void WebGLRenderingContextBase::markContextChanged()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_framebufferBinding)
         return;
 
@@ -968,6 +999,7 @@ void WebGLRenderingContextBase::markContextChanged()
 
 void WebGLRenderingContextBase::markContextChangedAndNotifyCanvasObserver(WebGLRenderingContextBase::CallerType caller)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Draw and clear ops with rasterizer discard enabled do not change the canvas.
     if (caller == CallerTypeDrawOrClear && m_rasterizerDiscardEnabled)
         return;
@@ -989,6 +1021,7 @@ void WebGLRenderingContextBase::markContextChangedAndNotifyCanvasObserver(WebGLR
 
 bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::CallerType caller, GCGLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return false;
 
@@ -1061,6 +1094,7 @@ bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::Cal
 
 void WebGLRenderingContextBase::restoreStateAfterClear()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Restore the state that the context set.
     if (m_scissorEnabled)
         m_context->enable(GraphicsContextGL::SCISSOR_TEST);
@@ -1078,11 +1112,13 @@ void WebGLRenderingContextBase::restoreStateAfterClear()
 
 void WebGLRenderingContextBase::prepareForDisplayWithPaint()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_isDisplayingWithPaint = true;
 }
 
 void WebGLRenderingContextBase::paintRenderingResultsToCanvas()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1125,6 +1161,7 @@ void WebGLRenderingContextBase::paintRenderingResultsToCanvas()
 
 RefPtr<PixelBuffer> WebGLRenderingContextBase::paintRenderingResultsToPixelBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     clearIfComposited(CallerTypeOther);
@@ -1134,6 +1171,7 @@ RefPtr<PixelBuffer> WebGLRenderingContextBase::paintRenderingResultsToPixelBuffe
 #if ENABLE(MEDIA_STREAM) || ENABLE(WEB_CODECS)
 RefPtr<VideoFrame> WebGLRenderingContextBase::paintCompositedResultsToVideoFrame()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     return m_context->paintCompositedResultsToVideoFrame();
@@ -1142,11 +1180,13 @@ RefPtr<VideoFrame> WebGLRenderingContextBase::paintCompositedResultsToVideoFrame
 
 WebGLTexture::TextureExtensionFlag WebGLRenderingContextBase::textureExtensionFlags() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<WebGLTexture::TextureExtensionFlag>((m_oesTextureFloatLinear ? WebGLTexture::TextureExtensionFloatLinearEnabled : 0) | (m_oesTextureHalfFloatLinear ? WebGLTexture::TextureExtensionHalfFloatLinearEnabled : 0));
 }
 
 void WebGLRenderingContextBase::reshape(int width, int height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -1176,6 +1216,7 @@ void WebGLRenderingContextBase::reshape(int width, int height)
 
 int WebGLRenderingContextBase::drawingBufferWidth() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return 0;
 
@@ -1184,6 +1225,7 @@ int WebGLRenderingContextBase::drawingBufferWidth() const
 
 int WebGLRenderingContextBase::drawingBufferHeight() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return 0;
 
@@ -1192,6 +1234,7 @@ int WebGLRenderingContextBase::drawingBufferHeight() const
 
 void WebGLRenderingContextBase::setDrawingBufferColorSpace(PredefinedColorSpace colorSpace)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_drawingBufferColorSpace == colorSpace)
         return;
 
@@ -1205,6 +1248,7 @@ void WebGLRenderingContextBase::setDrawingBufferColorSpace(PredefinedColorSpace 
 
 unsigned WebGLRenderingContextBase::sizeInBytes(GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (type) {
     case GraphicsContextGL::BYTE:
         return sizeof(GCGLbyte);
@@ -1232,6 +1276,7 @@ unsigned WebGLRenderingContextBase::sizeInBytes(GCGLenum type)
 
 void WebGLRenderingContextBase::activeTexture(GCGLenum texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (texture - GraphicsContextGL::TEXTURE0 >= m_textureUnits.size()) {
@@ -1244,6 +1289,7 @@ void WebGLRenderingContextBase::activeTexture(GCGLenum texture)
 
 void WebGLRenderingContextBase::attachShader(WebGLProgram& program, WebGLShader& shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateWebGLProgramOrShader("attachShader", &program) || !validateWebGLProgramOrShader("attachShader", &shader))
@@ -1258,6 +1304,7 @@ void WebGLRenderingContextBase::attachShader(WebGLProgram& program, WebGLShader&
 
 void WebGLRenderingContextBase::bindAttribLocation(WebGLProgram& program, GCGLuint index, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("bindAttribLocation", &program))
         return;
     if (!validateLocationLength("bindAttribLocation", name))
@@ -1277,6 +1324,7 @@ void WebGLRenderingContextBase::bindAttribLocation(WebGLProgram& program, GCGLui
 
 bool WebGLRenderingContextBase::validateNullableWebGLObject(const char* functionName, WebGLObject* object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return false;
     if (!object) {
@@ -1289,6 +1337,7 @@ bool WebGLRenderingContextBase::validateNullableWebGLObject(const char* function
 
 bool WebGLRenderingContextBase::validateBufferTarget(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::ARRAY_BUFFER:
     case GraphicsContextGL::ELEMENT_ARRAY_BUFFER:
@@ -1301,6 +1350,7 @@ bool WebGLRenderingContextBase::validateBufferTarget(const char* functionName, G
 
 WebGLBuffer* WebGLRenderingContextBase::validateBufferDataTarget(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLBuffer* buffer = nullptr;
     switch (target) {
     case GraphicsContextGL::ELEMENT_ARRAY_BUFFER:
@@ -1322,6 +1372,7 @@ WebGLBuffer* WebGLRenderingContextBase::validateBufferDataTarget(const char* fun
 
 bool WebGLRenderingContextBase::validateAndCacheBufferBinding(const AbstractLocker& locker, const char* functionName, GCGLenum target, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateBufferTarget(functionName, target))
         return false;
 
@@ -1344,6 +1395,7 @@ bool WebGLRenderingContextBase::validateAndCacheBufferBinding(const AbstractLock
 
 void WebGLRenderingContextBase::bindBuffer(GCGLenum target, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindBuffer", buffer))
@@ -1357,6 +1409,7 @@ void WebGLRenderingContextBase::bindBuffer(GCGLenum target, WebGLBuffer* buffer)
 
 void WebGLRenderingContextBase::bindFramebuffer(GCGLenum target, WebGLFramebuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindFramebuffer", buffer))
@@ -1372,6 +1425,7 @@ void WebGLRenderingContextBase::bindFramebuffer(GCGLenum target, WebGLFramebuffe
 
 void WebGLRenderingContextBase::bindRenderbuffer(GCGLenum target, WebGLRenderbuffer* renderBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindRenderbuffer", renderBuffer))
@@ -1388,6 +1442,7 @@ void WebGLRenderingContextBase::bindRenderbuffer(GCGLenum target, WebGLRenderbuf
 
 void WebGLRenderingContextBase::bindTexture(GCGLenum target, WebGLTexture* texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("bindTexture", texture))
@@ -1425,6 +1480,7 @@ void WebGLRenderingContextBase::bindTexture(GCGLenum target, WebGLTexture* textu
 
 void WebGLRenderingContextBase::blendColor(GCGLfloat red, GCGLfloat green, GCGLfloat blue, GCGLfloat alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->blendColor(red, green, blue, alpha);
@@ -1432,6 +1488,7 @@ void WebGLRenderingContextBase::blendColor(GCGLfloat red, GCGLfloat green, GCGLf
 
 void WebGLRenderingContextBase::blendEquation(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateBlendEquation("blendEquation", mode))
         return;
     m_context->blendEquation(mode);
@@ -1439,6 +1496,7 @@ void WebGLRenderingContextBase::blendEquation(GCGLenum mode)
 
 void WebGLRenderingContextBase::blendEquationSeparate(GCGLenum modeRGB, GCGLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateBlendEquation("blendEquation", modeRGB) || !validateBlendEquation("blendEquation", modeAlpha))
         return;
     m_context->blendEquationSeparate(modeRGB, modeAlpha);
@@ -1446,6 +1504,7 @@ void WebGLRenderingContextBase::blendEquationSeparate(GCGLenum modeRGB, GCGLenum
 
 void WebGLRenderingContextBase::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateBlendFuncFactors("blendFunc", sfactor, dfactor))
         return;
     m_context->blendFunc(sfactor, dfactor);
@@ -1453,6 +1512,7 @@ void WebGLRenderingContextBase::blendFunc(GCGLenum sfactor, GCGLenum dfactor)
 
 void WebGLRenderingContextBase::blendFuncSeparate(GCGLenum srcRGB, GCGLenum dstRGB, GCGLenum srcAlpha, GCGLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Note: Alpha does not have the same restrictions as RGB.
     if (isContextLost() || !validateBlendFuncFactors("blendFunc", srcRGB, dstRGB))
         return;
@@ -1461,6 +1521,7 @@ void WebGLRenderingContextBase::blendFuncSeparate(GCGLenum srcRGB, GCGLenum dstR
 
 void WebGLRenderingContextBase::bufferData(GCGLenum target, long long size, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     RefPtr<WebGLBuffer> buffer = validateBufferDataParameters("bufferData", target, usage);
@@ -1481,6 +1542,7 @@ void WebGLRenderingContextBase::bufferData(GCGLenum target, long long size, GCGL
 
 void WebGLRenderingContextBase::bufferData(GCGLenum target, std::optional<BufferDataSource>&& data, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!data) {
@@ -1492,12 +1554,14 @@ void WebGLRenderingContextBase::bufferData(GCGLenum target, std::optional<Buffer
         return;
 
     std::visit([&](auto& data) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         m_context->bufferData(target, std::span(static_cast<const uint8_t*>(data->data()), data->byteLength()), usage);
     }, data.value());
 }
 
 void WebGLRenderingContextBase::bufferSubData(GCGLenum target, long long offset, BufferDataSource&& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     RefPtr<WebGLBuffer> buffer = validateBufferDataParameters("bufferSubData", target, GraphicsContextGL::STATIC_DRAW);
@@ -1509,12 +1573,14 @@ void WebGLRenderingContextBase::bufferSubData(GCGLenum target, long long offset,
     }
 
     std::visit([&](auto& data) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         m_context->bufferSubData(target, static_cast<GCGLintptr>(offset), std::span(static_cast<const uint8_t*>(data->data()), data->byteLength()));
     }, data);
 }
 
 GCGLenum WebGLRenderingContextBase::checkFramebufferStatus(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost()) {
         fprintf(stderr, "### isContextLost: true\n");
         return GraphicsContextGL::FRAMEBUFFER_UNSUPPORTED;
@@ -1531,6 +1597,7 @@ GCGLenum WebGLRenderingContextBase::checkFramebufferStatus(GCGLenum target)
 
 void WebGLRenderingContextBase::clear(GCGLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!clearIfComposited(CallerTypeDrawOrClear, mask))
@@ -1540,6 +1607,7 @@ void WebGLRenderingContextBase::clear(GCGLbitfield mask)
 
 void WebGLRenderingContextBase::clearColor(GCGLfloat r, GCGLfloat g, GCGLfloat b, GCGLfloat a)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (std::isnan(r))
@@ -1559,6 +1627,7 @@ void WebGLRenderingContextBase::clearColor(GCGLfloat r, GCGLfloat g, GCGLfloat b
 
 void WebGLRenderingContextBase::clearDepth(GCGLfloat depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_clearDepth = depth;
@@ -1567,6 +1636,7 @@ void WebGLRenderingContextBase::clearDepth(GCGLfloat depth)
 
 void WebGLRenderingContextBase::clearStencil(GCGLint s)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_clearStencil = s;
@@ -1575,6 +1645,7 @@ void WebGLRenderingContextBase::clearStencil(GCGLint s)
 
 void WebGLRenderingContextBase::colorMask(GCGLboolean red, GCGLboolean green, GCGLboolean blue, GCGLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_colorMask[0] = red;
@@ -1586,6 +1657,7 @@ void WebGLRenderingContextBase::colorMask(GCGLboolean red, GCGLboolean green, GC
 
 void WebGLRenderingContextBase::compileShader(WebGLShader& shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("compileShader", &shader))
         return;
     m_context->compileShader(shader.object());
@@ -1593,6 +1665,7 @@ void WebGLRenderingContextBase::compileShader(WebGLShader& shader)
 
 void WebGLRenderingContextBase::compressedTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, ArrayBufferView& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture2DBinding("compressedTexImage2D", target))
@@ -1604,6 +1677,7 @@ void WebGLRenderingContextBase::compressedTexImage2D(GCGLenum target, GCGLint le
 
 void WebGLRenderingContextBase::compressedTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, ArrayBufferView& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture2DBinding("compressedTexSubImage2D", target))
@@ -1615,6 +1689,7 @@ void WebGLRenderingContextBase::compressedTexSubImage2D(GCGLenum target, GCGLint
 
 bool WebGLRenderingContextBase::validateSettableTexInternalFormat(const char* functionName, GCGLenum internalFormat)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isWebGL2())
         return true;
 
@@ -1636,6 +1711,7 @@ bool WebGLRenderingContextBase::validateSettableTexInternalFormat(const char* fu
 
 void WebGLRenderingContextBase::copyTexSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTexture2DBinding("copyTexSubImage2D", target))
@@ -1646,6 +1722,7 @@ void WebGLRenderingContextBase::copyTexSubImage2D(GCGLenum target, GCGLint level
 
 RefPtr<WebGLBuffer> WebGLRenderingContextBase::createBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto buffer = WebGLBuffer::create(*this);
@@ -1655,6 +1732,7 @@ RefPtr<WebGLBuffer> WebGLRenderingContextBase::createBuffer()
 
 RefPtr<WebGLFramebuffer> WebGLRenderingContextBase::createFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto buffer = WebGLFramebuffer::create(*this);
@@ -1664,6 +1742,7 @@ RefPtr<WebGLFramebuffer> WebGLRenderingContextBase::createFramebuffer()
 
 RefPtr<WebGLTexture> WebGLRenderingContextBase::createTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto texture = WebGLTexture::create(*this);
@@ -1673,6 +1752,7 @@ RefPtr<WebGLTexture> WebGLRenderingContextBase::createTexture()
 
 RefPtr<WebGLProgram> WebGLRenderingContextBase::createProgram()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto program = WebGLProgram::create(*this);
@@ -1685,6 +1765,7 @@ RefPtr<WebGLProgram> WebGLRenderingContextBase::createProgram()
 
 RefPtr<WebGLRenderbuffer> WebGLRenderingContextBase::createRenderbuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto buffer = WebGLRenderbuffer::create(*this);
@@ -1694,6 +1775,7 @@ RefPtr<WebGLRenderbuffer> WebGLRenderingContextBase::createRenderbuffer()
 
 RefPtr<WebGLShader> WebGLRenderingContextBase::createShader(GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     if (type != GraphicsContextGL::VERTEX_SHADER && type != GraphicsContextGL::FRAGMENT_SHADER) {
@@ -1708,6 +1790,7 @@ RefPtr<WebGLShader> WebGLRenderingContextBase::createShader(GCGLenum type)
 
 void WebGLRenderingContextBase::cullFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->cullFace(mode);
@@ -1715,6 +1798,7 @@ void WebGLRenderingContextBase::cullFace(GCGLenum mode)
 
 bool WebGLRenderingContextBase::deleteObject(const AbstractLocker& locker, WebGLObject* object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !object)
         return false;
     if (!object->validate(contextGroup(), *this)) {
@@ -1736,6 +1820,7 @@ bool WebGLRenderingContextBase::deleteObject(const AbstractLocker& locker, WebGL
 
 void WebGLRenderingContextBase::uncacheDeletedBuffer(const AbstractLocker& locker, WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     REMOVE_BUFFER_FROM_BINDING(m_boundArrayBuffer);
 
     m_boundVertexArrayObject->unbindBuffer(locker, *buffer);
@@ -1743,6 +1828,7 @@ void WebGLRenderingContextBase::uncacheDeletedBuffer(const AbstractLocker& locke
 
 void WebGLRenderingContextBase::setBoundVertexArrayObject(const AbstractLocker&, WebGLVertexArrayObjectBase* arrayObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_boundVertexArrayObject = arrayObject ? arrayObject : m_defaultVertexArrayObject;
 }
 
@@ -1750,6 +1836,7 @@ void WebGLRenderingContextBase::setBoundVertexArrayObject(const AbstractLocker&,
 
 void WebGLRenderingContextBase::deleteBuffer(WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!deleteObject(locker, buffer))
@@ -1760,10 +1847,12 @@ void WebGLRenderingContextBase::deleteBuffer(WebGLBuffer* buffer)
 
 void WebGLRenderingContextBase::deleteFramebuffer(WebGLFramebuffer* framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
 #if ENABLE(WEBXR)
     if (framebuffer && framebuffer->isOpaque()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "deleteFramebuffer", "An opaque framebuffer's attachments cannot be inspected or changed");
         return;
     }
@@ -1780,6 +1869,7 @@ void WebGLRenderingContextBase::deleteFramebuffer(WebGLFramebuffer* framebuffer)
 
 void WebGLRenderingContextBase::deleteProgram(WebGLProgram* program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (program)
         InspectorInstrumentation::willDestroyWebGLProgram(*program);
 
@@ -1792,6 +1882,7 @@ void WebGLRenderingContextBase::deleteProgram(WebGLProgram* program)
 
 void WebGLRenderingContextBase::deleteRenderbuffer(WebGLRenderbuffer* renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!deleteObject(locker, renderbuffer))
@@ -1807,12 +1898,14 @@ void WebGLRenderingContextBase::deleteRenderbuffer(WebGLRenderbuffer* renderbuff
 
 void WebGLRenderingContextBase::deleteShader(WebGLShader* shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
     deleteObject(locker, shader);
 }
 
 void WebGLRenderingContextBase::deleteTexture(WebGLTexture* texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!deleteObject(locker, texture))
@@ -1839,6 +1932,7 @@ void WebGLRenderingContextBase::deleteTexture(WebGLTexture* texture)
 
 void WebGLRenderingContextBase::depthFunc(GCGLenum func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->depthFunc(func);
@@ -1846,6 +1940,7 @@ void WebGLRenderingContextBase::depthFunc(GCGLenum func)
 
 void WebGLRenderingContextBase::depthMask(GCGLboolean flag)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_depthMask = flag;
@@ -1854,6 +1949,7 @@ void WebGLRenderingContextBase::depthMask(GCGLboolean flag)
 
 void WebGLRenderingContextBase::depthRange(GCGLfloat zNear, GCGLfloat zFar)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (zNear > zFar) {
@@ -1865,6 +1961,7 @@ void WebGLRenderingContextBase::depthRange(GCGLfloat zNear, GCGLfloat zFar)
 
 void WebGLRenderingContextBase::detachShader(WebGLProgram& program, WebGLShader& shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateWebGLProgramOrShader("detachShader", &program) || !validateWebGLProgramOrShader("detachShader", &shader))
@@ -1879,6 +1976,7 @@ void WebGLRenderingContextBase::detachShader(WebGLProgram& program, WebGLShader&
 
 void WebGLRenderingContextBase::disable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateCapability("disable", cap))
         return;
     if (cap == GraphicsContextGL::STENCIL_TEST)
@@ -1892,6 +1990,7 @@ void WebGLRenderingContextBase::disable(GCGLenum cap)
 
 void WebGLRenderingContextBase::disableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (index >= m_maxVertexAttribs) {
@@ -1904,6 +2003,7 @@ void WebGLRenderingContextBase::disableVertexAttribArray(GCGLuint index)
 
 bool WebGLRenderingContextBase::validateVertexArrayObject(const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_boundVertexArrayObject->areAllEnabledAttribBuffersBound()) {
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, functionName, "no buffer is bound to enabled attribute");
         return false;
@@ -1913,6 +2013,7 @@ bool WebGLRenderingContextBase::validateVertexArrayObject(const char* functionNa
 
 bool WebGLRenderingContextBase::validateWebGLObject(const char* functionName, WebGLObject* object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return false;
     if (!object) {
@@ -1932,6 +2033,7 @@ bool WebGLRenderingContextBase::validateWebGLObject(const char* functionName, We
 
 bool WebGLRenderingContextBase::validateWebGLProgramOrShader(const char* functionName, WebGLObject* object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return false;
     if (!object) {
@@ -1960,6 +2062,7 @@ bool WebGLRenderingContextBase::validateWebGLProgramOrShader(const char* functio
 
 void WebGLRenderingContextBase::drawArrays(GCGLenum mode, GCGLint first, GCGLsizei count)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateVertexArrayObject("drawArrays"))
@@ -1981,6 +2084,7 @@ void WebGLRenderingContextBase::drawArrays(GCGLenum mode, GCGLint first, GCGLsiz
 
 void WebGLRenderingContextBase::drawElements(GCGLenum mode, GCGLsizei count, GCGLenum type, long long offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateVertexArrayObject("drawElements"))
@@ -2001,6 +2105,7 @@ void WebGLRenderingContextBase::drawElements(GCGLenum mode, GCGLsizei count, GCG
 
 void WebGLRenderingContextBase::enable(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateCapability("enable", cap))
         return;
     if (cap == GraphicsContextGL::STENCIL_TEST)
@@ -2014,6 +2119,7 @@ void WebGLRenderingContextBase::enable(GCGLenum cap)
 
 void WebGLRenderingContextBase::enableVertexAttribArray(GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (index >= m_maxVertexAttribs) {
@@ -2026,6 +2132,7 @@ void WebGLRenderingContextBase::enableVertexAttribArray(GCGLuint index)
 
 void WebGLRenderingContextBase::finish()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->finish();
@@ -2033,6 +2140,7 @@ void WebGLRenderingContextBase::finish()
 
 void WebGLRenderingContextBase::flush()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->flush();
@@ -2040,6 +2148,7 @@ void WebGLRenderingContextBase::flush()
 
 void WebGLRenderingContextBase::framebufferRenderbuffer(GCGLenum target, GCGLenum attachment, GCGLenum renderbuffertarget, WebGLRenderbuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateFramebufferFuncParameters("framebufferRenderbuffer", target, attachment))
         return;
     if (renderbuffertarget != GraphicsContextGL::RENDERBUFFER) {
@@ -2064,6 +2173,7 @@ void WebGLRenderingContextBase::framebufferRenderbuffer(GCGLenum target, GCGLenu
 
 #if ENABLE(WEBXR)
     if (framebufferBinding->isOpaque()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "framebufferRenderbuffer", "An opaque framebuffer's attachments cannot be inspected or changed");
         return;
     }
@@ -2074,6 +2184,7 @@ void WebGLRenderingContextBase::framebufferRenderbuffer(GCGLenum target, GCGLenu
 
 void WebGLRenderingContextBase::framebufferTexture2D(GCGLenum target, GCGLenum attachment, GCGLenum textarget, WebGLTexture* texture, GCGLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateFramebufferFuncParameters("framebufferTexture2D", target, attachment))
         return;
     if (level && isWebGL1() && !m_oesFBORenderMipmap) {
@@ -2093,6 +2204,7 @@ void WebGLRenderingContextBase::framebufferTexture2D(GCGLenum target, GCGLenum a
     }
 #if ENABLE(WEBXR)
     if (framebufferBinding->isOpaque()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "framebufferTexture2D", "An opaque framebuffer's attachments cannot be inspected or changed");
         return;
     }
@@ -2103,6 +2215,7 @@ void WebGLRenderingContextBase::framebufferTexture2D(GCGLenum target, GCGLenum a
 
 void WebGLRenderingContextBase::frontFace(GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->frontFace(mode);
@@ -2110,6 +2223,7 @@ void WebGLRenderingContextBase::frontFace(GCGLenum mode)
 
 void WebGLRenderingContextBase::generateMipmap(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateTextureBinding("generateMipmap", target))
@@ -2119,6 +2233,7 @@ void WebGLRenderingContextBase::generateMipmap(GCGLenum target)
 
 RefPtr<WebGLActiveInfo> WebGLRenderingContextBase::getActiveAttrib(WebGLProgram& program, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getActiveAttrib", &program))
         return nullptr;
     GraphicsContextGLActiveInfo info;
@@ -2132,6 +2247,7 @@ RefPtr<WebGLActiveInfo> WebGLRenderingContextBase::getActiveAttrib(WebGLProgram&
 
 RefPtr<WebGLActiveInfo> WebGLRenderingContextBase::getActiveUniform(WebGLProgram& program, GCGLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getActiveUniform", &program))
         return nullptr;
     GraphicsContextGLActiveInfo info;
@@ -2149,6 +2265,7 @@ RefPtr<WebGLActiveInfo> WebGLRenderingContextBase::getActiveUniform(WebGLProgram
 
 std::optional<Vector<RefPtr<WebGLShader>>> WebGLRenderingContextBase::getAttachedShaders(WebGLProgram& program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getAttachedShaders", &program))
         return std::nullopt;
 
@@ -2166,6 +2283,7 @@ std::optional<Vector<RefPtr<WebGLShader>>> WebGLRenderingContextBase::getAttache
 
 GCGLint WebGLRenderingContextBase::getAttribLocation(WebGLProgram& program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getAttribLocation", &program))
         return -1;
     if (!validateLocationLength("getAttribLocation", name))
@@ -2183,6 +2301,7 @@ GCGLint WebGLRenderingContextBase::getAttribLocation(WebGLProgram& program, cons
 
 WebGLAny WebGLRenderingContextBase::getBufferParameter(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2220,6 +2339,7 @@ WebGLAny WebGLRenderingContextBase::getBufferParameter(GCGLenum target, GCGLenum
 
 std::optional<WebGLContextAttributes> WebGLRenderingContextBase::getContextAttributes()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return std::nullopt;
 
@@ -2240,6 +2360,7 @@ std::optional<WebGLContextAttributes> WebGLRenderingContextBase::getContextAttri
 
 bool WebGLRenderingContextBase::updateErrors()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto newErrors = m_context->getErrors();
     if (!newErrors)
         return false;
@@ -2249,6 +2370,7 @@ bool WebGLRenderingContextBase::updateErrors()
 
 GCGLenum WebGLRenderingContextBase::getError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost()) {
         auto& errors = m_contextLostState->errors;
         if (!errors)
@@ -2268,6 +2390,7 @@ GCGLenum WebGLRenderingContextBase::getError()
 
 WebGLAny WebGLRenderingContextBase::getParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -2547,6 +2670,7 @@ WebGLAny WebGLRenderingContextBase::getParameter(GCGLenum pname)
 
 WebGLAny WebGLRenderingContextBase::getProgramParameter(WebGLProgram& program, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // COMPLETION_STATUS_KHR should always return true if the context is lost, so applications
     // don't get stuck in an infinite polling loop.
     if (isContextLost()) {
@@ -2592,6 +2716,7 @@ WebGLAny WebGLRenderingContextBase::getProgramParameter(WebGLProgram& program, G
 
 String WebGLRenderingContextBase::getProgramInfoLog(WebGLProgram& program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getProgramInfoLog", &program))
         return String();
     return ensureNotNull(m_context->getProgramInfoLog(program.object()));
@@ -2599,6 +2724,7 @@ String WebGLRenderingContextBase::getProgramInfoLog(WebGLProgram& program)
 
 WebGLAny WebGLRenderingContextBase::getRenderbufferParameter(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     if (target != GraphicsContextGL::RENDERBUFFER) {
@@ -2668,6 +2794,7 @@ WebGLAny WebGLRenderingContextBase::getRenderbufferParameter(GCGLenum target, GC
 
 WebGLAny WebGLRenderingContextBase::getShaderParameter(WebGLShader& shader, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // COMPLETION_STATUS_KHR should always return true if the context is lost, so applications
     // don't get stuck in an infinite polling loop.
     if (isContextLost()) {
@@ -2698,6 +2825,7 @@ WebGLAny WebGLRenderingContextBase::getShaderParameter(WebGLShader& shader, GCGL
 
 String WebGLRenderingContextBase::getShaderInfoLog(WebGLShader& shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getShaderInfoLog", &shader))
         return String();
     return ensureNotNull(m_context->getShaderInfoLog(shader.object()));
@@ -2705,6 +2833,7 @@ String WebGLRenderingContextBase::getShaderInfoLog(WebGLShader& shader)
 
 RefPtr<WebGLShaderPrecisionFormat> WebGLRenderingContextBase::getShaderPrecisionFormat(GCGLenum shaderType, GCGLenum precisionType)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     switch (shaderType) {
@@ -2736,6 +2865,7 @@ RefPtr<WebGLShaderPrecisionFormat> WebGLRenderingContextBase::getShaderPrecision
 
 String WebGLRenderingContextBase::getShaderSource(WebGLShader& shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getShaderSource", &shader))
         return String();
     return ensureNotNull(shader.getSource());
@@ -2743,6 +2873,7 @@ String WebGLRenderingContextBase::getShaderSource(WebGLShader& shader)
 
 WebGLAny WebGLRenderingContextBase::getTexParameter(GCGLenum target, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     auto tex = validateTextureBinding("getTexParameter", target);
@@ -2767,6 +2898,7 @@ WebGLAny WebGLRenderingContextBase::getTexParameter(GCGLenum target, GCGLenum pn
 
 WebGLAny WebGLRenderingContextBase::getUniform(WebGLProgram& program, const WebGLUniformLocation& uniformLocation)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getUniform", &program))
         return nullptr;
     if (uniformLocation.program() != &program) {
@@ -2956,6 +3088,7 @@ WebGLAny WebGLRenderingContextBase::getUniform(WebGLProgram& program, const WebG
 
 RefPtr<WebGLUniformLocation> WebGLRenderingContextBase::getUniformLocation(WebGLProgram& program, const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("getUniformLocation", &program))
         return nullptr;
     if (!validateLocationLength("getUniformLocation", name))
@@ -2993,6 +3126,7 @@ RefPtr<WebGLUniformLocation> WebGLRenderingContextBase::getUniformLocation(WebGL
 
 WebGLAny WebGLRenderingContextBase::getVertexAttrib(GCGLuint index, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
 
@@ -3044,6 +3178,7 @@ WebGLAny WebGLRenderingContextBase::getVertexAttrib(GCGLuint index, GCGLenum pna
 
 long long WebGLRenderingContextBase::getVertexAttribOffset(GCGLuint index, GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return 0;
     return m_context->getVertexAttribOffset(index, pname);
@@ -3052,6 +3187,7 @@ long long WebGLRenderingContextBase::getVertexAttribOffset(GCGLuint index, GCGLe
 // This function is used by InspectorCanvasAgent to list currently enabled extensions
 bool WebGLRenderingContextBase::extensionIsEnabled(const String& name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #define CHECK_EXTENSION(variable, nameLiteral) \
     if (equalIgnoringASCIICase(name, nameLiteral ## _s)) \
         return variable != nullptr;
@@ -3104,6 +3240,7 @@ bool WebGLRenderingContextBase::extensionIsEnabled(const String& name)
 
 void WebGLRenderingContextBase::hint(GCGLenum target, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     bool isValid = false;
@@ -3125,6 +3262,7 @@ void WebGLRenderingContextBase::hint(GCGLenum target, GCGLenum mode)
 
 GCGLboolean WebGLRenderingContextBase::isBuffer(WebGLBuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!buffer || isContextLost() || !buffer->validate(contextGroup(), *this))
         return 0;
 
@@ -3138,11 +3276,13 @@ GCGLboolean WebGLRenderingContextBase::isBuffer(WebGLBuffer* buffer)
 
 bool WebGLRenderingContextBase::isContextLost() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_contextLostState.has_value();
 }
 
 GCGLboolean WebGLRenderingContextBase::isEnabled(GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateCapability("isEnabled", cap))
         return 0;
     if (cap == GraphicsContextGL::STENCIL_TEST)
@@ -3152,6 +3292,7 @@ GCGLboolean WebGLRenderingContextBase::isEnabled(GCGLenum cap)
 
 GCGLboolean WebGLRenderingContextBase::isFramebuffer(WebGLFramebuffer* framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!framebuffer || isContextLost() || !framebuffer->validate(contextGroup(), *this))
         return 0;
 
@@ -3165,6 +3306,7 @@ GCGLboolean WebGLRenderingContextBase::isFramebuffer(WebGLFramebuffer* framebuff
 
 GCGLboolean WebGLRenderingContextBase::isProgram(WebGLProgram* program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!program || isContextLost() || !program->validate(contextGroup(), *this))
         return 0;
 
@@ -3177,6 +3319,7 @@ GCGLboolean WebGLRenderingContextBase::isProgram(WebGLProgram* program)
 
 GCGLboolean WebGLRenderingContextBase::isRenderbuffer(WebGLRenderbuffer* renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!renderbuffer || isContextLost() || !renderbuffer->validate(contextGroup(), *this))
         return 0;
 
@@ -3190,6 +3333,7 @@ GCGLboolean WebGLRenderingContextBase::isRenderbuffer(WebGLRenderbuffer* renderb
 
 GCGLboolean WebGLRenderingContextBase::isShader(WebGLShader* shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!shader || isContextLost() || !shader->validate(contextGroup(), *this))
         return 0;
 
@@ -3202,6 +3346,7 @@ GCGLboolean WebGLRenderingContextBase::isShader(WebGLShader* shader)
 
 GCGLboolean WebGLRenderingContextBase::isTexture(WebGLTexture* texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!texture || isContextLost() || !texture->validate(contextGroup(), *this))
         return 0;
 
@@ -3215,6 +3360,7 @@ GCGLboolean WebGLRenderingContextBase::isTexture(WebGLTexture* texture)
 
 void WebGLRenderingContextBase::lineWidth(GCGLfloat width)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->lineWidth(width);
@@ -3222,6 +3368,7 @@ void WebGLRenderingContextBase::lineWidth(GCGLfloat width)
 
 void WebGLRenderingContextBase::linkProgram(WebGLProgram& program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!linkProgramWithoutInvalidatingAttribLocations(&program))
         return;
 
@@ -3230,6 +3377,7 @@ void WebGLRenderingContextBase::linkProgram(WebGLProgram& program)
 
 bool WebGLRenderingContextBase::linkProgramWithoutInvalidatingAttribLocations(WebGLProgram* program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("linkProgram", program))
         return false;
     m_context->linkProgram(objectOrZero(program));
@@ -3240,6 +3388,7 @@ bool WebGLRenderingContextBase::linkProgramWithoutInvalidatingAttribLocations(We
 // https://immersive-web.github.io/webxr/#dom-webglrenderingcontextbase-makexrcompatible
 void WebGLRenderingContextBase::makeXRCompatible(MakeXRCompatiblePromise&& promise)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Returning an exception in these two checks is not part of the spec.
     auto canvas = htmlCanvas();
     if (!canvas) {
@@ -3300,6 +3449,7 @@ void WebGLRenderingContextBase::makeXRCompatible(MakeXRCompatiblePromise&& promi
 
 void WebGLRenderingContextBase::pixelStorei(GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     switch (pname) {
@@ -3340,6 +3490,7 @@ void WebGLRenderingContextBase::pixelStorei(GCGLenum pname, GCGLint param)
 
 void WebGLRenderingContextBase::polygonOffset(GCGLfloat factor, GCGLfloat units)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->polygonOffset(factor, units);
@@ -3347,6 +3498,7 @@ void WebGLRenderingContextBase::polygonOffset(GCGLfloat factor, GCGLfloat units)
 
 void WebGLRenderingContextBase::readPixels(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& maybePixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     // Due to WebGL's same-origin restrictions, it is not possible to
@@ -3387,6 +3539,7 @@ void WebGLRenderingContextBase::readPixels(GCGLint x, GCGLint y, GCGLsizei width
 
 void WebGLRenderingContextBase::renderbufferStorage(GCGLenum target, GCGLenum internalformat, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = "renderbufferStorage";
     if (isContextLost())
         return;
@@ -3405,6 +3558,7 @@ void WebGLRenderingContextBase::renderbufferStorage(GCGLenum target, GCGLenum in
 
 void WebGLRenderingContextBase::renderbufferStorageImpl(GCGLenum target, GCGLsizei samples, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if ASSERT_ENABLED
     // |samples| > 0 is only valid in WebGL2's renderbufferStorageMultisample().
     ASSERT(!samples);
@@ -3455,6 +3609,7 @@ void WebGLRenderingContextBase::renderbufferStorageImpl(GCGLenum target, GCGLsiz
 
 void WebGLRenderingContextBase::sampleCoverage(GCGLfloat value, GCGLboolean invert)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->sampleCoverage(value, invert);
@@ -3462,6 +3617,7 @@ void WebGLRenderingContextBase::sampleCoverage(GCGLfloat value, GCGLboolean inve
 
 void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateSize("scissor", width, height))
@@ -3471,6 +3627,7 @@ void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, G
 
 void WebGLRenderingContextBase::shaderSource(WebGLShader& shader, const String& string)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("shaderSource", &shader))
         return;
     m_context->shaderSource(shader.object(), string);
@@ -3479,6 +3636,7 @@ void WebGLRenderingContextBase::shaderSource(WebGLShader& shader, const String& 
 
 void WebGLRenderingContextBase::stencilFunc(GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateStencilFunc("stencilFunc", func))
@@ -3492,6 +3650,7 @@ void WebGLRenderingContextBase::stencilFunc(GCGLenum func, GCGLint ref, GCGLuint
 
 void WebGLRenderingContextBase::stencilFuncSeparate(GCGLenum face, GCGLenum func, GCGLint ref, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateStencilFunc("stencilFuncSeparate", func))
@@ -3520,6 +3679,7 @@ void WebGLRenderingContextBase::stencilFuncSeparate(GCGLenum face, GCGLenum func
 
 void WebGLRenderingContextBase::stencilMask(GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_stencilMask = mask;
@@ -3529,6 +3689,7 @@ void WebGLRenderingContextBase::stencilMask(GCGLuint mask)
 
 void WebGLRenderingContextBase::stencilMaskSeparate(GCGLenum face, GCGLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     switch (face) {
@@ -3551,6 +3712,7 @@ void WebGLRenderingContextBase::stencilMaskSeparate(GCGLenum face, GCGLuint mask
 
 void WebGLRenderingContextBase::stencilOp(GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->stencilOp(fail, zfail, zpass);
@@ -3558,6 +3720,7 @@ void WebGLRenderingContextBase::stencilOp(GCGLenum fail, GCGLenum zfail, GCGLenu
 
 void WebGLRenderingContextBase::stencilOpSeparate(GCGLenum face, GCGLenum fail, GCGLenum zfail, GCGLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     m_context->stencilOpSeparate(face, fail, zfail, zpass);
@@ -3565,6 +3728,7 @@ void WebGLRenderingContextBase::stencilOpSeparate(GCGLenum face, GCGLenum fail, 
 
 IntRect WebGLRenderingContextBase::sentinelEmptyRect()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Return a rectangle with -1 width and height so we can recognize
     // it later and recalculate it based on the Image whose data we'll
     // upload. It's important that there be no possible differences in
@@ -3574,6 +3738,7 @@ IntRect WebGLRenderingContextBase::sentinelEmptyRect()
 
 IntRect WebGLRenderingContextBase::safeGetImageSize(Image* image)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!image)
         return { };
     return texImageSourceSize(*image);
@@ -3581,6 +3746,7 @@ IntRect WebGLRenderingContextBase::safeGetImageSize(Image* image)
 
 IntRect WebGLRenderingContextBase::getImageDataSize(ImageData* pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(pixels);
     return texImageSourceSize(*pixels);
 }
@@ -3588,6 +3754,7 @@ IntRect WebGLRenderingContextBase::getImageDataSize(ImageData* pixels)
 #if ENABLE(WEB_CODECS)
 static bool isVideoFrameFormatEligibleToCopy(WebCodecsVideoFrame& frame)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if PLATFORM(COCOA)
     // FIXME: We should be able to remove the YUV restriction, see https://bugs.webkit.org/show_bug.cgi?id=251234.
     auto format = frame.format();
@@ -3601,16 +3768,19 @@ static bool isVideoFrameFormatEligibleToCopy(WebCodecsVideoFrame& frame)
 
 ExceptionOr<void> WebGLRenderingContextBase::texImageSourceHelper(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, TexImageSource&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
 
     return std::visit([this, functionID, target, level, internalformat, border, format, type, xoffset, yoffset, zoffset, inputSourceImageRect, depth, unpackImageHeight](auto&& source) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return texImageSource(functionID, target, level, internalformat, border, format, type, xoffset, yoffset, zoffset, inputSourceImageRect, depth, unpackImageHeight, *source);
     }, source);
 }
 
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, ImageBitmap& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     auto validationResult = validateImageBitmap(functionName, source);
     if (validationResult.hasException())
@@ -3645,6 +3815,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, ImageData& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
 
     if (source.data().isDetached()) {
@@ -3712,6 +3883,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, HTMLImageElement& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     auto validationResult = validateHTMLImageElement(functionName, source);
     if (validationResult.hasException())
@@ -3738,6 +3910,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, HTMLCanvasElement& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
 
     auto validationResult = validateHTMLCanvasElement(functionName, source);
@@ -3767,6 +3940,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 #if ENABLE(VIDEO)
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, HTMLVideoElement& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
 
     auto validationResult = validateHTMLVideoElement(functionName, source);
@@ -3817,6 +3991,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 #if ENABLE(OFFSCREEN_CANVAS)
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, OffscreenCanvas& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
 
     auto validationResult = validateOffscreenCanvas(functionName, source);
@@ -3843,6 +4018,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 #if ENABLE(WEB_CODECS)
 ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, const IntRect& inputSourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight, WebCodecsVideoFrame& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     if (source.isDetached()) {
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, functionName, "The video frame has been detached.");
@@ -3879,6 +4055,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImageSource(TexImageFunctionID f
 
 void WebGLRenderingContextBase::texImageArrayBufferViewHelper(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLint internalformat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, RefPtr<ArrayBufferView>&& pixels, NullDisposition nullDisposition, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -3934,6 +4111,7 @@ void WebGLRenderingContextBase::texImageArrayBufferViewHelper(TexImageFunctionID
 
 void WebGLRenderingContextBase::texImageImpl(TexImageFunctionID functionID, GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset, GCGLenum format, GCGLenum type, Image* image, GraphicsContextGL::DOMSource domSource, bool flipY, bool premultiplyAlpha, bool ignoreNativeImageAlphaPremultiplication, const IntRect& sourceImageRect, GCGLsizei depth, GCGLint unpackImageHeight)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     // All calling functions check isContextLost, so a duplicate check is not
     // needed here.
@@ -4015,11 +4193,13 @@ void WebGLRenderingContextBase::texImageImpl(TexImageFunctionID functionID, GCGL
 
 void WebGLRenderingContextBase::texImage2DBase(GCGLenum target, GCGLint level, GCGLenum internalFormat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_context->texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
 }
 
 void WebGLRenderingContextBase::texSubImage2DBase(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum internalFormat, GCGLenum format, GCGLenum type, std::span<const uint8_t> pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!isContextLost());
     UNUSED_PARAM(internalFormat);
     m_context->texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
@@ -4027,6 +4207,7 @@ void WebGLRenderingContextBase::texSubImage2DBase(GCGLenum target, GCGLint level
 
 const char* WebGLRenderingContextBase::texImageFunctionName(TexImageFunctionID functionID)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (functionID) {
     case TexImageFunctionID::TexImage2D:
         return "texImage2D";
@@ -4043,6 +4224,7 @@ const char* WebGLRenderingContextBase::texImageFunctionName(TexImageFunctionID f
 
 WebGLRenderingContextBase::TexImageFunctionType WebGLRenderingContextBase::texImageFunctionType(TexImageFunctionID functionID)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (functionID == TexImageFunctionID::TexImage2D || functionID == TexImageFunctionID::TexImage3D)
         return TexImageFunctionType::TexImage;
     return TexImageFunctionType::TexSubImage;
@@ -4050,6 +4232,7 @@ WebGLRenderingContextBase::TexImageFunctionType WebGLRenderingContextBase::texIm
 
 bool WebGLRenderingContextBase::validateReadPixelsDimensions(GCGLint width, GCGLint height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (width < 0 || height < 0) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, "readPixels", "invalid dimensions");
         return false;
@@ -4069,6 +4252,7 @@ bool WebGLRenderingContextBase::validateReadPixelsDimensions(GCGLint width, GCGL
 
 bool WebGLRenderingContextBase::validateTexImageSubRectangle(TexImageFunctionID functionID, const IntRect& imageSize, const IntRect& subRect, GCGLsizei depth, GCGLint unpackImageHeight, bool* selectingSubRectangle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     ASSERT(selectingSubRectangle);
 
@@ -4128,6 +4312,7 @@ bool WebGLRenderingContextBase::validateTexImageSubRectangle(TexImageFunctionID 
 
 bool WebGLRenderingContextBase::validateTexFunc(TexImageFunctionID functionID, TexFuncValidationSourceType sourceType, GCGLenum target, GCGLint level, GCGLenum internalFormat, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border, GCGLenum format, GCGLenum type, GCGLint xoffset, GCGLint yoffset, GCGLint zoffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     auto functionType = texImageFunctionType(functionID);
 
@@ -4148,6 +4333,7 @@ bool WebGLRenderingContextBase::validateTexFunc(TexImageFunctionID functionID, T
         // will handle whether to validate the SettableTexFormat by
         // checking if the ArrayBufferView is null or not.
         if (sourceType != SourceArrayBufferView) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             if (!validateSettableTexInternalFormat(functionName, format))
                 return false;
         }
@@ -4157,16 +4343,19 @@ bool WebGLRenderingContextBase::validateTexFunc(TexImageFunctionID functionID, T
 
 void WebGLRenderingContextBase::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLsizei width, GCGLsizei height, GCGLint border, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texImageArrayBufferViewHelper(TexImageFunctionID::TexImage2D, target, level, internalformat, width, height, 1, border, format, type, 0, 0, 0, WTFMove(pixels), NullAllowed, 0);
 }
 
 void WebGLRenderingContextBase::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLsizei width, GCGLsizei height, GCGLenum format, GCGLenum type, RefPtr<ArrayBufferView>&& pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texImageArrayBufferViewHelper(TexImageFunctionID::TexSubImage2D, target, level, 0, width, height, 1, 0, format, type, xoffset, yoffset, 0, WTFMove(pixels), NullNotAllowed, 0);
 }
 
 ExceptionOr<void> WebGLRenderingContextBase::texSubImage2D(GCGLenum target, GCGLint level, GCGLint xoffset, GCGLint yoffset, GCGLenum format, GCGLenum type, std::optional<TexImageSource>&& source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
 
@@ -4180,6 +4369,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texSubImage2D(GCGLenum target, GCGL
 
 bool WebGLRenderingContextBase::validateTypeAndArrayBufferType(const char* functionName, ArrayBufferViewFunctionType functionType, GCGLenum type, ArrayBufferView* pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     JSC::TypedArrayType expectedArrayType = JSC::NotTypedArray;
     const char* error = "pixels is not null";
     switch (type) {
@@ -4256,7 +4446,9 @@ bool WebGLRenderingContextBase::validateTypeAndArrayBufferType(const char* funct
 
 bool WebGLRenderingContextBase::validateImageFormatAndType(const char* functionName, GCGLenum format, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!GraphicsContextGL::computeBytesPerGroup(format, type)) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         synthesizeGLError(GraphicsContextGL::INVALID_ENUM, functionName, "invalid format or type");
         return false;
     }
@@ -4265,6 +4457,7 @@ bool WebGLRenderingContextBase::validateImageFormatAndType(const char* functionN
 
 std::optional<std::span<const uint8_t>> WebGLRenderingContextBase::validateTexFuncData(const char* functionName, TexImageDimension texDimension, GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLenum format, GCGLenum type, ArrayBufferView* pixels, NullDisposition disposition, GCGLuint srcOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // All calling functions check isContextLost, so a duplicate check is not
     // needed here.
     if (!pixels && disposition != NullAllowed) {
@@ -4317,6 +4510,7 @@ bool WebGLRenderingContextBase::validateTexFuncParameters(TexImageFunctionID fun
     GCGLsizei width, GCGLsizei height, GCGLsizei depth, GCGLint border,
     GCGLenum format, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     // We absolutely have to validate the format and type combination.
     // The texImage2D entry points taking HTMLImage, etc. will produce
@@ -4333,6 +4527,7 @@ bool WebGLRenderingContextBase::validateTexFuncParameters(TexImageFunctionID fun
 #endif
 
         ) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (!validateTexImageSourceFormatAndType(functionID, internalformat, format, type))
             return false;
     } else {
@@ -4355,6 +4550,7 @@ bool WebGLRenderingContextBase::validateTexFuncParameters(TexImageFunctionID fun
 
 void WebGLRenderingContextBase::addExtensionSupportedFormatsAndTypes()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_areOESTextureFloatFormatsAndTypesAdded && m_oesTextureFloat) {
         ADD_VALUES_TO_SET(m_supportedTexImageSourceTypes, supportedTypesOESTextureFloat);
         m_areOESTextureFloatFormatsAndTypesAdded = true;
@@ -4374,11 +4570,13 @@ void WebGLRenderingContextBase::addExtensionSupportedFormatsAndTypes()
 
 void WebGLRenderingContextBase::addExtensionSupportedFormatsAndTypesWebGL2()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // FIXME: add EXT_texture_norm16_dom_source support.
 }
 
 bool WebGLRenderingContextBase::validateTexImageSourceFormatAndType(TexImageFunctionID functionID, GCGLenum internalformat, GCGLenum format, GCGLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const char* functionName = texImageFunctionName(functionID);
     auto functionType = texImageFunctionType(functionID);
     if (!m_areWebGL2TexImageSourceFormatsAndTypesAdded && isWebGL2()) {
@@ -4414,6 +4612,7 @@ bool WebGLRenderingContextBase::validateTexImageSourceFormatAndType(TexImageFunc
 
 bool WebGLRenderingContextBase::validateTexFuncFormatAndType(const char* functionName, GCGLenum internalFormat, GCGLenum format, GCGLenum type, GCGLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (format) {
     case GraphicsContextGL::ALPHA:
     case GraphicsContextGL::LUMINANCE:
@@ -4514,6 +4713,7 @@ bool WebGLRenderingContextBase::validateTexFuncFormatAndType(const char* functio
 
 bool WebGLRenderingContextBase::validateForbiddenInternalFormats(const char* functionName, GCGLenum internalformat)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // These formats are never exposed to WebGL apps but may be accepted by ANGLE.
     switch (internalformat) {
     case GraphicsContextGL::BGRA4_ANGLEX:
@@ -4531,6 +4731,7 @@ bool WebGLRenderingContextBase::validateForbiddenInternalFormats(const char* fun
 
 void WebGLRenderingContextBase::copyTexImage2D(GCGLenum target, GCGLint level, GCGLenum internalFormat, GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height, GCGLint border)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateForbiddenInternalFormats("copyTexImage2D", internalFormat))
@@ -4546,6 +4747,7 @@ void WebGLRenderingContextBase::copyTexImage2D(GCGLenum target, GCGLint level, G
 
 ExceptionOr<void> WebGLRenderingContextBase::texImage2D(GCGLenum target, GCGLint level, GCGLenum internalformat, GCGLenum format, GCGLenum type, std::optional<TexImageSource> source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return { };
 
@@ -4559,6 +4761,7 @@ ExceptionOr<void> WebGLRenderingContextBase::texImage2D(GCGLenum target, GCGLint
 
 RefPtr<Image> WebGLRenderingContextBase::drawImageIntoBuffer(Image& image, int width, int height, int deviceScaleFactor, const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     IntSize size(width, height);
     size.scale(deviceScaleFactor);
     ImageBuffer* buf = m_generatedImageCache.imageBuffer(size, DestinationColorSpace::SRGB());
@@ -4577,6 +4780,7 @@ RefPtr<Image> WebGLRenderingContextBase::drawImageIntoBuffer(Image& image, int w
 
 RefPtr<Image> WebGLRenderingContextBase::videoFrameToImage(HTMLVideoElement& video, BackingStoreCopy backingStoreCopy, const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ImageBuffer* imageBuffer = nullptr;
     // FIXME: When texImage2D is passed an HTMLVideoElement, implementations
     // interoperably use the native RGB color values of the video frame (e.g.
@@ -4634,6 +4838,7 @@ RefPtr<Image> WebGLRenderingContextBase::videoFrameToImage(HTMLVideoElement& vid
 
 void WebGLRenderingContextBase::texParameter(GCGLenum target, GCGLenum pname, GCGLfloat paramf, GCGLint parami, bool isFloat)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto tex = validateTextureBinding("texParameter", target);
@@ -4686,16 +4891,19 @@ void WebGLRenderingContextBase::texParameter(GCGLenum target, GCGLenum pname, GC
 
 void WebGLRenderingContextBase::texParameterf(GCGLenum target, GCGLenum pname, GCGLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texParameter(target, pname, param, 0, true);
 }
 
 void WebGLRenderingContextBase::texParameteri(GCGLenum target, GCGLenum pname, GCGLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texParameter(target, pname, 0, param, false);
 }
 
 bool WebGLRenderingContextBase::validateUniformLocation(const char* functionName, const WebGLUniformLocation* location)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!location)
         return false;
     if (location->program() != m_currentProgram) {
@@ -4707,6 +4915,7 @@ bool WebGLRenderingContextBase::validateUniformLocation(const char* functionName
 
 void WebGLRenderingContextBase::uniform1f(const WebGLUniformLocation* location, GCGLfloat x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform1f", location))
         return;
 
@@ -4715,6 +4924,7 @@ void WebGLRenderingContextBase::uniform1f(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform2f(const WebGLUniformLocation* location, GCGLfloat x, GCGLfloat y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform2f", location))
         return;
 
@@ -4723,6 +4933,7 @@ void WebGLRenderingContextBase::uniform2f(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform3f(const WebGLUniformLocation* location, GCGLfloat x, GCGLfloat y, GCGLfloat z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform3f", location))
         return;
 
@@ -4731,6 +4942,7 @@ void WebGLRenderingContextBase::uniform3f(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform4f(const WebGLUniformLocation* location, GCGLfloat x, GCGLfloat y, GCGLfloat z, GCGLfloat w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform4f", location))
         return;
 
@@ -4739,6 +4951,7 @@ void WebGLRenderingContextBase::uniform4f(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform1i(const WebGLUniformLocation* location, GCGLint x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform1i", location))
         return;
     m_context->uniform1i(location->location(), x);
@@ -4746,6 +4959,7 @@ void WebGLRenderingContextBase::uniform1i(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform2i(const WebGLUniformLocation* location, GCGLint x, GCGLint y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform2i", location))
         return;
 
@@ -4754,6 +4968,7 @@ void WebGLRenderingContextBase::uniform2i(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform3i(const WebGLUniformLocation* location, GCGLint x, GCGLint y, GCGLint z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform3i", location))
         return;
 
@@ -4762,6 +4977,7 @@ void WebGLRenderingContextBase::uniform3i(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform4i(const WebGLUniformLocation* location, GCGLint x, GCGLint y, GCGLint z, GCGLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost() || !validateUniformLocation("uniform4i", location))
         return;
 
@@ -4770,6 +4986,7 @@ void WebGLRenderingContextBase::uniform4i(const WebGLUniformLocation* location, 
 
 void WebGLRenderingContextBase::uniform1fv(const WebGLUniformLocation* location, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform1fv", location, v, 1);
@@ -4780,6 +4997,7 @@ void WebGLRenderingContextBase::uniform1fv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform2fv(const WebGLUniformLocation* location, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform2fv", location, v, 2);
@@ -4790,6 +5008,7 @@ void WebGLRenderingContextBase::uniform2fv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform3fv(const WebGLUniformLocation* location, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform3fv", location, v, 3);
@@ -4800,6 +5019,7 @@ void WebGLRenderingContextBase::uniform3fv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform4fv(const WebGLUniformLocation* location, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform4fv", location, v, 4);
@@ -4810,6 +5030,7 @@ void WebGLRenderingContextBase::uniform4fv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform1iv(const WebGLUniformLocation* location, Int32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto result = validateUniformParameters("uniform1iv", location, v, 1);
@@ -4823,6 +5044,7 @@ void WebGLRenderingContextBase::uniform1iv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform2iv(const WebGLUniformLocation* location, Int32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform2iv", location, v, 2);
@@ -4833,6 +5055,7 @@ void WebGLRenderingContextBase::uniform2iv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform3iv(const WebGLUniformLocation* location, Int32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform3iv", location, v, 3);
@@ -4843,6 +5066,7 @@ void WebGLRenderingContextBase::uniform3iv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniform4iv(const WebGLUniformLocation* location, Int32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformParameters("uniform4iv", location, v, 4);
@@ -4853,6 +5077,7 @@ void WebGLRenderingContextBase::uniform4iv(const WebGLUniformLocation* location,
 
 void WebGLRenderingContextBase::uniformMatrix2fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix2fv", location, transpose, v, 4);
@@ -4863,6 +5088,7 @@ void WebGLRenderingContextBase::uniformMatrix2fv(const WebGLUniformLocation* loc
 
 void WebGLRenderingContextBase::uniformMatrix3fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix3fv", location, transpose, v, 9);
@@ -4873,6 +5099,7 @@ void WebGLRenderingContextBase::uniformMatrix3fv(const WebGLUniformLocation* loc
 
 void WebGLRenderingContextBase::uniformMatrix4fv(const WebGLUniformLocation* location, GCGLboolean transpose, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     auto data = validateUniformMatrixParameters("uniformMatrix4fv", location, transpose, v, 16);
@@ -4883,6 +5110,7 @@ void WebGLRenderingContextBase::uniformMatrix4fv(const WebGLUniformLocation* loc
 
 void WebGLRenderingContextBase::useProgram(WebGLProgram* program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (!validateNullableWebGLObject("useProgram", program))
@@ -4914,6 +5142,7 @@ void WebGLRenderingContextBase::useProgram(WebGLProgram* program)
 
 void WebGLRenderingContextBase::validateProgram(WebGLProgram& program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateWebGLProgramOrShader("validateProgram", &program))
         return;
     m_context->validateProgram(program.object());
@@ -4921,46 +5150,55 @@ void WebGLRenderingContextBase::validateProgram(WebGLProgram& program)
 
 void WebGLRenderingContextBase::vertexAttrib1f(GCGLuint index, GCGLfloat v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfImpl("vertexAttrib1f", index, 1, v0, 0.0f, 0.0f, 1.0f);
 }
 
 void WebGLRenderingContextBase::vertexAttrib2f(GCGLuint index, GCGLfloat v0, GCGLfloat v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfImpl("vertexAttrib2f", index, 2, v0, v1, 0.0f, 1.0f);
 }
 
 void WebGLRenderingContextBase::vertexAttrib3f(GCGLuint index, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfImpl("vertexAttrib3f", index, 3, v0, v1, v2, 1.0f);
 }
 
 void WebGLRenderingContextBase::vertexAttrib4f(GCGLuint index, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2, GCGLfloat v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfImpl("vertexAttrib4f", index, 4, v0, v1, v2, v3);
 }
 
 void WebGLRenderingContextBase::vertexAttrib1fv(GCGLuint index, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfvImpl("vertexAttrib1fv", index, WTFMove(v), 1);
 }
 
 void WebGLRenderingContextBase::vertexAttrib2fv(GCGLuint index, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfvImpl("vertexAttrib2fv", index, WTFMove(v), 2);
 }
 
 void WebGLRenderingContextBase::vertexAttrib3fv(GCGLuint index, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfvImpl("vertexAttrib3fv", index, WTFMove(v), 3);
 }
 
 void WebGLRenderingContextBase::vertexAttrib4fv(GCGLuint index, Float32List&& v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     vertexAttribfvImpl("vertexAttrib4fv", index, WTFMove(v), 4);
 }
 
 void WebGLRenderingContextBase::vertexAttribPointer(GCGLuint index, GCGLint size, GCGLenum type, GCGLboolean normalized, GCGLsizei stride, long long offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     if (isContextLost())
@@ -5031,6 +5269,7 @@ void WebGLRenderingContextBase::vertexAttribPointer(GCGLuint index, GCGLint size
 
 void WebGLRenderingContextBase::viewport(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateSize("viewport", width, height))
@@ -5040,6 +5279,7 @@ void WebGLRenderingContextBase::viewport(GCGLint x, GCGLint y, GCGLsizei width, 
 
 void WebGLRenderingContextBase::forceLostContext(WebGLRenderingContextBase::LostContextMode mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost()) {
         synthesizeLostContextGLError(GraphicsContextGL::INVALID_OPERATION, "loseContext", "context already lost");
         return;
@@ -5050,6 +5290,7 @@ void WebGLRenderingContextBase::forceLostContext(WebGLRenderingContextBase::Lost
 
 void WebGLRenderingContextBase::loseContextImpl(WebGLRenderingContextBase::LostContextMode mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (mode == RealLostContext)
@@ -5070,6 +5311,7 @@ void WebGLRenderingContextBase::loseContextImpl(WebGLRenderingContextBase::LostC
 
 void WebGLRenderingContextBase::forceRestoreContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isContextLost()) {
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, "restoreContext", "context not lost");
         return;
@@ -5086,11 +5328,13 @@ void WebGLRenderingContextBase::forceRestoreContext()
 
 bool WebGLRenderingContextBase::isContextUnrecoverablyLost() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return isContextLost() && !m_contextLostState->restoreRequested;
 }
 
 RefPtr<GraphicsLayerContentsDisplayDelegate> WebGLRenderingContextBase::layerContentsDisplayDelegate()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return nullptr;
     return m_context->layerContentsDisplayDelegate();
@@ -5098,27 +5342,32 @@ RefPtr<GraphicsLayerContentsDisplayDelegate> WebGLRenderingContextBase::layerCon
 
 void WebGLRenderingContextBase::removeSharedObject(WebGLSharedObject& object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_contextGroup->removeObject(object);
 }
 
 void WebGLRenderingContextBase::addSharedObject(WebGLSharedObject& object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!isContextLost());
     m_contextGroup->addObject(object);
 }
 
 void WebGLRenderingContextBase::removeContextObject(WebGLContextObject& object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_contextObjects.remove(&object);
 }
 
 void WebGLRenderingContextBase::addContextObject(WebGLContextObject& object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_contextObjects.add(&object);
 }
 
 void WebGLRenderingContextBase::detachAndRemoveAllObjects()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     while (m_contextObjects.size() > 0) {
@@ -5129,6 +5378,7 @@ void WebGLRenderingContextBase::detachAndRemoveAllObjects()
 
 void WebGLRenderingContextBase::stop()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isContextLost()) {
         forceLostContext(SyntheticLostContext);
         destroyGraphicsContextGL();
@@ -5137,26 +5387,31 @@ void WebGLRenderingContextBase::stop()
 
 const char* WebGLRenderingContextBase::activeDOMObjectName() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return "WebGLRenderingContext";
 }
 
 void WebGLRenderingContextBase::suspend(ReasonForSuspension)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_isSuspended = true;
 }
 
 void WebGLRenderingContextBase::resume()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_isSuspended = false;
 }
 
 bool WebGLRenderingContextBase::getBooleanParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_context->getBoolean(pname);
 }
 
 Vector<bool> WebGLRenderingContextBase::getBooleanArrayParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (pname != GraphicsContextGL::COLOR_WRITEMASK) {
         notImplemented();
         return { };
@@ -5171,21 +5426,25 @@ Vector<bool> WebGLRenderingContextBase::getBooleanArrayParameter(GCGLenum pname)
 
 float WebGLRenderingContextBase::getFloatParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_context->getFloat(pname);
 }
 
 int WebGLRenderingContextBase::getIntParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_context->getInteger(pname);
 }
 
 unsigned WebGLRenderingContextBase::getUnsignedIntParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_context->getInteger(pname);
 }
 
 RefPtr<Float32Array> WebGLRenderingContextBase::getWebGLFloatArrayParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLfloat value[4] = {0};
     m_context->getFloatv(pname, value);
     unsigned length = 0;
@@ -5207,6 +5466,7 @@ RefPtr<Float32Array> WebGLRenderingContextBase::getWebGLFloatArrayParameter(GCGL
 
 RefPtr<Int32Array> WebGLRenderingContextBase::getWebGLIntArrayParameter(GCGLenum pname)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GCGLint value[4] = {0};
     m_context->getIntegerv(pname, value);
     unsigned length = 0;
@@ -5226,6 +5486,7 @@ RefPtr<Int32Array> WebGLRenderingContextBase::getWebGLIntArrayParameter(GCGLenum
 
 WebGLRenderingContextBase::PixelStoreParameters WebGLRenderingContextBase::computeUnpackPixelStoreParameters(TexImageDimension dimension) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     PixelStoreParameters parameters = unpackPixelStoreParameters();
     if (dimension != TexImageDimension::Tex3D) {
         parameters.imageHeight = 0;
@@ -5236,6 +5497,7 @@ WebGLRenderingContextBase::PixelStoreParameters WebGLRenderingContextBase::compu
 
 RefPtr<WebGLTexture> WebGLRenderingContextBase::validateTextureBinding(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<WebGLTexture> texture;
     switch (target) {
     case GraphicsContextGL::TEXTURE_2D:
@@ -5269,11 +5531,13 @@ RefPtr<WebGLTexture> WebGLRenderingContextBase::validateTextureBinding(const cha
 
 RefPtr<WebGLTexture> WebGLRenderingContextBase::validateTexImageBinding(TexImageFunctionID functionID, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return validateTexture2DBinding(texImageFunctionName(functionID), target);
 }
 
 RefPtr<WebGLTexture> WebGLRenderingContextBase::validateTexture2DBinding(const char* functionName, GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<WebGLTexture> texture;
     switch (target) {
     case GraphicsContextGL::TEXTURE_2D:
@@ -5298,6 +5562,7 @@ RefPtr<WebGLTexture> WebGLRenderingContextBase::validateTexture2DBinding(const c
 
 bool WebGLRenderingContextBase::validateLocationLength(const char* functionName, const String& string)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     unsigned maxWebGLLocationLength = isWebGL2() ? 1024 : 256;
     if (string.length() > maxWebGLLocationLength) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "location length is too large");
@@ -5308,6 +5573,7 @@ bool WebGLRenderingContextBase::validateLocationLength(const char* functionName,
 
 bool WebGLRenderingContextBase::validateSize(const char* functionName, GCGLint x, GCGLint y, GCGLint z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (x < 0 || y < 0 || z < 0) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "size < 0");
         return false;
@@ -5317,6 +5583,7 @@ bool WebGLRenderingContextBase::validateSize(const char* functionName, GCGLint x
 
 bool WebGLRenderingContextBase::validateString(const char* functionName, const String& string)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (size_t i = 0; i < string.length(); ++i) {
         if (!validateCharacter(string[i])) {
             synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "string not ASCII");
@@ -5328,6 +5595,7 @@ bool WebGLRenderingContextBase::validateString(const char* functionName, const S
 
 bool WebGLRenderingContextBase::validateTexFuncLevel(const char* functionName, GCGLenum target, GCGLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (level < 0) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "level < 0");
         return false;
@@ -5344,6 +5612,7 @@ bool WebGLRenderingContextBase::validateTexFuncLevel(const char* functionName, G
 
 GCGLint WebGLRenderingContextBase::maxTextureLevelForTarget(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target) {
     case GraphicsContextGL::TEXTURE_2D:
         return m_maxTextureLevel;
@@ -5360,6 +5629,7 @@ GCGLint WebGLRenderingContextBase::maxTextureLevelForTarget(GCGLenum target)
 
 bool WebGLRenderingContextBase::validateCompressedTexFormat(const char* functionName, GCGLenum format)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_compressedTextureFormats.contains(format)) {
         synthesizeGLError(GraphicsContextGL::INVALID_ENUM, functionName, "invalid format");
         return false;
@@ -5369,6 +5639,7 @@ bool WebGLRenderingContextBase::validateCompressedTexFormat(const char* function
 
 bool WebGLRenderingContextBase::validateDrawMode(const char* functionName, GCGLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (mode) {
     case GraphicsContextGL::POINTS:
     case GraphicsContextGL::LINE_STRIP:
@@ -5386,6 +5657,7 @@ bool WebGLRenderingContextBase::validateDrawMode(const char* functionName, GCGLe
 
 bool WebGLRenderingContextBase::validateStencilSettings(const char* functionName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_stencilMask != m_stencilMaskBack || m_stencilFuncRef != m_stencilFuncRefBack || m_stencilFuncMask != m_stencilFuncMaskBack) {
         synthesizeGLError(GraphicsContextGL::INVALID_OPERATION, functionName, "front and back stencils settings do not match");
         return false;
@@ -5395,6 +5667,7 @@ bool WebGLRenderingContextBase::validateStencilSettings(const char* functionName
 
 bool WebGLRenderingContextBase::validateStencilFunc(const char* functionName, GCGLenum func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (func) {
     case GraphicsContextGL::NEVER:
     case GraphicsContextGL::LESS:
@@ -5413,12 +5686,14 @@ bool WebGLRenderingContextBase::validateStencilFunc(const char* functionName, GC
 
 bool WebGLRenderingContextBase::shouldPrintToConsole() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_synthesizedErrorsToConsole && m_numGLErrorsToConsoleAllowed;
 }
 
 // Frequent call sites should use above condition before constructing the message for the printToConsole().
 void WebGLRenderingContextBase::printToConsole(MessageLevel level, String&& message)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!shouldPrintToConsole())
         return;
 
@@ -5442,6 +5717,7 @@ void WebGLRenderingContextBase::printToConsole(MessageLevel level, String&& mess
 
 bool WebGLRenderingContextBase::validateFramebufferTarget(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (target == GraphicsContextGL::FRAMEBUFFER)
         return true;
     return false;
@@ -5449,6 +5725,7 @@ bool WebGLRenderingContextBase::validateFramebufferTarget(GCGLenum target)
 
 WebGLFramebuffer* WebGLRenderingContextBase::getFramebufferBinding(GCGLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (target == GraphicsContextGL::FRAMEBUFFER)
         return m_framebufferBinding.get();
     return nullptr;
@@ -5456,11 +5733,13 @@ WebGLFramebuffer* WebGLRenderingContextBase::getFramebufferBinding(GCGLenum targ
 
 WebGLFramebuffer* WebGLRenderingContextBase::getReadFramebufferBinding()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_framebufferBinding.get();
 }
 
 bool WebGLRenderingContextBase::validateFramebufferFuncParameters(const char* functionName, GCGLenum target, GCGLenum attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateFramebufferTarget(target)) {
         synthesizeGLError(GraphicsContextGL::INVALID_ENUM, functionName, "invalid target");
         return false;
@@ -5486,6 +5765,7 @@ bool WebGLRenderingContextBase::validateFramebufferFuncParameters(const char* fu
 
 bool WebGLRenderingContextBase::validateBlendFuncFactors(const char* functionName, GCGLenum src, GCGLenum dst)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (((src == GraphicsContextGL::CONSTANT_COLOR || src == GraphicsContextGL::ONE_MINUS_CONSTANT_COLOR)
         && (dst == GraphicsContextGL::CONSTANT_ALPHA || dst == GraphicsContextGL::ONE_MINUS_CONSTANT_ALPHA))
         || ((dst == GraphicsContextGL::CONSTANT_COLOR || dst == GraphicsContextGL::ONE_MINUS_CONSTANT_COLOR)
@@ -5498,6 +5778,7 @@ bool WebGLRenderingContextBase::validateBlendFuncFactors(const char* functionNam
 
 bool WebGLRenderingContextBase::validateCapability(const char* functionName, GCGLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (cap) {
     case GraphicsContextGL::BLEND:
     case GraphicsContextGL::CULL_FACE:
@@ -5518,6 +5799,7 @@ bool WebGLRenderingContextBase::validateCapability(const char* functionName, GCG
 template<typename T, typename TypedListType>
 std::optional<std::span<const T>> WebGLRenderingContextBase::validateUniformMatrixParameters(const char* functionName, const WebGLUniformLocation* location, GCGLboolean transpose, const TypedList<TypedListType, T>& values, GCGLsizei requiredMinSize, GCGLuint srcOffset, GCGLuint srcLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!validateUniformLocation(functionName, location))
         return { };
     if (!values.data()) {
@@ -5558,6 +5840,7 @@ std::optional<std::span<const GCGLfloat>> WebGLRenderingContextBase::validateUni
 
 WebGLBuffer* WebGLRenderingContextBase::validateBufferDataParameters(const char* functionName, GCGLenum target, GCGLenum usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLBuffer* buffer = validateBufferDataTarget(functionName, target);
     if (!buffer)
         return nullptr;
@@ -5581,6 +5864,7 @@ WebGLBuffer* WebGLRenderingContextBase::validateBufferDataParameters(const char*
 
 ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLImageElement(const char* functionName, HTMLImageElement& image)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!image.cachedImage()) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "no image");
         return false;
@@ -5597,6 +5881,7 @@ ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLImageElement(const char
 
 ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLCanvasElement(const char* functionName, HTMLCanvasElement& canvas)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!canvas.buffer()) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "no canvas");
         return false;
@@ -5609,6 +5894,7 @@ ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLCanvasElement(const cha
 #if ENABLE(VIDEO)
 ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLVideoElement(const char* functionName, HTMLVideoElement& video)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!video.videoWidth() || !video.videoHeight()) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "no video");
         return false;
@@ -5622,6 +5908,7 @@ ExceptionOr<bool> WebGLRenderingContextBase::validateHTMLVideoElement(const char
 #if ENABLE(OFFSCREEN_CANVAS)
 ExceptionOr<bool> WebGLRenderingContextBase::validateOffscreenCanvas(const char* functionName, OffscreenCanvas& canvas)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!canvas.buffer()) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "no canvas");
         return false;
@@ -5634,6 +5921,7 @@ ExceptionOr<bool> WebGLRenderingContextBase::validateOffscreenCanvas(const char*
 
 ExceptionOr<bool> WebGLRenderingContextBase::validateImageBitmap(const char* functionName, ImageBitmap& bitmap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (bitmap.isDetached()) {
         synthesizeGLError(GraphicsContextGL::INVALID_VALUE, functionName, "the ImageBitmap has been detached.");
         return false;
@@ -5645,6 +5933,7 @@ ExceptionOr<bool> WebGLRenderingContextBase::validateImageBitmap(const char* fun
 
 void WebGLRenderingContextBase::vertexAttribfImpl(const char* functionName, GCGLuint index, GCGLsizei expectedSize, GCGLfloat v0, GCGLfloat v1, GCGLfloat v2, GCGLfloat v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (index >= m_maxVertexAttribs) {
@@ -5675,6 +5964,7 @@ void WebGLRenderingContextBase::vertexAttribfImpl(const char* functionName, GCGL
 
 void WebGLRenderingContextBase::vertexAttribfvImpl(const char* functionName, GCGLuint index, Float32List&& list, GCGLsizei expectedSize)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -5715,6 +6005,7 @@ void WebGLRenderingContextBase::vertexAttribfvImpl(const char* functionName, GCG
 
 void WebGLRenderingContextBase::scheduleTaskToDispatchContextLostEvent()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // It is safe to capture |this| because we keep the canvas element alive and it owns |this|.
     canvasBase().queueTaskKeepingObjectAlive(TaskSource::WebGL, [this] {
         if (isContextStopped())
@@ -5731,6 +6022,7 @@ void WebGLRenderingContextBase::scheduleTaskToDispatchContextLostEvent()
 
 void WebGLRenderingContextBase::maybeRestoreContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RELEASE_ASSERT(!m_isSuspended);
     if (!isContextLost() || !m_contextLostState->restoreRequested) {
         ASSERT_NOT_REACHED();
@@ -5773,12 +6065,14 @@ void WebGLRenderingContextBase::maybeRestoreContext()
 
 void WebGLRenderingContextBase::simulateEventForTesting(SimulatedEventForTesting event)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_context)
         m_context->simulateEventForTesting(event);
 }
 
 String WebGLRenderingContextBase::ensureNotNull(const String& text) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (text.isNull())
         return emptyString();
     return text;
@@ -5787,10 +6081,12 @@ String WebGLRenderingContextBase::ensureNotNull(const String& text) const
 WebGLRenderingContextBase::LRUImageBufferCache::LRUImageBufferCache(int capacity)
     : m_buffers(capacity)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 ImageBuffer* WebGLRenderingContextBase::LRUImageBufferCache::imageBuffer(const IntSize& size, DestinationColorSpace colorSpace, CompositeOperator fillOperator)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     size_t i;
     for (i = 0; i < m_buffers.size(); ++i) {
         if (!m_buffers[i])
@@ -5819,12 +6115,14 @@ ImageBuffer* WebGLRenderingContextBase::LRUImageBufferCache::imageBuffer(const I
 
 void WebGLRenderingContextBase::LRUImageBufferCache::bubbleToFront(size_t idx)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (size_t i = idx; i > 0; --i)
         m_buffers[i].swap(m_buffers[i-1]);
 }
 
 void WebGLRenderingContextBase::synthesizeGLError(GCGLenum error, const char* functionName, const char* description)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto errorCode = GraphicsContextGL::enumToErrorCode(error);
     if (shouldPrintToConsole())
         printToConsole(MessageLevel::Error, makeString("WebGL: ", errorCodeToString(errorCode), ": ", functionName, ": ", description));
@@ -5833,6 +6131,7 @@ void WebGLRenderingContextBase::synthesizeGLError(GCGLenum error, const char* fu
 
 void WebGLRenderingContextBase::synthesizeLostContextGLError(GCGLenum error, const char* functionName, const char* description)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto errorCode = GraphicsContextGL::enumToErrorCode(error);
     if (shouldPrintToConsole())
         printToConsole(MessageLevel::Error, makeString("WebGL: ", errorCodeToString(errorCode), ": ", functionName, ": ", description));
@@ -5841,6 +6140,7 @@ void WebGLRenderingContextBase::synthesizeLostContextGLError(GCGLenum error, con
 
 void WebGLRenderingContextBase::enableOrDisable(GCGLenum capability, bool enable)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (enable)
         m_context->enable(capability);
     else
@@ -5849,12 +6149,14 @@ void WebGLRenderingContextBase::enableOrDisable(GCGLenum capability, bool enable
 
 IntSize WebGLRenderingContextBase::clampedCanvasSize()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     IntSize canvasSize { static_cast<int>(canvasBase().width()), static_cast<int>(canvasBase().height()) };
     return canvasSize.constrainedBetween({ 1, 1 }, { m_maxViewportDims[0], m_maxViewportDims[1] });
 }
 
 GCGLint WebGLRenderingContextBase::getMaxDrawBuffers()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!supportsDrawBuffers())
         return 0;
     if (!m_maxDrawBuffers)
@@ -5867,6 +6169,7 @@ GCGLint WebGLRenderingContextBase::getMaxDrawBuffers()
 
 GCGLint WebGLRenderingContextBase::getMaxColorAttachments()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!supportsDrawBuffers())
         return 0;
     if (!m_maxColorAttachments)
@@ -5876,12 +6179,14 @@ GCGLint WebGLRenderingContextBase::getMaxColorAttachments()
 
 void WebGLRenderingContextBase::setBackDrawBuffer(GCGLenum buf)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(buf == GraphicsContextGL::NONE || buf == GraphicsContextGL::BACK);
     m_backDrawBuffer = buf;
 }
 
 void WebGLRenderingContextBase::setFramebuffer(const AbstractLocker&, GCGLenum target, WebGLFramebuffer* buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (buffer)
         buffer->setHasEverBeenBound();
 
@@ -5892,17 +6197,20 @@ void WebGLRenderingContextBase::setFramebuffer(const AbstractLocker&, GCGLenum t
 
 void WebGLRenderingContextBase::restoreCurrentFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindFramebuffer(GraphicsContextGL::FRAMEBUFFER, m_framebufferBinding.get());
 }
 
 void WebGLRenderingContextBase::restoreCurrentTexture2D()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto texture = m_textureUnits[m_activeTextureUnit].texture2DBinding.get();
     bindTexture(GraphicsContextGL::TEXTURE_2D, texture);
 }
 
 bool WebGLRenderingContextBase::supportsDrawBuffers()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_drawBuffersWebGLRequirementsChecked) {
         m_drawBuffersWebGLRequirementsChecked = true;
         m_drawBuffersSupported = WebGLDrawBuffers::supported(*this);
@@ -5912,6 +6220,7 @@ bool WebGLRenderingContextBase::supportsDrawBuffers()
 
 void WebGLRenderingContextBase::drawArraysInstanced(GCGLenum mode, GCGLint first, GCGLsizei count, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateVertexArrayObject("drawArraysInstanced"))
@@ -5933,6 +6242,7 @@ void WebGLRenderingContextBase::drawArraysInstanced(GCGLenum mode, GCGLint first
 
 void WebGLRenderingContextBase::drawElementsInstanced(GCGLenum mode, GCGLsizei count, GCGLenum type, long long offset, GCGLsizei primcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
     if (!validateVertexArrayObject("drawElementsInstanced"))
@@ -5954,6 +6264,7 @@ void WebGLRenderingContextBase::drawElementsInstanced(GCGLenum mode, GCGLsizei c
 
 void WebGLRenderingContextBase::vertexAttribDivisor(GCGLuint index, GCGLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isContextLost())
         return;
 
@@ -5968,6 +6279,7 @@ void WebGLRenderingContextBase::vertexAttribDivisor(GCGLuint index, GCGLuint div
 
 bool WebGLRenderingContextBase::enableSupportedExtension(ASCIILiteral extensionNameLiteral)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(m_context);
     String extensionName { extensionNameLiteral };
     if (!m_context->supportsExtension(extensionName))
@@ -5978,6 +6290,7 @@ bool WebGLRenderingContextBase::enableSupportedExtension(ASCIILiteral extensionN
 
 void WebGLRenderingContextBase::loseExtensions(LostContextMode mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #define LOSE_EXTENSION(variable) \
     if (variable) { \
         variable->loseParentContext(mode); \
@@ -6031,6 +6344,7 @@ void WebGLRenderingContextBase::loseExtensions(LostContextMode mode)
 
 void WebGLRenderingContextBase::activityStateDidChange(OptionSet<ActivityState> oldActivityState, OptionSet<ActivityState> newActivityState)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_context)
         return;
 
@@ -6041,11 +6355,13 @@ void WebGLRenderingContextBase::activityStateDidChange(OptionSet<ActivityState> 
 
 void WebGLRenderingContextBase::forceContextLost()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     forceLostContext(WebGLRenderingContextBase::RealLostContext);
 }
 
 void WebGLRenderingContextBase::recycleContext()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (shouldPrintToConsole())
         printToConsole(MessageLevel::Error, "There are too many active WebGL contexts on this page, the oldest context will be lost."_s);
     // Using SyntheticLostContext means the developer won't be able to force the restoration
@@ -6056,6 +6372,7 @@ void WebGLRenderingContextBase::recycleContext()
 
 void WebGLRenderingContextBase::dispatchContextChangedNotification()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto* canvas = htmlCanvas();
     if (!canvas)
         return;
@@ -6065,6 +6382,7 @@ void WebGLRenderingContextBase::dispatchContextChangedNotification()
 
 void WebGLRenderingContextBase::addMembersToOpaqueRoots(JSC::AbstractSlotVisitor& visitor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Locker locker { objectGraphLock() };
 
     addWebCoreOpaqueRoot(visitor, m_boundArrayBuffer.get());
@@ -6099,11 +6417,13 @@ void WebGLRenderingContextBase::addMembersToOpaqueRoots(JSC::AbstractSlotVisitor
 
 Lock& WebGLRenderingContextBase::objectGraphLock()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_objectGraphLock;
 }
 
 void WebGLRenderingContextBase::prepareForDisplay()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_context)
         return;
 
@@ -6117,11 +6437,13 @@ void WebGLRenderingContextBase::prepareForDisplay()
 
 void WebGLRenderingContextBase::updateActiveOrdinal()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_activeOrdinal = s_lastActiveOrdinal++;
 }
 
 WebCoreOpaqueRoot root(WebGLRenderingContextBase* context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return WebCoreOpaqueRoot { context };
 }
 

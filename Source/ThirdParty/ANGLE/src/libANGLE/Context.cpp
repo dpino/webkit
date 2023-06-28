@@ -80,6 +80,7 @@ egl::ShareGroup *AllocateOrGetShareGroup(egl::Display *display, const gl::Contex
 template <typename T>
 angle::Result GetQueryObjectParameter(const Context *context, Query *query, GLenum pname, T *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!query)
     {
         // Some applications call into glGetQueryObjectuiv(...) prior to calling glBeginQuery(...)
@@ -87,6 +88,7 @@ angle::Result GetQueryObjectParameter(const Context *context, Query *query, GLen
         // the app enables EGL_KHR_create_context_no_error extension, we skip the validation layer.
         switch (pname)
         {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             case GL_QUERY_RESULT_EXT:
                 *params = 0;
                 break;
@@ -127,21 +129,25 @@ angle::Result GetQueryObjectParameter(const Context *context, Query *query, GLen
 // Attribute map queries.
 EGLint GetClientMajorVersion(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<EGLint>(attribs.get(EGL_CONTEXT_CLIENT_VERSION, 1));
 }
 
 EGLint GetClientMinorVersion(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<EGLint>(attribs.get(EGL_CONTEXT_MINOR_VERSION, 0));
 }
 
 bool GetBackwardCompatibleContext(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return attribs.get(EGL_CONTEXT_OPENGL_BACKWARDS_COMPATIBLE_ANGLE, EGL_TRUE) == EGL_TRUE;
 }
 
 bool GetWebGLContext(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_CONTEXT_WEBGL_COMPATIBILITY_ANGLE, EGL_FALSE) == EGL_TRUE);
 }
 
@@ -149,6 +155,7 @@ Version GetClientVersion(egl::Display *display,
                          const egl::AttributeMap &attribs,
                          const EGLenum clientType)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Version requestedVersion =
         Version(GetClientMajorVersion(attribs), GetClientMinorVersion(attribs));
     if (GetBackwardCompatibleContext(attribs))
@@ -186,11 +193,13 @@ Version GetClientVersion(egl::Display *display,
 
 EGLint GetProfileMask(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return attribs.getAsInt(EGL_CONTEXT_OPENGL_PROFILE_MASK, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT);
 }
 
 GLenum GetResetStrategy(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     EGLAttrib resetStrategyExt =
         attribs.get(EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY_EXT, EGL_NO_RESET_NOTIFICATION);
     EGLAttrib resetStrategyCore =
@@ -210,6 +219,7 @@ GLenum GetResetStrategy(const egl::AttributeMap &attribs)
 
 bool GetRobustAccess(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     EGLAttrib robustAccessExt  = attribs.get(EGL_CONTEXT_OPENGL_ROBUST_ACCESS_EXT, EGL_FALSE);
     EGLAttrib robustAccessCore = attribs.get(EGL_CONTEXT_OPENGL_ROBUST_ACCESS, robustAccessExt);
 
@@ -222,17 +232,20 @@ bool GetRobustAccess(const egl::AttributeMap &attribs)
 
 bool GetDebug(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_CONTEXT_OPENGL_DEBUG, EGL_FALSE) == EGL_TRUE) ||
            ((attribs.get(EGL_CONTEXT_FLAGS_KHR, 0) & EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR) != 0);
 }
 
 bool GetNoError(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_CONTEXT_OPENGL_NO_ERROR_KHR, EGL_FALSE) == EGL_TRUE);
 }
 
 bool GetExtensionsEnabled(const egl::AttributeMap &attribs, bool webGLContext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // If the context is WebGL, extensions are disabled by default
     EGLAttrib defaultValue = webGLContext ? EGL_FALSE : EGL_TRUE;
     return (attribs.get(EGL_EXTENSIONS_ENABLED_ANGLE, defaultValue) == EGL_TRUE);
@@ -240,16 +253,19 @@ bool GetExtensionsEnabled(const egl::AttributeMap &attribs, bool webGLContext)
 
 bool GetBindGeneratesResource(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_CONTEXT_BIND_GENERATES_RESOURCE_CHROMIUM, EGL_TRUE) == EGL_TRUE);
 }
 
 bool GetClientArraysEnabled(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_CONTEXT_CLIENT_ARRAYS_ENABLED_ANGLE, EGL_TRUE) == EGL_TRUE);
 }
 
 bool GetRobustResourceInit(egl::Display *display, const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const angle::FrontendFeatures &frontendFeatures = display->getFrontendFeatures();
     return (frontendFeatures.forceRobustResourceInit.enabled ||
             attribs.get(EGL_ROBUST_RESOURCE_INITIALIZATION_ANGLE, EGL_FALSE) == EGL_TRUE);
@@ -257,17 +273,20 @@ bool GetRobustResourceInit(egl::Display *display, const egl::AttributeMap &attri
 
 EGLenum GetContextPriority(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<EGLenum>(
         attribs.getAsInt(EGL_CONTEXT_PRIORITY_LEVEL_IMG, EGL_CONTEXT_PRIORITY_MEDIUM_IMG));
 }
 
 bool GetProtectedContent(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<bool>(attribs.getAsInt(EGL_PROTECTED_CONTENT_EXT, EGL_FALSE));
 }
 
 std::string GetObjectLabelFromPointer(GLsizei length, const GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     std::string labelName;
     if (label != nullptr)
     {
@@ -282,6 +301,7 @@ void GetObjectLabelBase(const std::string &objectLabel,
                         GLsizei *length,
                         GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     size_t writeLength = objectLabel.length();
     if (label != nullptr && bufSize > 0)
     {
@@ -321,11 +341,13 @@ enum SubjectIndexes : angle::SubjectIndex
 
 bool IsClearBufferEnabled(const FramebufferState &fbState, GLenum buffer, GLint drawbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return buffer != GL_COLOR || fbState.getEnabledDrawBuffers()[drawbuffer];
 }
 
 bool IsEmptyScissor(const State &glState)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!glState.isScissorTestEnabled())
     {
         return false;
@@ -338,17 +360,20 @@ bool IsEmptyScissor(const State &glState)
 
 bool IsColorMaskedOut(const BlendStateExt &blendStateExt, const GLint drawbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(static_cast<size_t>(drawbuffer) < blendStateExt.getDrawBufferCount());
     return blendStateExt.getColorMaskIndexed(static_cast<size_t>(drawbuffer)) == 0;
 }
 
 bool GetIsExternal(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_EXTERNAL_CONTEXT_ANGLE, EGL_FALSE) == EGL_TRUE);
 }
 
 bool GetSaveAndRestoreState(const egl::AttributeMap &attribs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (attribs.get(EGL_EXTERNAL_CONTEXT_SAVE_STATE_ANGLE, EGL_FALSE) == EGL_TRUE);
 }
 
@@ -357,6 +382,7 @@ void GetPerfMonitorString(const std::string &name,
                           GLsizei *length,
                           GLchar *stringOut)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLsizei numCharsWritten = std::min(bufSize, static_cast<GLsizei>(name.size()));
 
     if (length)
@@ -381,6 +407,7 @@ void GetPerfMonitorString(const std::string &name,
 
 bool CanSupportAEP(const gl::Version &version, const gl::Extensions &extensions)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // From the GL_ANDROID_extension_pack_es31a extension spec:
     // OpenGL ES 3.1 and GLSL ES 3.10 are required.
     // The following extensions are required:
@@ -423,6 +450,7 @@ bool CanSupportAEP(const gl::Version &version, const gl::Extensions &extensions)
 // local storage instead.
 static angle::TLSIndex GetCurrentValidContextTLSIndex()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     static angle::TLSIndex CurrentValidContextIndex = TLS_INVALID_INDEX;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -439,6 +467,7 @@ Context *GetCurrentValidContextTLS()
 }
 void SetCurrentValidContextTLS(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     angle::TLSIndex CurrentValidContextIndex = GetCurrentValidContextTLSIndex();
     ASSERT(CurrentValidContextIndex != TLS_INVALID_INDEX);
     angle::SetTLSValue(CurrentValidContextIndex, context);
@@ -450,9 +479,11 @@ thread_local Context *gCurrentValidContext = nullptr;
 // Handle setting the current context in TLS on different platforms
 extern void SetCurrentValidContext(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if defined(ANGLE_USE_ANDROID_TLS_SLOT)
     if (angle::gUseAndroidOpenGLTlsSlot)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         ANGLE_ANDROID_GET_GL_TLS()[angle::kAndroidOpenGLTlsSlot] = static_cast<void *>(context);
         return;
     }
@@ -527,6 +558,7 @@ Context::Context(egl::Display *display,
       mSaveAndRestoreState(GetSaveAndRestoreState(attribs)),
       mIsDestroyed(false)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (angle::SubjectIndex uboIndex = kUniformBuffer0SubjectIndex;
          uboIndex < kUniformBufferMaxSubjectIndex; ++uboIndex)
     {
@@ -563,6 +595,7 @@ Context::Context(egl::Display *display,
 
 egl::Error Context::initialize()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mImplementation)
         return egl::Error(EGL_NOT_INITIALIZED, "native context creation failed");
     return egl::NoError();
@@ -570,6 +603,7 @@ egl::Error Context::initialize()
 
 void Context::initializeDefaultResources()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mImplementation->setMemoryProgramCache(mMemoryProgramCache);
 
     initCaps();
@@ -782,6 +816,7 @@ void Context::initializeDefaultResources()
 
 egl::Error Context::onDestroy(const egl::Display *display)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mHasBeenCurrent)
     {
         // The context is never current, so default resources are not allocated.
@@ -885,11 +920,13 @@ Context::~Context() {}
 
 void Context::setLabel(EGLLabelKHR label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mLabel = label;
 }
 
 EGLLabelKHR Context::getLabel() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mLabel;
 }
 
@@ -897,6 +934,7 @@ egl::Error Context::makeCurrent(egl::Display *display,
                                 egl::Surface *drawSurface,
                                 egl::Surface *readSurface)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mDisplay = display;
 
     if (!mHasBeenCurrent)
@@ -945,6 +983,7 @@ egl::Error Context::makeCurrent(egl::Display *display,
 
 egl::Error Context::unMakeCurrent(const egl::Display *display)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_TRY(angle::ResultToEGL(mImplementation->onUnMakeCurrent(this)));
 
     ANGLE_TRY(unsetDefaultFramebuffer());
@@ -965,16 +1004,19 @@ egl::Error Context::unMakeCurrent(const egl::Display *display)
 
 BufferID Context::createBuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mBufferManager->createBuffer();
 }
 
 GLuint Context::createProgram()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mShaderProgramManager->createProgram(mImplementation.get()).value;
 }
 
 GLuint Context::createShader(ShaderType type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mShaderProgramManager
         ->createShader(mImplementation.get(), mState.mLimitations, type)
         .value;
@@ -982,22 +1024,26 @@ GLuint Context::createShader(ShaderType type)
 
 TextureID Context::createTexture()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mTextureManager->createTexture();
 }
 
 RenderbufferID Context::createRenderbuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mRenderbufferManager->createRenderbuffer();
 }
 
 // Returns an unused framebuffer name
 FramebufferID Context::createFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mFramebufferManager->createFramebuffer();
 }
 
 void Context::genFencesNV(GLsizei n, FenceNVID *fences)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         GLuint handle = mFenceNVHandleAllocator.allocate();
@@ -1008,11 +1054,13 @@ void Context::genFencesNV(GLsizei n, FenceNVID *fences)
 
 ProgramPipelineID Context::createProgramPipeline()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mProgramPipelineManager->createProgramPipeline();
 }
 
 GLuint Context::createShaderProgramv(ShaderType type, GLsizei count, const GLchar *const *strings)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const ShaderProgramID shaderID = PackParam<ShaderProgramID>(createShader(type));
     if (shaderID.value)
     {
@@ -1065,16 +1113,19 @@ GLuint Context::createShaderProgramv(ShaderType type, GLsizei count, const GLcha
 
 MemoryObjectID Context::createMemoryObject()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mMemoryObjectManager->createMemoryObject(mImplementation.get());
 }
 
 SemaphoreID Context::createSemaphore()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mSemaphoreManager->createSemaphore(mImplementation.get());
 }
 
 void Context::deleteBuffer(BufferID bufferName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.mBufferManager->getBuffer(bufferName);
     if (buffer)
     {
@@ -1086,16 +1137,19 @@ void Context::deleteBuffer(BufferID bufferName)
 
 void Context::deleteShader(ShaderProgramID shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mShaderProgramManager->deleteShader(this, shader);
 }
 
 void Context::deleteProgram(ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mShaderProgramManager->deleteProgram(this, program);
 }
 
 void Context::deleteTexture(TextureID texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mState.mTextureManager->getTexture(texture))
     {
         detachTexture(texture);
@@ -1106,6 +1160,7 @@ void Context::deleteTexture(TextureID texture)
 
 void Context::deleteRenderbuffer(RenderbufferID renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mState.mRenderbufferManager->getRenderbuffer(renderbuffer))
     {
         detachRenderbuffer(renderbuffer);
@@ -1116,6 +1171,7 @@ void Context::deleteRenderbuffer(RenderbufferID renderbuffer)
 
 void Context::deleteSync(SyncID syncPacked)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // The spec specifies the underlying Fence object is not deleted until all current
     // wait commands finish. However, since the name becomes invalid, we cannot query the fence,
     // and since our API is currently designed for being called from a single thread, we can delete
@@ -1125,6 +1181,7 @@ void Context::deleteSync(SyncID syncPacked)
 
 void Context::deleteProgramPipeline(ProgramPipelineID pipelineID)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ProgramPipeline *pipeline = mState.mProgramPipelineManager->getProgramPipeline(pipelineID);
     if (pipeline)
     {
@@ -1136,17 +1193,20 @@ void Context::deleteProgramPipeline(ProgramPipelineID pipelineID)
 
 void Context::deleteMemoryObject(MemoryObjectID memoryObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mMemoryObjectManager->deleteMemoryObject(this, memoryObject);
 }
 
 void Context::deleteSemaphore(SemaphoreID semaphore)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mSemaphoreManager->deleteSemaphore(this, semaphore);
 }
 
 // GL_CHROMIUM_lose_context
 void Context::loseContext(GraphicsResetStatus current, GraphicsResetStatus other)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // TODO(geofflang): mark the rest of the share group lost. Requires access to the entire share
     // group from a context. http://anglebug.com/3379
     markContextLost(current);
@@ -1154,6 +1214,7 @@ void Context::loseContext(GraphicsResetStatus current, GraphicsResetStatus other
 
 void Context::deleteFramebuffer(FramebufferID framebufferID)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // We are responsible for deleting the GL objects from the Framebuffer's pixel local storage.
     std::unique_ptr<PixelLocalStorage> plsToDelete;
 
@@ -1176,6 +1237,7 @@ void Context::deleteFramebuffer(FramebufferID framebufferID)
 
 void Context::deleteFencesNV(GLsizei n, const FenceNVID *fences)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         FenceNVID fence = fences[i];
@@ -1195,46 +1257,55 @@ void Context::deleteFencesNV(GLsizei n, const FenceNVID *fences)
 
 Buffer *Context::getBuffer(BufferID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mBufferManager->getBuffer(handle);
 }
 
 Renderbuffer *Context::getRenderbuffer(RenderbufferID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mRenderbufferManager->getRenderbuffer(handle);
 }
 
 EGLenum Context::getContextPriority() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return egl::ToEGLenum(mImplementation->getContextPriority());
 }
 
 Sync *Context::getSync(SyncID syncPacked) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mSyncManager->getSync(syncPacked);
 }
 
 VertexArray *Context::getVertexArray(VertexArrayID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mVertexArrayMap.query(handle);
 }
 
 Sampler *Context::getSampler(SamplerID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mSamplerManager->getSampler(handle);
 }
 
 TransformFeedback *Context::getTransformFeedback(TransformFeedbackID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mTransformFeedbackMap.query(handle);
 }
 
 ProgramPipeline *Context::getProgramPipeline(ProgramPipelineID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mProgramPipelineManager->getProgramPipeline(handle);
 }
 
 gl::LabeledObject *Context::getLabeledObject(GLenum identifier, GLuint name) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (identifier)
     {
         case GL_BUFFER:
@@ -1273,11 +1344,13 @@ gl::LabeledObject *Context::getLabeledObject(GLenum identifier, GLuint name) con
 
 gl::LabeledObject *Context::getLabeledObjectFromPtr(const void *ptr) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return getSync({unsafe_pointer_to_int_cast<uint32_t>(ptr)});
 }
 
 void Context::objectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::LabeledObject *object = getLabeledObject(identifier, name);
     ASSERT(object != nullptr);
 
@@ -1291,6 +1364,7 @@ void Context::objectLabel(GLenum identifier, GLuint name, GLsizei length, const 
 
 void Context::labelObject(GLenum type, GLuint object, GLsizei length, const GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::LabeledObject *obj = getLabeledObject(type, object);
     ASSERT(obj != nullptr);
 
@@ -1306,6 +1380,7 @@ void Context::labelObject(GLenum type, GLuint object, GLsizei length, const GLch
 
 void Context::objectPtrLabel(const void *ptr, GLsizei length, const GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::LabeledObject *object = getLabeledObjectFromPtr(ptr);
     ASSERT(object != nullptr);
 
@@ -1319,6 +1394,7 @@ void Context::getObjectLabel(GLenum identifier,
                              GLsizei *length,
                              GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::LabeledObject *object = getLabeledObject(identifier, name);
     ASSERT(object != nullptr);
 
@@ -1328,6 +1404,7 @@ void Context::getObjectLabel(GLenum identifier,
 
 void Context::getObjectPtrLabel(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::LabeledObject *object = getLabeledObjectFromPtr(ptr);
     ASSERT(object != nullptr);
 
@@ -1337,11 +1414,13 @@ void Context::getObjectPtrLabel(const void *ptr, GLsizei bufSize, GLsizei *lengt
 
 GLboolean Context::isSampler(SamplerID samplerName) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mSamplerManager->isSampler(samplerName);
 }
 
 void Context::bindTexture(TextureType target, TextureID handle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Some apps enable KHR_create_context_no_error but pass in an invalid texture type.
     // Workaround this by silently returning in such situations.
     if (target == TextureType::InvalidEnum)
@@ -1373,6 +1452,7 @@ void Context::bindTexture(TextureType target, TextureID handle)
 
 void Context::bindReadFramebuffer(FramebufferID framebufferHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.mFramebufferManager->checkFramebufferAllocation(
         mImplementation.get(), this, framebufferHandle);
     mState.setReadFramebufferBinding(framebuffer);
@@ -1381,6 +1461,7 @@ void Context::bindReadFramebuffer(FramebufferID framebufferHandle)
 
 void Context::bindDrawFramebuffer(FramebufferID framebufferHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.mFramebufferManager->checkFramebufferAllocation(
         mImplementation.get(), this, framebufferHandle);
     mState.setDrawFramebufferBinding(framebuffer);
@@ -1390,6 +1471,7 @@ void Context::bindDrawFramebuffer(FramebufferID framebufferHandle)
 
 void Context::bindVertexArray(VertexArrayID vertexArrayHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     VertexArray *vertexArray = checkVertexArrayAllocation(vertexArrayHandle);
     mState.setVertexArrayBinding(this, vertexArray);
     mVertexArrayObserverBinding.bind(vertexArray);
@@ -1401,6 +1483,7 @@ void Context::bindVertexBuffer(GLuint bindingIndex,
                                GLintptr offset,
                                GLsizei stride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer =
         mState.mBufferManager->checkBufferAllocation(mImplementation.get(), bufferHandle);
     mState.bindVertexBuffer(this, bindingIndex, buffer, offset, stride);
@@ -1409,6 +1492,7 @@ void Context::bindVertexBuffer(GLuint bindingIndex,
 
 void Context::bindSampler(GLuint textureUnit, SamplerID samplerHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(textureUnit < static_cast<GLuint>(mState.mCaps.maxCombinedTextureImageUnits));
     Sampler *sampler =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), samplerHandle);
@@ -1432,6 +1516,7 @@ void Context::bindImageTexture(GLuint unit,
                                GLenum access,
                                GLenum format)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *tex = mState.mTextureManager->getTexture(texture);
     mState.setImageUnit(this, unit, tex, level, layered, layer, access, format);
     mImageObserverBindings[unit].bind(tex);
@@ -1439,6 +1524,7 @@ void Context::bindImageTexture(GLuint unit,
 
 void Context::useProgram(ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mState.setProgram(this, getProgramResolveLink(program)));
     mStateCache.onProgramExecutableChange(this);
 }
@@ -1447,6 +1533,7 @@ void Context::useProgramStages(ProgramPipelineID pipeline,
                                GLbitfield stages,
                                ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *shaderProgram = getProgramNoResolveLink(program);
     ProgramPipeline *programPipeline =
         mState.mProgramPipelineManager->checkProgramPipelineAllocation(mImplementation.get(),
@@ -1458,6 +1545,7 @@ void Context::useProgramStages(ProgramPipelineID pipeline,
 
 void Context::bindTransformFeedback(GLenum target, TransformFeedbackID transformFeedbackHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(target == GL_TRANSFORM_FEEDBACK);
     TransformFeedback *transformFeedback =
         checkTransformFeedbackAllocation(transformFeedbackHandle);
@@ -1467,6 +1555,7 @@ void Context::bindTransformFeedback(GLenum target, TransformFeedbackID transform
 
 void Context::bindProgramPipeline(ProgramPipelineID pipelineHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ProgramPipeline *pipeline = mState.mProgramPipelineManager->checkProgramPipelineAllocation(
         mImplementation.get(), pipelineHandle);
     ANGLE_CONTEXT_TRY(mState.setProgramPipelineBinding(this, pipeline));
@@ -1476,6 +1565,7 @@ void Context::bindProgramPipeline(ProgramPipelineID pipelineHandle)
 
 void Context::beginQuery(QueryType target, QueryID query)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Query *queryObject = getOrCreateQuery(query, target);
     ASSERT(queryObject);
 
@@ -1489,6 +1579,7 @@ void Context::beginQuery(QueryType target, QueryID query)
 
 void Context::endQuery(QueryType target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Query *queryObject = mState.getActiveQuery(target);
     ASSERT(queryObject);
 
@@ -1502,6 +1593,7 @@ void Context::endQuery(QueryType target)
 
 void Context::queryCounter(QueryID id, QueryType target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(target == QueryType::Timestamp);
 
     Query *queryObject = getOrCreateQuery(id, target);
@@ -1512,6 +1604,7 @@ void Context::queryCounter(QueryID id, QueryType target)
 
 void Context::getQueryiv(QueryType target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (pname)
     {
         case GL_CURRENT_QUERY_EXT:
@@ -1544,21 +1637,25 @@ void Context::getQueryivRobust(QueryType target,
                                GLsizei *length,
                                GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getQueryiv(target, pname, params);
 }
 
 void Context::getUnsignedBytev(GLenum pname, GLubyte *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getUnsignedBytei_v(GLenum target, GLuint index, GLubyte *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getQueryObjectiv(QueryID id, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(GetQueryObjectParameter(this, getQuery(id), pname, params));
 }
 
@@ -1568,11 +1665,13 @@ void Context::getQueryObjectivRobust(QueryID id,
                                      GLsizei *length,
                                      GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getQueryObjectiv(id, pname, params);
 }
 
 void Context::getQueryObjectuiv(QueryID id, GLenum pname, GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(GetQueryObjectParameter(this, getQuery(id), pname, params));
 }
 
@@ -1582,11 +1681,13 @@ void Context::getQueryObjectuivRobust(QueryID id,
                                       GLsizei *length,
                                       GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getQueryObjectuiv(id, pname, params);
 }
 
 void Context::getQueryObjecti64v(QueryID id, GLenum pname, GLint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(GetQueryObjectParameter(this, getQuery(id), pname, params));
 }
 
@@ -1596,11 +1697,13 @@ void Context::getQueryObjecti64vRobust(QueryID id,
                                        GLsizei *length,
                                        GLint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getQueryObjecti64v(id, pname, params);
 }
 
 void Context::getQueryObjectui64v(QueryID id, GLenum pname, GLuint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(GetQueryObjectParameter(this, getQuery(id), pname, params));
 }
 
@@ -1610,21 +1713,25 @@ void Context::getQueryObjectui64vRobust(QueryID id,
                                         GLsizei *length,
                                         GLuint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getQueryObjectui64v(id, pname, params);
 }
 
 Framebuffer *Context::getFramebuffer(FramebufferID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mFramebufferManager->getFramebuffer(handle);
 }
 
 FenceNV *Context::getFenceNV(FenceNVID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mFenceNVMap.query(handle);
 }
 
 Query *Context::getOrCreateQuery(QueryID handle, QueryType type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mQueryMap.contains(handle))
     {
         return nullptr;
@@ -1643,27 +1750,32 @@ Query *Context::getOrCreateQuery(QueryID handle, QueryType type)
 
 Query *Context::getQuery(QueryID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mQueryMap.query(handle);
 }
 
 Texture *Context::getTextureByType(TextureType type) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(ValidTextureTarget(this, type) || ValidTextureExternalTarget(this, type));
     return mState.getTargetTexture(type);
 }
 
 Texture *Context::getTextureByTarget(TextureTarget target) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return getTextureByType(TextureTargetToType(target));
 }
 
 Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.getSamplerTexture(sampler, type);
 }
 
 Compiler *Context::getCompiler() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mCompiler.get() == nullptr)
     {
         mCompiler.set(this, new Compiler(mImplementation.get(), mState, mDisplay));
@@ -1673,6 +1785,7 @@ Compiler *Context::getCompiler() const
 
 void Context::getBooleanvImpl(GLenum pname, GLboolean *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (pname)
     {
         case GL_SHADER_COMPILER:
@@ -1690,6 +1803,7 @@ void Context::getBooleanvImpl(GLenum pname, GLboolean *params) const
 
 void Context::getFloatvImpl(GLenum pname, GLfloat *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
     switch (pname)
@@ -1741,6 +1855,7 @@ void Context::getFloatvImpl(GLenum pname, GLfloat *params) const
 
 void Context::getIntegervImpl(GLenum pname, GLint *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
 
@@ -2298,12 +2413,14 @@ void Context::getIntegervImpl(GLenum pname, GLint *params) const
 
 void Context::getIntegerVertexAttribImpl(GLenum pname, GLenum attribpname, GLint *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribivImpl(static_cast<GLuint>(vertexArrayIndex(ParamToVertexArrayType(pname))),
                           attribpname, params);
 }
 
 void Context::getInteger64vImpl(GLenum pname, GLint64 *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
     switch (pname)
@@ -2340,6 +2457,7 @@ void Context::getInteger64vImpl(GLenum pname, GLint64 *params) const
 
 void Context::getPointerv(GLenum pname, void **params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.getPointerv(this, pname, params);
 }
 
@@ -2348,11 +2466,13 @@ void Context::getPointervRobustANGLERobust(GLenum pname,
                                            GLsizei *length,
                                            void **params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getIntegeri_v(GLenum target, GLuint index, GLint *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
 
@@ -2389,11 +2509,13 @@ void Context::getIntegeri_vRobust(GLenum target,
                                   GLsizei *length,
                                   GLint *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getIntegeri_v(target, index, data);
 }
 
 void Context::getInteger64i_v(GLenum target, GLuint index, GLint64 *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
 
@@ -2418,11 +2540,13 @@ void Context::getInteger64i_vRobust(GLenum target,
                                     GLsizei *length,
                                     GLint64 *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getInteger64i_v(target, index, data);
 }
 
 void Context::getBooleani_v(GLenum target, GLuint index, GLboolean *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Queries about context capabilities and maximums are answered by Context.
     // Queries about current GL state values are answered by State.
 
@@ -2447,11 +2571,13 @@ void Context::getBooleani_vRobust(GLenum target,
                                   GLsizei *length,
                                   GLboolean *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getBooleani_v(target, index, data);
 }
 
 void Context::getBufferParameteriv(BufferBinding target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     QueryBufferParameteriv(buffer, pname, params);
 }
@@ -2462,6 +2588,7 @@ void Context::getBufferParameterivRobust(BufferBinding target,
                                          GLsizei *length,
                                          GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getBufferParameteriv(target, pname, params);
 }
 
@@ -2470,6 +2597,7 @@ void Context::getFramebufferAttachmentParameteriv(GLenum target,
                                                   GLenum pname,
                                                   GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     QueryFramebufferAttachmentParameteriv(this, framebuffer, attachment, pname, params);
 }
@@ -2481,11 +2609,13 @@ void Context::getFramebufferAttachmentParameterivRobust(GLenum target,
                                                         GLsizei *length,
                                                         GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getFramebufferAttachmentParameteriv(target, attachment, pname, params);
 }
 
 void Context::getRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Renderbuffer *renderbuffer = mState.getCurrentRenderbuffer();
     QueryRenderbufferiv(this, renderbuffer, pname, params);
 }
@@ -2496,11 +2626,13 @@ void Context::getRenderbufferParameterivRobust(GLenum target,
                                                GLsizei *length,
                                                GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getRenderbufferParameteriv(target, pname, params);
 }
 
 void Context::texBuffer(TextureType target, GLenum internalformat, BufferID buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(target == TextureType::Buffer);
 
     Texture *texture  = getTextureByType(target);
@@ -2514,6 +2646,7 @@ void Context::texBufferRange(TextureType target,
                              GLintptr offset,
                              GLsizeiptr size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(target == TextureType::Buffer);
 
     Texture *texture  = getTextureByType(target);
@@ -2523,6 +2656,7 @@ void Context::texBufferRange(TextureType target,
 
 void Context::getTexParameterfv(TextureType target, GLenum pname, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Texture *const texture = getTextureByType(target);
     QueryTexParameterfv(this, texture, pname, params);
 }
@@ -2533,23 +2667,27 @@ void Context::getTexParameterfvRobust(TextureType target,
                                       GLsizei *length,
                                       GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getTexParameterfv(target, pname, params);
 }
 
 void Context::getTexParameteriv(TextureType target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Texture *const texture = getTextureByType(target);
     QueryTexParameteriv(this, texture, pname, params);
 }
 
 void Context::getTexParameterIiv(TextureType target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Texture *const texture = getTextureByType(target);
     QueryTexParameterIiv(this, texture, pname, params);
 }
 
 void Context::getTexParameterIuiv(TextureType target, GLenum pname, GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Texture *const texture = getTextureByType(target);
     QueryTexParameterIuiv(this, texture, pname, params);
 }
@@ -2560,6 +2698,7 @@ void Context::getTexParameterivRobust(TextureType target,
                                       GLsizei *length,
                                       GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getTexParameteriv(target, pname, params);
 }
 
@@ -2569,6 +2708,7 @@ void Context::getTexParameterIivRobust(TextureType target,
                                        GLsizei *length,
                                        GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -2578,11 +2718,13 @@ void Context::getTexParameterIuivRobust(TextureType target,
                                         GLsizei *length,
                                         GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getTexLevelParameteriv(TextureTarget target, GLint level, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture = getTextureByTarget(target);
     QueryTexLevelParameteriv(texture, target, level, pname, params);
 }
@@ -2594,6 +2736,7 @@ void Context::getTexLevelParameterivRobust(TextureTarget target,
                                            GLsizei *length,
                                            GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -2602,6 +2745,7 @@ void Context::getTexLevelParameterfv(TextureTarget target,
                                      GLenum pname,
                                      GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture = getTextureByTarget(target);
     QueryTexLevelParameterfv(texture, target, level, pname, params);
 }
@@ -2613,17 +2757,20 @@ void Context::getTexLevelParameterfvRobust(TextureTarget target,
                                            GLsizei *length,
                                            GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::texParameterf(TextureType target, GLenum pname, GLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *const texture = getTextureByType(target);
     SetTexParameterf(this, texture, pname, param);
 }
 
 void Context::texParameterfv(TextureType target, GLenum pname, const GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *const texture = getTextureByType(target);
     SetTexParameterfv(this, texture, pname, params);
 }
@@ -2633,11 +2780,13 @@ void Context::texParameterfvRobust(TextureType target,
                                    GLsizei bufSize,
                                    const GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texParameterfv(target, pname, params);
 }
 
 void Context::texParameteri(TextureType target, GLenum pname, GLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Some apps enable KHR_create_context_no_error but pass in an invalid texture type.
     // Workaround this by silently returning in such situations.
     if (target == TextureType::InvalidEnum)
@@ -2651,18 +2800,21 @@ void Context::texParameteri(TextureType target, GLenum pname, GLint param)
 
 void Context::texParameteriv(TextureType target, GLenum pname, const GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *const texture = getTextureByType(target);
     SetTexParameteriv(this, texture, pname, params);
 }
 
 void Context::texParameterIiv(TextureType target, GLenum pname, const GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *const texture = getTextureByType(target);
     SetTexParameterIiv(this, texture, pname, params);
 }
 
 void Context::texParameterIuiv(TextureType target, GLenum pname, const GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *const texture = getTextureByType(target);
     SetTexParameterIuiv(this, texture, pname, params);
 }
@@ -2672,6 +2824,7 @@ void Context::texParameterivRobust(TextureType target,
                                    GLsizei bufSize,
                                    const GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texParameteriv(target, pname, params);
 }
 
@@ -2680,6 +2833,7 @@ void Context::texParameterIivRobust(TextureType target,
                                     GLsizei bufSize,
                                     const GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -2688,6 +2842,7 @@ void Context::texParameterIuivRobust(TextureType target,
                                      GLsizei bufSize,
                                      const GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -2696,6 +2851,7 @@ void Context::drawArraysInstanced(PrimitiveMode mode,
                                   GLsizei count,
                                   GLsizei instanceCount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDrawInstanced(mode, count, instanceCount))
     {
@@ -2716,6 +2872,7 @@ void Context::drawElementsInstanced(PrimitiveMode mode,
                                     const void *indices,
                                     GLsizei instances)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDrawInstanced(mode, count, instances))
     {
@@ -2735,6 +2892,7 @@ void Context::drawElementsBaseVertex(PrimitiveMode mode,
                                      const void *indices,
                                      GLint basevertex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDraw(mode, count))
     {
@@ -2755,6 +2913,7 @@ void Context::drawElementsInstancedBaseVertex(PrimitiveMode mode,
                                               GLsizei instancecount,
                                               GLint basevertex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDrawInstanced(mode, count, instancecount))
     {
@@ -2775,6 +2934,7 @@ void Context::drawRangeElements(PrimitiveMode mode,
                                 DrawElementsType type,
                                 const void *indices)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDraw(mode, count))
     {
@@ -2796,6 +2956,7 @@ void Context::drawRangeElementsBaseVertex(PrimitiveMode mode,
                                           const void *indices,
                                           GLint basevertex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // No-op if count draws no primitives for given mode
     if (noopDraw(mode, count))
     {
@@ -2811,6 +2972,7 @@ void Context::drawRangeElementsBaseVertex(PrimitiveMode mode,
 
 void Context::drawArraysIndirect(PrimitiveMode mode, const void *indirect)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(prepareForDraw(mode));
     ANGLE_CONTEXT_TRY(mImplementation->drawArraysIndirect(this, mode, indirect));
     MarkShaderStorageUsage(this);
@@ -2818,6 +2980,7 @@ void Context::drawArraysIndirect(PrimitiveMode mode, const void *indirect)
 
 void Context::drawElementsIndirect(PrimitiveMode mode, DrawElementsType type, const void *indirect)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(prepareForDraw(mode));
     ANGLE_CONTEXT_TRY(mImplementation->drawElementsIndirect(this, mode, type, indirect));
     MarkShaderStorageUsage(this);
@@ -2825,22 +2988,26 @@ void Context::drawElementsIndirect(PrimitiveMode mode, DrawElementsType type, co
 
 void Context::flush()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mImplementation->flush(this));
 }
 
 void Context::finish()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mImplementation->finish(this));
 }
 
 void Context::insertEventMarker(GLsizei length, const char *marker)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mImplementation);
     ANGLE_CONTEXT_TRY(mImplementation->insertEventMarker(length, marker));
 }
 
 void Context::pushGroupMarker(GLsizei length, const char *marker)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mImplementation);
 
     if (marker == nullptr)
@@ -2857,6 +3024,7 @@ void Context::pushGroupMarker(GLsizei length, const char *marker)
 
 void Context::popGroupMarker()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mImplementation);
     ANGLE_CONTEXT_TRY(mImplementation->popGroupMarker());
 }
@@ -2865,6 +3033,7 @@ void Context::bindUniformLocation(ShaderProgramID program,
                                   UniformLocation location,
                                   const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
 
@@ -2873,6 +3042,7 @@ void Context::bindUniformLocation(ShaderProgramID program,
 
 void Context::coverageModulation(GLenum components)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setCoverageModulation(components);
 }
 
@@ -2880,6 +3050,7 @@ GLuint Context::getProgramResourceIndex(ShaderProgramID program,
                                         GLenum programInterface,
                                         const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     return QueryProgramResourceIndex(programObject, programInterface, name);
 }
@@ -2891,6 +3062,7 @@ void Context::getProgramResourceName(ShaderProgramID program,
                                      GLsizei *length,
                                      GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     QueryProgramResourceName(this, programObject, programInterface, index, bufSize, length, name);
 }
@@ -2899,6 +3071,7 @@ GLint Context::getProgramResourceLocation(ShaderProgramID program,
                                           GLenum programInterface,
                                           const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     return QueryProgramResourceLocation(programObject, programInterface, name);
 }
@@ -2912,6 +3085,7 @@ void Context::getProgramResourceiv(ShaderProgramID program,
                                    GLsizei *length,
                                    GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     QueryProgramResourceiv(programObject, programInterface, {index}, propCount, props, bufSize,
                            length, params);
@@ -2922,6 +3096,7 @@ void Context::getProgramInterfaceiv(ShaderProgramID program,
                                     GLenum pname,
                                     GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     QueryProgramInterfaceiv(programObject, programInterface, pname, params);
 }
@@ -2933,6 +3108,7 @@ void Context::getProgramInterfaceivRobust(ShaderProgramID program,
                                           GLsizei *length,
                                           GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -2942,6 +3118,7 @@ void Context::handleError(GLenum errorCode,
                           const char *function,
                           unsigned int line)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mErrors.handleError(errorCode, message, file, function, line);
 }
 
@@ -2949,6 +3126,7 @@ void Context::validationError(angle::EntryPoint entryPoint,
                               GLenum errorCode,
                               const char *message) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const_cast<Context *>(this)->mErrors.validationError(entryPoint, errorCode, message);
 }
 
@@ -2957,6 +3135,7 @@ void Context::validationErrorF(angle::EntryPoint entryPoint,
                                const char *format,
                                ...) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     va_list vargs;
     va_start(vargs, format);
     constexpr size_t kMessageSize = 256;
@@ -2978,6 +3157,7 @@ void Context::validationErrorF(angle::EntryPoint entryPoint,
 // [OpenGL ES 2.0.24] section 2.5 page 13.
 GLenum Context::getError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mErrors.empty())
     {
         return GL_NO_ERROR;
@@ -2991,6 +3171,7 @@ GLenum Context::getError()
 // NOTE: this function should not assume that this context is current!
 void Context::markContextLost(GraphicsResetStatus status)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(status != GraphicsResetStatus::NoError);
     if (mResetStrategy == GL_LOSE_CONTEXT_ON_RESET_EXT)
     {
@@ -3002,6 +3183,7 @@ void Context::markContextLost(GraphicsResetStatus status)
 
 void Context::setContextLost()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mContextLost = true;
 
     // Stop skipping validation, since many implementation entrypoint assume they can't
@@ -3014,6 +3196,7 @@ void Context::setContextLost()
 
 GLenum Context::getGraphicsResetStatus()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Even if the application doesn't want to know about resets, we want to know
     // as it will allow us to skip all the calls.
     if (mResetStrategy == GL_NO_RESET_NOTIFICATION_EXT)
@@ -3055,26 +3238,31 @@ GLenum Context::getGraphicsResetStatus()
 
 bool Context::isResetNotificationEnabled() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (mResetStrategy == GL_LOSE_CONTEXT_ON_RESET_EXT);
 }
 
 bool Context::isRobustnessEnabled() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.hasRobustAccess();
 }
 
 const egl::Config *Context::getConfig() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mConfig;
 }
 
 EGLenum Context::getClientType() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.getClientType();
 }
 
 EGLenum Context::getRenderBuffer() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Framebuffer *framebuffer =
         mState.mFramebufferManager->getFramebuffer(Framebuffer::kDefaultDrawFramebufferHandle);
     if (framebuffer == nullptr)
@@ -3089,6 +3277,7 @@ EGLenum Context::getRenderBuffer() const
 
 VertexArray *Context::checkVertexArrayAllocation(VertexArrayID vertexArrayHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Only called after a prior call to Gen.
     VertexArray *vertexArray = getVertexArray(vertexArrayHandle);
     if (!vertexArray)
@@ -3107,6 +3296,7 @@ VertexArray *Context::checkVertexArrayAllocation(VertexArrayID vertexArrayHandle
 TransformFeedback *Context::checkTransformFeedbackAllocation(
     TransformFeedbackID transformFeedbackHandle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Only called after a prior call to Gen.
     TransformFeedback *transformFeedback = getTransformFeedback(transformFeedbackHandle);
     if (!transformFeedback)
@@ -3122,18 +3312,21 @@ TransformFeedback *Context::checkTransformFeedbackAllocation(
 
 bool Context::isVertexArrayGenerated(VertexArrayID vertexArray) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mVertexArrayMap.contains({0}));
     return mVertexArrayMap.contains(vertexArray);
 }
 
 bool Context::isTransformFeedbackGenerated(TransformFeedbackID transformFeedback) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mTransformFeedbackMap.contains({0}));
     return mTransformFeedbackMap.contains(transformFeedback);
 }
 
 void Context::detachTexture(TextureID texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // The State cannot unbind image observers itself, they are owned by the Context
     Texture *tex = mState.mTextureManager->getTexture(texture);
     for (auto &imageBinding : mImageObserverBindings)
@@ -3153,6 +3346,7 @@ void Context::detachTexture(TextureID texture)
 
 void Context::detachBuffer(Buffer *buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Simple pass-through to State's detachBuffer method, since
     // only buffer attachments to container objects that are bound to the current context
     // should be detached. And all those are available in State.
@@ -3166,6 +3360,7 @@ void Context::detachBuffer(Buffer *buffer)
 
 void Context::detachFramebuffer(FramebufferID framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Framebuffer detachment is handled by Context, because 0 is a valid
     // Framebuffer object, and a pointer to it must be passed from Context
     // to State at binding time.
@@ -3188,11 +3383,13 @@ void Context::detachFramebuffer(FramebufferID framebuffer)
 
 void Context::detachRenderbuffer(RenderbufferID renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.detachRenderbuffer(this, renderbuffer);
 }
 
 void Context::detachVertexArray(VertexArrayID vertexArray)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Vertex array detachment is handled by Context, because 0 is a valid
     // VAO, and a pointer to it must be passed from Context to State at
     // binding time.
@@ -3208,6 +3405,7 @@ void Context::detachVertexArray(VertexArrayID vertexArray)
 
 void Context::detachTransformFeedback(TransformFeedbackID transformFeedback)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Transform feedback detachment is handled by Context, because 0 is a valid
     // transform feedback, and a pointer to it must be passed from Context to State at
     // binding time.
@@ -3224,22 +3422,26 @@ void Context::detachTransformFeedback(TransformFeedbackID transformFeedback)
 
 void Context::detachSampler(SamplerID sampler)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.detachSampler(this, sampler);
 }
 
 void Context::detachProgramPipeline(ProgramPipelineID pipeline)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.detachProgramPipeline(this, pipeline);
 }
 
 void Context::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribDivisor(this, index, divisor);
     mStateCache.onVertexArrayStateChange(this);
 }
 
 void Context::samplerParameteri(SamplerID sampler, GLenum pname, GLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameteri(this, samplerObject, pname, param);
@@ -3247,6 +3449,7 @@ void Context::samplerParameteri(SamplerID sampler, GLenum pname, GLint param)
 
 void Context::samplerParameteriv(SamplerID sampler, GLenum pname, const GLint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameteriv(this, samplerObject, pname, param);
@@ -3254,6 +3457,7 @@ void Context::samplerParameteriv(SamplerID sampler, GLenum pname, const GLint *p
 
 void Context::samplerParameterIiv(SamplerID sampler, GLenum pname, const GLint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameterIiv(this, samplerObject, pname, param);
@@ -3261,6 +3465,7 @@ void Context::samplerParameterIiv(SamplerID sampler, GLenum pname, const GLint *
 
 void Context::samplerParameterIuiv(SamplerID sampler, GLenum pname, const GLuint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameterIuiv(this, samplerObject, pname, param);
@@ -3271,6 +3476,7 @@ void Context::samplerParameterivRobust(SamplerID sampler,
                                        GLsizei bufSize,
                                        const GLint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     samplerParameteriv(sampler, pname, param);
 }
 
@@ -3279,6 +3485,7 @@ void Context::samplerParameterIivRobust(SamplerID sampler,
                                         GLsizei bufSize,
                                         const GLint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -3287,11 +3494,13 @@ void Context::samplerParameterIuivRobust(SamplerID sampler,
                                          GLsizei bufSize,
                                          const GLuint *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::samplerParameterf(SamplerID sampler, GLenum pname, GLfloat param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameterf(this, samplerObject, pname, param);
@@ -3299,6 +3508,7 @@ void Context::samplerParameterf(SamplerID sampler, GLenum pname, GLfloat param)
 
 void Context::samplerParameterfv(SamplerID sampler, GLenum pname, const GLfloat *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     SetSamplerParameterfv(this, samplerObject, pname, param);
@@ -3309,11 +3519,13 @@ void Context::samplerParameterfvRobust(SamplerID sampler,
                                        GLsizei bufSize,
                                        const GLfloat *param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     samplerParameterfv(sampler, pname, param);
 }
 
 void Context::getSamplerParameteriv(SamplerID sampler, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     QuerySamplerParameteriv(samplerObject, pname, params);
@@ -3321,6 +3533,7 @@ void Context::getSamplerParameteriv(SamplerID sampler, GLenum pname, GLint *para
 
 void Context::getSamplerParameterIiv(SamplerID sampler, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     QuerySamplerParameterIiv(samplerObject, pname, params);
@@ -3328,6 +3541,7 @@ void Context::getSamplerParameterIiv(SamplerID sampler, GLenum pname, GLint *par
 
 void Context::getSamplerParameterIuiv(SamplerID sampler, GLenum pname, GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     QuerySamplerParameterIuiv(samplerObject, pname, params);
@@ -3339,6 +3553,7 @@ void Context::getSamplerParameterivRobust(SamplerID sampler,
                                           GLsizei *length,
                                           GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getSamplerParameteriv(sampler, pname, params);
 }
 
@@ -3348,6 +3563,7 @@ void Context::getSamplerParameterIivRobust(SamplerID sampler,
                                            GLsizei *length,
                                            GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -3357,11 +3573,13 @@ void Context::getSamplerParameterIuivRobust(SamplerID sampler,
                                             GLsizei *length,
                                             GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getSamplerParameterfv(SamplerID sampler, GLenum pname, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Sampler *const samplerObject =
         mState.mSamplerManager->checkSamplerAllocation(mImplementation.get(), sampler);
     QuerySamplerParameterfv(samplerObject, pname, params);
@@ -3373,17 +3591,20 @@ void Context::getSamplerParameterfvRobust(SamplerID sampler,
                                           GLsizei *length,
                                           GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getSamplerParameterfv(sampler, pname, params);
 }
 
 void Context::programParameteri(ShaderProgramID program, GLenum pname, GLint value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl::Program *programObject = getProgramResolveLink(program);
     SetProgramParameteri(programObject, pname, value);
 }
 
 void Context::initRendererString()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     std::ostringstream frontendRendererString;
     std::string vendorString(mDisplay->getBackendVendorString());
     std::string rendererString(mDisplay->getBackendRendererDescription());
@@ -3409,6 +3630,7 @@ void Context::initRendererString()
 
 void Context::initVersionStrings()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Version &clientVersion = getClientVersion();
 
     std::ostringstream versionString;
@@ -3438,6 +3660,7 @@ void Context::initVersionStrings()
 
 void Context::initExtensionStrings()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto mergeExtensionStrings = [](const std::vector<const char *> &strings) {
         std::ostringstream combinedStringStream;
         std::copy(strings.begin(), strings.end(),
@@ -3467,16 +3690,19 @@ void Context::initExtensionStrings()
 
 const GLubyte *Context::getString(GLenum name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<const Context *>(this)->getString(name);
 }
 
 const GLubyte *Context::getStringi(GLenum name, GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<const Context *>(this)->getStringi(name, index);
 }
 
 const GLubyte *Context::getString(GLenum name) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (name)
     {
         case GL_VENDOR:
@@ -3501,6 +3727,7 @@ const GLubyte *Context::getString(GLenum name) const
             if (angle::SerializeContextToString(this, &mCachedSerializedStateString) ==
                 angle::Result::Continue)
             {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
                 return reinterpret_cast<const GLubyte *>(mCachedSerializedStateString.c_str());
             }
             else
@@ -3516,6 +3743,7 @@ const GLubyte *Context::getString(GLenum name) const
 
 const GLubyte *Context::getStringi(GLenum name, GLuint index) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (name)
     {
         case GL_EXTENSIONS:
@@ -3532,11 +3760,13 @@ const GLubyte *Context::getStringi(GLenum name, GLuint index) const
 
 size_t Context::getExtensionStringCount() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mExtensionStrings.size();
 }
 
 bool Context::isExtensionRequestable(const char *name) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const ExtensionInfoMap &extensionInfos = GetExtensionInfoMap();
     auto extension                         = extensionInfos.find(name);
 
@@ -3546,6 +3776,7 @@ bool Context::isExtensionRequestable(const char *name) const
 
 bool Context::isExtensionDisablable(const char *name) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const ExtensionInfoMap &extensionInfos = GetExtensionInfoMap();
     auto extension                         = extensionInfos.find(name);
 
@@ -3555,15 +3786,18 @@ bool Context::isExtensionDisablable(const char *name) const
 
 void Context::requestExtension(const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setExtensionEnabled(name, true);
 }
 void Context::disableExtension(const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setExtensionEnabled(name, false);
 }
 
 void Context::setExtensionEnabled(const char *name, bool enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const ExtensionInfoMap &extensionInfos = GetExtensionInfoMap();
     ASSERT(extensionInfos.find(name) != extensionInfos.end());
     const auto &extension = extensionInfos.at(name);
@@ -3614,6 +3848,7 @@ void Context::setExtensionEnabled(const char *name, bool enabled)
 
 void Context::reinitializeAfterExtensionsChanged()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateCaps();
     initExtensionStrings();
 
@@ -3636,11 +3871,13 @@ void Context::reinitializeAfterExtensionsChanged()
 
 size_t Context::getRequestableExtensionStringCount() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mRequestableExtensionStrings.size();
 }
 
 void Context::beginTransformFeedback(PrimitiveMode primitiveMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TransformFeedback *transformFeedback = mState.getCurrentTransformFeedback();
     ASSERT(transformFeedback != nullptr);
     ASSERT(!transformFeedback->isPaused());
@@ -3652,6 +3889,7 @@ void Context::beginTransformFeedback(PrimitiveMode primitiveMode)
 
 bool Context::hasActiveTransformFeedback(ShaderProgramID program) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (auto pair : mTransformFeedbackMap)
     {
         if (pair.second != nullptr && pair.second->hasBoundProgram(program))
@@ -3664,6 +3902,7 @@ bool Context::hasActiveTransformFeedback(ShaderProgramID program) const
 
 Extensions Context::generateSupportedExtensions() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extensions supportedExtensions = mImplementation->getNativeExtensions();
 
     if (getClientVersion() < ES_2_0)
@@ -3797,6 +4036,7 @@ Extensions Context::generateSupportedExtensions() const
         // colorBufferFloatEXT.
         if (!supportedExtensions.colorBufferFloatEXT && !mWebGLContext)
         {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             supportedExtensions.colorBufferHalfFloatEXT = false;
         }
 
@@ -3923,6 +4163,7 @@ Extensions Context::generateSupportedExtensions() const
 
 void Context::initCaps()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mCaps = mImplementation->getNativeCaps();
 
     // TODO (http://anglebug.com/6010): mSupportedExtensions should not be modified here
@@ -3970,6 +4211,7 @@ void Context::initCaps()
     // GLES1 emulation: Initialize caps (Table 6.20 / 6.22 in the ES 1.1 spec)
     if (getClientType() == EGL_OPENGL_API || getClientVersion() < Version(2, 0))
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         mState.mCaps.maxMultitextureUnits          = 4;
         mState.mCaps.maxClipPlanes                 = 6;
         mState.mCaps.maxLights                     = 8;
@@ -4255,6 +4497,7 @@ void Context::initCaps()
                         maxAtomicCounterBufferBindings);
         for (gl::ShaderType shaderType : gl::AllShaderTypes())
         {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             ANGLE_LIMIT_CAP(mState.mCaps.maxShaderAtomicCounterBuffers[shaderType],
                             maxAtomicCounterBufferBindings);
         }
@@ -4267,6 +4510,7 @@ void Context::initCaps()
                         maxShaderStorageBufferBindings);
         for (gl::ShaderType shaderType : gl::AllShaderTypes())
         {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             ANGLE_LIMIT_CAP(mState.mCaps.maxShaderStorageBlocks[shaderType],
                             maxShaderStorageBufferBindings);
         }
@@ -4366,6 +4610,7 @@ void Context::initCaps()
 
 void Context::updateCaps()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mCaps.compressedTextureFormats.clear();
     mState.mTextureCaps.clear();
 
@@ -4526,11 +4771,13 @@ void Context::updateCaps()
 
 bool Context::noopDrawInstanced(PrimitiveMode mode, GLsizei count, GLsizei instanceCount) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (instanceCount == 0) || noopDraw(mode, count);
 }
 
 angle::Result Context::prepareForClear(GLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Sync the draw framebuffer manually after the clear attachments.
     ANGLE_TRY(mState.getDrawFramebuffer()->ensureClearAttachmentsInitialized(this, mask));
     return syncStateForClear();
@@ -4538,6 +4785,7 @@ angle::Result Context::prepareForClear(GLbitfield mask)
 
 angle::Result Context::prepareForClearBuffer(GLenum buffer, GLint drawbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Sync the draw framebuffer manually after the clear attachments.
     ANGLE_TRY(mState.getDrawFramebuffer()->ensureClearBufferAttachmentsInitialized(this, buffer,
                                                                                    drawbuffer));
@@ -4546,12 +4794,14 @@ angle::Result Context::prepareForClearBuffer(GLenum buffer, GLint drawbuffer)
 
 ANGLE_INLINE angle::Result Context::prepareForCopyImage()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_TRY(syncDirtyObjects(mCopyImageDirtyObjects, Command::CopyImage));
     return syncDirtyBits(mCopyImageDirtyBits, mCopyImageExtendedDirtyBits, Command::CopyImage);
 }
 
 ANGLE_INLINE angle::Result Context::prepareForDispatch()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Converting a PPO from graphics to compute requires re-linking it.
     // The compute shader must have successfully linked before being included in the PPO, so no link
     // errors that would have been caught during validation should be possible when re-linking the
@@ -4574,6 +4824,7 @@ ANGLE_INLINE angle::Result Context::prepareForDispatch()
 
 angle::Result Context::prepareForInvalidate(GLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Only sync the FBO that's being invalidated.  Per the GLES3 spec, GL_FRAMEBUFFER is equivalent
     // to GL_DRAW_FRAMEBUFFER for the purposes of invalidation.
     GLenum effectiveTarget = target;
@@ -4596,6 +4847,7 @@ angle::Result Context::syncState(const State::DirtyBits &bitMask,
                                  const State::DirtyObjects &objectMask,
                                  Command command)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_TRY(syncDirtyObjects(objectMask, command));
     ANGLE_TRY(syncDirtyBits(bitMask, extendedBitMask, command));
     return angle::Result::Continue;
@@ -4612,6 +4864,7 @@ void Context::blitFramebuffer(GLint srcX0,
                               GLbitfield mask,
                               GLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mask == 0)
     {
         // ES3.0 spec, section 4.3.2 specifies that a mask of zero is valid and no
@@ -4671,11 +4924,13 @@ void Context::blitFramebufferNV(GLint srcX0,
                                 GLbitfield mask,
                                 GLenum filter)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
 void Context::clear(GLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mState.isRasterizerDiscardEnabled())
     {
         return;
@@ -4725,6 +4980,7 @@ void Context::clear(GLbitfield mask)
 
 bool Context::isClearBufferMaskedOut(GLenum buffer, GLint drawbuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (buffer)
     {
         case GL_COLOR:
@@ -4744,6 +5000,7 @@ bool Context::isClearBufferMaskedOut(GLenum buffer, GLint drawbuffer) const
 
 bool Context::noopClearBuffer(GLenum buffer, GLint drawbuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebufferObject = mState.getDrawFramebuffer();
 
     return !IsClearBufferEnabled(framebufferObject->getState(), buffer, drawbuffer) ||
@@ -4753,6 +5010,7 @@ bool Context::noopClearBuffer(GLenum buffer, GLint drawbuffer) const
 
 void Context::clearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopClearBuffer(buffer, drawbuffer))
     {
         return;
@@ -4781,6 +5039,7 @@ void Context::clearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat *valu
 
 void Context::clearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopClearBuffer(buffer, drawbuffer))
     {
         return;
@@ -4805,6 +5064,7 @@ void Context::clearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint *valu
 
 void Context::clearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopClearBuffer(buffer, drawbuffer))
     {
         return;
@@ -4833,6 +5093,7 @@ void Context::clearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *values
 
 void Context::clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopClearBuffer(buffer, drawbuffer))
     {
         return;
@@ -4860,6 +5121,7 @@ void Context::readPixels(GLint x,
                          GLenum type,
                          void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (width == 0 || height == 0)
     {
         return;
@@ -4888,6 +5150,7 @@ void Context::readPixelsRobust(GLint x,
                                GLsizei *rows,
                                void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     readPixels(x, y, width, height, format, type, pixels);
 }
 
@@ -4903,6 +5166,7 @@ void Context::readnPixelsRobust(GLint x,
                                 GLsizei *rows,
                                 void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     readPixels(x, y, width, height, format, type, data);
 }
 
@@ -4915,6 +5179,7 @@ void Context::copyTexImage2D(TextureTarget target,
                              GLsizei height,
                              GLint border)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(prepareForCopyImage());
 
     Rectangle sourceArea(x, y, width, height);
@@ -4934,6 +5199,7 @@ void Context::copyTexSubImage2D(TextureTarget target,
                                 GLsizei width,
                                 GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (width == 0 || height == 0)
     {
         return;
@@ -4961,6 +5227,7 @@ void Context::copyTexSubImage3D(TextureTarget target,
                                 GLsizei width,
                                 GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (width == 0 || height == 0)
     {
         return;
@@ -4994,6 +5261,7 @@ void Context::copyImageSubData(GLuint srcName,
                                GLsizei srcHeight,
                                GLsizei srcDepth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // if copy region is zero, the copy is a successful no-op
     if ((srcWidth == 0) || (srcHeight == 0) || (srcDepth == 0))
     {
@@ -5071,6 +5339,7 @@ void Context::framebufferTexture2D(GLenum target,
                                    TextureID texture,
                                    GLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5095,6 +5364,7 @@ void Context::framebufferTexture3D(GLenum target,
                                    GLint level,
                                    GLint zoffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5117,6 +5387,7 @@ void Context::framebufferRenderbuffer(GLenum target,
                                       GLenum renderbuffertarget,
                                       RenderbufferID renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5142,6 +5413,7 @@ void Context::framebufferTextureLayer(GLenum target,
                                       GLint level,
                                       GLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5166,6 +5438,7 @@ void Context::framebufferTextureMultiview(GLenum target,
                                           GLint baseViewIndex,
                                           GLsizei numViews)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5197,6 +5470,7 @@ void Context::framebufferTextureMultiview(GLenum target,
 
 void Context::framebufferTexture(GLenum target, GLenum attachment, TextureID texture, GLint level)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5218,6 +5492,7 @@ void Context::framebufferTexture(GLenum target, GLenum attachment, TextureID tex
 
 void Context::drawBuffers(GLsizei n, const GLenum *bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     framebuffer->setDrawBuffers(n, bufs);
@@ -5227,6 +5502,7 @@ void Context::drawBuffers(GLsizei n, const GLenum *bufs)
 
 void Context::readBuffer(GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *readFBO = mState.getReadFramebuffer();
     readFBO->setReadBuffer(mode);
     mState.setObjectDirty(GL_READ_FRAMEBUFFER);
@@ -5234,6 +5510,7 @@ void Context::readBuffer(GLenum mode)
 
 void Context::discardFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // The specification isn't clear what should be done when the framebuffer isn't complete.
     // We threat it the same way as GLES3 glInvalidateFramebuffer.
     invalidateFramebuffer(target, numAttachments, attachments);
@@ -5243,6 +5520,7 @@ void Context::invalidateFramebuffer(GLenum target,
                                     GLsizei numAttachments,
                                     const GLenum *attachments)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5264,6 +5542,7 @@ void Context::invalidateSubFramebuffer(GLenum target,
                                        GLsizei width,
                                        GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -5287,6 +5566,7 @@ void Context::texImage2D(TextureTarget target,
                          GLenum type,
                          const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     gl::Buffer *unpackBuffer = mState.getTargetBuffer(gl::BufferBinding::PixelUnpack);
@@ -5309,6 +5589,7 @@ void Context::texImage2DRobust(TextureTarget target,
                                GLsizei bufSize,
                                const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 }
 
@@ -5323,6 +5604,7 @@ void Context::texImage3D(TextureTarget target,
                          GLenum type,
                          const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     gl::Buffer *unpackBuffer = mState.getTargetBuffer(gl::BufferBinding::PixelUnpack);
@@ -5346,6 +5628,7 @@ void Context::texImage3DRobust(TextureTarget target,
                                GLsizei bufSize,
                                const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 }
 
@@ -5359,6 +5642,7 @@ void Context::texSubImage2D(TextureTarget target,
                             GLenum type,
                             const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Zero sized uploads are valid but no-ops
     if (width == 0 || height == 0)
     {
@@ -5388,6 +5672,7 @@ void Context::texSubImage2DRobust(TextureTarget target,
                                   GLsizei bufSize,
                                   const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 }
 
@@ -5403,6 +5688,7 @@ void Context::texSubImage3D(TextureTarget target,
                             GLenum type,
                             const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Zero sized uploads are valid but no-ops
     if (width == 0 || height == 0 || depth == 0)
     {
@@ -5434,6 +5720,7 @@ void Context::texSubImage3DRobust(TextureTarget target,
                                   GLsizei bufSize,
                                   const void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type,
                   pixels);
 }
@@ -5447,6 +5734,7 @@ void Context::compressedTexImage2D(TextureTarget target,
                                    GLsizei imageSize,
                                    const void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     Extents size(width, height, 1);
@@ -5468,6 +5756,7 @@ void Context::compressedTexImage2DRobust(TextureTarget target,
                                          GLsizei dataSize,
                                          const GLvoid *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     compressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
 }
 
@@ -5481,6 +5770,7 @@ void Context::compressedTexImage3D(TextureTarget target,
                                    GLsizei imageSize,
                                    const void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     Extents size(width, height, depth);
@@ -5503,6 +5793,7 @@ void Context::compressedTexImage3DRobust(TextureTarget target,
                                          GLsizei dataSize,
                                          const GLvoid *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     compressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize,
                          data);
 }
@@ -5517,6 +5808,7 @@ void Context::compressedTexSubImage2D(TextureTarget target,
                                       GLsizei imageSize,
                                       const void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     Box area(xoffset, yoffset, 0, width, height, 1);
@@ -5539,6 +5831,7 @@ void Context::compressedTexSubImage2DRobust(TextureTarget target,
                                             GLsizei dataSize,
                                             const GLvoid *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize,
                             data);
 }
@@ -5555,6 +5848,7 @@ void Context::compressedTexSubImage3D(TextureTarget target,
                                       GLsizei imageSize,
                                       const void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Zero sized uploads are valid but no-ops
     if (width == 0 || height == 0)
     {
@@ -5585,12 +5879,14 @@ void Context::compressedTexSubImage3DRobust(TextureTarget target,
                                             GLsizei dataSize,
                                             const GLvoid *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     compressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format,
                             imageSize, data);
 }
 
 void Context::generateMipmap(TextureType target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture = getTextureByType(target);
     ANGLE_CONTEXT_TRY(texture->generateMipmap(this));
 }
@@ -5606,6 +5902,7 @@ void Context::copyTexture(TextureID sourceId,
                           GLboolean unpackPremultiplyAlpha,
                           GLboolean unpackUnmultiplyAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     gl::Texture *sourceTexture = getTexture(sourceId);
@@ -5631,6 +5928,7 @@ void Context::copySubTexture(TextureID sourceId,
                              GLboolean unpackPremultiplyAlpha,
                              GLboolean unpackUnmultiplyAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Zero sized copies are valid but no-ops
     if (width == 0 || height == 0)
     {
@@ -5660,6 +5958,7 @@ void Context::copyTexture3D(TextureID sourceId,
                             GLboolean unpackPremultiplyAlpha,
                             GLboolean unpackUnmultiplyAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     Texture *sourceTexture = getTexture(sourceId);
@@ -5688,6 +5987,7 @@ void Context::copySubTexture3D(TextureID sourceId,
                                GLboolean unpackPremultiplyAlpha,
                                GLboolean unpackUnmultiplyAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Zero sized copies are valid but no-ops
     if (width == 0 || height == 0 || depth == 0)
     {
@@ -5708,6 +6008,7 @@ void Context::copySubTexture3D(TextureID sourceId,
 
 void Context::compressedCopyTexture(TextureID sourceId, TextureID destId)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(syncStateForTexImage());
 
     gl::Texture *sourceTexture = getTexture(sourceId);
@@ -5717,6 +6018,7 @@ void Context::compressedCopyTexture(TextureID sourceId, TextureID destId)
 
 void Context::getBufferPointerv(BufferBinding target, GLenum pname, void **params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
 
@@ -5729,11 +6031,13 @@ void Context::getBufferPointervRobust(BufferBinding target,
                                       GLsizei *length,
                                       void **params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getBufferPointerv(target, pname, params);
 }
 
 void *Context::mapBuffer(BufferBinding target, GLenum access)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
 
@@ -5747,6 +6051,7 @@ void *Context::mapBuffer(BufferBinding target, GLenum access)
 
 GLboolean Context::unmapBuffer(BufferBinding target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
 
@@ -5764,6 +6069,7 @@ void *Context::mapBufferRange(BufferBinding target,
                               GLsizeiptr length,
                               GLbitfield access)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
 
@@ -5788,23 +6094,27 @@ void Context::flushMappedBufferRange(BufferBinding /*target*/,
                                      GLintptr /*offset*/,
                                      GLsizeiptr /*length*/)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // We do not currently support a non-trivial implementation of FlushMappedBufferRange
 }
 
 angle::Result Context::syncStateForReadPixels()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return syncState(mReadPixelsDirtyBits, mReadPixelsExtendedDirtyBits, mReadPixelsDirtyObjects,
                      Command::ReadPixels);
 }
 
 angle::Result Context::syncStateForTexImage()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return syncState(mTexImageDirtyBits, mTexImageExtendedDirtyBits, mTexImageDirtyObjects,
                      Command::TexImage);
 }
 
 angle::Result Context::syncStateForBlit(GLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     uint32_t commandMask = 0;
     if ((mask & GL_COLOR_BUFFER_BIT) != 0)
     {
@@ -5826,11 +6136,13 @@ angle::Result Context::syncStateForBlit(GLbitfield mask)
 
 angle::Result Context::syncStateForClear()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return syncState(mClearDirtyBits, mClearExtendedDirtyBits, mClearDirtyObjects, Command::Clear);
 }
 
 angle::Result Context::syncTextureForCopy(Texture *texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(texture);
     // Sync texture not active but scheduled for a copy
     if (texture->hasAnyDirtyBit())
@@ -5843,6 +6155,7 @@ angle::Result Context::syncTextureForCopy(Texture *texture)
 
 void Context::activeShaderProgram(ProgramPipelineID pipeline, ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *shaderProgram = getProgramNoResolveLink(program);
     ProgramPipeline *programPipeline =
         mState.mProgramPipelineManager->checkProgramPipelineAllocation(mImplementation.get(),
@@ -5854,21 +6167,25 @@ void Context::activeShaderProgram(ProgramPipelineID pipeline, ShaderProgramID pr
 
 void Context::activeTexture(GLenum texture)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setActiveSampler(texture - GL_TEXTURE0);
 }
 
 void Context::blendBarrier()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mImplementation->blendBarrier();
 }
 
 void Context::blendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendColor(red, green, blue, alpha);
 }
 
 void Context::blendEquation(GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendEquation(mode, mode);
 
     mStateCache.onBlendEquationChange(this);
@@ -5876,6 +6193,7 @@ void Context::blendEquation(GLenum mode)
 
 void Context::blendEquationi(GLuint buf, GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendEquationIndexed(mode, mode, buf);
 
     mStateCache.onBlendEquationChange(this);
@@ -5883,21 +6201,25 @@ void Context::blendEquationi(GLuint buf, GLenum mode)
 
 void Context::blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendEquation(modeRGB, modeAlpha);
 }
 
 void Context::blendEquationSeparatei(GLuint buf, GLenum modeRGB, GLenum modeAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendEquationIndexed(modeRGB, modeAlpha, buf);
 }
 
 void Context::blendFunc(GLenum sfactor, GLenum dfactor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendFactors(sfactor, dfactor, sfactor, dfactor);
 }
 
 void Context::blendFunci(GLuint buf, GLenum src, GLenum dst)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendFactorsIndexed(src, dst, src, dst, buf);
 
     if (mState.noSimultaneousConstantColorAndAlphaBlendFunc())
@@ -5908,6 +6230,7 @@ void Context::blendFunci(GLuint buf, GLenum src, GLenum dst)
 
 void Context::blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendFactors(srcRGB, dstRGB, srcAlpha, dstAlpha);
 }
 
@@ -5917,6 +6240,7 @@ void Context::blendFuncSeparatei(GLuint buf,
                                  GLenum srcAlpha,
                                  GLenum dstAlpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setBlendFactorsIndexed(srcRGB, dstRGB, srcAlpha, dstAlpha, buf);
 
     if (mState.noSimultaneousConstantColorAndAlphaBlendFunc())
@@ -5927,21 +6251,25 @@ void Context::blendFuncSeparatei(GLuint buf,
 
 void Context::clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setColorClearValue(red, green, blue, alpha);
 }
 
 void Context::clearDepthf(GLfloat depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setDepthClearValue(clamp01(depth));
 }
 
 void Context::clearStencil(GLint s)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setStencilClearValue(s);
 }
 
 void Context::colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setColorMask(ConvertToBool(red), ConvertToBool(green), ConvertToBool(blue),
                         ConvertToBool(alpha));
     mStateCache.onColorMaskChange(this);
@@ -5949,6 +6277,7 @@ void Context::colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolea
 
 void Context::colorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setColorMaskIndexed(ConvertToBool(r), ConvertToBool(g), ConvertToBool(b),
                                ConvertToBool(a), index);
     mStateCache.onColorMaskChange(this);
@@ -5956,72 +6285,85 @@ void Context::colorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b, GL
 
 void Context::cullFace(CullFaceMode mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setCullMode(mode);
 }
 
 void Context::depthFunc(GLenum func)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setDepthFunc(func);
 }
 
 void Context::depthMask(GLboolean flag)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setDepthMask(ConvertToBool(flag));
 }
 
 void Context::depthRangef(GLfloat zNear, GLfloat zFar)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setDepthRange(clamp01(zNear), clamp01(zFar));
 }
 
 void Context::clipControl(ClipOrigin originPacked, ClipDepthMode depthPacked)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setClipControl(originPacked, depthPacked);
 }
 
 void Context::disable(GLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableFeature(cap, false);
     mStateCache.onContextCapChange(this);
 }
 
 void Context::disablei(GLenum target, GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableFeatureIndexed(target, false, index);
     mStateCache.onContextCapChange(this);
 }
 
 void Context::disableVertexAttribArray(GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableVertexAttribArray(index, false);
     mStateCache.onVertexArrayStateChange(this);
 }
 
 void Context::enable(GLenum cap)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableFeature(cap, true);
     mStateCache.onContextCapChange(this);
 }
 
 void Context::enablei(GLenum target, GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableFeatureIndexed(target, true, index);
     mStateCache.onContextCapChange(this);
 }
 
 void Context::enableVertexAttribArray(GLuint index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setEnableVertexAttribArray(index, true);
     mStateCache.onVertexArrayStateChange(this);
 }
 
 void Context::frontFace(GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setFrontFace(mode);
 }
 
 void Context::hint(GLenum target, GLenum mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (target)
     {
         case GL_GENERATE_MIPMAP_HINT:
@@ -6049,11 +6391,13 @@ void Context::hint(GLenum target, GLenum mode)
 
 void Context::lineWidth(GLfloat width)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setLineWidth(width);
 }
 
 void Context::pixelStorei(GLenum pname, GLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (pname)
     {
         case GL_UNPACK_ALIGNMENT:
@@ -6116,36 +6460,43 @@ void Context::pixelStorei(GLenum pname, GLint param)
 
 void Context::polygonOffset(GLfloat factor, GLfloat units)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setPolygonOffsetParams(factor, units, 0.0f);
 }
 
 void Context::polygonOffsetClamp(GLfloat factor, GLfloat units, GLfloat clamp)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setPolygonOffsetParams(factor, units, clamp);
 }
 
 void Context::sampleCoverage(GLfloat value, GLboolean invert)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setSampleCoverageParams(clamp01(value), ConvertToBool(invert));
 }
 
 void Context::sampleMaski(GLuint maskNumber, GLbitfield mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setSampleMaskParams(maskNumber, mask);
 }
 
 void Context::scissor(GLint x, GLint y, GLsizei width, GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setScissorParams(x, y, width, height);
 }
 
 void Context::shadingRateQCOM(GLenum rate)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setShadingRate(rate);
 }
 
 void Context::stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint clampedRef = gl::clamp(ref, 0, std::numeric_limits<uint8_t>::max());
     if (face == GL_FRONT || face == GL_FRONT_AND_BACK)
     {
@@ -6162,6 +6513,7 @@ void Context::stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint ma
 
 void Context::stencilMaskSeparate(GLenum face, GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (face == GL_FRONT || face == GL_FRONT_AND_BACK)
     {
         mState.setStencilWritemask(mask);
@@ -6177,6 +6529,7 @@ void Context::stencilMaskSeparate(GLenum face, GLuint mask)
 
 void Context::stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (face == GL_FRONT || face == GL_FRONT_AND_BACK)
     {
         mState.setStencilOperations(fail, zfail, zpass);
@@ -6190,6 +6543,7 @@ void Context::stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum z
 
 void Context::vertexAttrib1f(GLuint index, GLfloat x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {x, 0, 0, 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6197,6 +6551,7 @@ void Context::vertexAttrib1f(GLuint index, GLfloat x)
 
 void Context::vertexAttrib1fv(GLuint index, const GLfloat *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {values[0], 0, 0, 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6204,6 +6559,7 @@ void Context::vertexAttrib1fv(GLuint index, const GLfloat *values)
 
 void Context::vertexAttrib2f(GLuint index, GLfloat x, GLfloat y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {x, y, 0, 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6211,6 +6567,7 @@ void Context::vertexAttrib2f(GLuint index, GLfloat x, GLfloat y)
 
 void Context::vertexAttrib2fv(GLuint index, const GLfloat *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {values[0], values[1], 0, 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6218,6 +6575,7 @@ void Context::vertexAttrib2fv(GLuint index, const GLfloat *values)
 
 void Context::vertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {x, y, z, 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6225,6 +6583,7 @@ void Context::vertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z)
 
 void Context::vertexAttrib3fv(GLuint index, const GLfloat *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {values[0], values[1], values[2], 1};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6232,6 +6591,7 @@ void Context::vertexAttrib3fv(GLuint index, const GLfloat *values)
 
 void Context::vertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat vals[4] = {x, y, z, w};
     mState.setVertexAttribf(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6239,6 +6599,7 @@ void Context::vertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfl
 
 void Context::vertexAttrib4fv(GLuint index, const GLfloat *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribf(index, values);
     mStateCache.onDefaultVertexAttributeChange(this);
 }
@@ -6250,6 +6611,7 @@ void Context::vertexAttribPointer(GLuint index,
                                   GLsizei stride,
                                   const void *ptr)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribPointer(this, index, mState.getTargetBuffer(BufferBinding::Array), size,
                                   type, ConvertToBool(normalized), stride, ptr);
     mStateCache.onVertexArrayStateChange(this);
@@ -6261,6 +6623,7 @@ void Context::vertexAttribFormat(GLuint attribIndex,
                                  GLboolean normalized,
                                  GLuint relativeOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribFormat(attribIndex, size, type, ConvertToBool(normalized), false,
                                  relativeOffset);
     mStateCache.onVertexArrayFormatChange(this);
@@ -6271,24 +6634,28 @@ void Context::vertexAttribIFormat(GLuint attribIndex,
                                   VertexAttribType type,
                                   GLuint relativeOffset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribFormat(attribIndex, size, type, false, true, relativeOffset);
     mStateCache.onVertexArrayFormatChange(this);
 }
 
 void Context::vertexAttribBinding(GLuint attribIndex, GLuint bindingIndex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribBinding(this, attribIndex, bindingIndex);
     mStateCache.onVertexArrayStateChange(this);
 }
 
 void Context::vertexBindingDivisor(GLuint bindingIndex, GLuint divisor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexBindingDivisor(this, bindingIndex, divisor);
     mStateCache.onVertexArrayFormatChange(this);
 }
 
 void Context::viewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setViewportParams(x, y, width, height);
 }
 
@@ -6298,6 +6665,7 @@ void Context::vertexAttribIPointer(GLuint index,
                                    GLsizei stride,
                                    const void *pointer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribIPointer(this, index, mState.getTargetBuffer(BufferBinding::Array), size,
                                    type, stride, pointer);
     mStateCache.onVertexArrayStateChange(this);
@@ -6305,6 +6673,7 @@ void Context::vertexAttribIPointer(GLuint index,
 
 void Context::vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint vals[4] = {x, y, z, w};
     mState.setVertexAttribi(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6312,6 +6681,7 @@ void Context::vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w)
 
 void Context::vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint vals[4] = {x, y, z, w};
     mState.setVertexAttribu(index, vals);
     mStateCache.onDefaultVertexAttributeChange(this);
@@ -6319,18 +6689,21 @@ void Context::vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuin
 
 void Context::vertexAttribI4iv(GLuint index, const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribi(index, v);
     mStateCache.onDefaultVertexAttributeChange(this);
 }
 
 void Context::vertexAttribI4uiv(GLuint index, const GLuint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setVertexAttribu(index, v);
     mStateCache.onDefaultVertexAttributeChange(this);
 }
 
 void Context::getVertexAttribivImpl(GLuint index, GLenum pname, GLint *params) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const VertexAttribCurrentValueData &currentValues =
         getState().getVertexAttribCurrentValue(index);
     const VertexArray *vao = getState().getVertexArray();
@@ -6340,6 +6713,7 @@ void Context::getVertexAttribivImpl(GLuint index, GLenum pname, GLint *params) c
 
 void Context::getVertexAttribiv(GLuint index, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return getVertexAttribivImpl(index, pname, params);
 }
 
@@ -6349,11 +6723,13 @@ void Context::getVertexAttribivRobust(GLuint index,
                                       GLsizei *length,
                                       GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribiv(index, pname, params);
 }
 
 void Context::getVertexAttribfv(GLuint index, GLenum pname, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const VertexAttribCurrentValueData &currentValues =
         getState().getVertexAttribCurrentValue(index);
     const VertexArray *vao = getState().getVertexArray();
@@ -6367,11 +6743,13 @@ void Context::getVertexAttribfvRobust(GLuint index,
                                       GLsizei *length,
                                       GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribfv(index, pname, params);
 }
 
 void Context::getVertexAttribIiv(GLuint index, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const VertexAttribCurrentValueData &currentValues =
         getState().getVertexAttribCurrentValue(index);
     const VertexArray *vao = getState().getVertexArray();
@@ -6385,11 +6763,13 @@ void Context::getVertexAttribIivRobust(GLuint index,
                                        GLsizei *length,
                                        GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribIiv(index, pname, params);
 }
 
 void Context::getVertexAttribIuiv(GLuint index, GLenum pname, GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const VertexAttribCurrentValueData &currentValues =
         getState().getVertexAttribCurrentValue(index);
     const VertexArray *vao = getState().getVertexArray();
@@ -6403,11 +6783,13 @@ void Context::getVertexAttribIuivRobust(GLuint index,
                                         GLsizei *length,
                                         GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribIuiv(index, pname, params);
 }
 
 void Context::getVertexAttribPointerv(GLuint index, GLenum pname, void **pointer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const VertexAttribute &attrib = getState().getVertexArray()->getVertexAttribute(index);
     QueryVertexAttribPointerv(attrib, pname, pointer);
 }
@@ -6418,6 +6800,7 @@ void Context::getVertexAttribPointervRobust(GLuint index,
                                             GLsizei *length,
                                             void **pointer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getVertexAttribPointerv(index, pname, pointer);
 }
 
@@ -6428,6 +6811,7 @@ void Context::debugMessageControl(GLenum source,
                                   const GLuint *ids,
                                   GLboolean enabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     std::vector<GLuint> idVector(ids, ids + count);
     mState.getDebug().setMessageControl(source, type, severity, std::move(idVector),
                                         ConvertToBool(enabled));
@@ -6440,6 +6824,7 @@ void Context::debugMessageInsert(GLenum source,
                                  GLsizei length,
                                  const GLchar *buf)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     std::string msg(buf, (length > 0) ? static_cast<size_t>(length) : strlen(buf));
     mState.getDebug().insertMessage(source, type, id, severity, std::move(msg), gl::LOG_INFO,
                                     angle::EntryPoint::GLDebugMessageInsert);
@@ -6447,6 +6832,7 @@ void Context::debugMessageInsert(GLenum source,
 
 void Context::debugMessageCallback(GLDEBUGPROCKHR callback, const void *userParam)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.getDebug().setCallback(callback, userParam);
 }
 
@@ -6459,12 +6845,14 @@ GLuint Context::getDebugMessageLog(GLuint count,
                                    GLsizei *lengths,
                                    GLchar *messageLog)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return static_cast<GLuint>(mState.getDebug().getMessages(count, bufSize, sources, types, ids,
                                                              severities, lengths, messageLog));
 }
 
 void Context::pushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar *message)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     std::string msg(message, (length > 0) ? static_cast<size_t>(length) : strlen(message));
     ANGLE_CONTEXT_TRY(mImplementation->pushDebugGroup(this, source, id, msg));
     mState.getDebug().pushGroup(source, id, std::move(msg));
@@ -6472,11 +6860,13 @@ void Context::pushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLc
 
 angle::Result Context::handleNoopDrawEvent()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (mImplementation->handleNoopDrawEvent());
 }
 
 void Context::popDebugGroup()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.getDebug().popGroup();
     ANGLE_CONTEXT_TRY(mImplementation->popDebugGroup(this));
 }
@@ -6490,6 +6880,7 @@ void Context::primitiveBoundingBox(GLfloat minX,
                                    GLfloat maxZ,
                                    GLfloat maxW)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.mBoundingBoxMinX = minX;
     mState.mBoundingBoxMinY = minY;
     mState.mBoundingBoxMinZ = minZ;
@@ -6505,6 +6896,7 @@ void Context::bufferStorage(BufferBinding target,
                             const void *data,
                             GLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
     ANGLE_CONTEXT_TRY(buffer->bufferStorage(this, target, size, data, flags));
@@ -6516,6 +6908,7 @@ void Context::bufferStorageExternal(BufferBinding target,
                                     GLeglClientBufferEXT clientBuffer,
                                     GLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
 
@@ -6528,11 +6921,13 @@ void Context::namedBufferStorageExternal(GLuint buffer,
                                          GLeglClientBufferEXT clientBuffer,
                                          GLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::bufferData(BufferBinding target, GLsizeiptr size, const void *data, BufferUsage usage)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     ASSERT(buffer);
     ANGLE_CONTEXT_TRY(buffer->bufferData(this, target, data, size, usage));
@@ -6543,6 +6938,7 @@ void Context::bufferSubData(BufferBinding target,
                             GLsizeiptr size,
                             const void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (data == nullptr || size == 0)
     {
         return;
@@ -6555,6 +6951,7 @@ void Context::bufferSubData(BufferBinding target,
 
 void Context::attachShader(ShaderProgramID program, ShaderProgramID shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = mState.mShaderProgramManager->getProgram(program);
     Shader *shaderObject   = mState.mShaderProgramManager->getShader(shader);
     ASSERT(programObject && shaderObject);
@@ -6567,6 +6964,7 @@ void Context::copyBufferSubData(BufferBinding readTarget,
                                 GLintptr writeOffset,
                                 GLsizeiptr size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // if size is zero, the copy is a successful no-op
     if (size == 0)
     {
@@ -6583,6 +6981,7 @@ void Context::copyBufferSubData(BufferBinding readTarget,
 
 void Context::bindAttribLocation(ShaderProgramID program, GLuint index, const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Ideally we could share the program query with the validation layer if possible.
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
@@ -6591,6 +6990,7 @@ void Context::bindAttribLocation(ShaderProgramID program, GLuint index, const GL
 
 void Context::bindBufferBase(BufferBinding target, GLuint index, BufferID buffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindBufferRange(target, index, buffer, 0, 0);
 }
 
@@ -6600,6 +7000,7 @@ void Context::bindBufferRange(BufferBinding target,
                               GLintptr offset,
                               GLsizeiptr size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *object = mState.mBufferManager->checkBufferAllocation(mImplementation.get(), buffer);
     ANGLE_CONTEXT_TRY(mState.setIndexedBufferBinding(this, target, index, object, offset, size));
     if (target == BufferBinding::Uniform)
@@ -6625,6 +7026,7 @@ void Context::bindBufferRange(BufferBinding target,
 
 void Context::bindFramebuffer(GLenum target, FramebufferID framebuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (target == GL_READ_FRAMEBUFFER || target == GL_FRAMEBUFFER)
     {
         bindReadFramebuffer(framebuffer);
@@ -6638,6 +7040,7 @@ void Context::bindFramebuffer(GLenum target, FramebufferID framebuffer)
 
 void Context::bindRenderbuffer(GLenum target, RenderbufferID renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(target == GL_RENDERBUFFER);
     Renderbuffer *object = mState.mRenderbufferManager->checkRenderbufferAllocation(
         mImplementation.get(), renderbuffer);
@@ -6651,6 +7054,7 @@ void Context::texStorage2DMultisample(TextureType target,
                                       GLsizei height,
                                       GLboolean fixedsamplelocations)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extents size(width, height, 1);
     Texture *texture = getTextureByType(target);
     ANGLE_CONTEXT_TRY(texture->setStorageMultisample(this, target, samples, internalformat, size,
@@ -6665,6 +7069,7 @@ void Context::texStorage3DMultisample(TextureType target,
                                       GLsizei depth,
                                       GLboolean fixedsamplelocations)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extents size(width, height, depth);
     Texture *texture = getTextureByType(target);
     ANGLE_CONTEXT_TRY(texture->setStorageMultisample(this, target, samples, internalformat, size,
@@ -6680,6 +7085,7 @@ void Context::texImage2DExternal(TextureTarget target,
                                  GLenum format,
                                  GLenum type)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extents size(width, height, 1);
     Texture *texture = getTextureByTarget(target);
     ANGLE_CONTEXT_TRY(
@@ -6688,12 +7094,14 @@ void Context::texImage2DExternal(TextureTarget target,
 
 void Context::invalidateTexture(TextureType target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mImplementation->invalidateTexture(target);
     mState.invalidateTextureBindings(target);
 }
 
 void Context::getMultisamplefv(GLenum pname, GLuint index, GLfloat *val)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // According to spec 3.1 Table 20.49: Framebuffer Dependent Values,
     // the sample position should be queried by DRAW_FRAMEBUFFER.
     ANGLE_CONTEXT_TRY(mState.syncDirtyObject(this, GL_DRAW_FRAMEBUFFER));
@@ -6715,6 +7123,7 @@ void Context::getMultisamplefvRobust(GLenum pname,
                                      GLsizei *length,
                                      GLfloat *val)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -6723,6 +7132,7 @@ void Context::renderbufferStorage(GLenum target,
                                   GLsizei width,
                                   GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Hack for the special WebGL 1 "DEPTH_STENCIL" internal format.
     GLenum convertedInternalFormat = getConvertedRenderbufferFormat(internalformat);
 
@@ -6736,6 +7146,7 @@ void Context::renderbufferStorageMultisample(GLenum target,
                                              GLsizei width,
                                              GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     renderbufferStorageMultisampleImpl(target, samples, internalformat, width, height,
                                        MultisamplingMode::Regular);
 }
@@ -6746,6 +7157,7 @@ void Context::renderbufferStorageMultisampleEXT(GLenum target,
                                                 GLsizei width,
                                                 GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     renderbufferStorageMultisampleImpl(target, samples, internalformat, width, height,
                                        MultisamplingMode::MultisampledRenderToTexture);
 }
@@ -6757,6 +7169,7 @@ void Context::renderbufferStorageMultisampleImpl(GLenum target,
                                                  GLsizei height,
                                                  MultisamplingMode mode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Hack for the special WebGL 1 "DEPTH_STENCIL" internal format.
     GLenum convertedInternalFormat = getConvertedRenderbufferFormat(internalformat);
 
@@ -6772,6 +7185,7 @@ void Context::framebufferTexture2DMultisample(GLenum target,
                                               GLint level,
                                               GLsizei samples)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
 
@@ -6796,6 +7210,7 @@ void Context::getSynciv(SyncID syncPacked,
                         GLsizei *length,
                         GLint *values)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Sync *syncObject = nullptr;
     if (!isContextLost())
     {
@@ -6806,6 +7221,7 @@ void Context::getSynciv(SyncID syncPacked,
 
 void Context::getFramebufferParameteriv(GLenum target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     QueryFramebufferParameteriv(framebuffer, pname, params);
 }
@@ -6816,11 +7232,13 @@ void Context::getFramebufferParameterivRobust(GLenum target,
                                               GLsizei *length,
                                               GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::framebufferParameteri(GLenum target, GLenum pname, GLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     SetFramebufferParameteri(this, framebuffer, pname, param);
 }
@@ -6828,6 +7246,7 @@ void Context::framebufferParameteri(GLenum target, GLenum pname, GLint param)
 bool Context::getScratchBuffer(size_t requstedSizeBytes,
                                angle::MemoryBuffer **scratchBufferOut) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mScratchBuffer.valid())
     {
         mScratchBuffer = mDisplay->requestScratchBuffer();
@@ -6839,6 +7258,7 @@ bool Context::getScratchBuffer(size_t requstedSizeBytes,
 
 angle::ScratchBuffer *Context::getScratchBuffer() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mScratchBuffer.valid())
     {
         mScratchBuffer = mDisplay->requestScratchBuffer();
@@ -6851,6 +7271,7 @@ angle::ScratchBuffer *Context::getScratchBuffer() const
 bool Context::getZeroFilledBuffer(size_t requstedSizeBytes,
                                   angle::MemoryBuffer **zeroBufferOut) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!mZeroFilledBuffer.valid())
     {
         mZeroFilledBuffer = mDisplay->requestZeroFilledBuffer();
@@ -6862,6 +7283,7 @@ bool Context::getZeroFilledBuffer(size_t requstedSizeBytes,
 
 void Context::dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (numGroupsX == 0u || numGroupsY == 0u || numGroupsZ == 0u)
     {
         return;
@@ -6884,6 +7306,7 @@ void Context::dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGr
 
 void Context::dispatchComputeIndirect(GLintptr indirect)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(prepareForDispatch());
     ANGLE_CONTEXT_TRY(mImplementation->dispatchComputeIndirect(this, indirect));
 
@@ -6896,6 +7319,7 @@ void Context::texStorage2D(TextureType target,
                            GLsizei width,
                            GLsizei height)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extents size(width, height, 1);
     Texture *texture = getTextureByType(target);
     ANGLE_CONTEXT_TRY(texture->setStorage(this, target, levels, internalFormat, size));
@@ -6908,6 +7332,7 @@ void Context::texStorage3D(TextureType target,
                            GLsizei height,
                            GLsizei depth)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Extents size(width, height, depth);
     Texture *texture = getTextureByType(target);
     ANGLE_CONTEXT_TRY(texture->setStorage(this, target, levels, internalFormat, size));
@@ -6915,11 +7340,13 @@ void Context::texStorage3D(TextureType target,
 
 void Context::memoryBarrier(GLbitfield barriers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mImplementation->memoryBarrier(this, barriers));
 }
 
 void Context::memoryBarrierByRegion(GLbitfield barriers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mImplementation->memoryBarrierByRegion(this, barriers));
 }
 
@@ -6928,6 +7355,7 @@ void Context::multiDrawArrays(PrimitiveMode mode,
                               const GLsizei *counts,
                               GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -6944,6 +7372,7 @@ void Context::multiDrawArraysInstanced(PrimitiveMode mode,
                                        const GLsizei *instanceCounts,
                                        GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -6960,6 +7389,7 @@ void Context::multiDrawArraysIndirect(PrimitiveMode mode,
                                       GLsizei drawcount,
                                       GLsizei stride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -6978,6 +7408,7 @@ void Context::multiDrawElements(PrimitiveMode mode,
                                 const GLvoid *const *indices,
                                 GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -6996,6 +7427,7 @@ void Context::multiDrawElementsInstanced(PrimitiveMode mode,
                                          const GLsizei *instanceCounts,
                                          GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7013,6 +7445,7 @@ void Context::multiDrawElementsIndirect(PrimitiveMode mode,
                                         GLsizei drawcount,
                                         GLsizei stride)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7031,6 +7464,7 @@ void Context::drawArraysInstancedBaseInstance(PrimitiveMode mode,
                                               GLsizei instanceCount,
                                               GLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopDrawInstanced(mode, count, instanceCount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7062,6 +7496,7 @@ void Context::drawArraysInstancedBaseInstanceANGLE(PrimitiveMode mode,
                                                    GLsizei instanceCount,
                                                    GLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     drawArraysInstancedBaseInstance(mode, first, count, instanceCount, baseInstance);
 }
 
@@ -7072,6 +7507,7 @@ void Context::drawElementsInstancedBaseInstance(PrimitiveMode mode,
                                                 GLsizei instanceCount,
                                                 GLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     drawElementsInstancedBaseVertexBaseInstance(mode, count, type, indices, instanceCount, 0,
                                                 baseInstance);
 }
@@ -7084,6 +7520,7 @@ void Context::drawElementsInstancedBaseVertexBaseInstance(PrimitiveMode mode,
                                                           GLint baseVertex,
                                                           GLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopDrawInstanced(mode, count, instanceCount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7119,6 +7556,7 @@ void Context::drawElementsInstancedBaseVertexBaseInstanceANGLE(PrimitiveMode mod
                                                                GLint baseVertex,
                                                                GLuint baseInstance)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     drawElementsInstancedBaseVertexBaseInstance(mode, count, type, indices, instanceCount,
                                                 baseVertex, baseInstance);
 }
@@ -7130,6 +7568,7 @@ void Context::multiDrawArraysInstancedBaseInstance(PrimitiveMode mode,
                                                    const GLuint *baseInstances,
                                                    GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7150,6 +7589,7 @@ void Context::multiDrawElementsInstancedBaseVertexBaseInstance(PrimitiveMode mod
                                                                const GLuint *baseInstances,
                                                                GLsizei drawcount)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (noopMultiDraw(drawcount))
     {
         ANGLE_CONTEXT_TRY(mImplementation->handleNoopDrawEvent());
@@ -7163,11 +7603,13 @@ void Context::multiDrawElementsInstancedBaseVertexBaseInstance(PrimitiveMode mod
 
 void Context::provokingVertex(ProvokingVertexConvention provokeMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setProvokingVertex(provokeMode);
 }
 
 GLenum Context::checkFramebufferStatus(GLenum target)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getTargetFramebuffer(target);
     ASSERT(framebuffer);
     return framebuffer->checkStatus(this).status;
@@ -7175,6 +7617,7 @@ GLenum Context::checkFramebufferStatus(GLenum target)
 
 void Context::compileShader(ShaderProgramID shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = GetValidShader(this, angle::EntryPoint::GLCompileShader, shader);
     if (!shaderObject)
     {
@@ -7185,6 +7628,7 @@ void Context::compileShader(ShaderProgramID shader)
 
 void Context::deleteBuffers(GLsizei n, const BufferID *buffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         deleteBuffer(buffers[i]);
@@ -7193,6 +7637,7 @@ void Context::deleteBuffers(GLsizei n, const BufferID *buffers)
 
 void Context::deleteFramebuffers(GLsizei n, const FramebufferID *framebuffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         if (framebuffers[i].value != 0)
@@ -7204,6 +7649,7 @@ void Context::deleteFramebuffers(GLsizei n, const FramebufferID *framebuffers)
 
 void Context::deleteRenderbuffers(GLsizei n, const RenderbufferID *renderbuffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         deleteRenderbuffer(renderbuffers[i]);
@@ -7212,6 +7658,7 @@ void Context::deleteRenderbuffers(GLsizei n, const RenderbufferID *renderbuffers
 
 void Context::deleteTextures(GLsizei n, const TextureID *textures)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         if (textures[i].value != 0)
@@ -7223,6 +7670,7 @@ void Context::deleteTextures(GLsizei n, const TextureID *textures)
 
 void Context::detachShader(ShaderProgramID program, ShaderProgramID shader)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramNoResolveLink(program);
     ASSERT(programObject);
 
@@ -7234,6 +7682,7 @@ void Context::detachShader(ShaderProgramID program, ShaderProgramID shader)
 
 void Context::genBuffers(GLsizei n, BufferID *buffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         buffers[i] = createBuffer();
@@ -7242,6 +7691,7 @@ void Context::genBuffers(GLsizei n, BufferID *buffers)
 
 void Context::genFramebuffers(GLsizei n, FramebufferID *framebuffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         framebuffers[i] = createFramebuffer();
@@ -7250,6 +7700,7 @@ void Context::genFramebuffers(GLsizei n, FramebufferID *framebuffers)
 
 void Context::genRenderbuffers(GLsizei n, RenderbufferID *renderbuffers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         renderbuffers[i] = createRenderbuffer();
@@ -7258,6 +7709,7 @@ void Context::genRenderbuffers(GLsizei n, RenderbufferID *renderbuffers)
 
 void Context::genTextures(GLsizei n, TextureID *textures)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         textures[i] = createTexture();
@@ -7272,6 +7724,7 @@ void Context::getActiveAttrib(ShaderProgramID program,
                               GLenum *type,
                               GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getActiveAttribute(index, bufsize, length, size, type, name);
@@ -7285,6 +7738,7 @@ void Context::getActiveUniform(ShaderProgramID program,
                                GLenum *type,
                                GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getActiveUniform(index, bufsize, length, size, type, name);
@@ -7295,6 +7749,7 @@ void Context::getAttachedShaders(ShaderProgramID program,
                                  GLsizei *count,
                                  ShaderProgramID *shaders)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramNoResolveLink(program);
     ASSERT(programObject);
     programObject->getAttachedShaders(maxcount, count, shaders);
@@ -7302,6 +7757,7 @@ void Context::getAttachedShaders(ShaderProgramID program,
 
 GLint Context::getAttribLocation(ShaderProgramID program, const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     return programObject->getAttributeLocation(name);
@@ -7309,6 +7765,7 @@ GLint Context::getAttribLocation(ShaderProgramID program, const GLchar *name)
 
 void Context::getBooleanv(GLenum pname, GLboolean *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLenum nativeType;
     unsigned int numParams = 0;
     getQueryParameterInfo(pname, &nativeType, &numParams);
@@ -7325,11 +7782,13 @@ void Context::getBooleanv(GLenum pname, GLboolean *params)
 
 void Context::getBooleanvRobust(GLenum pname, GLsizei bufSize, GLsizei *length, GLboolean *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getBooleanv(pname, params);
 }
 
 void Context::getFloatv(GLenum pname, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLenum nativeType;
     unsigned int numParams = 0;
     getQueryParameterInfo(pname, &nativeType, &numParams);
@@ -7346,11 +7805,13 @@ void Context::getFloatv(GLenum pname, GLfloat *params)
 
 void Context::getFloatvRobust(GLenum pname, GLsizei bufSize, GLsizei *length, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getFloatv(pname, params);
 }
 
 void Context::getIntegerv(GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLenum nativeType      = GL_NONE;
     unsigned int numParams = 0;
     getQueryParameterInfo(pname, &nativeType, &numParams);
@@ -7367,11 +7828,13 @@ void Context::getIntegerv(GLenum pname, GLint *params)
 
 void Context::getIntegervRobust(GLenum pname, GLsizei bufSize, GLsizei *length, GLint *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getIntegerv(pname, data);
 }
 
 void Context::getProgramiv(ShaderProgramID program, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Don't resolve link if checking the link completion status.
     Program *programObject = getProgramNoResolveLink(program);
     if (!isContextLost() && pname != GL_COMPLETION_STATUS_KHR)
@@ -7388,11 +7851,13 @@ void Context::getProgramivRobust(ShaderProgramID program,
                                  GLsizei *length,
                                  GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getProgramiv(program, pname, params);
 }
 
 void Context::getProgramPipelineiv(ProgramPipelineID pipeline, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ProgramPipeline *programPipeline = nullptr;
     if (!mContextLost)
     {
@@ -7403,11 +7868,13 @@ void Context::getProgramPipelineiv(ProgramPipelineID pipeline, GLenum pname, GLi
 
 MemoryObject *Context::getMemoryObject(MemoryObjectID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mMemoryObjectManager->getMemoryObject(handle);
 }
 
 Semaphore *Context::getSemaphore(SemaphoreID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mSemaphoreManager->getSemaphore(handle);
 }
 
@@ -7416,6 +7883,7 @@ void Context::getProgramInfoLog(ShaderProgramID program,
                                 GLsizei *length,
                                 GLchar *infolog)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getExecutable().getInfoLog(bufsize, length, infolog);
@@ -7426,6 +7894,7 @@ void Context::getProgramPipelineInfoLog(ProgramPipelineID pipeline,
                                         GLsizei *length,
                                         GLchar *infoLog)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ProgramPipeline *programPipeline = getProgramPipeline(pipeline);
     if (programPipeline)
     {
@@ -7440,6 +7909,7 @@ void Context::getProgramPipelineInfoLog(ProgramPipelineID pipeline,
 
 void Context::getShaderiv(ShaderProgramID shader, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = nullptr;
     if (!isContextLost())
     {
@@ -7455,6 +7925,7 @@ void Context::getShaderivRobust(ShaderProgramID shader,
                                 GLsizei *length,
                                 GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getShaderiv(shader, pname, params);
 }
 
@@ -7463,6 +7934,7 @@ void Context::getShaderInfoLog(ShaderProgramID shader,
                                GLsizei *length,
                                GLchar *infolog)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = getShader(shader);
     ASSERT(shaderObject);
     shaderObject->getInfoLog(this, bufsize, length, infolog);
@@ -7473,6 +7945,7 @@ void Context::getShaderPrecisionFormat(GLenum shadertype,
                                        GLint *range,
                                        GLint *precision)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // TODO(jmadill): Compute shaders.
 
     switch (shadertype)
@@ -7546,6 +8019,7 @@ void Context::getShaderSource(ShaderProgramID shader,
                               GLsizei *length,
                               GLchar *source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = getShader(shader);
     ASSERT(shaderObject);
     shaderObject->getSource(bufsize, length, source);
@@ -7553,6 +8027,7 @@ void Context::getShaderSource(ShaderProgramID shader,
 
 void Context::getUniformfv(ShaderProgramID program, UniformLocation location, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getUniformfv(this, location, params);
@@ -7564,11 +8039,13 @@ void Context::getUniformfvRobust(ShaderProgramID program,
                                  GLsizei *length,
                                  GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getUniformfv(program, location, params);
 }
 
 void Context::getUniformiv(ShaderProgramID program, UniformLocation location, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getUniformiv(this, location, params);
@@ -7580,11 +8057,13 @@ void Context::getUniformivRobust(ShaderProgramID program,
                                  GLsizei *length,
                                  GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getUniformiv(program, location, params);
 }
 
 GLint Context::getUniformLocation(ShaderProgramID program, const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     return programObject->getUniformLocation(name).value;
@@ -7592,6 +8071,7 @@ GLint Context::getUniformLocation(ShaderProgramID program, const GLchar *name)
 
 GLboolean Context::isBuffer(BufferID buffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (buffer.value == 0)
     {
         return GL_FALSE;
@@ -7602,16 +8082,19 @@ GLboolean Context::isBuffer(BufferID buffer) const
 
 GLboolean Context::isEnabled(GLenum cap) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.getEnableFeature(cap);
 }
 
 GLboolean Context::isEnabledi(GLenum target, GLuint index) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.getEnableFeatureIndexed(target, index);
 }
 
 GLboolean Context::isFramebuffer(FramebufferID framebuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (framebuffer.value == 0)
     {
         return GL_FALSE;
@@ -7622,6 +8105,7 @@ GLboolean Context::isFramebuffer(FramebufferID framebuffer) const
 
 GLboolean Context::isProgram(ShaderProgramID program) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (program.value == 0)
     {
         return GL_FALSE;
@@ -7632,6 +8116,7 @@ GLboolean Context::isProgram(ShaderProgramID program) const
 
 GLboolean Context::isRenderbuffer(RenderbufferID renderbuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (renderbuffer.value == 0)
     {
         return GL_FALSE;
@@ -7642,6 +8127,7 @@ GLboolean Context::isRenderbuffer(RenderbufferID renderbuffer) const
 
 GLboolean Context::isShader(ShaderProgramID shader) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (shader.value == 0)
     {
         return GL_FALSE;
@@ -7652,6 +8138,7 @@ GLboolean Context::isShader(ShaderProgramID shader) const
 
 GLboolean Context::isTexture(TextureID texture) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (texture.value == 0)
     {
         return GL_FALSE;
@@ -7662,6 +8149,7 @@ GLboolean Context::isTexture(TextureID texture) const
 
 void Context::linkProgram(ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramNoResolveLink(program);
     ASSERT(programObject);
     ANGLE_CONTEXT_TRY(programObject->link(this));
@@ -7670,6 +8158,7 @@ void Context::linkProgram(ShaderProgramID program)
 
 void Context::releaseShaderCompiler()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCompiler.set(this, nullptr);
 }
 
@@ -7679,6 +8168,7 @@ void Context::shaderBinary(GLsizei n,
                            const void *binary,
                            GLsizei length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = getShader(*shaders);
     ASSERT(shaderObject != nullptr);
     ANGLE_CONTEXT_TRY(shaderObject->loadShaderBinary(this, binary, length));
@@ -7689,6 +8179,7 @@ void Context::bindFragDataLocationIndexed(ShaderProgramID program,
                                           GLuint index,
                                           const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramNoResolveLink(program);
     programObject->bindFragmentOutputLocation(colorNumber, name);
     programObject->bindFragmentOutputIndex(index, name);
@@ -7696,11 +8187,13 @@ void Context::bindFragDataLocationIndexed(ShaderProgramID program,
 
 void Context::bindFragDataLocation(ShaderProgramID program, GLuint colorNumber, const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bindFragDataLocationIndexed(program, colorNumber, 0u, name);
 }
 
 int Context::getFragDataIndex(ShaderProgramID program, const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     return programObject->getFragDataIndex(name);
 }
@@ -7709,6 +8202,7 @@ int Context::getProgramResourceLocationIndex(ShaderProgramID program,
                                              GLenum programInterface,
                                              const char *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programInterface == GL_PROGRAM_OUTPUT);
     return programObject->getFragDataIndex(name);
@@ -7719,6 +8213,7 @@ void Context::shaderSource(ShaderProgramID shader,
                            const GLchar *const *string,
                            const GLint *length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = getShader(shader);
     ASSERT(shaderObject);
     shaderObject->setSource(this, count, string, length);
@@ -7726,21 +8221,25 @@ void Context::shaderSource(ShaderProgramID shader,
 
 void Context::stencilFunc(GLenum func, GLint ref, GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     stencilFuncSeparate(GL_FRONT_AND_BACK, func, ref, mask);
 }
 
 void Context::stencilMask(GLuint mask)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     stencilMaskSeparate(GL_FRONT_AND_BACK, mask);
 }
 
 void Context::stencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     stencilOpSeparate(GL_FRONT_AND_BACK, fail, zfail, zpass);
 }
 
 void Context::patchParameteri(GLenum pname, GLint value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (pname)
     {
         case GL_PATCH_VERTICES:
@@ -7753,6 +8252,7 @@ void Context::patchParameteri(GLenum pname, GLint value)
 
 Program *Context::getActiveLinkedProgram() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = mState.getLinkedProgram(this);
     if (!program)
     {
@@ -7768,12 +8268,14 @@ Program *Context::getActiveLinkedProgram() const
 
 void Context::uniform1f(UniformLocation location, GLfloat x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform1fv(location, 1, &x);
 }
 
 void Context::uniform1fv(UniformLocation location, GLsizei count, const GLfloat *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform1fv(location, count, v);
 }
@@ -7783,29 +8285,34 @@ void Context::setUniform1iImpl(Program *program,
                                GLsizei count,
                                const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     program->setUniform1iv(this, location, count, v);
 }
 
 void Context::onSamplerUniformChange(size_t textureUnitIndex)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.onActiveTextureChange(this, textureUnitIndex);
     mStateCache.onActiveTextureChange(this);
 }
 
 void Context::uniform1i(UniformLocation location, GLint x)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     setUniform1iImpl(program, location, 1, &x);
 }
 
 void Context::uniform1iv(UniformLocation location, GLsizei count, const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     setUniform1iImpl(program, location, count, v);
 }
 
 void Context::uniform2f(UniformLocation location, GLfloat x, GLfloat y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xy[2]    = {x, y};
     Program *program = getActiveLinkedProgram();
     program->setUniform2fv(location, 1, xy);
@@ -7813,12 +8320,14 @@ void Context::uniform2f(UniformLocation location, GLfloat x, GLfloat y)
 
 void Context::uniform2fv(UniformLocation location, GLsizei count, const GLfloat *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform2fv(location, count, v);
 }
 
 void Context::uniform2i(UniformLocation location, GLint x, GLint y)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xy[2]      = {x, y};
     Program *program = getActiveLinkedProgram();
     program->setUniform2iv(location, 1, xy);
@@ -7826,12 +8335,14 @@ void Context::uniform2i(UniformLocation location, GLint x, GLint y)
 
 void Context::uniform2iv(UniformLocation location, GLsizei count, const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform2iv(location, count, v);
 }
 
 void Context::uniform3f(UniformLocation location, GLfloat x, GLfloat y, GLfloat z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xyz[3]   = {x, y, z};
     Program *program = getActiveLinkedProgram();
     program->setUniform3fv(location, 1, xyz);
@@ -7839,12 +8350,14 @@ void Context::uniform3f(UniformLocation location, GLfloat x, GLfloat y, GLfloat 
 
 void Context::uniform3fv(UniformLocation location, GLsizei count, const GLfloat *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform3fv(location, count, v);
 }
 
 void Context::uniform3i(UniformLocation location, GLint x, GLint y, GLint z)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xyz[3]     = {x, y, z};
     Program *program = getActiveLinkedProgram();
     program->setUniform3iv(location, 1, xyz);
@@ -7852,12 +8365,14 @@ void Context::uniform3i(UniformLocation location, GLint x, GLint y, GLint z)
 
 void Context::uniform3iv(UniformLocation location, GLsizei count, const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform3iv(location, count, v);
 }
 
 void Context::uniform4f(UniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xyzw[4]  = {x, y, z, w};
     Program *program = getActiveLinkedProgram();
     program->setUniform4fv(location, 1, xyzw);
@@ -7865,12 +8380,14 @@ void Context::uniform4f(UniformLocation location, GLfloat x, GLfloat y, GLfloat 
 
 void Context::uniform4fv(UniformLocation location, GLsizei count, const GLfloat *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform4fv(location, count, v);
 }
 
 void Context::uniform4i(UniformLocation location, GLint x, GLint y, GLint z, GLint w)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xyzw[4]    = {x, y, z, w};
     Program *program = getActiveLinkedProgram();
     program->setUniform4iv(location, 1, xyzw);
@@ -7878,6 +8395,7 @@ void Context::uniform4i(UniformLocation location, GLint x, GLint y, GLint z, GLi
 
 void Context::uniform4iv(UniformLocation location, GLsizei count, const GLint *v)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform4iv(location, count, v);
 }
@@ -7887,6 +8405,7 @@ void Context::uniformMatrix2fv(UniformLocation location,
                                GLboolean transpose,
                                const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix2fv(location, count, transpose, value);
 }
@@ -7896,6 +8415,7 @@ void Context::uniformMatrix3fv(UniformLocation location,
                                GLboolean transpose,
                                const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix3fv(location, count, transpose, value);
 }
@@ -7905,12 +8425,14 @@ void Context::uniformMatrix4fv(UniformLocation location,
                                GLboolean transpose,
                                const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix4fv(location, count, transpose, value);
 }
 
 void Context::validateProgram(ShaderProgramID program)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->validate(mState.mCaps);
@@ -7918,6 +8440,7 @@ void Context::validateProgram(ShaderProgramID program)
 
 void Context::validateProgramPipeline(ProgramPipelineID pipeline)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // GLES spec 3.2, Section 7.4 "Program Pipeline Objects"
     // If pipeline is a name that has been generated (without subsequent deletion) by
     // GenProgramPipelines, but refers to a program pipeline object that has not been
@@ -7950,6 +8473,7 @@ void Context::getProgramBinary(ShaderProgramID program,
                                GLenum *binaryFormat,
                                void *binary)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject != nullptr);
 
@@ -7961,6 +8485,7 @@ void Context::programBinary(ShaderProgramID program,
                             const void *binary,
                             GLsizei length)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject != nullptr);
 
@@ -7970,12 +8495,14 @@ void Context::programBinary(ShaderProgramID program,
 
 void Context::uniform1ui(UniformLocation location, GLuint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform1uiv(location, 1, &v0);
 }
 
 void Context::uniform2ui(UniformLocation location, GLuint v0, GLuint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program  = getActiveLinkedProgram();
     const GLuint xy[] = {v0, v1};
     program->setUniform2uiv(location, 1, xy);
@@ -7983,6 +8510,7 @@ void Context::uniform2ui(UniformLocation location, GLuint v0, GLuint v1)
 
 void Context::uniform3ui(UniformLocation location, GLuint v0, GLuint v1, GLuint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program   = getActiveLinkedProgram();
     const GLuint xyz[] = {v0, v1, v2};
     program->setUniform3uiv(location, 1, xyz);
@@ -7990,6 +8518,7 @@ void Context::uniform3ui(UniformLocation location, GLuint v0, GLuint v1, GLuint 
 
 void Context::uniform4ui(UniformLocation location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program    = getActiveLinkedProgram();
     const GLuint xyzw[] = {v0, v1, v2, v3};
     program->setUniform4uiv(location, 1, xyzw);
@@ -7997,29 +8526,34 @@ void Context::uniform4ui(UniformLocation location, GLuint v0, GLuint v1, GLuint 
 
 void Context::uniform1uiv(UniformLocation location, GLsizei count, const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform1uiv(location, count, value);
 }
 void Context::uniform2uiv(UniformLocation location, GLsizei count, const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform2uiv(location, count, value);
 }
 
 void Context::uniform3uiv(UniformLocation location, GLsizei count, const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform3uiv(location, count, value);
 }
 
 void Context::uniform4uiv(UniformLocation location, GLsizei count, const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniform4uiv(location, count, value);
 }
 
 void Context::genQueries(GLsizei n, QueryID *ids)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (GLsizei i = 0; i < n; i++)
     {
         QueryID handle = QueryID{mQueryHandleAllocator.allocate()};
@@ -8030,6 +8564,7 @@ void Context::genQueries(GLsizei n, QueryID *ids)
 
 void Context::deleteQueries(GLsizei n, const QueryID *ids)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         QueryID query = ids[i];
@@ -8048,11 +8583,13 @@ void Context::deleteQueries(GLsizei n, const QueryID *ids)
 
 bool Context::isQueryGenerated(QueryID query) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mQueryMap.contains(query);
 }
 
 GLboolean Context::isQuery(QueryID id) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return ConvertToGLBoolean(getQuery(id) != nullptr);
 }
 
@@ -8061,6 +8598,7 @@ void Context::uniformMatrix2x3fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix2x3fv(location, count, transpose, value);
 }
@@ -8070,6 +8608,7 @@ void Context::uniformMatrix3x2fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix3x2fv(location, count, transpose, value);
 }
@@ -8079,6 +8618,7 @@ void Context::uniformMatrix2x4fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix2x4fv(location, count, transpose, value);
 }
@@ -8088,6 +8628,7 @@ void Context::uniformMatrix4x2fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix4x2fv(location, count, transpose, value);
 }
@@ -8097,6 +8638,7 @@ void Context::uniformMatrix3x4fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix3x4fv(location, count, transpose, value);
 }
@@ -8106,12 +8648,14 @@ void Context::uniformMatrix4x3fv(UniformLocation location,
                                  GLboolean transpose,
                                  const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *program = getActiveLinkedProgram();
     program->setUniformMatrix4x3fv(location, count, transpose, value);
 }
 
 void Context::deleteVertexArrays(GLsizei n, const VertexArrayID *arrays)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int arrayIndex = 0; arrayIndex < n; arrayIndex++)
     {
         VertexArrayID vertexArray = arrays[arrayIndex];
@@ -8135,6 +8679,7 @@ void Context::deleteVertexArrays(GLsizei n, const VertexArrayID *arrays)
 
 void Context::genVertexArrays(GLsizei n, VertexArrayID *arrays)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int arrayIndex = 0; arrayIndex < n; arrayIndex++)
     {
         VertexArrayID vertexArray = {mVertexArrayHandleAllocator.allocate()};
@@ -8145,6 +8690,7 @@ void Context::genVertexArrays(GLsizei n, VertexArrayID *arrays)
 
 GLboolean Context::isVertexArray(VertexArrayID array) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (array.value == 0)
     {
         return GL_FALSE;
@@ -8156,6 +8702,7 @@ GLboolean Context::isVertexArray(VertexArrayID array) const
 
 void Context::endTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TransformFeedback *transformFeedback = mState.getCurrentTransformFeedback();
     ANGLE_CONTEXT_TRY(transformFeedback->end(this));
     mStateCache.onActiveTransformFeedbackChange(this);
@@ -8166,6 +8713,7 @@ void Context::transformFeedbackVaryings(ShaderProgramID program,
                                         const GLchar *const *varyings,
                                         GLenum bufferMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setTransformFeedbackVaryings(count, varyings, bufferMode);
@@ -8179,6 +8727,7 @@ void Context::getTransformFeedbackVarying(ShaderProgramID program,
                                           GLenum *type,
                                           GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->getTransformFeedbackVarying(index, bufSize, length, size, type, name);
@@ -8186,6 +8735,7 @@ void Context::getTransformFeedbackVarying(ShaderProgramID program,
 
 void Context::deleteTransformFeedbacks(GLsizei n, const TransformFeedbackID *ids)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         TransformFeedbackID transformFeedback = ids[i];
@@ -8210,6 +8760,7 @@ void Context::deleteTransformFeedbacks(GLsizei n, const TransformFeedbackID *ids
 
 void Context::genTransformFeedbacks(GLsizei n, TransformFeedbackID *ids)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         TransformFeedbackID transformFeedback = {mTransformFeedbackHandleAllocator.allocate()};
@@ -8220,6 +8771,7 @@ void Context::genTransformFeedbacks(GLsizei n, TransformFeedbackID *ids)
 
 GLboolean Context::isTransformFeedback(TransformFeedbackID id) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (id.value == 0)
     {
         // The 3.0.4 spec [section 6.1.11] states that if ID is zero, IsTransformFeedback
@@ -8233,6 +8785,7 @@ GLboolean Context::isTransformFeedback(TransformFeedbackID id) const
 
 void Context::pauseTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TransformFeedback *transformFeedback = mState.getCurrentTransformFeedback();
     ANGLE_CONTEXT_TRY(transformFeedback->pause(this));
     mStateCache.onActiveTransformFeedbackChange(this);
@@ -8240,6 +8793,7 @@ void Context::pauseTransformFeedback()
 
 void Context::resumeTransformFeedback()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TransformFeedback *transformFeedback = mState.getCurrentTransformFeedback();
     ANGLE_CONTEXT_TRY(transformFeedback->resume(this));
     mStateCache.onActiveTransformFeedbackChange(this);
@@ -8247,6 +8801,7 @@ void Context::resumeTransformFeedback()
 
 void Context::getUniformuiv(ShaderProgramID program, UniformLocation location, GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     programObject->getUniformuiv(this, location, params);
 }
@@ -8257,11 +8812,13 @@ void Context::getUniformuivRobust(ShaderProgramID program,
                                   GLsizei *length,
                                   GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getUniformuiv(program, location, params);
 }
 
 GLint Context::getFragDataLocation(ShaderProgramID program, const GLchar *name)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     return programObject->getFragDataLocation(name);
 }
@@ -8271,6 +8828,7 @@ void Context::getUniformIndices(ShaderProgramID program,
                                 const GLchar *const *uniformNames,
                                 GLuint *uniformIndices)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     if (!programObject->isLinked())
     {
@@ -8294,6 +8852,7 @@ void Context::getActiveUniformsiv(ShaderProgramID program,
                                   GLenum pname,
                                   GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     for (int uniformId = 0; uniformId < uniformCount; uniformId++)
     {
@@ -8304,6 +8863,7 @@ void Context::getActiveUniformsiv(ShaderProgramID program,
 
 GLuint Context::getUniformBlockIndex(ShaderProgramID program, const GLchar *uniformBlockName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     return programObject->getUniformBlockIndex(uniformBlockName);
 }
@@ -8313,6 +8873,7 @@ void Context::getActiveUniformBlockiv(ShaderProgramID program,
                                       GLenum pname,
                                       GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     QueryActiveUniformBlockiv(programObject, uniformBlockIndex, pname, params);
 }
@@ -8324,6 +8885,7 @@ void Context::getActiveUniformBlockivRobust(ShaderProgramID program,
                                             GLsizei *length,
                                             GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
 }
 
@@ -8333,6 +8895,7 @@ void Context::getActiveUniformBlockName(ShaderProgramID program,
                                         GLsizei *length,
                                         GLchar *uniformBlockName)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Program *programObject = getProgramResolveLink(program);
     programObject->getActiveUniformBlockName(this, uniformBlockIndex, bufSize, length,
                                              uniformBlockName);
@@ -8342,6 +8905,7 @@ void Context::uniformBlockBinding(ShaderProgramID program,
                                   UniformBlockIndex uniformBlockIndex,
                                   GLuint uniformBlockBinding)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     programObject->bindUniformBlock(uniformBlockIndex, uniformBlockBinding);
 
@@ -8355,6 +8919,7 @@ void Context::uniformBlockBinding(ShaderProgramID program,
 
 GLsync Context::fenceSync(GLenum condition, GLbitfield flags)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     SyncID syncHandle = mState.mSyncManager->createSync(mImplementation.get());
     Sync *syncObject  = getSync(syncHandle);
     if (syncObject->set(this, condition, flags) == angle::Result::Stop)
@@ -8368,11 +8933,13 @@ GLsync Context::fenceSync(GLenum condition, GLbitfield flags)
 
 GLboolean Context::isSync(SyncID syncPacked) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (getSync(syncPacked) != nullptr);
 }
 
 GLenum Context::clientWaitSync(SyncID syncPacked, GLbitfield flags, GLuint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sync *syncObject = getSync(syncPacked);
 
     GLenum result = GL_WAIT_FAILED;
@@ -8385,12 +8952,14 @@ GLenum Context::clientWaitSync(SyncID syncPacked, GLbitfield flags, GLuint64 tim
 
 void Context::waitSync(SyncID syncPacked, GLbitfield flags, GLuint64 timeout)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Sync *syncObject = getSync(syncPacked);
     ANGLE_CONTEXT_TRY(syncObject->serverWait(this, flags, timeout));
 }
 
 void Context::getInteger64v(GLenum pname, GLint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLenum nativeType      = GL_NONE;
     unsigned int numParams = 0;
     getQueryParameterInfo(pname, &nativeType, &numParams);
@@ -8407,11 +8976,13 @@ void Context::getInteger64v(GLenum pname, GLint64 *params)
 
 void Context::getInteger64vRobust(GLenum pname, GLsizei bufSize, GLsizei *length, GLint64 *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getInteger64v(pname, data);
 }
 
 void Context::getBufferParameteri64v(BufferBinding target, GLenum pname, GLint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Buffer *buffer = mState.getTargetBuffer(target);
     QueryBufferParameteri64v(buffer, pname, params);
 }
@@ -8422,11 +8993,13 @@ void Context::getBufferParameteri64vRobust(BufferBinding target,
                                            GLsizei *length,
                                            GLint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getBufferParameteri64v(target, pname, params);
 }
 
 void Context::genSamplers(GLsizei count, SamplerID *samplers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < count; i++)
     {
         samplers[i] = mState.mSamplerManager->createSampler();
@@ -8435,6 +9008,7 @@ void Context::genSamplers(GLsizei count, SamplerID *samplers)
 
 void Context::deleteSamplers(GLsizei count, const SamplerID *samplers)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < count; i++)
     {
         SamplerID sampler = samplers[i];
@@ -8450,6 +9024,7 @@ void Context::deleteSamplers(GLsizei count, const SamplerID *samplers)
 
 void Context::minSampleShading(GLfloat value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setMinSampleShading(value);
 }
 
@@ -8459,6 +9034,7 @@ void Context::getInternalformativ(GLenum target,
                                   GLsizei bufSize,
                                   GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const TextureCaps &formatCaps = mState.mTextureCaps.get(internalformat);
     QueryInternalFormativ(formatCaps, pname, bufSize, params);
 }
@@ -8470,11 +9046,13 @@ void Context::getInternalformativRobust(GLenum target,
                                         GLsizei *length,
                                         GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getInternalformativ(target, internalformat, pname, bufSize, params);
 }
 
 void Context::programUniform1i(ShaderProgramID program, UniformLocation location, GLint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     programUniform1iv(program, location, 1, &v0);
 }
 
@@ -8483,6 +9061,7 @@ void Context::programUniform2i(ShaderProgramID program,
                                GLint v0,
                                GLint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xy[2] = {v0, v1};
     programUniform2iv(program, location, 1, xy);
 }
@@ -8493,6 +9072,7 @@ void Context::programUniform3i(ShaderProgramID program,
                                GLint v1,
                                GLint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xyz[3] = {v0, v1, v2};
     programUniform3iv(program, location, 1, xyz);
 }
@@ -8504,12 +9084,14 @@ void Context::programUniform4i(ShaderProgramID program,
                                GLint v2,
                                GLint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLint xyzw[4] = {v0, v1, v2, v3};
     programUniform4iv(program, location, 1, xyzw);
 }
 
 void Context::programUniform1ui(ShaderProgramID program, UniformLocation location, GLuint v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     programUniform1uiv(program, location, 1, &v0);
 }
 
@@ -8518,6 +9100,7 @@ void Context::programUniform2ui(ShaderProgramID program,
                                 GLuint v0,
                                 GLuint v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint xy[2] = {v0, v1};
     programUniform2uiv(program, location, 1, xy);
 }
@@ -8528,6 +9111,7 @@ void Context::programUniform3ui(ShaderProgramID program,
                                 GLuint v1,
                                 GLuint v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint xyz[3] = {v0, v1, v2};
     programUniform3uiv(program, location, 1, xyz);
 }
@@ -8539,12 +9123,14 @@ void Context::programUniform4ui(ShaderProgramID program,
                                 GLuint v2,
                                 GLuint v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLuint xyzw[4] = {v0, v1, v2, v3};
     programUniform4uiv(program, location, 1, xyzw);
 }
 
 void Context::programUniform1f(ShaderProgramID program, UniformLocation location, GLfloat v0)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     programUniform1fv(program, location, 1, &v0);
 }
 
@@ -8553,6 +9139,7 @@ void Context::programUniform2f(ShaderProgramID program,
                                GLfloat v0,
                                GLfloat v1)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xy[2] = {v0, v1};
     programUniform2fv(program, location, 1, xy);
 }
@@ -8563,6 +9150,7 @@ void Context::programUniform3f(ShaderProgramID program,
                                GLfloat v1,
                                GLfloat v2)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xyz[3] = {v0, v1, v2};
     programUniform3fv(program, location, 1, xyz);
 }
@@ -8574,6 +9162,7 @@ void Context::programUniform4f(ShaderProgramID program,
                                GLfloat v2,
                                GLfloat v3)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     GLfloat xyzw[4] = {v0, v1, v2, v3};
     programUniform4fv(program, location, 1, xyzw);
 }
@@ -8583,6 +9172,7 @@ void Context::programUniform1iv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     setUniform1iImpl(programObject, location, count, value);
@@ -8593,6 +9183,7 @@ void Context::programUniform2iv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform2iv(location, count, value);
@@ -8603,6 +9194,7 @@ void Context::programUniform3iv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform3iv(location, count, value);
@@ -8613,6 +9205,7 @@ void Context::programUniform4iv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform4iv(location, count, value);
@@ -8623,6 +9216,7 @@ void Context::programUniform1uiv(ShaderProgramID program,
                                  GLsizei count,
                                  const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform1uiv(location, count, value);
@@ -8633,6 +9227,7 @@ void Context::programUniform2uiv(ShaderProgramID program,
                                  GLsizei count,
                                  const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform2uiv(location, count, value);
@@ -8643,6 +9238,7 @@ void Context::programUniform3uiv(ShaderProgramID program,
                                  GLsizei count,
                                  const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform3uiv(location, count, value);
@@ -8653,6 +9249,7 @@ void Context::programUniform4uiv(ShaderProgramID program,
                                  GLsizei count,
                                  const GLuint *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform4uiv(location, count, value);
@@ -8663,6 +9260,7 @@ void Context::programUniform1fv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform1fv(location, count, value);
@@ -8673,6 +9271,7 @@ void Context::programUniform2fv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform2fv(location, count, value);
@@ -8683,6 +9282,7 @@ void Context::programUniform3fv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform3fv(location, count, value);
@@ -8693,6 +9293,7 @@ void Context::programUniform4fv(ShaderProgramID program,
                                 GLsizei count,
                                 const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniform4fv(location, count, value);
@@ -8704,6 +9305,7 @@ void Context::programUniformMatrix2fv(ShaderProgramID program,
                                       GLboolean transpose,
                                       const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix2fv(location, count, transpose, value);
@@ -8715,6 +9317,7 @@ void Context::programUniformMatrix3fv(ShaderProgramID program,
                                       GLboolean transpose,
                                       const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix3fv(location, count, transpose, value);
@@ -8726,6 +9329,7 @@ void Context::programUniformMatrix4fv(ShaderProgramID program,
                                       GLboolean transpose,
                                       const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix4fv(location, count, transpose, value);
@@ -8737,6 +9341,7 @@ void Context::programUniformMatrix2x3fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix2x3fv(location, count, transpose, value);
@@ -8748,6 +9353,7 @@ void Context::programUniformMatrix3x2fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix3x2fv(location, count, transpose, value);
@@ -8759,6 +9365,7 @@ void Context::programUniformMatrix2x4fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix2x4fv(location, count, transpose, value);
@@ -8770,6 +9377,7 @@ void Context::programUniformMatrix4x2fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix4x2fv(location, count, transpose, value);
@@ -8781,6 +9389,7 @@ void Context::programUniformMatrix3x4fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix3x4fv(location, count, transpose, value);
@@ -8792,6 +9401,7 @@ void Context::programUniformMatrix4x3fv(ShaderProgramID program,
                                         GLboolean transpose,
                                         const GLfloat *value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     programObject->setUniformMatrix4x3fv(location, count, transpose, value);
@@ -8799,11 +9409,13 @@ void Context::programUniformMatrix4x3fv(ShaderProgramID program,
 
 bool Context::isCurrentTransformFeedback(const TransformFeedback *tf) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.isCurrentTransformFeedback(tf);
 }
 
 void Context::genProgramPipelines(GLsizei count, ProgramPipelineID *pipelines)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < count; i++)
     {
         pipelines[i] = createProgramPipeline();
@@ -8812,6 +9424,7 @@ void Context::genProgramPipelines(GLsizei count, ProgramPipelineID *pipelines)
 
 void Context::deleteProgramPipelines(GLsizei count, const ProgramPipelineID *pipelines)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < count; i++)
     {
         if (pipelines[i].value != 0)
@@ -8823,6 +9436,7 @@ void Context::deleteProgramPipelines(GLsizei count, const ProgramPipelineID *pip
 
 GLboolean Context::isProgramPipeline(ProgramPipelineID pipeline) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (pipeline.value == 0)
     {
         return GL_FALSE;
@@ -8838,6 +9452,7 @@ GLboolean Context::isProgramPipeline(ProgramPipelineID pipeline) const
 
 void Context::finishFenceNV(FenceNVID fence)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     FenceNV *fenceObject = getFenceNV(fence);
 
     ASSERT(fenceObject && fenceObject->isSet());
@@ -8846,6 +9461,7 @@ void Context::finishFenceNV(FenceNVID fence)
 
 void Context::getFenceivNV(FenceNVID fence, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     FenceNV *fenceObject = getFenceNV(fence);
 
     ASSERT(fenceObject && fenceObject->isSet());
@@ -8883,6 +9499,7 @@ void Context::getTranslatedShaderSource(ShaderProgramID shader,
                                         GLsizei *length,
                                         GLchar *source)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Shader *shaderObject = getShader(shader);
     ASSERT(shaderObject);
     shaderObject->getTranslatedSourceWithDebugInfo(this, bufsize, length, source);
@@ -8893,6 +9510,7 @@ void Context::getnUniformfv(ShaderProgramID program,
                             GLsizei bufSize,
                             GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
 
@@ -8905,6 +9523,7 @@ void Context::getnUniformfvRobust(ShaderProgramID program,
                                   GLsizei *length,
                                   GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -8913,6 +9532,7 @@ void Context::getnUniformiv(ShaderProgramID program,
                             GLsizei bufSize,
                             GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
 
@@ -8924,6 +9544,7 @@ void Context::getnUniformuiv(ShaderProgramID program,
                              GLsizei bufSize,
                              GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
 
@@ -8936,6 +9557,7 @@ void Context::getnUniformivRobust(ShaderProgramID program,
                                   GLsizei *length,
                                   GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -8945,11 +9567,13 @@ void Context::getnUniformuivRobust(ShaderProgramID program,
                                    GLsizei *length,
                                    GLuint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 GLboolean Context::isFenceNV(FenceNVID fence) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     FenceNV *fenceObject = getFenceNV(fence);
 
     if (fenceObject == nullptr)
@@ -8972,11 +9596,13 @@ void Context::readnPixels(GLint x,
                           GLsizei bufSize,
                           void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return readPixels(x, y, width, height, format, type, data);
 }
 
 void Context::setFenceNV(FenceNVID fence, GLenum condition)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(condition == GL_ALL_COMPLETED_NV);
 
     FenceNV *fenceObject = getFenceNV(fence);
@@ -8986,6 +9612,7 @@ void Context::setFenceNV(FenceNVID fence, GLenum condition)
 
 GLboolean Context::testFenceNV(FenceNVID fence)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     FenceNV *fenceObject = getFenceNV(fence);
 
     ASSERT(fenceObject != nullptr);
@@ -9002,6 +9629,7 @@ GLboolean Context::testFenceNV(FenceNVID fence)
 
 void Context::deleteMemoryObjects(GLsizei n, const MemoryObjectID *memoryObjects)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         deleteMemoryObject(memoryObjects[i]);
@@ -9010,6 +9638,7 @@ void Context::deleteMemoryObjects(GLsizei n, const MemoryObjectID *memoryObjects
 
 GLboolean Context::isMemoryObject(MemoryObjectID memoryObject) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (memoryObject.value == 0)
     {
         return GL_FALSE;
@@ -9020,6 +9649,7 @@ GLboolean Context::isMemoryObject(MemoryObjectID memoryObject) const
 
 void Context::createMemoryObjects(GLsizei n, MemoryObjectID *memoryObjects)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         memoryObjects[i] = createMemoryObject();
@@ -9028,6 +9658,7 @@ void Context::createMemoryObjects(GLsizei n, MemoryObjectID *memoryObjects)
 
 void Context::memoryObjectParameteriv(MemoryObjectID memory, GLenum pname, const GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     MemoryObject *memoryObject = getMemoryObject(memory);
     ASSERT(memoryObject);
     ANGLE_CONTEXT_TRY(SetMemoryObjectParameteriv(this, memoryObject, pname, params));
@@ -9035,6 +9666,7 @@ void Context::memoryObjectParameteriv(MemoryObjectID memory, GLenum pname, const
 
 void Context::getMemoryObjectParameteriv(MemoryObjectID memory, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const MemoryObject *memoryObject = getMemoryObject(memory);
     ASSERT(memoryObject);
     QueryMemoryObjectParameteriv(memoryObject, pname, params);
@@ -9048,6 +9680,7 @@ void Context::texStorageMem2D(TextureType target,
                               MemoryObjectID memory,
                               GLuint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     texStorageMemFlags2D(target, levels, internalFormat, width, height, memory, offset, 0,
                          std::numeric_limits<uint32_t>::max(), nullptr);
 }
@@ -9061,6 +9694,7 @@ void Context::texStorageMem2DMultisample(TextureType target,
                                          MemoryObjectID memory,
                                          GLuint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9073,6 +9707,7 @@ void Context::texStorageMem3D(TextureType target,
                               MemoryObjectID memory,
                               GLuint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9086,6 +9721,7 @@ void Context::texStorageMem3DMultisample(TextureType target,
                                          MemoryObjectID memory,
                                          GLuint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9094,11 +9730,13 @@ void Context::bufferStorageMem(TextureType target,
                                MemoryObjectID memory,
                                GLuint64 offset)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::importMemoryFd(MemoryObjectID memory, GLuint64 size, HandleType handleType, GLint fd)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     MemoryObject *memoryObject = getMemoryObject(memory);
     ASSERT(memoryObject != nullptr);
     ANGLE_CONTEXT_TRY(memoryObject->importFd(this, size, handleType, fd));
@@ -9115,6 +9753,7 @@ void Context::texStorageMemFlags2D(TextureType target,
                                    GLbitfield usageFlags,
                                    const void *imageCreateInfoPNext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     MemoryObject *memoryObject = getMemoryObject(memory);
     ASSERT(memoryObject);
     Extents size(width, height, 1);
@@ -9136,6 +9775,7 @@ void Context::texStorageMemFlags2DMultisample(TextureType target,
                                               GLbitfield usageFlags,
                                               const void *imageCreateInfoPNext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9151,6 +9791,7 @@ void Context::texStorageMemFlags3D(TextureType target,
                                    GLbitfield usageFlags,
                                    const void *imageCreateInfoPNext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9167,6 +9808,7 @@ void Context::texStorageMemFlags3DMultisample(TextureType target,
                                               GLbitfield usageFlags,
                                               const void *imageCreateInfoPNext)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9175,6 +9817,7 @@ void Context::importMemoryZirconHandle(MemoryObjectID memory,
                                        HandleType handleType,
                                        GLuint handle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     MemoryObject *memoryObject = getMemoryObject(memory);
     ASSERT(memoryObject != nullptr);
     ANGLE_CONTEXT_TRY(memoryObject->importZirconHandle(this, size, handleType, handle));
@@ -9182,6 +9825,7 @@ void Context::importMemoryZirconHandle(MemoryObjectID memory,
 
 void Context::genSemaphores(GLsizei n, SemaphoreID *semaphores)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         semaphores[i] = createSemaphore();
@@ -9190,6 +9834,7 @@ void Context::genSemaphores(GLsizei n, SemaphoreID *semaphores)
 
 void Context::deleteSemaphores(GLsizei n, const SemaphoreID *semaphores)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (int i = 0; i < n; i++)
     {
         deleteSemaphore(semaphores[i]);
@@ -9198,6 +9843,7 @@ void Context::deleteSemaphores(GLsizei n, const SemaphoreID *semaphores)
 
 GLboolean Context::isSemaphore(SemaphoreID semaphore) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (semaphore.value == 0)
     {
         return GL_FALSE;
@@ -9208,11 +9854,13 @@ GLboolean Context::isSemaphore(SemaphoreID semaphore) const
 
 void Context::semaphoreParameterui64v(SemaphoreID semaphore, GLenum pname, const GLuint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 void Context::getSemaphoreParameterui64v(SemaphoreID semaphore, GLenum pname, GLuint64 *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
@@ -9220,6 +9868,7 @@ void Context::acquireTextures(GLuint numTextures,
                               const TextureID *textureIds,
                               const GLenum *layouts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TextureBarrierVector textureBarriers(numTextures);
     for (size_t i = 0; i < numTextures; i++)
     {
@@ -9231,6 +9880,7 @@ void Context::acquireTextures(GLuint numTextures,
 
 void Context::releaseTextures(GLuint numTextures, const TextureID *textureIds, GLenum *layouts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TextureBarrierVector textureBarriers(numTextures);
     for (size_t i = 0; i < numTextures; i++)
     {
@@ -9250,6 +9900,7 @@ void Context::waitSemaphore(SemaphoreID semaphoreHandle,
                             const TextureID *textures,
                             const GLenum *srcLayouts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Semaphore *semaphore = getSemaphore(semaphoreHandle);
     ASSERT(semaphore);
 
@@ -9276,6 +9927,7 @@ void Context::signalSemaphore(SemaphoreID semaphoreHandle,
                               const TextureID *textures,
                               const GLenum *dstLayouts)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Semaphore *semaphore = getSemaphore(semaphoreHandle);
     ASSERT(semaphore);
 
@@ -9297,6 +9949,7 @@ void Context::signalSemaphore(SemaphoreID semaphoreHandle,
 
 void Context::importSemaphoreFd(SemaphoreID semaphore, HandleType handleType, GLint fd)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Semaphore *semaphoreObject = getSemaphore(semaphore);
     ASSERT(semaphoreObject != nullptr);
     ANGLE_CONTEXT_TRY(semaphoreObject->importFd(this, handleType, fd));
@@ -9306,6 +9959,7 @@ void Context::importSemaphoreZirconHandle(SemaphoreID semaphore,
                                           HandleType handleType,
                                           GLuint handle)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Semaphore *semaphoreObject = getSemaphore(semaphore);
     ASSERT(semaphoreObject != nullptr);
     ANGLE_CONTEXT_TRY(semaphoreObject->importZirconHandle(this, handleType, handle));
@@ -9313,6 +9967,7 @@ void Context::importSemaphoreZirconHandle(SemaphoreID semaphore,
 
 void Context::framebufferMemorylessPixelLocalStorage(GLint plane, GLenum internalformat)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9332,6 +9987,7 @@ void Context::framebufferTexturePixelLocalStorage(GLint plane,
                                                   GLint level,
                                                   GLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9350,6 +10006,7 @@ void Context::framebufferTexturePixelLocalStorage(GLint plane,
 
 void Context::framebufferPixelLocalClearValuefv(GLint plane, const GLfloat value[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9358,6 +10015,7 @@ void Context::framebufferPixelLocalClearValuefv(GLint plane, const GLfloat value
 
 void Context::framebufferPixelLocalClearValueiv(GLint plane, const GLint value[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9366,6 +10024,7 @@ void Context::framebufferPixelLocalClearValueiv(GLint plane, const GLint value[]
 
 void Context::framebufferPixelLocalClearValueuiv(GLint plane, const GLuint value[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9374,6 +10033,7 @@ void Context::framebufferPixelLocalClearValueuiv(GLint plane, const GLuint value
 
 void Context::beginPixelLocalStorage(GLsizei n, const GLenum loadops[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9384,6 +10044,7 @@ void Context::beginPixelLocalStorage(GLsizei n, const GLenum loadops[])
 
 void Context::endPixelLocalStorage(GLsizei n, const GLenum storeops[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9394,6 +10055,7 @@ void Context::endPixelLocalStorage(GLsizei n, const GLenum storeops[])
 
 void Context::pixelLocalStorageBarrier()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (getExtensions().shaderPixelLocalStorageCoherentANGLE)
     {
         return;
@@ -9408,6 +10070,7 @@ void Context::pixelLocalStorageBarrier()
 
 void Context::framebufferPixelLocalStorageInterrupt()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     if (framebuffer->id().value != 0)
@@ -9419,6 +10082,7 @@ void Context::framebufferPixelLocalStorageInterrupt()
 
 void Context::framebufferPixelLocalStorageRestore()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     if (framebuffer->id().value != 0)
@@ -9430,12 +10094,14 @@ void Context::framebufferPixelLocalStorageRestore()
 
 void Context::getFramebufferPixelLocalStorageParameterfv(GLint plane, GLenum pname, GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getFramebufferPixelLocalStorageParameterfvRobust(
         plane, pname, std::numeric_limits<GLsizei>::max(), nullptr, params);
 }
 
 void Context::getFramebufferPixelLocalStorageParameteriv(GLint plane, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getFramebufferPixelLocalStorageParameterivRobust(
         plane, pname, std::numeric_limits<GLsizei>::max(), nullptr, params);
 }
@@ -9446,6 +10112,7 @@ void Context::getFramebufferPixelLocalStorageParameterfvRobust(GLint plane,
                                                                GLsizei *length,
                                                                GLfloat *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9468,6 +10135,7 @@ void Context::getFramebufferPixelLocalStorageParameterivRobust(GLint plane,
                                                                GLsizei *length,
                                                                GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *framebuffer = mState.getDrawFramebuffer();
     ASSERT(framebuffer);
     PixelLocalStorage &pls = framebuffer->getPixelLocalStorage(this);
@@ -9508,6 +10176,7 @@ void Context::getFramebufferPixelLocalStorageParameterivRobust(GLint plane,
 
 void Context::eGLImageTargetTexStorage(GLenum target, egl::ImageID image, const GLint *attrib_list)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture        = getTextureByType(FromGLenum<TextureType>(target));
     egl::Image *imageObject = mDisplay->getImage(image);
     ANGLE_CONTEXT_TRY(texture->setStorageEGLImageTarget(this, FromGLenum<TextureType>(target),
@@ -9521,6 +10190,7 @@ void Context::eGLImageTargetTextureStorage(GLuint texture,
 
 void Context::eGLImageTargetTexture2D(TextureType target, egl::ImageID image)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture        = getTextureByType(target);
     egl::Image *imageObject = mDisplay->getImage(image);
     ANGLE_CONTEXT_TRY(texture->setEGLImageTarget(this, target, imageObject));
@@ -9528,6 +10198,7 @@ void Context::eGLImageTargetTexture2D(TextureType target, egl::ImageID image)
 
 void Context::eGLImageTargetRenderbufferStorage(GLenum target, egl::ImageID image)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Renderbuffer *renderbuffer = mState.getCurrentRenderbuffer();
     egl::Image *imageObject    = mDisplay->getImage(image);
     ANGLE_CONTEXT_TRY(renderbuffer->setStorageEGLImageTarget(this, imageObject));
@@ -9535,16 +10206,19 @@ void Context::eGLImageTargetRenderbufferStorage(GLenum target, egl::ImageID imag
 
 void Context::framebufferFetchBarrier()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mImplementation->framebufferFetchBarrier();
 }
 
 void Context::texStorage1D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     UNIMPLEMENTED();
 }
 
 bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return GetQueryParameterInfo(mState, pname, type, numParams);
 }
 
@@ -9552,6 +10226,7 @@ bool Context::getIndexedQueryParameterInfo(GLenum target,
                                            GLenum *type,
                                            unsigned int *numParams) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (getClientVersion() < Version(3, 0))
     {
         return false;
@@ -9649,46 +10324,55 @@ bool Context::getIndexedQueryParameterInfo(GLenum target,
 
 Program *Context::getProgramNoResolveLink(ShaderProgramID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mShaderProgramManager->getProgram(handle);
 }
 
 Shader *Context::getShader(ShaderProgramID handle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mShaderProgramManager->getShader(handle);
 }
 
 const angle::FrontendFeatures &Context::getFrontendFeatures() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDisplay->getFrontendFeatures();
 }
 
 bool Context::isRenderbufferGenerated(RenderbufferID renderbuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mRenderbufferManager->isHandleGenerated(renderbuffer);
 }
 
 bool Context::isFramebufferGenerated(FramebufferID framebuffer) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mFramebufferManager->isHandleGenerated(framebuffer);
 }
 
 bool Context::isProgramPipelineGenerated(ProgramPipelineID pipeline) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.mProgramPipelineManager->isHandleGenerated(pipeline);
 }
 
 bool Context::usingDisplayTextureShareGroup() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDisplayTextureShareGroup;
 }
 
 bool Context::usingDisplaySemaphoreShareGroup() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDisplaySemaphoreShareGroup;
 }
 
 GLenum Context::getConvertedRenderbufferFormat(GLenum internalformat) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (isWebGL() && mState.mClientVersion.major == 2 && internalformat == GL_DEPTH_STENCIL)
     {
         return GL_DEPTH24_STENCIL8;
@@ -9702,6 +10386,7 @@ GLenum Context::getConvertedRenderbufferFormat(GLenum internalformat) const
 
 void Context::maxShaderCompilerThreads(GLuint count)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // A count of zero specifies a request for no parallel compiling or linking.  This is handled in
     // getShaderCompileThreadPool.  Otherwise the count itself has no effect as the pool is shared
     // between contexts.
@@ -9711,21 +10396,25 @@ void Context::maxShaderCompilerThreads(GLuint count)
 
 void Context::framebufferParameteriMESA(GLenum target, GLenum pname, GLint param)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     framebufferParameteri(target, pname, param);
 }
 
 void Context::getFramebufferParameterivMESA(GLenum target, GLenum pname, GLint *params)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     getFramebufferParameteriv(target, pname, params);
 }
 
 bool Context::isGLES1() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.isGLES1();
 }
 
 std::shared_ptr<angle::WorkerThreadPool> Context::getShaderCompileThreadPool() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (mState.mExtensions.parallelShaderCompileKHR && mState.getMaxShaderCompilerThreads() > 0)
     {
         return mDisplay->getMultiThreadPool();
@@ -9735,11 +10424,13 @@ std::shared_ptr<angle::WorkerThreadPool> Context::getShaderCompileThreadPool() c
 
 std::shared_ptr<angle::WorkerThreadPool> Context::getWorkerThreadPool() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDisplay->getMultiThreadPool();
 }
 
 void Context::onSubjectStateChange(angle::SubjectIndex index, angle::SubjectMessage message)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     switch (index)
     {
         case kVertexArraySubjectIndex:
@@ -9851,6 +10542,7 @@ void Context::onSubjectStateChange(angle::SubjectIndex index, angle::SubjectMess
 
 angle::Result Context::onProgramLink(Program *programObject)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Don't parallel link a program which is active in any GL contexts. With this assumption, we
     // don't need to worry that:
     //   1. Draw calls after link use the new executable code or the old one depending on the link
@@ -9874,6 +10566,7 @@ angle::Result Context::onProgramLink(Program *programObject)
 
 egl::Error Context::setDefaultFramebuffer(egl::Surface *drawSurface, egl::Surface *readSurface)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mCurrentDrawSurface == nullptr);
     ASSERT(mCurrentReadSurface == nullptr);
 
@@ -9909,6 +10602,7 @@ egl::Error Context::setDefaultFramebuffer(egl::Surface *drawSurface, egl::Surfac
 
 egl::Error Context::unsetDefaultFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Framebuffer *defaultFramebuffer =
         mState.mFramebufferManager->getFramebuffer(Framebuffer::kDefaultDrawFramebufferHandle);
 
@@ -9950,6 +10644,7 @@ egl::Error Context::unsetDefaultFramebuffer()
 
 void Context::onPreSwap()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Dump frame capture if enabled.
     getShareGroup()->getFrameCaptureShared()->onEndFrame(this);
 }
@@ -9960,6 +10655,7 @@ void Context::getTexImage(TextureTarget target,
                           GLenum type,
                           void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture   = getTextureByTarget(target);
     Buffer *packBuffer = mState.getTargetBuffer(BufferBinding::PixelPack);
     ANGLE_CONTEXT_TRY(texture->getTexImage(this, mState.getPackState(), packBuffer, target, level,
@@ -9968,6 +10664,7 @@ void Context::getTexImage(TextureTarget target,
 
 void Context::getCompressedTexImage(TextureTarget target, GLint level, void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Texture *texture   = getTextureByTarget(target);
     Buffer *packBuffer = mState.getTargetBuffer(BufferBinding::PixelPack);
     ANGLE_CONTEXT_TRY(texture->getCompressedTexImage(this, mState.getPackState(), packBuffer,
@@ -9976,6 +10673,7 @@ void Context::getCompressedTexImage(TextureTarget target, GLint level, void *pix
 
 void Context::getRenderbufferImage(GLenum target, GLenum format, GLenum type, void *pixels)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     Renderbuffer *renderbuffer = mState.getCurrentRenderbuffer();
     Buffer *packBuffer         = mState.getTargetBuffer(BufferBinding::PixelPack);
     ANGLE_CONTEXT_TRY(renderbuffer->getRenderbufferImage(this, mState.getPackState(), packBuffer,
@@ -9984,21 +10682,25 @@ void Context::getRenderbufferImage(GLenum target, GLenum format, GLenum type, vo
 
 void Context::logicOpANGLE(LogicalOperation opcodePacked)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setLogicOp(opcodePacked);
 }
 
 egl::Error Context::releaseHighPowerGPU()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mImplementation->releaseHighPowerGPU(this);
 }
 
 egl::Error Context::reacquireHighPowerGPU()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mImplementation->reacquireHighPowerGPU(this);
 }
 
 void Context::onGPUSwitch()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Re-initialize the renderer string, which just changed, and
     // which must be visible to applications.
     initRendererString();
@@ -10006,17 +10708,20 @@ void Context::onGPUSwitch()
 
 std::mutex &Context::getProgramCacheMutex() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mDisplay->getProgramCacheMutex();
 }
 
 bool Context::supportsGeometryOrTesselation() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mState.getClientVersion() == ES_3_2 || mState.getExtensions().geometryShaderAny() ||
            mState.getExtensions().tessellationShaderEXT;
 }
 
 void Context::dirtyAllState()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mState.setAllDirtyBits();
     mState.setAllDirtyObjects();
     mState.gles1().setAllDirty();
@@ -10024,6 +10729,7 @@ void Context::dirtyAllState()
 
 void Context::finishImmutable() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ANGLE_CONTEXT_TRY(mImplementation->finish(this));
 }
 
@@ -10035,6 +10741,7 @@ void Context::endPerfMonitor(GLuint monitor) {}
 
 void Context::genPerfMonitors(GLsizei n, GLuint *monitors)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (GLsizei monitorIndex = 0; monitorIndex < n; ++monitorIndex)
     {
         monitors[n] = static_cast<GLuint>(monitorIndex);
@@ -10047,6 +10754,7 @@ void Context::getPerfMonitorCounterData(GLuint monitor,
                                         GLuint *data,
                                         GLint *bytesWritten)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
     GLint byteCount                                   = 0;
@@ -10104,6 +10812,7 @@ void Context::getPerfMonitorCounterData(GLuint monitor,
 
 void Context::getPerfMonitorCounterInfo(GLuint group, GLuint counter, GLenum pname, void *data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
     ASSERT(group < perfMonitorGroups.size());
@@ -10136,6 +10845,7 @@ void Context::getPerfMonitorCounterString(GLuint group,
                                           GLsizei *length,
                                           GLchar *counterString)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
     ASSERT(group < perfMonitorGroups.size());
@@ -10150,6 +10860,7 @@ void Context::getPerfMonitorCounters(GLuint group,
                                      GLsizei counterSize,
                                      GLuint *counters)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
     ASSERT(group < perfMonitorGroups.size());
@@ -10180,6 +10891,7 @@ void Context::getPerfMonitorGroupString(GLuint group,
                                         GLsizei *length,
                                         GLchar *groupString)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
     ASSERT(group < perfMonitorGroups.size());
@@ -10188,6 +10900,7 @@ void Context::getPerfMonitorGroupString(GLuint group,
 
 void Context::getPerfMonitorGroups(GLint *numGroups, GLsizei groupsSize, GLuint *groups)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     using namespace angle;
     const PerfMonitorCounterGroups &perfMonitorGroups = mImplementation->getPerfMonitorCounters();
 
@@ -10213,6 +10926,7 @@ void Context::selectPerfMonitorCounters(GLuint monitor,
 
 const angle::PerfMonitorCounterGroups &Context::getPerfMonitorCounterGroups() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mImplementation->getPerfMonitorCounters();
 }
 
@@ -10220,6 +10934,7 @@ void Context::drawPixelLocalStorageEXTEnable(GLsizei n,
                                              const PixelLocalStoragePlane planes[],
                                              const GLenum loadops[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mImplementation->getNativePixelLocalStorageOptions().type ==
            ShPixelLocalStorageType::PixelLocalStorageEXT);
     ANGLE_CONTEXT_TRY(syncState(mPixelLocalStorageEXTEnableDisableDirtyBits,
@@ -10231,6 +10946,7 @@ void Context::drawPixelLocalStorageEXTEnable(GLsizei n,
 void Context::drawPixelLocalStorageEXTDisable(const PixelLocalStoragePlane planes[],
                                               const GLenum storeops[])
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mImplementation->getNativePixelLocalStorageOptions().type ==
            ShPixelLocalStorageType::PixelLocalStorageEXT);
     ANGLE_CONTEXT_TRY(syncState(mPixelLocalStorageEXTEnableDisableDirtyBits,
@@ -10250,6 +10966,7 @@ void ErrorSet::handleError(GLenum errorCode,
                            const char *function,
                            unsigned int line)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (errorCode == GL_OUT_OF_MEMORY &&
         mContext->getGraphicsResetStrategy() == GL_LOSE_CONTEXT_ON_RESET_EXT &&
         mContext->getDisplay()->getFrontendFeatures().loseContextOnOutOfMemory.enabled)
@@ -10274,6 +10991,7 @@ void ErrorSet::handleError(GLenum errorCode,
 
 void ErrorSet::validationError(angle::EntryPoint entryPoint, GLenum errorCode, const char *message)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(errorCode != GL_NO_ERROR);
     mErrors.insert(errorCode);
 
@@ -10284,11 +11002,13 @@ void ErrorSet::validationError(angle::EntryPoint entryPoint, GLenum errorCode, c
 
 bool ErrorSet::empty() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return mErrors.empty();
 }
 
 GLenum ErrorSet::popError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(!empty());
     GLenum error = *mErrors.begin();
     mErrors.erase(mErrors.begin());
@@ -10306,6 +11026,7 @@ StateCache::StateCache()
       mCachedTransformFeedbackActiveUnpaused(false),
       mCachedCanDraw(false)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedValidDrawModes.fill(false);
 }
 
@@ -10313,6 +11034,7 @@ StateCache::~StateCache() = default;
 
 ANGLE_INLINE void StateCache::updateVertexElementLimits(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (context->isBufferAccessValidationEnabled())
     {
         updateVertexElementLimitsImpl(context);
@@ -10321,6 +11043,7 @@ ANGLE_INLINE void StateCache::updateVertexElementLimits(Context *context)
 
 void StateCache::initialize(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateValidDrawModes(context);
     updateValidBindTextureTypes(context);
     updateValidDrawElementsTypes(context);
@@ -10332,6 +11055,7 @@ void StateCache::initialize(Context *context)
 
 void StateCache::updateActiveAttribsMask(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool isGLES1         = context->isGLES1();
     const State &glState = context->getState();
 
@@ -10362,6 +11086,7 @@ void StateCache::updateActiveAttribsMask(Context *context)
 
 void StateCache::updateVertexElementLimitsImpl(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(context->isBufferAccessValidationEnabled());
 
     const VertexArray *vao = context->getState().getVertexArray();
@@ -10403,21 +11128,25 @@ void StateCache::updateVertexElementLimitsImpl(Context *context)
 
 void StateCache::updateBasicDrawStatesError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedBasicDrawStatesError = kInvalidPointer;
 }
 
 void StateCache::updateProgramPipelineError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedProgramPipelineError = kInvalidPointer;
 }
 
 void StateCache::updateBasicDrawElementsError()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedBasicDrawElementsError = kInvalidPointer;
 }
 
 intptr_t StateCache::getBasicDrawStatesErrorImpl(const Context *context) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mCachedBasicDrawStatesError == kInvalidPointer);
     mCachedBasicDrawStatesError = reinterpret_cast<intptr_t>(ValidateDrawStates(context));
     return mCachedBasicDrawStatesError;
@@ -10425,6 +11154,7 @@ intptr_t StateCache::getBasicDrawStatesErrorImpl(const Context *context) const
 
 intptr_t StateCache::getProgramPipelineErrorImpl(const Context *context) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mCachedProgramPipelineError == kInvalidPointer);
     mCachedProgramPipelineError = reinterpret_cast<intptr_t>(ValidateProgramPipeline(context));
     return mCachedProgramPipelineError;
@@ -10432,6 +11162,7 @@ intptr_t StateCache::getProgramPipelineErrorImpl(const Context *context) const
 
 intptr_t StateCache::getBasicDrawElementsErrorImpl(const Context *context) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(mCachedBasicDrawElementsError == kInvalidPointer);
     mCachedBasicDrawElementsError = reinterpret_cast<intptr_t>(ValidateDrawElementsStates(context));
     return mCachedBasicDrawElementsError;
@@ -10439,6 +11170,7 @@ intptr_t StateCache::getBasicDrawElementsErrorImpl(const Context *context) const
 
 void StateCache::onVertexArrayBindingChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateActiveAttribsMask(context);
     updateVertexElementLimits(context);
     updateBasicDrawStatesError();
@@ -10447,6 +11179,7 @@ void StateCache::onVertexArrayBindingChange(Context *context)
 
 void StateCache::onProgramExecutableChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateActiveAttribsMask(context);
     updateVertexElementLimits(context);
     updateBasicDrawStatesError();
@@ -10459,17 +11192,20 @@ void StateCache::onProgramExecutableChange(Context *context)
 
 void StateCache::onVertexArrayFormatChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateVertexElementLimits(context);
 }
 
 void StateCache::onVertexArrayBufferContentsChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateVertexElementLimits(context);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onVertexArrayStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateActiveAttribsMask(context);
     updateVertexElementLimits(context);
     updateBasicDrawStatesError();
@@ -10478,47 +11214,56 @@ void StateCache::onVertexArrayStateChange(Context *context)
 
 void StateCache::onVertexArrayBufferStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
     updateBasicDrawElementsError();
 }
 
 void StateCache::onGLES1ClientStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateActiveAttribsMask(context);
 }
 
 void StateCache::onDrawFramebufferChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onContextCapChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onStencilStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onDefaultVertexAttributeChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onActiveTextureChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onQueryChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onActiveTransformFeedbackChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateTransformFeedbackActiveUnpaused(context);
     updateBasicDrawStatesError();
     updateBasicDrawElementsError();
@@ -10527,31 +11272,37 @@ void StateCache::onActiveTransformFeedbackChange(Context *context)
 
 void StateCache::onUniformBufferStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onAtomicCounterBufferStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onShaderStorageBufferStateChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onColorMaskChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onBlendFuncIndexedChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
 void StateCache::onBlendEquationChange(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     updateBasicDrawStatesError();
 }
 
@@ -10562,6 +11313,7 @@ void StateCache::setValidDrawModes(bool pointsOK,
                                    bool triAdjOK,
                                    bool patchOK)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedValidDrawModes[PrimitiveMode::Points]                 = pointsOK;
     mCachedValidDrawModes[PrimitiveMode::Lines]                  = linesOK;
     mCachedValidDrawModes[PrimitiveMode::LineLoop]               = linesOK;
@@ -10578,6 +11330,7 @@ void StateCache::setValidDrawModes(bool pointsOK,
 
 void StateCache::updateValidDrawModes(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const State &state = context->getState();
 
     const ProgramExecutable *programExecutable = context->getState().getProgramExecutable();
@@ -10631,6 +11384,7 @@ void StateCache::updateValidDrawModes(Context *context)
 
 void StateCache::updateValidBindTextureTypes(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const Extensions &exts = context->getExtensions();
     bool isGLES3           = context->getClientMajorVersion() >= 3;
     bool isGLES31          = context->getClientVersion() >= Version(3, 1);
@@ -10652,6 +11406,7 @@ void StateCache::updateValidBindTextureTypes(Context *context)
 
 void StateCache::updateValidDrawElementsTypes(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool supportsUint =
         (context->getClientMajorVersion() >= 3 || context->getExtensions().elementIndexUintOES);
 
@@ -10664,12 +11419,14 @@ void StateCache::updateValidDrawElementsTypes(Context *context)
 
 void StateCache::updateTransformFeedbackActiveUnpaused(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TransformFeedback *xfb                 = context->getState().getCurrentTransformFeedback();
     mCachedTransformFeedbackActiveUnpaused = xfb && xfb->isActive() && !xfb->isPaused();
 }
 
 void StateCache::updateVertexAttribTypesValidation(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     VertexAttribTypeCase halfFloatValidity = (context->getExtensions().vertexHalfFloatOES)
                                                  ? VertexAttribTypeCase::Valid
                                                  : VertexAttribTypeCase::Invalid;
@@ -10722,6 +11479,7 @@ void StateCache::updateVertexAttribTypesValidation(Context *context)
 
 void StateCache::updateActiveShaderStorageBufferIndices(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedActiveShaderStorageBufferIndices.reset();
     const ProgramExecutable *executable = context->getState().getProgramExecutable();
     if (executable)
@@ -10735,6 +11493,7 @@ void StateCache::updateActiveShaderStorageBufferIndices(Context *context)
 
 void StateCache::updateActiveImageUnitIndices(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedActiveImageUnitIndices.reset();
     const ProgramExecutable *executable = context->getState().getProgramExecutable();
     if (executable)
@@ -10751,6 +11510,7 @@ void StateCache::updateActiveImageUnitIndices(Context *context)
 
 void StateCache::updateCanDraw(Context *context)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     mCachedCanDraw =
         (context->isGLES1() || (context->getState().getProgramExecutable() &&
                                 context->getState().getProgramExecutable()->hasVertexShader()));
