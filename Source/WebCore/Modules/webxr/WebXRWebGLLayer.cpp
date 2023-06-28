@@ -93,6 +93,7 @@ static ExceptionOr<std::unique_ptr<WebXROpaqueFramebuffer>> createOpaqueFramebuf
 // https://immersive-web.github.io/webxr/#dom-xrwebgllayer-xrwebgllayer
 ExceptionOr<Ref<WebXRWebGLLayer>> WebXRWebGLLayer::create(Ref<WebXRSession>&& session, WebXRRenderingContext&& context, const XRWebGLLayerInit& init)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // 1. Let layer be a new XRWebGLLayer
     // 2. If session’s ended value is true, throw an InvalidStateError and abort these steps.
     if (session->ended())
@@ -104,6 +105,7 @@ ExceptionOr<Ref<WebXRWebGLLayer>> WebXRWebGLLayer::create(Ref<WebXRSession>&& se
     return WTF::switchOn(context,
         [&](const RefPtr<WebGLRenderingContextBase>& baseContext) -> ExceptionOr<Ref<WebXRWebGLLayer>>
         {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             if (baseContext->isContextLost())
                 return Exception { InvalidStateError, "Cannot create an XRWebGLLayer with a lost WebGL context."_s };
 
@@ -163,6 +165,7 @@ WebXRWebGLLayer::WebXRWebGLLayer(Ref<WebXRSession>&& session, WebXRRenderingCont
     , m_ignoreDepthValues(ignoreDepthValues)
     , m_isCompositionEnabled(isCompositionEnabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 WebXRWebGLLayer::~WebXRWebGLLayer()
@@ -179,35 +182,42 @@ WebXRWebGLLayer::~WebXRWebGLLayer()
 
 bool WebXRWebGLLayer::antialias() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_antialias;
 }
 
 bool WebXRWebGLLayer::ignoreDepthValues() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_ignoreDepthValues;
 }
 
 const WebGLFramebuffer* WebXRWebGLLayer::framebuffer() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return m_framebuffer ? &m_framebuffer->framebuffer() : nullptr;
 }
 
 unsigned WebXRWebGLLayer::framebufferWidth() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_framebuffer)
         return m_framebuffer->width();
     return WTF::switchOn(m_context,
         [&](const RefPtr<WebGLRenderingContextBase>& baseContext) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             return baseContext->drawingBufferWidth();
         });
 }
 
 unsigned WebXRWebGLLayer::framebufferHeight() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_framebuffer)
         return m_framebuffer->height();
     return WTF::switchOn(m_context,
         [&](const RefPtr<WebGLRenderingContextBase>& baseContext) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             return baseContext->drawingBufferHeight();
         });
 }
@@ -215,6 +225,7 @@ unsigned WebXRWebGLLayer::framebufferHeight() const
 // https://immersive-web.github.io/webxr/#dom-xrwebgllayer-getviewport
 ExceptionOr<RefPtr<WebXRViewport>> WebXRWebGLLayer::getViewport(WebXRView& view)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // 1. Let session be view’s session.
     // 2. Let frame be session’s animation frame.
     // 3. If session is not equal to layer’s session, throw an InvalidStateError and abort these steps.
@@ -249,6 +260,7 @@ ExceptionOr<RefPtr<WebXRViewport>> WebXRWebGLLayer::getViewport(WebXRView& view)
 
 double WebXRWebGLLayer::getNativeFramebufferScaleFactor(const WebXRSession& session)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (session.ended())
         return 0.0;
 
@@ -261,9 +273,12 @@ double WebXRWebGLLayer::getNativeFramebufferScaleFactor(const WebXRSession& sess
 
 HTMLCanvasElement* WebXRWebGLLayer::canvas() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return WTF::switchOn(m_context, [](const RefPtr<WebGLRenderingContextBase>& baseContext) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         auto canvas = baseContext->canvas();
         return WTF::switchOn(canvas, [](const RefPtr<HTMLCanvasElement>& canvas) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             return canvas.get();
         }, [](const RefPtr<OffscreenCanvas>) -> HTMLCanvasElement* {
             ASSERT_NOT_REACHED("baseLayer of a WebXRWebGLLayer must be an HTMLCanvasElement");
@@ -275,6 +290,7 @@ HTMLCanvasElement* WebXRWebGLLayer::canvas() const
 
 void WebXRWebGLLayer::startFrame(const PlatformXR::Device::FrameData& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(m_framebuffer);
 
     auto it = data.layers.find(m_framebuffer->handle());
@@ -289,6 +305,7 @@ void WebXRWebGLLayer::startFrame(const PlatformXR::Device::FrameData& data)
 
 PlatformXR::Device::Layer WebXRWebGLLayer::endFrame()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(m_framebuffer);
     m_framebuffer->endFrame();
 
@@ -302,12 +319,14 @@ PlatformXR::Device::Layer WebXRWebGLLayer::endFrame()
 
 void WebXRWebGLLayer::canvasResized(CanvasBase&)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_viewportsDirty = true;
 }
 
 // https://immersive-web.github.io/webxr/#xrview-obtain-a-scaled-viewport
 void WebXRWebGLLayer::computeViewports()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto roundDown = [](double value) -> int {
         // Round down to integer value and ensure that the value is not zero.
         return std::max(1, static_cast<int>(std::floor(value)));

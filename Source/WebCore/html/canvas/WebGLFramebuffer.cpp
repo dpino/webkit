@@ -64,59 +64,70 @@ namespace {
 
     Ref<WebGLFramebuffer::WebGLAttachment> WebGLRenderbufferAttachment::create(WebGLRenderbuffer* renderbuffer)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return adoptRef(*new WebGLRenderbufferAttachment(renderbuffer));
     }
 
     WebGLRenderbufferAttachment::WebGLRenderbufferAttachment(WebGLRenderbuffer* renderbuffer)
         : m_renderbuffer(renderbuffer)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     }
 
 
     WebGLSharedObject* WebGLRenderbufferAttachment::getObject() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return m_renderbuffer->object() ? m_renderbuffer.get() : 0;
     }
 
     bool WebGLRenderbufferAttachment::isSharedObject(WebGLSharedObject* object) const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return object == m_renderbuffer;
     }
 
     bool WebGLRenderbufferAttachment::isValid() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return m_renderbuffer->object();
     }
 
     bool WebGLRenderbufferAttachment::isInitialized() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return m_renderbuffer->object() && m_renderbuffer->isInitialized();
     }
 
     void WebGLRenderbufferAttachment::setInitialized()
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (m_renderbuffer->object())
             m_renderbuffer->setInitialized();
     }
 
     void WebGLRenderbufferAttachment::onDetached(const AbstractLocker& locker, GraphicsContextGL* context)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         m_renderbuffer->onDetached(locker, context);
     }
 
     void WebGLRenderbufferAttachment::attach(GraphicsContextGL* context, GCGLenum target, GCGLenum attachment)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         PlatformGLObject object = objectOrZero(m_renderbuffer.get());
         context->framebufferRenderbuffer(target, attachment, GraphicsContextGL::RENDERBUFFER, object);
     }
 
     void WebGLRenderbufferAttachment::unattach(GraphicsContextGL* context, GCGLenum target, GCGLenum attachment)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         context->framebufferRenderbuffer(target, attachment, GraphicsContextGL::RENDERBUFFER, 0);
     }
 
     void WebGLRenderbufferAttachment::addMembersToOpaqueRoots(const AbstractLocker&, JSC::AbstractSlotVisitor& visitor)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         addWebCoreOpaqueRoot(visitor, m_renderbuffer.get());
     }
 
@@ -146,6 +157,7 @@ namespace {
 
     Ref<WebGLFramebuffer::WebGLAttachment> WebGLTextureAttachment::create(WebGLTexture* texture, GCGLenum target, GCGLint level, GCGLint layer)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return adoptRef(*new WebGLTextureAttachment(texture, target, level, layer));
     }
 
@@ -155,41 +167,49 @@ namespace {
         , m_level(level)
         , m_layer(layer)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     }
 
     WebGLSharedObject* WebGLTextureAttachment::getObject() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return m_texture->object() ? m_texture.get() : 0;
     }
 
     bool WebGLTextureAttachment::isSharedObject(WebGLSharedObject* object) const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return object == m_texture;
     }
 
     bool WebGLTextureAttachment::isValid() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         return m_texture->object();
     }
 
     bool WebGLTextureAttachment::isInitialized() const
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         // Textures are assumed to be initialized.
         return true;
     }
 
     void WebGLTextureAttachment::setInitialized()
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         // Textures are assumed to be initialized.
     }
 
     void WebGLTextureAttachment::onDetached(const AbstractLocker& locker, GraphicsContextGL* context)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         m_texture->onDetached(locker, context);
     }
 
     void WebGLTextureAttachment::attach(GraphicsContextGL* context, GCGLenum target, GCGLenum attachment)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         PlatformGLObject object = objectOrZero(m_texture.get());
         if (m_target == GraphicsContextGL::TEXTURE_3D || m_target == GraphicsContextGL::TEXTURE_2D_ARRAY)
             context->framebufferTextureLayer(target, attachment, object, m_level, m_layer);
@@ -199,6 +219,7 @@ namespace {
 
     void WebGLTextureAttachment::unattach(GraphicsContextGL* context, GCGLenum target, GCGLenum attachment)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         // GL_DEPTH_STENCIL_ATTACHMENT attachment is valid in ES3.
         if (m_target == GraphicsContextGL::TEXTURE_3D || m_target == GraphicsContextGL::TEXTURE_2D_ARRAY)
             context->framebufferTextureLayer(target, attachment, 0, m_level, m_layer);
@@ -208,6 +229,7 @@ namespace {
 
     void WebGLTextureAttachment::addMembersToOpaqueRoots(const AbstractLocker&, JSC::AbstractSlotVisitor& visitor)
     {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         addWebCoreOpaqueRoot(visitor, m_texture.get());
     }
 
@@ -219,6 +241,7 @@ WebGLFramebuffer::WebGLAttachment::~WebGLAttachment() = default;
 
 Ref<WebGLFramebuffer> WebGLFramebuffer::create(WebGLRenderingContextBase& ctx)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return adoptRef(*new WebGLFramebuffer(ctx));
 }
 
@@ -226,6 +249,7 @@ Ref<WebGLFramebuffer> WebGLFramebuffer::create(WebGLRenderingContextBase& ctx)
 
 Ref<WebGLFramebuffer> WebGLFramebuffer::createOpaque(WebGLRenderingContextBase& ctx)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto framebuffer = adoptRef(*new WebGLFramebuffer(ctx));
     framebuffer->m_opaque = true;
     return framebuffer;
@@ -237,6 +261,7 @@ WebGLFramebuffer::WebGLFramebuffer(WebGLRenderingContextBase& ctx)
     : WebGLContextObject(ctx)
     , m_hasEverBeenBound(false)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setObject(ctx.graphicsContextGL()->createFramebuffer());
 }
 
@@ -250,6 +275,7 @@ WebGLFramebuffer::~WebGLFramebuffer()
 
 void WebGLFramebuffer::setAttachmentForBoundFramebuffer(GCGLenum target, GCGLenum attachment, GCGLenum texTarget, WebGLTexture* texture, GCGLint level, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(object());
     ASSERT(isBound(target));
     setAttachmentInternal(attachment, texTarget, texture, level, layer);
@@ -276,6 +302,7 @@ void WebGLFramebuffer::setAttachmentForBoundFramebuffer(GCGLenum target, GCGLenu
 
 void WebGLFramebuffer::setAttachmentForBoundFramebuffer(GCGLenum target, GCGLenum attachment, WebGLRenderbuffer* renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(object());
     ASSERT(isBound(target));
     setAttachmentInternal(attachment, renderbuffer);
@@ -284,6 +311,7 @@ void WebGLFramebuffer::setAttachmentForBoundFramebuffer(GCGLenum target, GCGLenu
 
 void WebGLFramebuffer::attach(GCGLenum target, GCGLenum attachment, GCGLenum attachmentPoint)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if ASSERT_ENABLED
     ASSERT(isBound(target));
 #else
@@ -296,6 +324,7 @@ void WebGLFramebuffer::attach(GCGLenum target, GCGLenum attachment, GCGLenum att
 
 WebGLSharedObject* WebGLFramebuffer::getAttachmentObject(GCGLenum attachment) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!object())
         return 0;
     RefPtr<WebGLAttachment> attachmentObject = getAttachment(attachment);
@@ -304,12 +333,14 @@ WebGLSharedObject* WebGLFramebuffer::getAttachmentObject(GCGLenum attachment) co
 
 WebGLFramebuffer::WebGLAttachment* WebGLFramebuffer::getAttachment(GCGLenum attachment) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const AttachmentMap::const_iterator it = m_attachments.find(attachment);
     return (it != m_attachments.end()) ? it->value.get() : 0;
 }
 
 void WebGLFramebuffer::removeAttachmentFromBoundFramebuffer(const AbstractLocker& locker, GCGLenum target, GCGLenum attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!context()) {
         // Context has been deleted - should not be calling this.
         return;
@@ -337,6 +368,7 @@ void WebGLFramebuffer::removeAttachmentFromBoundFramebuffer(const AbstractLocker
 
 void WebGLFramebuffer::removeAttachmentFromBoundFramebuffer(const AbstractLocker& locker, GCGLenum target, WebGLSharedObject* attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(isBound(target));
     if (!object())
         return;
@@ -362,6 +394,7 @@ void WebGLFramebuffer::removeAttachmentFromBoundFramebuffer(const AbstractLocker
 
 bool WebGLFramebuffer::hasStencilBuffer() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     RefPtr<WebGLAttachment> attachment = getAttachment(GraphicsContextGL::STENCIL_ATTACHMENT);
     if (!attachment)
         attachment = getAttachment(GraphicsContextGL::DEPTH_STENCIL_ATTACHMENT);
@@ -370,6 +403,7 @@ bool WebGLFramebuffer::hasStencilBuffer() const
 
 void WebGLFramebuffer::deleteObjectImpl(const AbstractLocker& locker, GraphicsContextGL* context3d, PlatformGLObject object)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (auto& attachment : m_attachments.values())
         attachment->onDetached(locker, context3d);
 
@@ -378,11 +412,13 @@ void WebGLFramebuffer::deleteObjectImpl(const AbstractLocker& locker, GraphicsCo
 
 bool WebGLFramebuffer::isBound(GCGLenum target) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return (context()->getFramebufferBinding(target) == this);
 }
 
 void WebGLFramebuffer::drawBuffers(const Vector<GCGLenum>& bufs)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_drawBuffers = bufs;
     m_filteredDrawBuffers.resize(m_drawBuffers.size());
     for (auto& buffer : m_filteredDrawBuffers)
@@ -392,6 +428,7 @@ void WebGLFramebuffer::drawBuffers(const Vector<GCGLenum>& bufs)
 
 void WebGLFramebuffer::drawBuffersIfNecessary(bool force)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (context()->isWebGL2() || context()->m_webglDrawBuffers) {
         bool reset = force;
         // This filtering works around graphics driver bugs on macOS.
@@ -419,6 +456,7 @@ void WebGLFramebuffer::drawBuffersIfNecessary(bool force)
 
 GCGLenum WebGLFramebuffer::getDrawBuffer(GCGLenum drawBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     int index = static_cast<int>(drawBuffer - GraphicsContextGL::DRAW_BUFFER0_EXT);
     ASSERT(index >= 0);
     if (index < static_cast<int>(m_drawBuffers.size()))
@@ -430,12 +468,14 @@ GCGLenum WebGLFramebuffer::getDrawBuffer(GCGLenum drawBuffer)
 
 void WebGLFramebuffer::addMembersToOpaqueRoots(const AbstractLocker& locker, JSC::AbstractSlotVisitor& visitor)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     for (auto& entry : m_attachments)
         entry.value->addMembersToOpaqueRoots(locker, visitor);
 }
 
 void WebGLFramebuffer::setAttachmentInternal(GCGLenum attachment, GCGLenum texTarget, WebGLTexture* texture, GCGLint level, GCGLint layer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!context()) {
         // Context has been deleted - should not be calling this.
         return;
@@ -457,6 +497,7 @@ void WebGLFramebuffer::setAttachmentInternal(GCGLenum attachment, GCGLenum texTa
 
 void WebGLFramebuffer::setAttachmentInternal(GCGLenum attachment, WebGLRenderbuffer* renderbuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!context()) {
         // Context has been deleted - should not be calling this.
         return;
@@ -478,6 +519,7 @@ void WebGLFramebuffer::setAttachmentInternal(GCGLenum attachment, WebGLRenderbuf
 
 void WebGLFramebuffer::removeAttachmentInternal(const AbstractLocker& locker, GCGLenum attachment)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     WebGLAttachment* attachmentObject = getAttachment(attachment);
     if (attachmentObject) {
         attachmentObject->onDetached(locker, context()->graphicsContextGL());

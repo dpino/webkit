@@ -46,6 +46,7 @@ using GL = GraphicsContextGL;
 
 std::unique_ptr<WebXROpaqueFramebuffer> WebXROpaqueFramebuffer::create(PlatformXR::LayerHandle handle, WebGLRenderingContextBase& context, Attributes&& attributes, IntSize framebufferSize)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto framebuffer = WebGLFramebuffer::createOpaque(context);
     auto opaque = std::unique_ptr<WebXROpaqueFramebuffer>(new WebXROpaqueFramebuffer(handle, WTFMove(framebuffer), context, WTFMove(attributes), framebufferSize));
     if (!opaque->setupFramebuffer())
@@ -60,6 +61,7 @@ WebXROpaqueFramebuffer::WebXROpaqueFramebuffer(PlatformXR::LayerHandle handle, R
     , m_attributes(WTFMove(attributes))
     , m_framebufferSize(framebufferSize)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 WebXROpaqueFramebuffer::~WebXROpaqueFramebuffer()
@@ -88,6 +90,7 @@ WebXROpaqueFramebuffer::~WebXROpaqueFramebuffer()
 
 void WebXROpaqueFramebuffer::startFrame(const PlatformXR::Device::FrameData::LayerData& data)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_context.graphicsContextGL())
         return;
     auto& gl = *m_context.graphicsContextGL();
@@ -190,6 +193,7 @@ void WebXROpaqueFramebuffer::startFrame(const PlatformXR::Device::FrameData::Lay
 
 void WebXROpaqueFramebuffer::endFrame()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_framebuffer->setOpaqueActive(false);
 
     if (!m_context.graphicsContextGL())
@@ -225,6 +229,7 @@ void WebXROpaqueFramebuffer::endFrame()
 
 #if USE(MTLSHAREDEVENT_FOR_XR_FRAME_COMPLETION)
     if (std::get<0>(m_completionSyncEvent)) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         auto completionSync = gl.createEGLSync(m_completionSyncEvent);
         ASSERT(completionSync);
         constexpr uint64_t kTimeout = 1'000'000'000; // 1 second
@@ -243,6 +248,7 @@ void WebXROpaqueFramebuffer::endFrame()
 
 #if USE(IOSURFACE_FOR_XR_LAYER_DATA)
     if (m_ioSurfaceTextureHandle) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         if (m_ioSurfaceTextureHandleIsShared) {
 #if !PLATFORM(IOS_FAMILY_SIMULATOR)
             gl.destroyEGLImage(m_ioSurfaceTextureHandle);
@@ -261,6 +267,7 @@ void WebXROpaqueFramebuffer::endFrame()
 
 bool WebXROpaqueFramebuffer::setupFramebuffer()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!m_context.graphicsContextGL())
         return false;
     auto& gl = *m_context.graphicsContextGL();
@@ -315,6 +322,7 @@ bool WebXROpaqueFramebuffer::setupFramebuffer()
 
 PlatformGLObject WebXROpaqueFramebuffer::allocateRenderbufferStorage(GraphicsContextGL& gl, GCGLsizei samples, GCGLenum internalFormat, IntSize size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     PlatformGLObject renderbuffer = gl.createRenderbuffer();
     ASSERT(renderbuffer);
     gl.bindRenderbuffer(GL::RENDERBUFFER, renderbuffer);
@@ -325,6 +333,7 @@ PlatformGLObject WebXROpaqueFramebuffer::allocateRenderbufferStorage(GraphicsCon
 
 PlatformGLObject WebXROpaqueFramebuffer::allocateColorStorage(GraphicsContextGL& gl, GCGLsizei samples, IntSize size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if USE(IOSURFACE_FOR_XR_LAYER_DATA) && !PLATFORM(IOS_FAMILY_SIMULATOR)
     constexpr auto colorFormat = GL::SRGB8_ALPHA8;
 #else
@@ -336,6 +345,7 @@ PlatformGLObject WebXROpaqueFramebuffer::allocateColorStorage(GraphicsContextGL&
 
 std::tuple<PlatformGLObject, PlatformGLObject> WebXROpaqueFramebuffer::allocateDepthStencilStorage(GraphicsContextGL& gl, GCGLsizei samples, IntSize size)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     PlatformGLObject depthBuffer = 0;
     PlatformGLObject stencilBuffer = 0;
 
@@ -356,11 +366,13 @@ std::tuple<PlatformGLObject, PlatformGLObject> WebXROpaqueFramebuffer::allocateD
 
 void WebXROpaqueFramebuffer::bindColorBuffer(GraphicsContextGL& gl, PlatformGLObject colorBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     gl.framebufferRenderbuffer(GL::FRAMEBUFFER, GL::COLOR_ATTACHMENT0, GL::RENDERBUFFER, colorBuffer);
 }
 
 void WebXROpaqueFramebuffer::bindDepthStencilBuffer(GraphicsContextGL& gl, PlatformGLObject depthBuffer, PlatformGLObject stencilBuffer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (depthBuffer == stencilBuffer && !m_context.isWebGL2()) {
         ASSERT(m_attributes.stencil || m_attributes.depth);
         gl.framebufferRenderbuffer(GL::FRAMEBUFFER, GL::DEPTH_STENCIL_ATTACHMENT, GL::RENDERBUFFER, depthBuffer);
