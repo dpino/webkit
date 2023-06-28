@@ -317,7 +317,10 @@ bool WebXROpaqueFramebuffer::setupFramebuffer()
         m_stencilBuffer.adopt(gl, stencilBuffer != depthBuffer ? stencilBuffer : 0);
     }
 
-    return gl.checkFramebufferStatus(GL::FRAMEBUFFER) == GL::FRAMEBUFFER_COMPLETE;
+    bool result = false;
+    result = gl.checkFramebufferStatus(GL::FRAMEBUFFER) == GL::FRAMEBUFFER_COMPLETE;
+    fprintf(stderr, "### gl.checkFramebufferStatus: %s\n", result ? "TRUE" : "FALSE");
+    return result;
 }
 
 PlatformGLObject WebXROpaqueFramebuffer::allocateRenderbufferStorage(GraphicsContextGL& gl, GCGLsizei samples, GCGLenum internalFormat, IntSize size)

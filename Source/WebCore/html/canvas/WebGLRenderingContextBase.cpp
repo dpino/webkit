@@ -1515,12 +1515,17 @@ void WebGLRenderingContextBase::bufferSubData(GCGLenum target, long long offset,
 
 GCGLenum WebGLRenderingContextBase::checkFramebufferStatus(GCGLenum target)
 {
-    if (isContextLost())
+    if (isContextLost()) {
+        fprintf(stderr, "### isContextLost: true\n");
         return GraphicsContextGL::FRAMEBUFFER_UNSUPPORTED;
+    }
     if (!validateFramebufferTarget(target)) {
+        fprintf(stderr, "### !validateFramebufferFuncParameters: false\n");
         synthesizeGLError(GraphicsContextGL::INVALID_ENUM, "checkFramebufferStatus", "invalid target");
         return 0;
     }
+
+    fprintf(stderr, "### !validateFramebufferFuncParameters: true\n");
     return m_context->checkFramebufferStatus(target);
 }
 
