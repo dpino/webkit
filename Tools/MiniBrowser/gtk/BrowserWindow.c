@@ -1496,11 +1496,19 @@ static gboolean browserWindowDeleteEvent(GtkWidget *widget, GdkEventAny* event)
 }
 #endif
 
+#if GTK_CHECK_VERSION(4, 6, 0)
+static void zeroPreferredSize(GtkWidget* widget, GtkOrientation orientation, int, int* minimumSize, int* naturalSize, int*, int*)
+{
+    *minimumSize = 10;
+    *naturalSize = 10;
+}
+#else
 static void zeroPreferredSize(GtkWidget* widget, gint* minimumSize, gint* naturalSize)
 {
     *minimumSize = 10;
     *naturalSize = 10;
 }
+#endif
 
 static void browser_window_class_init(BrowserWindowClass *klass)
 {
@@ -1520,8 +1528,12 @@ static void browser_window_class_init(BrowserWindowClass *klass)
     // Override preferred (which is minimum :-) size to 0 so that we can
     // emulate arbitrary resolution.
     GtkWidgetClass* browserWidgetClass = GTK_WIDGET_CLASS(klass);
+#if GTK_CHECK_VERSION(4, 6, 0)
+    browserWidgetClass->measure = zeroPreferredSize;
+#else
     browserWidgetClass->get_preferred_width = zeroPreferredSize;
     browserWidgetClass->get_preferred_height = zeroPreferredSize;
+#endif
 // Playwrigth end
 }
 

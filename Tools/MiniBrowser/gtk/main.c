@@ -749,7 +749,9 @@ static WebKitSettings* createPlaywrightSettings() {
     WebKitSettings* webkitSettings = webkit_settings_new();
     // Playwright: revert to the default state before https://github.com/WebKit/WebKit/commit/a73a25b9ea9229987c8fa7b2e092e6324cb17913
     webkit_settings_set_hardware_acceleration_policy(webkitSettings, WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER);
+#if !GTK_CHECK_VERSION(4, 6, 0)
     webkit_settings_set_hardware_acceleration_policy(webkitSettings, WEBKIT_HARDWARE_ACCELERATION_POLICY_ON_DEMAND);
+#endif
     return webkitSettings;
 }
 
@@ -763,10 +765,29 @@ static WebKitWebView *createNewPage(WebKitBrowserInspector *browser_inspector, W
     WebKitWebView *newWebView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,
         "web-context", context,
         "settings", createPlaywrightSettings(),
+#if !ENABLE_2022_GLIB_API
         "is-ephemeral", webkit_web_context_is_ephemeral(context),
+#endif
         "is-controlled-by-automation", TRUE,
         NULL));
+#if GTK_CHECK_VERSION(3, 98, 0)
+    WebKitNetworkSession *networkSession;
+    if (automationMode)
+        networkSession = g_object_ref(webkit_web_context_get_network_session_for_automation(context));
+    else if (privateMode)
+        networkSession = webkit_network_session_new_ephemeral();
+    else {
+        char *dataDirectory = g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
+        char *cacheDirectory = g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
+        networkSession = webkit_network_session_new(dataDirectory, cacheDirectory);
+        g_free(dataDirectory);
+        g_free(cacheDirectory);
+    }
+
+    GtkWidget *newWindow = browser_window_new(NULL, context, networkSession);
+#else
     GtkWidget *newWindow = browser_window_new(NULL, context);
+#endif
     gtk_window_set_application(GTK_WINDOW(newWindow), browserApplication);
     browser_window_append_view(BROWSER_WINDOW(newWindow), newWebView);
     gtk_widget_grab_focus(GTK_WIDGET(newWebView));
@@ -933,11 +954,13 @@ static void activate(GApplication *application, WebKitSettings *webkitSettings)
         g_type_class_unref(enumClass);
     }
 
+#if !ENABLE_2022_GLIB_API
     if (cookiesFile && !webkit_web_context_is_ephemeral(webContext)) {
         WebKitCookieManager *cookieManager = webkit_web_context_get_cookie_manager(webContext);
         WebKitCookiePersistentStorage storageType = g_str_has_suffix(cookiesFile, ".txt") ? WEBKIT_COOKIE_PERSISTENT_STORAGE_TEXT : WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE;
         webkit_cookie_manager_set_persistent_storage(cookieManager, cookiesFile, storageType);
     }
+#endif
 
     // Enable the favicon database.
     webkit_web_context_set_favicon_database_directory(webContext, NULL);

@@ -28,6 +28,7 @@
 
 #include "WebPageProxy.h"
 #include <WebCore/GtkUtilities.h>
+#include <WebCore/GtkVersioning.h>
 #include <gtk/gtk.h>
 
 namespace WebKit {

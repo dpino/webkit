@@ -37,6 +37,11 @@ static Vector<String> commandsForKeyEvent(GdkEventType type, unsigned keyVal, un
 {
     ASSERT(type == GDK_KEY_PRESS || type == GDK_KEY_RELEASE);
 
+#if USE(GTK4)
+    // FIXME(dpino); Pending actual implementation.
+    GtkEventControllerKey* key;
+    return KeyBindingTranslator().commandsForKeyEvent(key);
+#else
     GUniquePtr<GdkEvent> event(gdk_event_new(type));
     event->key.keyval = keyVal;
     event->key.time = GDK_CURRENT_TIME;
@@ -47,6 +52,7 @@ static Vector<String> commandsForKeyEvent(GdkEventType type, unsigned keyVal, un
     if (gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), keyVal, &keys.outPtr(), &keysCount) && keysCount)
         event->key.hardware_keycode = keys.get()[0].keycode;
     return KeyBindingTranslator().commandsForKeyEvent(&event->key);
+#endif
 }
 
 static unsigned modifiersToEventState(OptionSet<WebEventModifier> modifiers)
@@ -68,7 +74,7 @@ void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, con
     Vector<String> commands;
     const guint keyVal = WebCore::PlatformKeyboardEvent::gdkKeyCodeForWindowsKeyCode(windowsVirtualKeyCode);
     if (keyVal) {
-        GdkEventType event = GDK_NOTHING;
+        GdkEventType event = 0;
         switch (type)
         {
         case WebEventType::KeyDown:

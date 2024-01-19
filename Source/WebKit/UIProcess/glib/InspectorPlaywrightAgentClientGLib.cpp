@@ -160,22 +160,43 @@ void InspectorPlaywrightAgentClientGlib::deleteBrowserContext(WTF::String& error
 void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, WebCore::IntRect&& clip, bool nominalResolution, CompletionHandler<void(const String&, const String&)>&& completionHandler)
 {
     page.callAfterNextPresentationUpdate([protectedPage = Ref{ page }, clip = WTFMove(clip), nominalResolution, completionHandler = WTFMove(completionHandler)]() mutable {
-        cairo_surface_t* surface = nullptr;
-#if PLATFORM(GTK)
-        RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
-        if (viewSnapshot)
-            surface = viewSnapshot->surface();
-#elif PLATFORM(WPE)
-        RefPtr<cairo_surface_t> protectPtr = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
-        surface = protectPtr.get();
-#endif
-        if (surface) {
-            Vector<uint8_t> encodeData = WebCore::encodeData(surface, "image/png"_s, std::nullopt);
-            completionHandler(emptyString(), makeString("data:image/png;base64,"_s, base64Encoded(encodeData)));
-            return;
-        }
+#if USE(GTK4)
+    GdkTexture* texture = nullptr;
 
-        completionHandler("Failed to take screenshot"_s, emptyString());
+    RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+    if (viewSnapshot)
+        texture = viewSnapshot->texture();
+
+    if (texture) {
+        GBytes* bytes = gdk_texture_save_to_png_bytes(texture);
+        Vector<uint8_t> encodeData { reinterpret_cast<uint8_t*>(bytes), 0 };
+        completionHandler(emptyString(), makeString("data:image/png;base64,"_s, base64Encoded(encodeData)));
+        return;
+    }
+
+    completionHandler("Failed to take screenshot"_s, emptyString());
+#else
+    cairo_surface_t* surface = nullptr;
+
+#if PLATFORM(GTK)
+    RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+    if (viewSnapshot)
+        surface = viewSnapshot->surface();
+#endif
+#if PLATFORM(WPE)
+    RefPtr<cairo_surface_t> protectPtr = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+    cairo_surface_t* surface = protectPtr.get();
+#endif
+
+    if (surface) {
+        Vector<uint8_t> encodeData = WebCore::encodeData(surface, "image/png"_s, std::nullopt);
+        completionHandler(emptyString(), makeString("data:image/png;base64,"_s, base64Encoded(encodeData)));
+        return;
+    }
+
+    completionHandler("Failed to take screenshot"_s, emptyString());
+#endif
+
     });
 }
 
