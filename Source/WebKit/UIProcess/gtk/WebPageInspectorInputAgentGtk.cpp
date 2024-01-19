@@ -39,8 +39,20 @@ static Vector<String> commandsForKeyEvent(GdkEventType type, unsigned keyVal, un
 
 #if USE(GTK4)
     // FIXME(dpino); Pending actual implementation.
+    /*
     GtkEventControllerKey* key;
     return KeyBindingTranslator().commandsForKeyEvent(key);
+    */
+    GUniquePtr<GdkEvent> event(gdk_event_new(type));
+    event->key.keyval = keyVal;
+    event->key.time = GDK_CURRENT_TIME;
+    event->key.state = state;
+    // When synthesizing an event, an invalid hardware_keycode value can cause it to be badly processed by GTK+.
+    GUniqueOutPtr<GdkKeymapKey> keys;
+    int keysCount;
+    if (gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), keyVal, &keys.outPtr(), &keysCount) && keysCount)
+        event->key.hardware_keycode = keys.get()[0].keycode;
+    return KeyBindingTranslator().commandsForKeyEvent(&event->key);
 #else
     GUniquePtr<GdkEvent> event(gdk_event_new(type));
     event->key.keyval = keyVal;
