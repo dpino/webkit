@@ -73,12 +73,7 @@ const ScreenData* screenData(PlatformDisplayID screenDisplayID)
 
 } // namespace WebCore
 
-<<<<<<< HEAD
 #endif // PLATFORM(COCOA) || PLATFORM(GTK) || (PLATFORM(WPE) && ENABLE(WPE_PLATFORM))
-||||||| parent of 85d693ad4310 (chore(webkit): bootstrap build #1977)
-#endif // PLATFORM(COCOA) || PLATFORM(GTK)
-=======
-#endif // PLATFORM(COCOA) || PLATFORM(GTK)
 
 #if ENABLE(TOUCH_EVENTS)
 namespace WebCore {
@@ -101,4 +96,3 @@ bool screenIsTouchPrimaryInputDevice() {
 
 } // namespace WebCore
 #endif
->>>>>>> 85d693ad4310 (chore(webkit): bootstrap build #1977)

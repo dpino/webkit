@@ -182,15 +182,9 @@ namespace WebCore {
     macro(DecompressionStreamTransform) \
     macro(DelayNode) \
     macro(DeprecationReportBody) \
-<<<<<<< HEAD
     macro(DigitalIdentity) \
-||||||| parent of bbc247aad768 (chore(webkit): bootstrap build #1977)
-    macro(DigitalCredential) \
-=======
-    macro(DigitalCredential) \
     macro(DeviceMotionEvent) \
     macro(DeviceOrientationEvent) \
->>>>>>> bbc247aad768 (chore(webkit): bootstrap build #1977)
     macro(DocumentTimeline) \
     macro(DynamicsCompressorNode) \
     macro(ElementInternals) \

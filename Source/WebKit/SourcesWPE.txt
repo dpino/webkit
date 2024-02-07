@@ -232,12 +232,8 @@ UIProcess/glib/DisplayLinkGLib.cpp
 UIProcess/glib/DisplayVBlankMonitor.cpp
 UIProcess/glib/DisplayVBlankMonitorDRM.cpp
 UIProcess/glib/DisplayVBlankMonitorTimer.cpp
-<<<<<<< HEAD
-UIProcess/glib/ScreenManager.cpp
-||||||| parent of 85d693ad4310 (chore(webkit): bootstrap build #1977)
-=======
 UIProcess/glib/InspectorPlaywrightAgentClientGLib.cpp
->>>>>>> 85d693ad4310 (chore(webkit): bootstrap build #1977)
+UIProcess/glib/ScreenManager.cpp
 UIProcess/glib/WebPageProxyGLib.cpp
 UIProcess/glib/WebProcessPoolGLib.cpp
 UIProcess/glib/WebProcessProxyGLib.cpp
@@ -267,16 +263,12 @@ UIProcess/linux/MemoryPressureMonitor.cpp
 UIProcess/soup/WebProcessPoolSoup.cpp
 
 UIProcess/wpe/AcceleratedBackingStoreDMABuf.cpp
-<<<<<<< HEAD
-UIProcess/wpe/ScreenManagerWPE.cpp
-||||||| parent of 85d693ad4310 (chore(webkit): bootstrap build #1977)
-=======
 UIProcess/wpe/InspectorTargetProxyWPE.cpp
+UIProcess/wpe/ScreenManagerWPE.cpp
 UIProcess/wpe/WebColorPickerWPE.cpp
 UIProcess/wpe/WebDateTimePickerWPE.cpp
 UIProcess/wpe/WebPageInspectorEmulationAgentWPE.cpp
 UIProcess/wpe/WebPageInspectorInputAgentWPE.cpp
->>>>>>> 85d693ad4310 (chore(webkit): bootstrap build #1977)
 UIProcess/wpe/WebPageProxyWPE.cpp
 
 WebProcess/GPU/graphics/gbm/RemoteGraphicsContextGLProxyGBM.cpp

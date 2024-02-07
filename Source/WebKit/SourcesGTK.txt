@@ -261,12 +261,8 @@ UIProcess/glib/DisplayLinkGLib.cpp
 UIProcess/glib/DisplayVBlankMonitor.cpp
 UIProcess/glib/DisplayVBlankMonitorDRM.cpp
 UIProcess/glib/DisplayVBlankMonitorTimer.cpp
-<<<<<<< HEAD
-UIProcess/glib/ScreenManager.cpp
-||||||| parent of 85d693ad4310 (chore(webkit): bootstrap build #1977)
-=======
 UIProcess/glib/InspectorPlaywrightAgentClientGLib.cpp
->>>>>>> 85d693ad4310 (chore(webkit): bootstrap build #1977)
+UIProcess/glib/ScreenManager.cpp
 UIProcess/glib/WebPageProxyGLib.cpp
 UIProcess/glib/WebProcessPoolGLib.cpp
 UIProcess/glib/WebProcessProxyGLib.cpp

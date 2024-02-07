@@ -142,13 +142,9 @@ void webkitWebViewBaseToplevelWindowStateChanged(WebKitWebViewBase*, uint32_t, u
 void webkitWebViewBaseToplevelWindowMonitorChanged(WebKitWebViewBase*, GdkMonitor*);
 
 void webkitWebViewBaseCallAfterNextPresentationUpdate(WebKitWebViewBase*, CompletionHandler<void()>&&);
-<<<<<<< HEAD
 
 #if USE(GTK4)
 void webkitWebViewBaseSetPlugID(WebKitWebViewBase*, const String&);
 #endif
-||||||| parent of bbc247aad768 (chore(webkit): bootstrap build #1977)
-=======
 
 WebKit::AcceleratedBackingStore* webkitWebViewBaseGetAcceleratedBackingStore(WebKitWebViewBase*);
->>>>>>> bbc247aad768 (chore(webkit): bootstrap build #1977)

@@ -689,16 +689,8 @@ void NavigationScheduler::startTimer()
 
     Seconds delay = 1_s * m_redirect->delay();
     m_timer.startOneShot(delay);
-<<<<<<< HEAD
-    InspectorInstrumentation::frameScheduledNavigation(frame, delay);
+    InspectorInstrumentation::frameScheduledNavigation(frame, delay, m_redirect->targetIsCurrentFrame());
     m_redirect->didStartTimer(frame, m_timer); // m_redirect may be null on return (e.g. the client canceled the load)
-||||||| parent of bbc247aad768 (chore(webkit): bootstrap build #1977)
-    InspectorInstrumentation::frameScheduledNavigation(m_frame, delay);
-    m_redirect->didStartTimer(m_frame, m_timer); // m_redirect may be null on return (e.g. the client canceled the load)
-=======
-    InspectorInstrumentation::frameScheduledNavigation(m_frame, delay, m_redirect->targetIsCurrentFrame());
-    m_redirect->didStartTimer(m_frame, m_timer); // m_redirect may be null on return (e.g. the client canceled the load)
->>>>>>> bbc247aad768 (chore(webkit): bootstrap build #1977)
 }
 
 void NavigationScheduler::cancel(NewLoadInProgress newLoadInProgress)
