@@ -50,6 +50,7 @@ public:
     float deviceScaleFactor() const { return m_deviceScaleFactor; }
 
     void paint(cairo_t*, const WebCore::IntRect&);
+    RefPtr<cairo_surface_t> surface() const { return m_surface; }
     void incorporateUpdate(UpdateInfo&&);
 
 private:
