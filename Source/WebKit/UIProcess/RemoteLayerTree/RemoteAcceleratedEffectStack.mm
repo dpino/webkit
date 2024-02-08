@@ -76,7 +76,7 @@ void RemoteAcceleratedEffectStack::applyEffectsFromMainThread(PlatformLayer *lay
     [layer setOpacity:computedValues.opacity];
 }
 
-AcceleratedEffectValues RemoteAcceleratedEffectStack::computeValues(MonotonicTime now) const
+WebCore::AcceleratedEffectValues RemoteAcceleratedEffectStack::computeValues(MonotonicTime now) const
 {
     auto values = m_baseValues;
     auto currentTime = now.secondsSinceEpoch() - m_acceleratedTimelineTimeOrigin;
