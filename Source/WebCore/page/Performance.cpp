@@ -65,6 +65,9 @@ Performance::Performance(ScriptExecutionContext* context, MonotonicTime timeOrig
     , m_timeOrigin(timeOrigin)
 {
     ASSERT(m_timeOrigin);
+
+    if (getenv("ALLOW_HIGH_TIME_PRECISION"))
+        timePrecision = 1_us;
 }
 
 Performance::~Performance() = default;
