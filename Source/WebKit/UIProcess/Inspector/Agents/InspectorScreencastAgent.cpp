@@ -241,7 +241,9 @@ void InspectorScreencastAgent::scheduleFrameEncoding()
         if (!agent->m_page.hasPageClient())
             return;
 
+#if USE(CAIRO)
         agent->encodeFrame();
+#endif
         agent->scheduleFrameEncoding();
     });
 }

@@ -271,7 +271,9 @@ void DrawingAreaProxyCoordinatedGraphics::captureFrame()
     if (!surface)
         return;
 
+#if USE(CAIRO)
     protectedWebPageProxy()->inspectorController().didPaint(surface.get());
+#endif
 }
 #endif
 
