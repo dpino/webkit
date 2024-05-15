@@ -36,6 +36,10 @@
 #include <cairo.h>
 #endif
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#endif
+
 namespace WebKit {
 
 class WebPageProxy;
@@ -54,6 +58,8 @@ public:
 
 #if USE(CAIRO)
     void encodeFrame(cairo_surface_t*, WebCore::IntSize);
+#elif USE(SKIA)
+    void encodeFrame(sk_sp<SkImage>, WebCore::IntSize);
 #elif PLATFORM(MAC)
     void encodeFrame(RetainPtr<CGImageRef>&&);
     void setOffsetTop(int offset) { m_offsetTop = offset;}

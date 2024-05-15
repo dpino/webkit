@@ -160,6 +160,7 @@ void InspectorPlaywrightAgentClientGlib::deleteBrowserContext(WTF::String& error
 void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, WebCore::IntRect&& clip, bool nominalResolution, CompletionHandler<void(const String&, const String&)>&& completionHandler)
 {
     page.callAfterNextPresentationUpdate([protectedPage = Ref{ page }, clip = WTFMove(clip), nominalResolution, completionHandler = WTFMove(completionHandler)]() mutable {
+#if USE(CAIRO)
         cairo_surface_t* surface = nullptr;
 #if PLATFORM(GTK)
         RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
@@ -176,6 +177,7 @@ void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, 
         }
 
         completionHandler("Failed to take screenshot"_s, emptyString());
+#endif
     });
 }
 

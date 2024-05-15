@@ -43,6 +43,11 @@
 #include <WebCore/RefPtrCairo.h>
 #endif
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#include <skia/core/SkPixmap.h>
+#endif
+
 using namespace WebCore;
 
 namespace WebKit {
@@ -131,6 +136,10 @@ public:
     explicit VPXFrame(RefPtr<cairo_surface_t>&& surface)
         : m_surface(WTFMove(surface))
     { }
+#elif USE(SKIA)
+    explicit VPXFrame(sk_sp<SkImage>&& surface)
+        : m_surface(WTFMove(surface))
+    { }
 #elif PLATFORM(MAC)
     VPXFrame(RetainPtr<CGImageRef> windowImage, int offsetTop)
         : m_windowImage(WTFMove(windowImage))
@@ -147,6 +156,15 @@ public:
         // Convert the updated region to YUV ready for encoding.
         const uint8_t* argb_data = cairo_image_surface_get_data(m_surface.get());
         int argb_stride = cairo_image_surface_get_stride(m_surface.get());
+#elif USE(SKIA)
+        // Convert the updated region to YUV ready for encoding.
+        const uint8_t* argb_data;
+		int argb_stride = 0;
+		SkPixmap pixmap;
+		if (m_surface->peekPixels(&pixmap)) {
+			argb_data = static_cast<const uint8_t*>(pixmap.addr());
+			argb_stride = pixmap.rowBytes();
+		}
 #elif PLATFORM(MAC)
         int argb_stride = image->w * 4;
         UniqueArray<uint8_t> buffer = makeUniqueArray<uint8_t>(argb_stride * image->h);
@@ -161,16 +179,20 @@ public:
         uint8_t* v_data = image->planes[2];
 
         // TODO: redraw only damaged regions?
+// #if USE(CAIRO)
         libyuv::ARGBToI420(argb_data, argb_stride,
                             y_data, y_stride,
                             u_data, uv_stride,
                             v_data, uv_stride,
                             image->w, image->h);
+// #endif
     }
 
 private:
 #if USE(CAIRO)
     RefPtr<cairo_surface_t> m_surface;
+#elif USE(SKIA)
+    sk_sp<SkImage> m_surface;
 #elif PLATFORM(MAC)
     RetainPtr<CGImageRef> m_windowImage;
     int m_offsetTop { 0 };
@@ -362,6 +384,11 @@ void ScreencastEncoder::encodeFrame(cairo_surface_t* drawingAreaSurface, IntSize
     cairo_surface_flush(surface.get());
 
     m_lastFrame = makeUnique<VPXFrame>(WTFMove(surface));
+}
+#elif USE(SKIA)
+void ScreencastEncoder::encodeFrame(sk_sp<SkImage> drawingAreaSurface, IntSize size)
+{
+    // TODO(dpino): NYI.
 }
 #elif PLATFORM(MAC)
 void ScreencastEncoder::encodeFrame(RetainPtr<CGImageRef>&& windowImage)

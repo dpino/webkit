@@ -122,6 +122,15 @@ void webkit_web_view_backend_set_screenshot_callback(WebKitWebViewBackend *view_
     view_backend->screenshotCallback = callback;
 }
 
+#if USE(SKIA)
+sk_sp<SkImage> webkitWebViewBackendTakeScreenshot(WebKitWebViewBackend* view_backend)
+{
+    if (!view_backend->screenshotCallback)
+        return nullptr;
+
+    return view_backend->screenshotCallback(view_backend->notifyCallbackData);
+}
+#else
 cairo_surface_t* webkitWebViewBackendTakeScreenshot(WebKitWebViewBackend* view_backend)
 {
     if (!view_backend->screenshotCallback)
@@ -129,6 +138,7 @@ cairo_surface_t* webkitWebViewBackendTakeScreenshot(WebKitWebViewBackend* view_b
 
     return view_backend->screenshotCallback(view_backend->notifyCallbackData);
 }
+#endif
 
 namespace WTF {
 

@@ -40,6 +40,10 @@
 #include <cairo.h>
 #endif
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#endif
+
 namespace Inspector {
 class BackendDispatcher;
 class FrontendChannel;
@@ -116,6 +120,9 @@ public:
 #endif
 #if USE(CAIRO)
     void didPaint(cairo_surface_t*);
+#endif
+#if USE(SKIA)
+    void didPaint(sk_sp<SkImage>);
 #endif
     using NavigationHandler = Function<void(const String&, uint64_t)>;
     void navigate(WebCore::ResourceRequest&&, WebFrameProxy*, NavigationHandler&&);

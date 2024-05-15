@@ -26,8 +26,13 @@
 #pragma once
 
 #include "UserMessage.h"
-#include <cairo.h>
 #include <wtf/CompletionHandler.h>
+
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#else
+#include <cairo.h>
+#endif
 
 typedef struct OpaqueJSContext* JSGlobalContextRef;
 
@@ -51,7 +56,11 @@ public:
 
     virtual void frameDisplayed(WKWPE::View&) { }
 // Playwright begin
+#if USE(SKIA)
+    virtual sk_sp<SkImage> takeViewScreenshot() { return nullptr; }
+#else
     virtual cairo_surface_t* takeViewScreenshot() { return nullptr; }
+#endif
 // Playwright end
     virtual void willStartLoad(WKWPE::View&) { }
     virtual void didChangePageID(WKWPE::View&) { }

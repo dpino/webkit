@@ -33,6 +33,10 @@
 #include <cairo.h>
 #endif
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#endif
+
 #include <wtf/Forward.h>
 #include <wtf/Noncopyable.h>
 #include <wtf/WeakPtr.h>
@@ -70,6 +74,8 @@ public:
 
 #if USE(CAIRO)
     void didPaint(cairo_surface_t*);
+#elif USE(SKIA)
+    void didPaint(sk_sp<SkImage>);
 #endif
 
     Inspector::Protocol::ErrorStringOr<String /* screencastID */> startVideo(const String& file, int width, int height, int toolbarHeight) override;

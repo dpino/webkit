@@ -274,12 +274,16 @@ static WebKitWebView* createWebViewImpl(WebKitWebView* webView, WebKitWebContext
     }
 
 // Playwright begin
+#if defined(USE_SKIA) && USE_SKIA
+
+#else
     if (headlessMode) {
         webkit_web_view_backend_set_screenshot_callback(viewBackend,
             [](gpointer data) {
                 return static_cast<WPEToolingBackends::HeadlessViewBackend*>(data)->snapshot();
             });
     }
+#endif
 // Playwright end
     WebKitWebView* newWebView;
     if (webView) {
@@ -542,12 +546,16 @@ static void activate(GApplication* application, WPEToolingBackends::ViewBackend*
         nullptr);
 
 // Playwright begin
+#if defined(USE_SKIA) && USE_SKIA
+
+#else
     if (headlessMode) {
         webkit_web_view_backend_set_screenshot_callback(viewBackend,
             [](gpointer data) {
                 return static_cast<WPEToolingBackends::HeadlessViewBackend*>(data)->snapshot();
             });
     }
+#endif
 // Playwright end
 
     auto* webView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,

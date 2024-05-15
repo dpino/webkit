@@ -44,6 +44,10 @@
 #include "DrawingAreaProxy.h"
 #endif
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#endif
+
 #if PLATFORM(MAC)
 #include <WebCore/ImageBufferUtilitiesCG.h>
 #endif
@@ -96,10 +100,10 @@ void InspectorScreencastAgent::didPaint(cairo_surface_t* surface)
     if (drawingAreaSize != displaySize) {
         return;
     }
-
 #else
     WebCore::IntSize displaySize = m_page.drawingArea()->size();
 #endif
+
     if (m_encoder)
         m_encoder->encodeFrame(surface, displaySize);
     if (m_screencast) {
@@ -141,6 +145,13 @@ void InspectorScreencastAgent::didPaint(cairo_surface_t* surface)
         ++m_screencastFramesInFlight;
         m_frontendDispatcher->screencastFrame(result, displaySize.width(), displaySize.height());
     }
+}
+#endif
+
+#if USE(SKIA)
+void InspectorScreencastAgent::didPaint(sk_sp<SkImage> surface)
+{
+    // TODO(dpino): NYI.
 }
 #endif
 
@@ -241,9 +252,7 @@ void InspectorScreencastAgent::scheduleFrameEncoding()
         if (!agent->m_page.hasPageClient())
             return;
 
-#if USE(CAIRO)
         agent->encodeFrame();
-#endif
         agent->scheduleFrameEncoding();
     });
 }
@@ -293,7 +302,8 @@ void InspectorScreencastAgent::encodeFrame()
 }
 #endif
 
-#if USE(CAIRO) && !PLATFORM(WPE)
+#if !PLATFORM(WPE)
+#if USE(CAIRO)
 void InspectorScreencastAgent::encodeFrame()
 {
     if (!m_encoder && !m_screencast)
@@ -302,6 +312,12 @@ void InspectorScreencastAgent::encodeFrame()
     if (auto* drawingArea = m_page.drawingArea())
         static_cast<DrawingAreaProxyCoordinatedGraphics*>(drawingArea)->captureFrame();
 }
+#else
+void InspectorScreencastAgent::encodeFrame()
+{
+    // TODO(dpino): NYI.
+}
+#endif
 #endif
 
 } // namespace WebKit

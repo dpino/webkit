@@ -495,8 +495,13 @@ GRefPtr<WebKitOptionMenu> WebKitWebViewClient::showOptionMenu(WebKitPopupMenu& p
 
 void WebKitWebViewClient::frameDisplayed(WKWPE::View&)
 {
+#if USE(SKIA)
+    if (sk_sp<SkImage> surface = takeViewScreenshot())
+        getPage(m_webView).inspectorController().didPaint(surface);
+#else
     if (RefPtr<cairo_surface_t> surface = adoptRef(webkitWebViewBackendTakeScreenshot(m_webView->priv->backend.get())))
         getPage(m_webView).inspectorController().didPaint(surface.get());
+#endif
 
     {
         SetForScope inFrameDisplayedGuard(m_webView->priv->inFrameDisplayed, true);
@@ -514,10 +519,17 @@ void WebKitWebViewClient::frameDisplayed(WKWPE::View&)
     }
 }
 
+#if USE(SKIA)
+sk_sp<SkImage> WebKitWebViewClient::takeViewScreenshot()
+{
+    return webkitWebViewBackendTakeScreenshot(m_webView->priv->backend.get());
+}
+#else
 cairo_surface_t* WebKitWebViewClient::takeViewScreenshot()
 {
     return webkitWebViewBackendTakeScreenshot(m_webView->priv->backend.get());
 }
+#endif
 
 void WebKitWebViewClient::willStartLoad(WKWPE::View&)
 {

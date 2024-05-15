@@ -32,4 +32,8 @@ template <> void derefGPtr(WebKitWebViewBackend* ptr);
 
 void webkitWebViewBackendUnref(WebKitWebViewBackend*);
 
+#if USE(SKIA)
+sk_sp<SkImage> webkitWebViewBackendTakeScreenshot(WebKitWebViewBackend*);
+#else
 cairo_surface_t* webkitWebViewBackendTakeScreenshot(WebKitWebViewBackend*);
+#endif
