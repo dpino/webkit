@@ -173,8 +173,10 @@ void WebProcess::platformInitializeWebProcess(WebProcessCreationParameters& para
 {
 #if USE(SKIA)
     const char* enableCPURendering = getenv("WEBKIT_SKIA_ENABLE_CPU_RENDERING");
-    if (enableCPURendering && strcmp(enableCPURendering, "0"))
+    if (!enableCPURendering || (enableCPURendering != "0"_s))
         ProcessCapabilities::setCanUseAcceleratedBuffers(false);
+    else
+        ProcessCapabilities::setCanUseAcceleratedBuffers(true);
 #endif
 
 #if ENABLE(MEDIA_STREAM)
