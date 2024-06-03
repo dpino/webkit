@@ -4849,9 +4849,11 @@ PropagateDamagingInformation:
   condition: ENABLE(DAMAGE_TRACKING)
   defaultValue:
     default: false
+    WebKitLegacy: true
     WebKit:
       "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
+    WebCore: true
 
 PunchOutWhiteBackgroundsInDarkMode:
   type: bool
@@ -6405,9 +6407,11 @@ UseDamagingInformationForCompositing:
   condition: ENABLE(DAMAGE_TRACKING)
   defaultValue:
     default: false
+    WebKitLegacy: true
     WebKit:
       "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
+    WebCore: true
 
 UseGPUProcessForCanvasRenderingEnabled:
   type: bool
