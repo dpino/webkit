@@ -6092,11 +6092,11 @@ PropagateDamagingInformation:
    condition: USE(COORDINATED_GRAPHICS)
    defaultValue:
      WebCore:
-       default: false
+       default: true
      WebKitLegacy:
-       default: false
+       default: true
      WebKit:
-       default: false
+       default: true
 
 PunchOutWhiteBackgroundsInDarkMode:
   type: bool
