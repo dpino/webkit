@@ -14822,14 +14822,10 @@
 				7AFA6F682A9F57C50055322A /* DisplayLinkMac.mm */,
 				31ABA79C215AF9E000C90E31 /* HighPerformanceGPUManager.h */,
 				31ABA79D215AF9E000C90E31 /* HighPerformanceGPUManager.mm */,
-<<<<<<< HEAD
-				7139CA3F2BF670BC00CA613A /* LegacyDisplayLinkMac.cpp */,
-||||||| parent of 13b3d7ade82b (chore(webkit): bootstrap build #2024)
-=======
 				D71A94302370E025002C4D9E /* InspectorPlaywrightAgentClientMac.h */,
 				D7EB04E62372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm */,
 				D79902AF236E9404005D6F7E /* InspectorTargetProxyMac.mm */,
->>>>>>> 13b3d7ade82b (chore(webkit): bootstrap build #2024)
+				7139CA3F2BF670BC00CA613A /* LegacyDisplayLinkMac.cpp */,
 				1AFDE65B1954E8D500C48FFA /* LegacySessionStateCoding.cpp */,
 				0FCB4E5818BBE3D9000FCFC9 /* PageClientImplMac.h */,
 				0FCB4E5918BBE3D9000FCFC9 /* PageClientImplMac.mm */,
