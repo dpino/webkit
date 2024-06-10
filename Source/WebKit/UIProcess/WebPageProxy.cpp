@@ -1788,13 +1788,13 @@ RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceR
     if (!frame || frame == mainFrame())
         return loadRequest(WTFMove(request), WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow);
 
-    auto navigation = m_navigationState->createLoadRequestNavigation(process().coreProcessIdentifier(), ResourceRequest(request), m_backForwardList->currentItem());
+    auto navigation = m_navigationState->createLoadRequestNavigation(legacyMainFrameProcess().coreProcessIdentifier(), ResourceRequest(request), m_backForwardList->currentItem());
     LoadParameters loadParameters;
     loadParameters.navigationID = navigation->navigationID();
     loadParameters.request = WTFMove(request);
     loadParameters.shouldOpenExternalURLsPolicy = WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow;
     loadParameters.shouldTreatAsContinuingLoad = ShouldTreatAsContinuingLoad::No;
-    m_process->send(Messages::WebPage::LoadRequestInFrameForInspector(WTFMove(loadParameters), frame->frameID()), internals().webPageID);
+    legacyMainFrameProcess().send(Messages::WebPage::LoadRequestInFrameForInspector(WTFMove(loadParameters), frame->frameID()), internals().webPageID);
     return navigation;
 }
 
@@ -2423,7 +2423,7 @@ void WebPageProxy::setOrientationOverride(std::optional<int>&& angle)
     auto deviceOrientation = toScreenOrientationType(angle.value_or(0));
     if (m_screenOrientationManager)
         m_screenOrientationManager->setCurrentOrientation(deviceOrientation);
-    m_process->send(Messages::WebPage::SetDeviceOrientation(angle.value_or(0)), webPageID());
+    legacyMainFrameProcess().send(Messages::WebPage::SetDeviceOrientation(angle.value_or(0)), webPageID());
 }
 
 std::optional<bool> WebPageProxy::permissionForAutomation(const String& origin, const String& permission) const

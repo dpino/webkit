@@ -370,7 +370,7 @@ void InspectorPlaywrightAgent::didCreateInspectorController(WebPageProxy& page)
     if (!m_isEnabled)
         return;
 
-    if (isInspectorProcessPool(page.process().processPool()))
+    if (isInspectorProcessPool(page.legacyMainFrameProcess().processPool()))
         return;
 
     ASSERT(m_frontendChannel);
@@ -400,7 +400,7 @@ void InspectorPlaywrightAgent::willDestroyInspectorController(WebPageProxy& page
     if (!m_isEnabled)
         return;
 
-    if (isInspectorProcessPool(page.process().processPool()))
+    if (isInspectorProcessPool(page.legacyMainFrameProcess().processPool()))
         return;
 
     String browserContextID = toBrowserContextIDProtocolString(page.sessionID());
@@ -945,7 +945,7 @@ void InspectorPlaywrightAgent::downloadCreated(const String& uuid, const WebCore
 {
     if (!m_isEnabled)
         return;
-    String frameID = WebCore::InspectorPageAgent::makeFrameID(page->process().coreProcessIdentifier(), frameInfoData.frameID);
+    String frameID = WebCore::InspectorPageAgent::makeFrameID(page->legacyMainFrameProcess().coreProcessIdentifier(), frameInfoData.frameID);
     m_downloads.set(uuid, download);
     m_frontendDispatcher->downloadCreated(
         toPageProxyIDProtocolString(*page),
