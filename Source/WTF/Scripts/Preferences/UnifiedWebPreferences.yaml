@@ -1703,7 +1703,7 @@ CanvasUsesAcceleratedDrawing:
       "PLATFORM(IOS_FAMILY) && !PLATFORM(IOS_FAMILY_SIMULATOR)": true
       default: false
     WebKit:
-      default: true
+      default: false
     WebCore:
       default: false
 
