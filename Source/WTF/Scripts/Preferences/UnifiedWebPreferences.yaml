@@ -1386,7 +1386,7 @@ CanvasUsesAcceleratedDrawing:
   humanReadableName: "Canvas uses accelerated drawing"
   condition: USE(CA) || USE(SKIA)
   defaultValue:
-    default: true
+    default: false
     WebKitLegacy:
       "PLATFORM(IOS_FAMILY) && !PLATFORM(IOS_FAMILY_SIMULATOR)": true
       default: false
