@@ -74,6 +74,7 @@ WebKitBrowserWindow::WebKitBrowserWindow(BrowserWindowClient& client, HWND mainW
     navigationClient.base.clientInfo = this;
     navigationClient.didReceiveAuthenticationChallenge = didReceiveAuthenticationChallenge;
     WKPageSetPageNavigationClient(page, &navigationClient.base);
+    WKPageSetCustomBackingScaleFactor(page, 1);
 
     WKPageUIClientV14 uiClient = { };
     uiClient.base.version = 14;
