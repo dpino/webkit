@@ -1801,7 +1801,7 @@ bool RenderFlexibleBox::canUseFlexItemForPercentageResolution(const RenderBox& f
             return true;
         }
 
-        if (&flexItem == view().frameView().layoutContext().subtreeLayoutRoot())
+        if (view().frameView().layoutContext().hasSubtreeLayoutRoot(flexItem))
             return !mainAxisIsFlexItemInlineAxis(flexItem);
 
         // Outside of layout (i.e. when using relative percentage positioning), base the decision on style.
