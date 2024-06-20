@@ -3411,7 +3411,7 @@ bool Document::updateLayoutIfDimensionsOutOfDate(Element& element, OptionSet<Dim
                 }
             }
 
-            if (currentRenderer == frameView->layoutContext().subtreeLayoutRoot())
+            if (frameView->layoutContext().hasSubtreeLayoutRoot(*currentRenderer))
                 break;
         }
     }
