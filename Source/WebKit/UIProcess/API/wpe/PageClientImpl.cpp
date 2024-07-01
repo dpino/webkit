@@ -32,16 +32,10 @@
 #include "NativeWebTouchEvent.h"
 #include "NativeWebWheelEvent.h"
 #include "TouchGestureController.h"
-<<<<<<< HEAD
 #include "WPEWebViewLegacy.h"
 #include "WPEWebViewPlatform.h"
-||||||| parent of 98a4ab21ef4c (chore(webkit): bootstrap build #2040)
-#include "WPEWebView.h"
-=======
-#include "WPEWebView.h"
 #include "WebColorPickerWPE.h"
 #include "WebDateTimePickerWPE.h"
->>>>>>> 98a4ab21ef4c (chore(webkit): bootstrap build #2040)
 #include "WebContextMenuProxy.h"
 #include "WebContextMenuProxyWPE.h"
 #include "WebKitDataListSuggestionsDropdown.h"
