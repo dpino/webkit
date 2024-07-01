@@ -47,7 +47,9 @@ View::View(const API::PageConfiguration& baseConfiguration)
     auto& preferences = configuration->preferences();
     preferences.setAcceleratedCompositingEnabled(true);
     preferences.setForceCompositingMode(true);
-    preferences.setThreadedScrollingEnabled(true);
+    // Playwright override begin
+    preferences.setThreadedScrollingEnabled(false);
+    // Playwright override end
 
     auto& pool = configuration->processPool();
     m_pageProxy = pool.createWebPage(*m_pageClient, WTFMove(configuration));
