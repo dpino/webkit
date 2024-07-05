@@ -164,7 +164,7 @@ else ()
     set(ENABLE_SERVER_PRECONNECT ON)
     SET_AND_EXPOSE_TO_BUILD(ENABLE_2022_GLIB_API ON)
 endif ()
-find_package(LibSoup REQUIRED ${SOUP_MINIMUM_VERSION})
+find_package(LibSoup ${SOUP_MINIMUM_VERSION} REQUIRED)
 
 if (NOT LibSoup_FOUND)
     message(FATAL_ERROR "libsoup 3 is required.")
