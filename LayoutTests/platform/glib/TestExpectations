@@ -1796,20 +1796,6 @@ webkit.org/b/264804 http/tests/resourceLoadStatistics/blocking-in-web-worker-scr
 webkit.org/b/264804 http/tests/resourceLoadStatistics/no-third-party-cookie-blocking-when-itp-is-off.html [ Failure ]
 webkit.org/b/264804 http/tests/resourceLoadStatistics/ping-to-prevalent-resource.html [ Failure ]
 webkit.org/b/264804 http/tests/resourceLoadStatistics/third-party-cookie-blocking-on-sites-without-user-interaction.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/aggregate-sorted-data-with-storage-access.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/grant-storage-access-under-opener-at-popup-user-gesture-ephemeral.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/grant-storage-access-under-opener-at-popup-user-gesture.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/grant-with-prompt-under-general-third-party-cookie-blocking.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/has-storage-access-true-if-third-party-has-cookies.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/has-storage-access-under-general-third-party-cookie-blocking-with-cookie.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-cross-origin-non-sandboxed-iframe-ephemeral.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-cross-origin-sandboxed-iframe-from-prevalent-domain-with-user-interaction-and-access-from-right-frame.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-cross-origin-sandboxed-iframe-from-prevalent-domain-with-user-interaction-but-access-from-wrong-frame.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-cross-origin-sandboxed-nested-iframe.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-then-detach-should-not-have-access.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-then-navigate-cross-site-should-not-have-access.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-then-navigate-same-site-should-have-access.html [ Failure ]
-webkit.org/b/264804 http/tests/storageAccess/request-and-grant-access-with-per-page-scope-access-from-another-frame.html [ Failure ]
 webkit.org/b/264804 http/tests/websocket/tests/hybi/websocket-allowed-setting-cookie-as-third-party.html [ Failure ]
 webkit.org/b/264804 http/tests/websocket/tests/hybi/websocket-cookie-overwrite-behavior.html [ Failure ]
 webkit.org/b/264804 http/tests/xmlhttprequest/cross-origin-authorization.html [ Failure ]
@@ -4003,6 +3989,8 @@ imported/w3c/web-platform-tests/html/dom/render-blocking/element-render-blocking
 imported/w3c/web-platform-tests/html/dom/render-blocking/element-render-blocking-011.html [ Failure ]
 imported/w3c/web-platform-tests/html/dom/render-blocking/element-render-blocking-020.html [ Failure ]
 imported/w3c/web-platform-tests/html/dom/render-blocking/element-render-blocking-021.html [ Failure ]
+
+imported/w3c/web-platform-tests/html/browsers/browsing-the-web/read-media/pageload-video.html [ Failure ]
 
 # End: Common failures between GTK and WPE.
 

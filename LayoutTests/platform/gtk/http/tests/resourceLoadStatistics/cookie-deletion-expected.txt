@@ -30,9 +30,9 @@ TEST COMPLETE
 Frame: '<!--frame1-->'
 --------
 Should receive first-party cookie.
-Did not receive cookie named 'firstPartyCookie'.
+Received cookie named 'firstPartyCookie'.
 Did not receive cookie named 'thirdPartyCookie'.
-Client-side document.cookie:
+Client-side document.cookie: firstPartyCookie=value
 
 --------
 Frame: '<!--frame2-->'
