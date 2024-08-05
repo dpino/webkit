@@ -950,7 +950,6 @@ void EventSenderProxy::scaleGestureEnd(double scale)
 
 #endif // ENABLE(MAC_GESTURE_EVENTS)
 
-<<<<<<< HEAD
 void EventSenderProxy::waitForPendingMouseEvents()
 {
     if (RetainPtr targetView = std::exchange(m_targetView, nullptr)) {
@@ -962,8 +961,6 @@ void EventSenderProxy::waitForPendingMouseEvents()
     }
 }
 
-||||||| parent of de763ccef8fe (chore(webkit): bootstrap build #2057)
-=======
 #if ENABLE(TOUCH_EVENTS)
 void EventSenderProxy::addTouchPoint(int, int)
 {
@@ -1011,5 +1008,4 @@ void EventSenderProxy::setTouchModifier(WKEventModifiers, bool)
 #endif // ENABLE(TOUCH_EVENTS)
 
 
->>>>>>> de763ccef8fe (chore(webkit): bootstrap build #2057)
 } // namespace WTR
