@@ -278,6 +278,7 @@ protected:
     static RefPtr<WebCore::SharedBuffer> fetchAudioComponentServerRegistrations();
 #endif
 
+<<<<<<< HEAD
     struct InitializationActivityAndGrant {
         UniqueRef<ProcessThrottler::ForegroundActivity> foregroundActivity;
 #if USE(EXTENSIONKIT)
@@ -287,13 +288,19 @@ protected:
 
     InitializationActivityAndGrant initializationActivityAndGrant();
 
+||||||| parent of 4501588baeda (chore(webkit): bootstrap build #2057)
+=======
+    /* playwright revert 50f8fee - make protected to allow use from WebProcessProxy */
+    Vector<String> platformOverrideLanguages() const;
+    /* end playwright revert 50f8fee */
+
+>>>>>>> 4501588baeda (chore(webkit): bootstrap build #2057)
 private:
     virtual void connectionWillOpen(IPC::Connection&);
     virtual void processWillShutDown(IPC::Connection&) = 0;
     void outgoingMessageQueueIsGrowingLarge();
 
     void populateOverrideLanguagesLaunchOptions(ProcessLauncher::LaunchOptions&) const;
-    Vector<String> platformOverrideLanguages() const;
     void platformStartConnectionTerminationWatchdog();
 
     // Connection::Client
