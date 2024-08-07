@@ -258,12 +258,8 @@ UIProcess/glib/DisplayLinkGLib.cpp
 UIProcess/glib/DisplayVBlankMonitor.cpp
 UIProcess/glib/DisplayVBlankMonitorDRM.cpp
 UIProcess/glib/DisplayVBlankMonitorTimer.cpp
-<<<<<<< HEAD
 UIProcess/glib/FenceMonitor.cpp
-||||||| parent of 4501588baeda (chore(webkit): bootstrap build #2057)
-=======
 UIProcess/glib/InspectorPlaywrightAgentClientGLib.cpp
->>>>>>> 4501588baeda (chore(webkit): bootstrap build #2057)
 UIProcess/glib/ScreenManager.cpp
 UIProcess/glib/WebPageProxyGLib.cpp
 UIProcess/glib/WebProcessPoolGLib.cpp

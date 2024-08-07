@@ -1804,13 +1804,9 @@ public:
 
 #if PLATFORM(COCOA) || PLATFORM(GTK)
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&);
-<<<<<<< HEAD
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&, ForceSoftwareCapturingViewportSnapshot);
-||||||| parent of 4501588baeda (chore(webkit): bootstrap build #2057)
-=======
 #elif PLATFORM(WPE)
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&) { return nullptr; }
->>>>>>> 4501588baeda (chore(webkit): bootstrap build #2057)
 #endif
 
     void wrapCryptoKey(Vector<uint8_t>&&, CompletionHandler<void(std::optional<Vector<uint8_t>>&&)>&&);
