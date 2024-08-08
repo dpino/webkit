@@ -702,11 +702,6 @@ static _WKStorageBlockingPolicy toAPI(WebCore::StorageBlockingPolicy policy)
     _preferences->setMediaCaptureRequiresSecureConnection(requiresSecureConnection);
 }
 
-<<<<<<< HEAD
-- (double)_inactiveMediaCaptureStreamRepromptIntervalInMinutes
-||||||| parent of 11eb274cdc5a (chore(webkit): bootstrap build #2059)
-- (double)_inactiveMediaCaptureSteamRepromptIntervalInMinutes
-=======
 - (BOOL)_alternateWebMPlayerEnabled
 {
     return _preferences->alternateWebMPlayerEnabled();
@@ -717,8 +712,7 @@ static _WKStorageBlockingPolicy toAPI(WebCore::StorageBlockingPolicy policy)
     _preferences->setAlternateWebMPlayerEnabled(enabled);
 }
 
-- (double)_inactiveMediaCaptureSteamRepromptIntervalInMinutes
->>>>>>> 11eb274cdc5a (chore(webkit): bootstrap build #2059)
+- (double)_inactiveMediaCaptureStreamRepromptIntervalInMinutes
 {
     return _preferences->inactiveMediaCaptureStreamRepromptIntervalInMinutes();
 }

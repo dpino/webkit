@@ -16334,12 +16334,8 @@
 				E170876C16D6CA6900F99226 /* BlobRegistryProxy.h in Headers */,
 				4F601432155C5AA2001FBDE0 /* BlockingResponseMap.h in Headers */,
 				1A5705111BE410E600874AF1 /* BlockSPI.h in Headers */,
-<<<<<<< HEAD
-				5CA9854A210BEB640057EB6B /* BrowsingWarning.h in Headers */,
-||||||| parent of 11eb274cdc5a (chore(webkit): bootstrap build #2059)
-=======
 				D71A944C237239FB002C4D9E /* BrowserInspectorPipe.h in Headers */,
->>>>>>> 11eb274cdc5a (chore(webkit): bootstrap build #2059)
+				5CA9854A210BEB640057EB6B /* BrowsingWarning.h in Headers */,
 				A7E69BCC2B2117A100D43D3F /* BufferAndBackendInfo.h in Headers */,
 				BC3065FA1259344E00E71278 /* CacheModel.h in Headers */,
 				935BF7FC2936BF1A00B41326 /* CacheStorageCache.h in Headers */,
