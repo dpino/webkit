@@ -40,9 +40,15 @@ public:
 
     const Vector<PlatformTouchEvent>& coalescedEvents() const { return m_coalescedEvents; }
 
+<<<<<<< HEAD
     const Vector<PlatformTouchEvent>& predictedEvents() const { return m_predictedEvents; }
 
 #if PLATFORM(WPE)
+||||||| parent of 11eb274cdc5a (chore(webkit): bootstrap build #2059)
+#if PLATFORM(WPE)
+=======
+#if !ENABLE(IOS_TOUCH_EVENTS)
+>>>>>>> 11eb274cdc5a (chore(webkit): bootstrap build #2059)
     // FIXME: since WPE currently does not send touch stationary events, we need to be able to set
     // TouchCancelled touchPoints subsequently
     void setTouchPoints(Vector<PlatformTouchPoint>& touchPoints) { m_touchPoints = touchPoints; }
