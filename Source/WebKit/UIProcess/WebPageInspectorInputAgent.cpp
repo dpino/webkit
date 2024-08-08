@@ -353,7 +353,7 @@ void WebPageInspectorInputAgent::dispatchTouchEvent(const String& type, std::opt
         touchPoints.append(WebPlatformTouchPoint(id, state, position, position, radius, rotationAngle, force));
     }
 
-    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, WallTime::now()}, WTFMove(touchPoints), {});
+    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, WallTime::now()}, WTFMove(touchPoints), {}, {});
     m_page.legacyMainFrameProcess().sendWithAsyncReply(Messages::WebPage::TouchEvent(touchEvent), [callback] (std::optional<WebEventType> eventType, bool) {
         if (!eventType) {
             callback->sendFailure("Failed to dispatch touch event."_s);
