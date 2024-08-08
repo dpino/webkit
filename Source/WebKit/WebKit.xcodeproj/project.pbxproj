@@ -14974,17 +14974,9 @@
 				07EF07592745A8160066EA04 /* DisplayCaptureSessionManager.h */,
 				07EF07582745A8160066EA04 /* DisplayCaptureSessionManager.mm */,
 				7AFA6F682A9F57C50055322A /* DisplayLinkMac.cpp */,
-<<<<<<< HEAD
-||||||| parent of 246d3b43af15 (chore(webkit): bootstrap build #2060)
-				31ABA79C215AF9E000C90E31 /* HighPerformanceGPUManager.h */,
-				31ABA79D215AF9E000C90E31 /* HighPerformanceGPUManager.mm */,
-=======
-				31ABA79C215AF9E000C90E31 /* HighPerformanceGPUManager.h */,
-				31ABA79D215AF9E000C90E31 /* HighPerformanceGPUManager.mm */,
 				D71A94302370E025002C4D9E /* InspectorPlaywrightAgentClientMac.h */,
 				D7EB04E62372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm */,
 				D79902AF236E9404005D6F7E /* InspectorTargetProxyMac.mm */,
->>>>>>> 246d3b43af15 (chore(webkit): bootstrap build #2060)
 				1AFDE65B1954E8D500C48FFA /* LegacySessionStateCoding.cpp */,
 				0FCB4E5818BBE3D9000FCFC9 /* PageClientImplMac.h */,
 				0FCB4E5918BBE3D9000FCFC9 /* PageClientImplMac.mm */,
