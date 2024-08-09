@@ -689,7 +689,7 @@ RendererBufferFormat AcceleratedBackingStoreDMABuf::bufferFormat() const
 // Playwright begin
 cairo_surface_t* AcceleratedBackingStoreDMABuf::surface()
 {
-    RefPtr<Buffer> buffer = m_renderer.buffer();
+    RefPtr<Buffer> buffer = m_committedBuffer.get();
     if (!buffer)
         return nullptr;
 
