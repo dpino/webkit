@@ -841,17 +841,9 @@ public:
 
     enum class IsPerformingHTTPFallback : bool { No, Yes };
     void addPlatformLoadParameters(WebProcessProxy&, LoadParameters&);
-<<<<<<< HEAD
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, IsPerformingHTTPFallback = IsPerformingHTTPFallback::No);
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, API::Object* userData = nullptr, IsPerformingHTTPFallback = IsPerformingHTTPFallback::No);
-||||||| parent of 91e50ad2a958 (chore(webkit): bootstrap build #2061)
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&);
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, API::Object* userData = nullptr);
-=======
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&);
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadRequestForInspector(WebCore::ResourceRequest&&, WebFrameProxy*);
->>>>>>> 91e50ad2a958 (chore(webkit): bootstrap build #2061)
     RefPtr<API::Navigation> loadFile(const String& fileURL, const String& resourceDirectoryURL, bool isAppInitiated = true, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadData(std::span<const uint8_t>, const String& MIMEType, const String& encoding, const String& baseURL, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadData(std::span<const uint8_t>, const String& MIMEType, const String& encoding, const String& baseURL, API::Object* userData, WebCore::ShouldOpenExternalURLsPolicy);
@@ -1813,13 +1805,10 @@ public:
 
 #if PLATFORM(COCOA) || PLATFORM(GTK)
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&);
-<<<<<<< HEAD
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&, ForceSoftwareCapturingViewportSnapshot);
-||||||| parent of 91e50ad2a958 (chore(webkit): bootstrap build #2061)
-=======
 #elif PLATFORM(WPE)
     RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&) { return nullptr; }
->>>>>>> 91e50ad2a958 (chore(webkit): bootstrap build #2061)
+    RefPtr<ViewSnapshot> takeViewSnapshot(std::optional<WebCore::IntRect>&&, ForceSoftwareCapturingViewportSnapshot) { return nullptr; }
 #endif
 
     void wrapCryptoKey(Vector<uint8_t>&&, CompletionHandler<void(std::optional<Vector<uint8_t>>&&)>&&);

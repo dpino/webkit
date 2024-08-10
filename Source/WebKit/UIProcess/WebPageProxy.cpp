@@ -1833,11 +1833,6 @@ WebProcessProxy& WebPageProxy::ensureRunningProcess()
     return m_legacyMainFrameProcess;
 }
 
-<<<<<<< HEAD
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData, IsPerformingHTTPFallback isPerformingHTTPFallback)
-||||||| parent of 91e50ad2a958 (chore(webkit): bootstrap build #2061)
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData)
-=======
 RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceRequest&& request, WebFrameProxy* frame)
 {
     if (!frame || frame == mainFrame())
@@ -1853,8 +1848,7 @@ RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceR
     return navigation;
 }
 
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData)
->>>>>>> 91e50ad2a958 (chore(webkit): bootstrap build #2061)
+RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData, IsPerformingHTTPFallback isPerformingHTTPFallback)
 {
     if (m_isClosed)
         return nullptr;
