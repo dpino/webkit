@@ -220,6 +220,22 @@ sub cleanJhbuild()
     system("rm -rf $jhbuildPath/Build");
 }
 
+# Main.
+
+my $cxx_flags;
+my $ld_flags;
+
+# CXXFLAGS should only affect WebKit build.
+if (exists($ENV{CXXFLAGS})) {
+   $cxx_flags = $ENV{CXXFLAGS};
+   delete $ENV{CXXFLAGS};
+}
+# LDFLAGS should only affect WebKit build.
+if (exists($ENV{LDFLAGS})) {
+   $ld_flags = $ENV{LDFLAGS};
+   delete $ENV{LDFLAGS};
+}
+
 delete $ENV{AR_FLAGS} if exists $ENV{AR_FLAGS};
 
 chdir(relativeScriptsDir() . "/../jhbuild") or die $!;
@@ -241,4 +257,13 @@ if (runJhbuild("build") == 0) {
 } else {
     deleteJhbuildConfig();
     die "Failed to build " . $prettyPlatform{$platform} . " port dependencies with jhbuild\n";
+}
+
+# Restore CXXFLAGS if needed.
+if ($cxx_flags) {
+   $ENV{CXXFLAGS} = $cxx_flags;
+}
+# Restore LDFLAGS if needed.
+if ($ld_flags) {
+   $ENV{LDFLAGS} = $ld_flags;
 }
