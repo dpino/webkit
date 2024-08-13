@@ -14,6 +14,7 @@
       <dep package="libjxl"/>
       <dep package="libsoup"/>
       <dep package="libvpx"/>
+      <dep package="openssl"/>
       <dep package="manette"/>
       <dep package="wayland"/>
       <dep package="wayland-protocols"/>
@@ -32,6 +33,7 @@
       <dep package="libjxl"/>
       <dep package="libsoup"/>
       <dep package="libvpx"/>
+      <dep package="openssl"/>
       <dep package="openxr"/>
       <dep package="wayland"/>
       <dep package="wayland-protocols"/>
@@ -150,6 +152,16 @@
             version="0.20.2"
             repo="github-tarball"
             hash="sha256:f8fd0aeb66252dfcc638f14d9be1e2362fdaf2ca86bde0444ff4d5cc961b560f"/>
+  </autotools>
+
+  <autotools id="openssl" autogenargs="" autogen-sh="./Configure" supports-non-srcdir-builds="no"
+             autogen-template="%(srcdir)s/%(autogen-sh)s shared --prefix=%(prefix)s --libdir=lib --openssldir=%(prefix)s enable-unit-test no-ssl3-method enable-rfc3779 enable-cms linux-x86_64"
+             makeinstallargs="install INSTALL_PREFIX='$(DESTDIR)'">
+    <branch repo="github-tarball"
+            module="openssl/openssl/archive/refs/tags/openssl-${version}.tar.gz"
+            version="3.3.1"
+            checkoutdir="openssl-3.3.1"
+            hash="sha256:133bf39b8d1635ac94a8483042cc448251b770a0d12c7af0c05ea895ddd98f1d"/>
   </autotools>
 
   <!-- libmanette >= 0.2.4 required for GamePad support -->
