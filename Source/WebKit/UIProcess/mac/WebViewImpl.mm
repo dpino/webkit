@@ -4545,8 +4545,7 @@ RetainPtr<CGImageRef> WebViewImpl::takeSnapshotForAutomation() {
     CGSWindowID windowID = (CGSWindowID)window.windowNumber;
     if (!windowID || !window.isVisible)
         return nullptr;
-
-    return takeWindowSnapshot(windowID, true);
+    return takeWindowSnapshot(windowID, true, ForceSoftwareCapturingViewportSnapshot::Yes);
 }
 // Paywright end
 
