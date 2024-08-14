@@ -278,7 +278,7 @@
 #define HAVE_FLOAT16_INSTRUCTION 1
 #endif
 
-#if ((CPU(ARM64) || (CPU(X86_64) && !PLATFORM(PLAYSTATION))) && defined(__FLT16_MANT_DIG__))
+#if PLATFORM(COCOA) && (CPU(ARM64) || CPU(X86_64))
 #define HAVE_FLOAT16 1
 #endif
 
@@ -433,7 +433,7 @@
 #define HAVE_FOUNDATION_WITH_SAME_SITE_COOKIE_SUPPORT 1
 #endif
 
-#if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)
+#if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE) || PLATFORM(WIN)
 #define HAVE_OS_DARK_MODE_SUPPORT 1
 #endif
 
@@ -1260,7 +1260,8 @@
 #endif
 
 #if PLATFORM(MAC)
-#define HAVE_GPU_AVAILABILITY_CHECK 1
+// Playwright: disable the check to make WebGL always work.
+#define HAVE_GPU_AVAILABILITY_CHECK 0
 #endif
 
 #if !defined(HAVE_LOCKDOWN_MODE_PDF_ADDITIONS) && \
