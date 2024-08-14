@@ -3583,7 +3583,6 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
     };
     auto filenames = dragData.fileNames();
 
-<<<<<<< HEAD
     auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
 #if PLATFORM(GTK) || PLATFORM(WPE)
         UNUSED_PARAM(frameID);
@@ -8956,7 +8955,7 @@ void WebPageProxy::requestDOMPasteAccess(DOMPasteAccessCategory pasteAccessCateg
         if (permissionForAutomation(originIdentifier, "clipboard-read"_s).value_or(false)) {
             response = DOMPasteAccessResponse::GrantedForGesture;
             // Grant access to general pasteboard.
-            willPerformPasteCommand(DOMPasteAccessCategory::General);
+            willPerformPasteCommand(DOMPasteAccessCategory::General, [] () { }, frameID);
         }
         completionHandler(response);
         return;
