@@ -3583,9 +3583,8 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
     };
     auto filenames = dragData.fileNames();
 
-<<<<<<< HEAD
     auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK)
+#if PLATFORM(GTK) || PLATFORM(WPE)
         UNUSED_PARAM(frameID);
         String url = dragData.asURL();
         if (!url.isEmpty()) {
@@ -3595,19 +3594,6 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
             });
             return;
         }
-||||||| parent of ec71943811a0 (chore(webkit): bootstrap build #2062)
-#if PLATFORM(GTK)
-    UNUSED_PARAM(frameID);
-    String url = dragData.asURL();
-    if (!url.isEmpty())
-        protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*this, url);
-=======
-#if PLATFORM(GTK) || PLATFORM(WPE)
-    UNUSED_PARAM(frameID);
-    String url = dragData.asURL();
-    if (!url.isEmpty())
-        protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*this, url);
->>>>>>> ec71943811a0 (chore(webkit): bootstrap build #2062)
 
         ASSERT(dragData.platformData());
         weakThis->sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
