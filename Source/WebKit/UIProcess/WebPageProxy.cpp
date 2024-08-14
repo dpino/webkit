@@ -8946,7 +8946,7 @@ void WebPageProxy::requestDOMPasteAccess(DOMPasteAccessCategory pasteAccessCateg
         if (permissionForAutomation(originIdentifier, "clipboard-read"_s).value_or(false)) {
             response = DOMPasteAccessResponse::GrantedForGesture;
             // Grant access to general pasteboard.
-            willPerformPasteCommand(DOMPasteAccessCategory::General);
+            willPerformPasteCommand(DOMPasteAccessCategory::General, [] () { }, frameID);
         }
         completionHandler(response);
         return;
