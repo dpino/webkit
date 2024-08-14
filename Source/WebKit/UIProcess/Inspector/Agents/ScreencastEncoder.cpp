@@ -37,6 +37,7 @@
 #include <wtf/RunLoop.h>
 #include <wtf/UniqueArray.h>
 #include <wtf/WorkQueue.h>
+#include <wtf/text/MakeString.h>
 #include <wtf/text/StringConcatenateNumbers.h>
 
 #if USE(SKIA) && !PLATFORM(GTK)
