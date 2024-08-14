@@ -25,8 +25,12 @@
 
 #import "config.h"
 #import "NativeWebMouseEvent.h"
+#import "NetworkProcessMessages.h"
+#import "NetworkProcessProxy.h"
 #import "WebPageInspectorInputAgent.h"
 #import "WebPageProxy.h"
+#import "WebPageProxyMessages.h"
+#import "WebsiteDataStore.h"
 #import <WebCore/IntPoint.h>
 #import <WebCore/IntSize.h>
 #import "NativeWebKeyboardEvent.h"
@@ -108,7 +112,8 @@ void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, con
     if (text.length() > 0 && macCommands.size() == 0)
         macCommands.append(WebCore::KeypressCommand("insertText:"_s, text));
     if (!macCommands.isEmpty())
-        m_page.grantAccessToCurrentPasteboardData(NSPasteboardNameGeneral);
+        if (auto replyID = m_page.grantAccessToCurrentPasteboardData(NSPasteboardNameGeneral, [] () { }))
+            m_page.websiteDataStore().protectedNetworkProcess()->connection()->waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
     NativeWebKeyboardEvent event(
         type,
         text,

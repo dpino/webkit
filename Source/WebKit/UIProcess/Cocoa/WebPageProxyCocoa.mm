@@ -38,6 +38,7 @@
 #import "InsertTextOptions.h"
 #import "LoadParameters.h"
 #import "MessageSenderInlines.h"
+#import "NetworkProcessMessages.h"
 #import "PageClient.h"
 #import "PasteboardTypes.h"
 #import "PlaybackSessionManagerProxy.h"
@@ -305,7 +306,8 @@ void WebPageProxy::startDrag(const DragItem& dragItem, ShareableBitmap::Handle&&
         NSPasteboard *pasteboard = [NSPasteboard pasteboardWithName: m_overrideDragPasteboardName];
 
         m_dragSelectionData = String([pasteboard name]);
-        grantAccessToCurrentPasteboardData(String([pasteboard name]));
+        if (auto replyID = grantAccessToCurrentPasteboardData(String([pasteboard name]), [] () { }))
+            websiteDataStore().protectedNetworkProcess()->connection()->waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
         m_dragSourceOperationMask = WebCore::anyDragOperation();
 
         if (auto& info = dragItem.promisedAttachmentInfo) {
