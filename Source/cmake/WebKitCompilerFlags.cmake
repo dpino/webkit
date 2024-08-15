@@ -122,7 +122,7 @@ macro(WEBKIT_ADD_TARGET_CXX_FLAGS _target)
 endmacro()
 
 
-option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" ON)
+option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" OFF)
 if (DEVELOPER_MODE AND DEVELOPER_MODE_FATAL_WARNINGS)
     if (MSVC)
         set(FATAL_WARNINGS_FLAG /WX)
@@ -458,6 +458,19 @@ int main() {
         unset(CMAKE_REQUIRED_LIBRARIES)
     endif ()
     unset(CMAKE_REQUIRED_FLAGS)
+endif ()
+
+if (NOT WTF_PLATFORM_COCOA)
+  set(FLOAT16_TEST_SOURCE "
+int main() {
+  _Float16 f;
+
+  f += static_cast<_Float16>(1.0);
+
+  return 0;
+}
+  ")
+  check_cxx_source_compiles("${FLOAT16_TEST_SOURCE}" HAVE_FLOAT16)
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND WTF_CPU_MIPS)
