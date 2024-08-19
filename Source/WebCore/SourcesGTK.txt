@@ -112,5 +112,16 @@ platform/unix/LoggingUnix.cpp
 platform/unix/SharedMemoryUnix.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
+<<<<<<< HEAD
 
 Modules/mediastream/RTCRtpSFrameTransformerOpenSSL.cpp
+||||||| parent of f157b95fbf8d (chore(webkit): bootstrap build #2062)
+=======
+
+// Playwright: begin.
+JSSpeechSynthesisErrorCode.cpp
+JSSpeechSynthesisErrorEvent.cpp
+JSSpeechSynthesisErrorEventInit.cpp
+JSSpeechSynthesisEventInit.cpp
+// Playwright: end.
+>>>>>>> f157b95fbf8d (chore(webkit): bootstrap build #2062)
