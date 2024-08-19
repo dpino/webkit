@@ -97,8 +97,6 @@ platform/wpe/PlatformScreenWPE.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
 
-Modules/mediastream/RTCRtpSFrameTransformerOpenSSL.cpp
-
 // Playwright: begin.
 platform/wpe/SelectionData.cpp
 
