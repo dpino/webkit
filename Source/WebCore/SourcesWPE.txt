@@ -96,11 +96,8 @@ platform/wpe/DragImageWPE.cpp
 platform/wpe/PlatformScreenWPE.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
-<<<<<<< HEAD
 
 Modules/mediastream/RTCRtpSFrameTransformerOpenSSL.cpp
-||||||| parent of f157b95fbf8d (chore(webkit): bootstrap build #2062)
-=======
 
 // Playwright: begin.
 platform/wpe/SelectionData.cpp
@@ -110,4 +107,3 @@ JSSpeechSynthesisErrorEvent.cpp
 JSSpeechSynthesisErrorEventInit.cpp
 JSSpeechSynthesisEventInit.cpp
 // Playwright: end.
->>>>>>> f157b95fbf8d (chore(webkit): bootstrap build #2062)
