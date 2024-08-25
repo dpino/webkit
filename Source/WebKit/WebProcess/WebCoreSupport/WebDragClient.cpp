@@ -29,7 +29,14 @@
 #if ENABLE(DRAG_SUPPORT)
 
 #include "WebPage.h"
+<<<<<<< HEAD
 #include <wtf/TZoneMallocInlines.h>
+||||||| parent of 185fe3f51a25 (chore(webkit): bootstrap build #2064)
+=======
+#include <WebCore/DataTransfer.h>
+#include <WebCore/Pasteboard.h>
+#include <WebCore/ShareableBitmap.h>
+>>>>>>> 185fe3f51a25 (chore(webkit): bootstrap build #2064)
 
 namespace WebKit {
 using namespace WebCore;
@@ -53,7 +60,7 @@ OptionSet<DragSourceAction> WebDragClient::dragSourceActionMaskForPoint(const In
     return m_page->allowedDragSourceActions();
 }
 
-#if !PLATFORM(COCOA) && !PLATFORM(GTK)
+#if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WPE) && !PLATFORM(WIN)
 void WebDragClient::startDrag(DragItem, DataTransfer&, Frame&)
 {
 }

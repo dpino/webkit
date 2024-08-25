@@ -767,8 +767,10 @@ void DocumentLoader::willSendRequest(ResourceRequest&& newRequest, const Resourc
     if (!didReceiveRedirectResponse)
         return completionHandler(WTFMove(newRequest));
 
+    InspectorInstrumentation::willCheckNavigationPolicy(*m_frame);
     auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, protectedFrame = Ref { *m_frame }, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormState>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
         m_waitingForNavigationPolicy = false;
+        InspectorInstrumentation::didCheckNavigationPolicy(protectedFrame.get(), navigationPolicyDecision != NavigationPolicyDecision::ContinueLoad);
         switch (navigationPolicyDecision) {
         case NavigationPolicyDecision::IgnoreLoad:
         case NavigationPolicyDecision::LoadWillContinueInAnotherProcess:
@@ -1534,12 +1536,24 @@ void DocumentLoader::detachFromFrame(LoadWillContinueInAnotherProcess loadWillCo
     if (auto navigationID = std::exchange(m_navigationID, { }))
         m_frame->loader().client().documentLoaderDetached(navigationID, loadWillContinueInAnotherProcess);
 
-    InspectorInstrumentation::loaderDetachedFromFrame(*m_frame, *this);
-
     observeFrame(nullptr);
 }
 
+<<<<<<< HEAD
 void DocumentLoader::setNavigationID(NavigationIdentifier navigationID)
+||||||| parent of 185fe3f51a25 (chore(webkit): bootstrap build #2064)
+void DocumentLoader::setNavigationID(uint64_t navigationID)
+=======
+void DocumentLoader::replacedByFragmentNavigation(LocalFrame& frame)
+{
+    ASSERT(!this->frame());
+    // Notify WebPageProxy that the navigation has been converted into same page navigation.
+    if (auto navigationID = std::exchange(m_navigationID, 0))
+        frame.loader().client().documentLoaderDetached(navigationID, LoadWillContinueInAnotherProcess::No);
+}
+
+void DocumentLoader::setNavigationID(uint64_t navigationID)
+>>>>>>> 185fe3f51a25 (chore(webkit): bootstrap build #2064)
 {
     ASSERT(navigationID);
     m_navigationID = navigationID;
