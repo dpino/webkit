@@ -29,6 +29,7 @@
 #include "ProcessTerminationReason.h"
 #include <JavaScriptCore/InspectorAgentRegistry.h>
 #include <JavaScriptCore/InspectorTargetAgent.h>
+#include <WebCore/NavigationIdentifier.h>
 #include <WebCore/PageIdentifier.h>
 #include <wtf/CheckedRef.h>
 #include <wtf/Forward.h>
@@ -77,7 +78,7 @@ class WebPageInspectorControllerObserver {
 public:
     virtual void didCreateInspectorController(WebPageProxy&) = 0;
     virtual void willDestroyInspectorController(WebPageProxy&) = 0;
-    virtual void didFailProvisionalLoad(WebPageProxy&, uint64_t navigationID, const String& error) = 0;
+    virtual void didFailProvisionalLoad(WebPageProxy&, WebCore::NavigationIdentifier, const String& error) = 0;
     virtual void willCreateNewPage(WebPageProxy&, const WebCore::WindowFeatures&, const URL&) = 0;
     virtual void didFinishScreencast(const PAL::SessionID& sessionID, const String& screencastID) = 0;
 
@@ -125,12 +126,13 @@ public:
 #if USE(CAIRO) || PLATFORM(GTK)
     void didPaint(cairo_surface_t*);
 #endif
-    using NavigationHandler = Function<void(const String&, uint64_t)>;
+    using NavigationHandler = Function<void(const String&, WebCore::NavigationIdentifier)>;
     void navigate(WebCore::ResourceRequest&&, WebFrameProxy*, NavigationHandler&&);
-    void didReceivePolicyDecision(WebCore::PolicyAction action, uint64_t navigationID);
-    void didDestroyNavigation(uint64_t navigationID);
+    void didReceivePolicyDecision(WebCore::PolicyAction action, WebCore::NavigationIdentifier navigationID);
 
-    void didFailProvisionalLoadForFrame(uint64_t navigationID, const WebCore::ResourceError& error);
+    void didDestroyNavigation(WebCore::NavigationIdentifier navigationID);
+
+    void didFailProvisionalLoadForFrame(WebCore::NavigationIdentifier navigationID, const WebCore::ResourceError& error);
 
     void createInspectorTarget(const String& targetId, Inspector::InspectorTargetType);
     void destroyInspectorTarget(const String& targetId);
@@ -177,7 +179,7 @@ private:
     InspectorBrowserAgent* m_enabledBrowserAgent { nullptr };
 
     bool m_didCreateLazyAgents { false };
-    HashMap<uint64_t, NavigationHandler> m_pendingNavigations;
+    HashMap<WebCore::NavigationIdentifier, NavigationHandler> m_pendingNavigations;
 
     static WebPageInspectorControllerObserver* s_observer;
 };

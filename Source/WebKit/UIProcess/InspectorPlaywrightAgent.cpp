@@ -423,14 +423,14 @@ void InspectorPlaywrightAgent::willDestroyInspectorController(WebPageProxy& page
     m_pageProxyChannels.remove(channelIt);
 }
 
-void InspectorPlaywrightAgent::didFailProvisionalLoad(WebPageProxy& page, uint64_t navigationID, const String& error)
+void InspectorPlaywrightAgent::didFailProvisionalLoad(WebPageProxy& page, WebCore::NavigationIdentifier navigationID, const String& error)
 {
     if (!m_isEnabled)
         return;
 
     m_frontendDispatcher->provisionalLoadFailed(
         toPageProxyIDProtocolString(page),
-        String::number(navigationID), error);
+        String::number(navigationID.toUInt64()), error);
 }
 
 void InspectorPlaywrightAgent::willCreateNewPage(WebPageProxy& page, const WebCore::WindowFeatures& features, const URL& url)
@@ -702,7 +702,7 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
         }
     }
 
-    pageProxyChannel->page().inspectorController().navigate(WTFMove(resourceRequest), frame, [callback = WTFMove(callback)](const String& error, uint64_t navigationID) {
+    pageProxyChannel->page().inspectorController().navigate(WTFMove(resourceRequest), frame, [callback = WTFMove(callback)](const String& error, WebCore::NavigationIdentifier navigationID) {
         if (!error.isEmpty()) {
             callback->sendFailure(error);
             return;
@@ -710,7 +710,7 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
 
         String navigationIDString;
         if (navigationID)
-            navigationIDString = String::number(navigationID);
+            navigationIDString = String::number(navigationID.toUInt64());
         callback->sendSuccess(navigationIDString);
     });
 }

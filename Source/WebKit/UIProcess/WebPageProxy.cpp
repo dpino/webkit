@@ -4824,7 +4824,7 @@ void WebPageProxy::receivedNavigationActionPolicyDecision(WebProcessProxy& proce
 
 void WebPageProxy::receivedPolicyDecision(PolicyAction action, API::Navigation* navigation, RefPtr<API::WebsitePolicies>&& websitePolicies, Ref<API::NavigationAction>&& navigationAction, WillContinueLoadInNewProcess willContinueLoadInNewProcess, std::optional<SandboxExtension::Handle> sandboxExtensionHandle, std::optional<PolicyDecisionConsoleMessage>&& consoleMessage, CompletionHandler<void(PolicyDecision&&)>&& completionHandler)
 {
-    m_inspectorController->didReceivePolicyDecision(action, navigation ? navigation->navigationID() : 0);
+    m_inspectorController->didReceivePolicyDecision(action, navigation ? navigation->navigationID() : WebCore::NavigationIdentifier { });
     if (!hasRunningProcess())
         return completionHandler(PolicyDecision { });
 
@@ -6642,7 +6642,7 @@ void WebPageProxy::didFailProvisionalLoadForFrameShared(Ref<WebProcessProxy>&& p
 
     m_failingProvisionalLoadURL = { };
 
-    m_inspectorController->didFailProvisionalLoadForFrame(navigationID, error);
+    m_inspectorController->didFailProvisionalLoadForFrame(*navigationID, error);
 
     // If the provisional page's load fails then we destroy the provisional page.
     if (m_provisionalPage && m_provisionalPage->mainFrame() == &frame && willContinueLoading == WillContinueLoading::No)

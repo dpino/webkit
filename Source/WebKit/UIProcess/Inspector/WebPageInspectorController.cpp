@@ -294,14 +294,14 @@ void WebPageInspectorController::navigate(WebCore::ResourceRequest&& request, We
 {
     auto navigation = m_inspectedPage->loadRequestForInspector(WTFMove(request), frame);
     if (!navigation) {
-        completionHandler("Failed to navigate"_s, 0);
+        completionHandler("Failed to navigate"_s, { });
         return;
     }
 
     m_pendingNavigations.set(navigation->navigationID(), WTFMove(completionHandler));
 }
 
-void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction action, uint64_t navigationID)
+void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction action, WebCore::NavigationIdentifier navigationID)
 {
     if (!m_frontendRouter->hasFrontends())
         return;
@@ -314,12 +314,12 @@ void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction 
         return;
 
     if (action == WebCore::PolicyAction::Ignore)
-        completionHandler("Navigation cancelled"_s, 0);
+        completionHandler("Navigation cancelled"_s, { });
     else
         completionHandler(String(), navigationID);
 }
 
-void WebPageInspectorController::didDestroyNavigation(uint64_t navigationID)
+void WebPageInspectorController::didDestroyNavigation(WebCore::NavigationIdentifier navigationID)
 {
     if (!m_frontendRouter->hasFrontends())
         return;
@@ -330,10 +330,10 @@ void WebPageInspectorController::didDestroyNavigation(uint64_t navigationID)
 
     // Inspector initiated navigation is destroyed before policy check only when it
     // becomes a fragment navigation (which always reuses current navigation).
-    completionHandler(String(), 0);
+    completionHandler(String(), { });
 }
 
-void WebPageInspectorController::didFailProvisionalLoadForFrame(uint64_t navigationID, const WebCore::ResourceError& error)
+void WebPageInspectorController::didFailProvisionalLoadForFrame(WebCore::NavigationIdentifier navigationID, const WebCore::ResourceError& error)
 {
     if (s_observer)
         s_observer->didFailProvisionalLoad(m_inspectedPage, navigationID, error.localizedDescription());

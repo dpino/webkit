@@ -2733,7 +2733,7 @@ private:
     UserActivity m_userActivity;
 
     WebCore::NavigationIdentifier m_pendingNavigationID;
-    uint64_t m_pendingFrameNavigationID { 0 };
+    WebCore::NavigationIdentifier m_pendingFrameNavigationID;
     std::optional<WebsitePoliciesData> m_pendingWebsitePolicies;
 
     bool m_mainFrameProgressCompleted { false };

@@ -35,6 +35,7 @@
 #include <wtf/HashMap.h>
 #include <wtf/Forward.h>
 #include <wtf/Noncopyable.h>
+#include <WebCore/NavigationIdentifier.h>
 
 namespace Inspector {
 class BackendDispatcher;
@@ -83,7 +84,7 @@ private:
     // WebPageInspectorControllerObserver
     void didCreateInspectorController(WebPageProxy&) override;
     void willDestroyInspectorController(WebPageProxy&) override;
-    void didFailProvisionalLoad(WebPageProxy&, uint64_t navigationID, const String& error) override;
+    void didFailProvisionalLoad(WebPageProxy&, WebCore::NavigationIdentifier navigationID, const String& error) override;
     void willCreateNewPage(WebPageProxy&, const WebCore::WindowFeatures&, const URL&) override;
     void didFinishScreencast(const PAL::SessionID& sessionID, const String& screencastID) override;
 
