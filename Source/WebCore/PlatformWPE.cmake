@@ -58,6 +58,15 @@ list(APPEND WebCore_PRIVATE_FRAMEWORK_HEADERS
     platform/graphics/gbm/PlatformDisplayGBM.h
 
     platform/graphics/libwpe/PlatformDisplayLibWPE.h
+<<<<<<< HEAD
+||||||| parent of 858e5a98a137 (chore(webkit): bootstrap build #2065)
+
+    platform/graphics/wayland/PlatformDisplayWayland.h
+=======
+
+    platform/graphics/wayland/PlatformDisplayWayland.h
+    platform/wpe/SelectionData.h
+>>>>>>> 858e5a98a137 (chore(webkit): bootstrap build #2065)
 )
 
 set(CSS_VALUE_PLATFORM_DEFINES "HAVE_OS_DARK_MODE_SUPPORT=1")
