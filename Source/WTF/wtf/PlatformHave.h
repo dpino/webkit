@@ -278,13 +278,7 @@
 #define HAVE_FLOAT16_INSTRUCTION 1
 #endif
 
-<<<<<<< HEAD
 #if OS(DARWIN) && CPU(ARM64)
-||||||| parent of 185fe3f51a25 (chore(webkit): bootstrap build #2064)
-#if ((CPU(ARM64) || (CPU(X86_64) && !PLATFORM(PLAYSTATION))) && defined(__FLT16_MANT_DIG__))
-=======
-#if PLATFORM(COCOA) && (CPU(ARM64) || CPU(X86_64))
->>>>>>> 185fe3f51a25 (chore(webkit): bootstrap build #2064)
 #define HAVE_FLOAT16 1
 #endif
 

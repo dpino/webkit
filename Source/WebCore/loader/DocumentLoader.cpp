@@ -1539,11 +1539,6 @@ void DocumentLoader::detachFromFrame(LoadWillContinueInAnotherProcess loadWillCo
     observeFrame(nullptr);
 }
 
-<<<<<<< HEAD
-void DocumentLoader::setNavigationID(NavigationIdentifier navigationID)
-||||||| parent of 185fe3f51a25 (chore(webkit): bootstrap build #2064)
-void DocumentLoader::setNavigationID(uint64_t navigationID)
-=======
 void DocumentLoader::replacedByFragmentNavigation(LocalFrame& frame)
 {
     ASSERT(!this->frame());
@@ -1552,8 +1547,7 @@ void DocumentLoader::replacedByFragmentNavigation(LocalFrame& frame)
         frame.loader().client().documentLoaderDetached(navigationID, LoadWillContinueInAnotherProcess::No);
 }
 
-void DocumentLoader::setNavigationID(uint64_t navigationID)
->>>>>>> 185fe3f51a25 (chore(webkit): bootstrap build #2064)
+void DocumentLoader::setNavigationID(NavigationIdentifier navigationID)
 {
     ASSERT(navigationID);
     m_navigationID = navigationID;

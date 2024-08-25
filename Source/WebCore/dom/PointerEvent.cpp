@@ -30,15 +30,10 @@
 #include "MouseEvent.h"
 #include "Node.h"
 #include "PlatformMouseEvent.h"
-#include "PointerEventTypeNames.h"
-<<<<<<< HEAD
-#include <wtf/TZoneMallocInlines.h>
-||||||| parent of 185fe3f51a25 (chore(webkit): bootstrap build #2064)
-#include <wtf/IsoMallocInlines.h>
-=======
 #include "PlatformTouchEvent.h"
+#include "PointerEventTypeNames.h"
+#include <wtf/TZoneMallocInlines.h>
 #include <wtf/IsoMallocInlines.h>
->>>>>>> 185fe3f51a25 (chore(webkit): bootstrap build #2064)
 
 namespace WebCore {
 
