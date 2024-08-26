@@ -113,7 +113,7 @@ void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, con
         macCommands.append(WebCore::KeypressCommand("insertText:"_s, text));
     if (!macCommands.isEmpty())
         if (auto replyID = m_page.grantAccessToCurrentPasteboardData(NSPasteboardNameGeneral, [] () { }))
-            m_page.websiteDataStore().protectedNetworkProcess()->connection()->waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
+            m_page.websiteDataStore().protectedNetworkProcess()->connection().waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
     NativeWebKeyboardEvent event(
         type,
         text,
