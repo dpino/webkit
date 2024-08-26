@@ -320,7 +320,7 @@ void WebPageProxy::startDrag(const DragItem& dragItem, ShareableBitmap::Handle&&
 
         m_dragSelectionData = String([pasteboard name]);
         if (auto replyID = grantAccessToCurrentPasteboardData(String([pasteboard name]), [] () { }))
-            websiteDataStore().protectedNetworkProcess()->connection()->waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
+            websiteDataStore().protectedNetworkProcess()->connection().waitForAsyncReplyAndDispatchImmediately<Messages::NetworkProcess::AllowFilesAccessFromWebProcess>(*replyID, 100_ms);
         m_dragSourceOperationMask = WebCore::anyDragOperation();
 
         if (auto& info = dragItem.promisedAttachmentInfo) {
