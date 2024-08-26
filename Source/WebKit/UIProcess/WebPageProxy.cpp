@@ -5784,7 +5784,7 @@ void WebPageProxy::pageScaleFactorDidChange(IPC::Connection& connection, double 
 
 void WebPageProxy::viewScaleFactorDidChange(IPC::Connection& connection, double scaleFactor)
 {
-    MESSAGE_CHECK_BASE(scaleFactorIsValid(scaleFactor), &connection);
+    MESSAGE_CHECK_BASE(scaleFactorIsValid(scaleFactor), connection);
     m_viewScaleFactor = scaleFactor;
 }
 
