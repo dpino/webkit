@@ -682,7 +682,7 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
         }
     }
 
-    pageProxyChannel->page().inspectorController().navigate(WTFMove(resourceRequest), frame, [callback = WTFMove(callback)](const String& error, WebCore::NavigationIdentifier navigationID) {
+    pageProxyChannel->page().inspectorController().navigate(WTFMove(resourceRequest), frame, [callback = WTFMove(callback)](const String& error, Markable<WebCore::NavigationIdentifier> navigationID) {
         if (!error.isEmpty()) {
             callback->sendFailure(error);
             return;
@@ -690,7 +690,7 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
 
         String navigationIDString;
         if (navigationID)
-            navigationIDString = String::number(navigationID.toUInt64());
+            navigationIDString = String::number(navigationID->toUInt64());
         callback->sendSuccess(navigationIDString);
     });
 }

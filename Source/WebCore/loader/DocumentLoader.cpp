@@ -1544,7 +1544,7 @@ void DocumentLoader::replacedByFragmentNavigation(LocalFrame& frame)
     ASSERT(!this->frame());
     // Notify WebPageProxy that the navigation has been converted into same page navigation.
     if (auto navigationID = std::exchange(m_navigationID, { }))
-        frame.loader().client().documentLoaderDetached(navigationID, LoadWillContinueInAnotherProcess::No);
+        frame.loader().client().documentLoaderDetached(*navigationID, LoadWillContinueInAnotherProcess::No);
 }
 
 void DocumentLoader::setNavigationID(NavigationIdentifier navigationID)
