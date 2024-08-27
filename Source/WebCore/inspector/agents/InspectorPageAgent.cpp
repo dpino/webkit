@@ -1065,7 +1065,7 @@ String InspectorPageAgent::loaderId(DocumentLoader* loader)
     if (!loader)
         return emptyString();
 
-    return String::number(loader->navigationID().toUInt64());
+    return String::number(loader->navigationID()->toUInt64());
 }
 
 LocalFrame* InspectorPageAgent::assertFrame(Inspector::Protocol::ErrorString& errorString, const Inspector::Protocol::Network::FrameId& frameId)
