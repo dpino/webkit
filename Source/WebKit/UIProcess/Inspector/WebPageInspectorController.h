@@ -127,9 +127,9 @@ public:
 #if USE(CAIRO) || PLATFORM(GTK)
     void didPaint(cairo_surface_t*);
 #endif
-    using NavigationHandler = Function<void(const String&, WebCore::NavigationIdentifier)>;
+    using NavigationHandler = Function<void(const String&, Markable<WebCore::NavigationIdentifier>)>;
     void navigate(WebCore::ResourceRequest&&, WebFrameProxy*, NavigationHandler&&);
-    void didReceivePolicyDecision(WebCore::PolicyAction action, WebCore::NavigationIdentifier navigationID);
+    void didReceivePolicyDecision(WebCore::PolicyAction action, std::optional<WebCore::NavigationIdentifier> navigationID);
 
     void didDestroyNavigation(WebCore::NavigationIdentifier navigationID);
 
