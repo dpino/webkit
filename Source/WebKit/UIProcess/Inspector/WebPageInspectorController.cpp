@@ -304,7 +304,7 @@ void WebPageInspectorController::navigate(WebCore::ResourceRequest&& request, We
     m_pendingNavigations.set(navigation->navigationID(), WTFMove(completionHandler));
 }
 
-void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction action, WebCore::NavigationIdentifier navigationID)
+void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction action, std::optional<WebCore::NavigationIdentifier> navigationID)
 {
     if (!m_frontendRouter->hasFrontends())
         return;
@@ -312,14 +312,14 @@ void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction 
     if (!navigationID)
         return;
 
-    auto completionHandler = m_pendingNavigations.take(navigationID);
+    auto completionHandler = m_pendingNavigations.take(*navigationID);
     if (!completionHandler)
         return;
 
     if (action == WebCore::PolicyAction::Ignore)
         completionHandler("Navigation cancelled"_s, { });
     else
-        completionHandler(String(), navigationID);
+        completionHandler(String(), *navigationID);
 }
 
 void WebPageInspectorController::didDestroyNavigation(WebCore::NavigationIdentifier navigationID)
