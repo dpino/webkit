@@ -4809,7 +4809,7 @@ void WebPageProxy::receivedNavigationActionPolicyDecision(WebProcessProxy& proce
 
 void WebPageProxy::receivedPolicyDecision(PolicyAction action, API::Navigation* navigation, RefPtr<API::WebsitePolicies>&& websitePolicies, Ref<API::NavigationAction>&& navigationAction, WillContinueLoadInNewProcess willContinueLoadInNewProcess, std::optional<SandboxExtension::Handle> sandboxExtensionHandle, std::optional<PolicyDecisionConsoleMessage>&& consoleMessage, CompletionHandler<void(PolicyDecision&&)>&& completionHandler)
 {
-    m_inspectorController->didReceivePolicyDecision(action, navigation ? navigation->navigationID() : WebCore::NavigationIdentifier { });
+    m_inspectorController->didReceivePolicyDecision(action, navigation ? std::optional { navigation->navigationID() } : std::nullopt);
     if (!hasRunningProcess())
         return completionHandler(PolicyDecision { });
 

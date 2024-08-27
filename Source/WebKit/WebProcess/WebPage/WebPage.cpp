@@ -2042,12 +2042,12 @@ void WebPage::loadRequestInFrameForInspector(LoadParameters&& loadParameters, We
 {
     WebFrame* frame = WebProcess::singleton().webFrame(frameID);
     if (!frame) {
-        send(Messages::WebPageProxy::DidDestroyNavigation(loadParameters.navigationID.value_or(WebCore::NavigationIdentifier { })));
+        send(Messages::WebPageProxy::DidDestroyNavigation(*loadParameters.navigationID));
         return;
     }
 
     // FIXME: use m_pendingNavigationID instead?
-    m_pendingFrameNavigationID = loadParameters.navigationID.value_or(WebCore::NavigationIdentifier { });
+    m_pendingFrameNavigationID = loadParameters.navigationID;
 
     FrameLoadRequest frameLoadRequest { *frame->coreLocalFrame(), loadParameters.request };
     frame->coreLocalFrame()->loader().load(WTFMove(frameLoadRequest));
@@ -8138,8 +8138,8 @@ Ref<DocumentLoader> WebPage::createDocumentLoader(LocalFrame& frame, const Resou
             m_pendingWebsitePolicies = std::nullopt;
         }
     } else if (m_pendingFrameNavigationID) {
-        documentLoader->setNavigationID(m_pendingFrameNavigationID);
-        m_pendingFrameNavigationID = WebCore::NavigationIdentifier { };
+        documentLoader->setNavigationID(*m_pendingFrameNavigationID);
+        m_pendingFrameNavigationID = std::nullopt;
     }
 
     return documentLoader;
