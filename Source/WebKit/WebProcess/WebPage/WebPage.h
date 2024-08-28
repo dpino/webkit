@@ -2731,14 +2731,8 @@ private:
     bool m_isAppNapEnabled { true };
     UserActivity m_userActivity;
 
-<<<<<<< HEAD
     Markable<WebCore::NavigationIdentifier> m_pendingNavigationID;
-||||||| parent of 783505fe73dd (chore(webkit/): bootstrap build #2066)
-    WebCore::NavigationIdentifier m_pendingNavigationID;
-=======
-    WebCore::NavigationIdentifier m_pendingNavigationID;
-    WebCore::NavigationIdentifier m_pendingFrameNavigationID;
->>>>>>> 783505fe73dd (chore(webkit/): bootstrap build #2066)
+    Markable<WebCore::NavigationIdentifier> m_pendingFrameNavigationID;
     std::optional<WebsitePoliciesData> m_pendingWebsitePolicies;
 
     bool m_mainFrameProgressCompleted { false };
