@@ -58,11 +58,8 @@ static String getTargetID(const ProvisionalPageProxy& provisionalPage)
     return WebPageInspectorTarget::toTargetID(provisionalPage.webPageID());
 }
 
-<<<<<<< HEAD
 WTF_MAKE_TZONE_ALLOCATED_IMPL(WebPageInspectorController);
 
-||||||| parent of 783505fe73dd (chore(webkit/): bootstrap build #2066)
-=======
 WebPageInspectorControllerObserver* WebPageInspectorController::s_observer = nullptr;
 
 void WebPageInspectorController::setObserver(WebPageInspectorControllerObserver* observer)
@@ -74,7 +71,6 @@ WebPageInspectorControllerObserver* WebPageInspectorController::observer() {
     return s_observer;
 }
 
->>>>>>> 783505fe73dd (chore(webkit/): bootstrap build #2066)
 WebPageInspectorController::WebPageInspectorController(WebPageProxy& inspectedPage)
     : m_frontendRouter(FrontendRouter::create())
     , m_backendDispatcher(BackendDispatcher::create(m_frontendRouter.copyRef()))
