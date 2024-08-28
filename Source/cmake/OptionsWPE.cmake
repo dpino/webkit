@@ -23,7 +23,6 @@ find_package(WebP REQUIRED COMPONENTS demux)
 find_package(WPE REQUIRED)
 find_package(ZLIB REQUIRED)
 
-<<<<<<< HEAD
 # TODO(277627): Remove once the SDKs include the package.
 if (DEVELOPER_MODE)
     set(USE_SYSTEM_SYSPROF_CAPTURE_DEFAULT OFF)
@@ -31,12 +30,9 @@ else ()
     set(USE_SYSTEM_SYSPROF_CAPTURE_DEFAULT ON)
 endif ()
 
-||||||| parent of 00e62cfdf74d (chore(webkit): bootstrap build #2066)
-=======
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
->>>>>>> 00e62cfdf74d (chore(webkit): bootstrap build #2066)
 WEBKIT_OPTION_BEGIN()
 
 SET_AND_EXPOSE_TO_BUILD(ENABLE_DEVELOPER_MODE ${DEVELOPER_MODE})
