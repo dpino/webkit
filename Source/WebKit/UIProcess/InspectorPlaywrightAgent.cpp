@@ -691,6 +691,8 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
     if (!!frameID) {
         String error;
         frame = frameForID(frameID, error);
+        if (!frame)
+            frame = pageProxyChannel->page().mainFrame();
         if (!frame) {
             callback->sendFailure(error);
             return;
