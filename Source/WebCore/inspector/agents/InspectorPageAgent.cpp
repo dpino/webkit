@@ -86,6 +86,7 @@
 #include <wtf/DateMath.h>
 #include <wtf/ListHashSet.h>
 #include <wtf/NeverDestroyed.h>
+#include <wtf/ObjectIdentifier.h>
 #include <wtf/Ref.h>
 #include <wtf/RefPtr.h>
 #include <wtf/Stopwatch.h>
@@ -1028,11 +1029,11 @@ std::optional<FrameIdentifier> InspectorPageAgent::parseFrameID(String frameID)
 
     String processIDString = frameID.left(dotPos);
     uint64_t pid = strtoull(processIDString.ascii().data(), 0, 10);
-    auto processID = ObjectIdentifier<WebCore::ProcessIdentifierType>(pid);
+    auto processID = LegacyNullableObjectIdentifier<WebCore::ProcessIdentifierType>(pid);
     String frameIDString = frameID.substring(dotPos + 1);
     uint64_t frameIDNumber = strtoull(frameIDString.ascii().data(), 0, 10);
     return WebCore::FrameIdentifier {
-       ObjectIdentifier<WebCore::FrameIdentifierType>(frameIDNumber),
+       LegacyNullableObjectIdentifier<WebCore::FrameIdentifierType>(frameIDNumber),
        processID
     };
 }

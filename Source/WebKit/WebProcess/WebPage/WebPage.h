@@ -2734,7 +2734,7 @@ private:
     UserActivity m_userActivity;
 
     Markable<WebCore::NavigationIdentifier> m_pendingNavigationID;
-    WebCore::NavigationIdentifier m_pendingFrameNavigationID;
+    Markable<WebCore::NavigationIdentifier> m_pendingFrameNavigationID;
     std::optional<WebsitePoliciesData> m_pendingWebsitePolicies;
 
     bool m_mainFrameProgressCompleted { false };
