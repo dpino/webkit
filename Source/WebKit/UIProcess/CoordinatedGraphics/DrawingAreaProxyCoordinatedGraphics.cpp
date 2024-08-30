@@ -40,12 +40,8 @@
 #include "WebProcessProxy.h"
 #include <WebCore/Region.h>
 #include <optional>
-<<<<<<< HEAD
 #include <wtf/TZoneMallocInlines.h>
-||||||| parent of 71b683eebed7 (chore(webkit/): bootstrap build #2067)
-=======
 #include <wtf/Vector.h>
->>>>>>> 71b683eebed7 (chore(webkit/): bootstrap build #2067)
 
 #if PLATFORM(GTK)
 #include "WebKitWebViewBasePrivate.h"
