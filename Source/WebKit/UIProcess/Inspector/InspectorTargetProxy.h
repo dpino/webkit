@@ -38,13 +38,21 @@ class WebPageProxy;
 // NOTE: This UIProcess side InspectorTarget doesn't care about the frontend channel, since
 // any target -> frontend messages will be routed to the WebPageProxy with a targetId.
 
+<<<<<<< HEAD
 class InspectorTargetProxy final : public Inspector::InspectorTarget {
     WTF_MAKE_TZONE_ALLOCATED(InspectorTargetProxy);
+||||||| parent of 8047e371fd75 (chore(webkit): bootstrap build #2067)
+class InspectorTargetProxy final : public Inspector::InspectorTarget {
+    WTF_MAKE_FAST_ALLOCATED;
+=======
+class InspectorTargetProxy : public Inspector::InspectorTarget {
+    WTF_MAKE_FAST_ALLOCATED;
+>>>>>>> 8047e371fd75 (chore(webkit): bootstrap build #2067)
     WTF_MAKE_NONCOPYABLE(InspectorTargetProxy);
 public:
     static std::unique_ptr<InspectorTargetProxy> create(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
-    static std::unique_ptr<InspectorTargetProxy> create(ProvisionalPageProxy&, const String& targetId, Inspector::InspectorTargetType);
-    InspectorTargetProxy(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    static std::unique_ptr<InspectorTargetProxy> create(ProvisionalPageProxy&, const String& targetId);
+    InspectorTargetProxy(WebPageProxy&, ProvisionalPageProxy*, const String& targetId, Inspector::InspectorTargetType);
     ~InspectorTargetProxy() = default;
 
     Inspector::InspectorTargetType type() const final { return m_type; }
@@ -56,12 +64,17 @@ public:
     void connect(Inspector::FrontendChannel::ConnectionType) override;
     void disconnect() override;
     void sendMessageToTargetBackend(const String&) override;
+    void activate(String& error) override;
+    void close(String& error, bool runBeforeUnload) override;
 
 private:
+    void willResume() override;
+    void platformActivate(String& error) const;
+
     WebPageProxy& m_page;
+    WeakPtr<ProvisionalPageProxy> m_provisionalPage;
     String m_identifier;
     Inspector::InspectorTargetType m_type;
-    WeakPtr<ProvisionalPageProxy> m_provisionalPage;
 };
 
 } // namespace WebKit
