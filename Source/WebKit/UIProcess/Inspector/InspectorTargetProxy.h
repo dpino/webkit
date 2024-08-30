@@ -38,16 +38,8 @@ class WebPageProxy;
 // NOTE: This UIProcess side InspectorTarget doesn't care about the frontend channel, since
 // any target -> frontend messages will be routed to the WebPageProxy with a targetId.
 
-<<<<<<< HEAD
-class InspectorTargetProxy final : public Inspector::InspectorTarget {
-    WTF_MAKE_TZONE_ALLOCATED(InspectorTargetProxy);
-||||||| parent of 8047e371fd75 (chore(webkit): bootstrap build #2067)
-class InspectorTargetProxy final : public Inspector::InspectorTarget {
-    WTF_MAKE_FAST_ALLOCATED;
-=======
 class InspectorTargetProxy : public Inspector::InspectorTarget {
-    WTF_MAKE_FAST_ALLOCATED;
->>>>>>> 8047e371fd75 (chore(webkit): bootstrap build #2067)
+    WTF_MAKE_TZONE_ALLOCATED(InspectorTargetProxy);
     WTF_MAKE_NONCOPYABLE(InspectorTargetProxy);
 public:
     static std::unique_ptr<InspectorTargetProxy> create(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
