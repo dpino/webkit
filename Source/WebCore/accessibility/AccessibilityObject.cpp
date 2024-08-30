@@ -69,6 +69,7 @@
 #include "HTMLTableSectionElement.h"
 #include "HTMLTextAreaElement.h"
 #include "HitTestResult.h"
+#include "InspectorInstrumentation.h"
 #include "LocalFrame.h"
 #include "LocalizedStrings.h"
 #include "MathMLNames.h"
@@ -4008,10 +4009,23 @@ AccessibilityObjectInclusion AccessibilityObject::defaultObjectInclusion() const
     if (roleValue() == AccessibilityRole::ApplicationDialog)
         return AccessibilityObjectInclusion::IncludeObject;
 
-    return accessibilityPlatformIncludesObject();
+    AccessibilityObjectInclusion platformBehavior = accessibilityPlatformIncludesObject();
+    if (platformBehavior != AccessibilityObjectInclusion::DefaultBehavior) {
+        if (auto* page = this->page())
+            InspectorInstrumentation::maybeOverrideDefaultObjectInclusion(*page, platformBehavior);
+    }
+    return platformBehavior;
 }
+<<<<<<< HEAD
     
 bool AccessibilityObject::isIgnored() const
+||||||| parent of c65f0f754ea5 (chore(webkit/): bootstrap build #2067)
+    
+bool AccessibilityObject::accessibilityIsIgnored() const
+=======
+
+bool AccessibilityObject::accessibilityIsIgnored() const
+>>>>>>> c65f0f754ea5 (chore(webkit/): bootstrap build #2067)
 {
     AXComputedObjectAttributeCache* attributeCache = nullptr;
     auto* axObjectCache = this->axObjectCache();

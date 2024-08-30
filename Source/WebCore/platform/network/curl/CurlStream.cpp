@@ -35,9 +35,15 @@
 
 namespace WebCore {
 
+<<<<<<< HEAD
 WTF_MAKE_TZONE_ALLOCATED_IMPL(CurlStream);
 
 CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+||||||| parent of c65f0f754ea5 (chore(webkit/): bootstrap build #2067)
+CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+=======
+CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreCertificateErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+>>>>>>> c65f0f754ea5 (chore(webkit/): bootstrap build #2067)
     : m_scheduler(scheduler)
     , m_streamID(streamID)
 {
@@ -52,6 +58,9 @@ CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, UR
         m_curlHandle->disableServerTrustEvaluation();
 
     m_curlHandle->enableConnectionOnly();
+    if (ignoreCertificateErrors)
+        m_curlHandle->disableServerTrustEvaluation();
+
 
     auto errorCode = m_curlHandle->perform();
     if (errorCode != CURLE_OK) {
