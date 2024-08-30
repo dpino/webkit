@@ -14211,13 +14211,9 @@
 				BC7B6204129A0A6700D174A4 /* WebPageGroup.h */,
 				2D9EA3101A96D9EB002D2807 /* WebPageInjectedBundleClient.cpp */,
 				2D9EA30E1A96CBFF002D2807 /* WebPageInjectedBundleClient.h */,
-<<<<<<< HEAD
-				9B7F8A502C785725000057F3 /* WebPageLoadTiming.h */,
-||||||| parent of 0e503006a84e (chore(webkit/): bootstrap build #2067)
-=======
 				D71A943F2371F67E002C4D9E /* WebPageInspectorEmulationAgent.h */,
 				D71A94402371F67E002C4D9E /* WebPageInspectorInputAgent.h */,
->>>>>>> 0e503006a84e (chore(webkit/): bootstrap build #2067)
+				9B7F8A502C785725000057F3 /* WebPageLoadTiming.h */,
 				BC111B0B112F5E4F00337BAB /* WebPageProxy.cpp */,
 				BC032DCB10F4389F0058C15A /* WebPageProxy.h */,
 				BCBD38FA125BAB9A00D2C29F /* WebPageProxy.messages.in */,
