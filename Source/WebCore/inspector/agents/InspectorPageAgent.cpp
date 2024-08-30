@@ -110,17 +110,13 @@ namespace WebCore {
 
 using namespace Inspector;
 
-<<<<<<< HEAD
 WTF_MAKE_TZONE_ALLOCATED_IMPL(InspectorPageAgent);
 
-||||||| parent of 71b683eebed7 (chore(webkit/): bootstrap build #2067)
-=======
 static HashMap<String, Ref<DOMWrapperWorld>>& createdUserWorlds() {
     static NeverDestroyed<HashMap<String, Ref<DOMWrapperWorld>>> nameToWorld;
     return nameToWorld;
 }
 
->>>>>>> 71b683eebed7 (chore(webkit/): bootstrap build #2067)
 static bool decodeBuffer(std::span<const uint8_t> buffer, const String& textEncodingName, String* result)
 {
     if (buffer.data()) {
