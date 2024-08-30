@@ -102,6 +102,10 @@ public:
     WEBCORE_EXPORT void willComposite(LocalFrame&);
     WEBCORE_EXPORT void didComposite(LocalFrame&);
 
+    WEBCORE_EXPORT void pauseWhenShown();
+    WEBCORE_EXPORT void resumeIfPausedInNewWindow();
+    WEBCORE_EXPORT void didShowNewWindow();
+
     // Testing support.
     WEBCORE_EXPORT bool isUnderTest() const;
     void setIsUnderTest(bool isUnderTest) { m_isUnderTest = isUnderTest; }
@@ -155,6 +159,7 @@ private:
     bool m_isAutomaticInspection { false };
     bool m_pauseAfterInitialization = { false };
     bool m_didCreateLazyAgents { false };
+    bool m_pauseWhenShown { false };
 };
 
 } // namespace WebCore
