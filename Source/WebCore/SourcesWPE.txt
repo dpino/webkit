@@ -97,11 +97,6 @@ platform/wpe/DragImageWPE.cpp
 platform/wpe/PlatformScreenWPE.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
-<<<<<<< HEAD
-||||||| parent of 0e503006a84e (chore(webkit/): bootstrap build #2067)
-
-Modules/mediastream/RTCRtpSFrameTransformerOpenSSL.cpp
-=======
 
 // Playwright: begin.
 platform/wpe/SelectionData.cpp
@@ -111,4 +106,3 @@ JSSpeechSynthesisErrorEvent.cpp
 JSSpeechSynthesisErrorEventInit.cpp
 JSSpeechSynthesisEventInit.cpp
 // Playwright: end.
->>>>>>> 0e503006a84e (chore(webkit/): bootstrap build #2067)
