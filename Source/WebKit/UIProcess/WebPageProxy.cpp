@@ -3583,41 +3583,21 @@ void WebPageProxy::performDragOperation(DragData& dragData, const String& dragSt
     if (!hasRunningProcess())
         return;
 
-<<<<<<< HEAD
-#if PLATFORM(GTK)
+#if PLATFORM(GTK) || PLATFORM(WPE)
     URL url { dragData.asURL() };
     if (url.protocolIsFile())
         protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*this, url.string(), [] { });
     else if (!dragData.fileNames().isEmpty())
         websiteDataStore().protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::AllowFilesAccessFromWebProcess(siteIsolatedProcess().coreProcessIdentifier(), dragData.fileNames()), [] { });
 
-||||||| parent of f792d48391db (chore(webkit/): bootstrap build #2067)
-#if PLATFORM(GTK)
-=======
-#if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> f792d48391db (chore(webkit/): bootstrap build #2067)
     performDragControllerAction(DragControllerAction::PerformDragOperation, dragData);
-<<<<<<< HEAD
-#endif
-#if PLATFORM(COCOA)
-||||||| parent of f792d48391db (chore(webkit/): bootstrap build #2067)
-#endif
-#if PLATFORM(COCOA)
-    if (!hasRunningProcess())
-        return;
-=======
 #elif PLATFORM(COCOA)
-    if (!hasRunningProcess())
-        return;
->>>>>>> f792d48391db (chore(webkit/): bootstrap build #2067)
     grantAccessToCurrentPasteboardData(dragStorageName, [this, protectedThis = Ref { *this }, dragStorageName, dragData = WTFMove(dragData), sandboxExtensionHandle = WTFMove(sandboxExtensionHandle), sandboxExtensionsForUpload = WTFMove(sandboxExtensionsForUpload)] () mutable {
         sendWithAsyncReply(Messages::WebPage::PerformDragOperation(dragData, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload)), [this, protectedThis = Ref { *this }] (bool handled) {
             protectedPageClient()->didPerformDragOperation(handled);
         });
     });
 #else
-    if (!hasRunningProcess())
-        return;
     sendWithAsyncReply(Messages::WebPage::PerformDragOperation(dragData, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload)), [this, protectedThis = Ref { *this }] (bool handled) {
         protectedPageClient()->didPerformDragOperation(handled);
     });
@@ -3642,62 +3622,16 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
         dragData.setClientPosition(remoteUserInputEventData->transformedPoint);
         performDragControllerAction(action, dragData, remoteUserInputEventData->targetFrameID);
     };
-#if PLATFORM(GTK)
+#if PLATFORM(GTK) || PLATFORM(WPE)
     ASSERT(dragData.platformData());
     sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
 #else
     auto filenames = dragData.fileNames();
 
-<<<<<<< HEAD
     auto afterAllowed = [this, weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
         if (!weakThis)
             return;
 
-<<<<<<< HEAD
-||||||| parent of f792d48391db (chore(webkit/): bootstrap build #2067)
-#if PLATFORM(GTK)
-        UNUSED_PARAM(frameID);
-        String url = dragData.asURL();
-        if (!url.isEmpty()) {
-            protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*weakThis, url, [this, weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-                if (!weakThis)
-                    return;
-
-                ASSERT(dragData.platformData());
-                sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-            });
-            return;
-        }
-
-        ASSERT(dragData.platformData());
-        sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-#else
-=======
-#if PLATFORM(GTK)
-||||||| parent of 6de40b04897e (chore(webkit/): bootstrap build #2067)
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK)
-=======
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> 6de40b04897e (chore(webkit/): bootstrap build #2067)
-        UNUSED_PARAM(frameID);
-        String url = dragData.asURL();
-        if (!url.isEmpty()) {
-            protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*weakThis, url, [this, weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-                if (!weakThis)
-                    return;
-
-                ASSERT(dragData.platformData());
-                sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-            });
-            return;
-        }
-
-        ASSERT(dragData.platformData());
-        sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-#else
->>>>>>> f792d48391db (chore(webkit/): bootstrap build #2067)
         sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(frameID, action, dragData), WTFMove(completionHandler));
     };
 
