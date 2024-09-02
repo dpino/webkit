@@ -3579,19 +3579,11 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
     };
     auto filenames = dragData.fileNames();
 
-<<<<<<< HEAD
     auto afterAllowed = [this, weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
         if (!weakThis)
             return;
 
-#if PLATFORM(GTK)
-||||||| parent of 6de40b04897e (chore(webkit/): bootstrap build #2067)
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK)
-=======
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
 #if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> 6de40b04897e (chore(webkit/): bootstrap build #2067)
         UNUSED_PARAM(frameID);
         String url = dragData.asURL();
         if (!url.isEmpty()) {
