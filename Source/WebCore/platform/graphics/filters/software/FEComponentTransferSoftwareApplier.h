@@ -23,7 +23,12 @@
 #pragma once
 
 #include "FilterEffectApplier.h"
+<<<<<<< HEAD
 #include <wtf/TZoneMalloc.h>
+||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
+=======
+#include "PixelBuffer.h"
+>>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
 
 namespace WebCore {
 

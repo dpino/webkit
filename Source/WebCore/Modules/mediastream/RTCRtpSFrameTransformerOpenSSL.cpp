@@ -209,4 +209,10 @@ void RTCRtpSFrameTransformer::updateAuthenticationSize()
 
 } // namespace WebCore
 
+<<<<<<< HEAD
 #endif // USE(GSTREAMER_WEBRTC)
+||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
+#endif // ENABLE(WEB_RTC) && (PLATFORM(GTK) || PLATFORM(WPE))
+=======
+#endif // #if USE(GSTREAMER_WEBRTC)
+>>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
