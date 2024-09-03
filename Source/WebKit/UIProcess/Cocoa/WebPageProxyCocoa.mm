@@ -38,22 +38,14 @@
 #import "InsertTextOptions.h"
 #import "LoadParameters.h"
 #import "MessageSenderInlines.h"
-<<<<<<< HEAD
 #import "NativeWebGestureEvent.h"
 #import "NativeWebKeyboardEvent.h"
 #import "NativeWebMouseEvent.h"
 #import "NavigationState.h"
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-=======
 #import "NetworkProcessMessages.h"
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
 #import "PageClient.h"
-<<<<<<< HEAD
-#import "PlatformXRSystem.h"
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-=======
 #import "PasteboardTypes.h"
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
+#import "PlatformXRSystem.h"
 #import "PlaybackSessionManagerProxy.h"
 #import "QuickLookThumbnailLoader.h"
 #import "RemoteLayerTreeTransaction.h"

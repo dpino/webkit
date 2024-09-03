@@ -35,15 +35,9 @@
 
 namespace WebCore {
 
-<<<<<<< HEAD
 WTF_MAKE_TZONE_ALLOCATED_IMPL(CurlStream);
 
-CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
-=======
 CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreCertificateErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
     : m_scheduler(scheduler)
     , m_streamID(streamID)
 {

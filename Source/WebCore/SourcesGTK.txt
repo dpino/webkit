@@ -111,11 +111,6 @@ platform/unix/LoggingUnix.cpp
 platform/unix/SharedMemoryUnix.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
-<<<<<<< HEAD
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-
-Modules/mediastream/RTCRtpSFrameTransformerOpenSSL.cpp
-=======
 
 // Playwright: begin.
 JSSpeechSynthesisErrorCode.cpp
@@ -123,4 +118,3 @@ JSSpeechSynthesisErrorEvent.cpp
 JSSpeechSynthesisErrorEventInit.cpp
 JSSpeechSynthesisEventInit.cpp
 // Playwright: end.
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)

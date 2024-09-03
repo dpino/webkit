@@ -193,12 +193,8 @@
 #include <WebCore/AppHighlight.h>
 #include <WebCore/ArchiveError.h>
 #include <WebCore/BitmapImage.h>
-<<<<<<< HEAD
 #include <WebCore/CaptureDeviceManager.h>
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-=======
 #include <WebCore/Color.h>
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
 #include <WebCore/CompositionHighlight.h>
 #include <WebCore/CrossSiteNavigationDataTransfer.h>
 #include <WebCore/DOMPasteAccess.h>
@@ -3589,33 +3585,15 @@ void WebPageProxy::performDragOperation(DragData& dragData, const String& dragSt
     if (!hasRunningProcess())
         return;
 
-<<<<<<< HEAD
-#if PLATFORM(GTK)
+#if PLATFORM(GTK) || PLATFORM(WPE)
     URL url { dragData.asURL() };
     if (url.protocolIsFile())
         protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*this, url.string(), [] { });
     else if (!dragData.fileNames().isEmpty())
         websiteDataStore().protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::AllowFilesAccessFromWebProcess(siteIsolatedProcess().coreProcessIdentifier(), dragData.fileNames()), [] { });
 
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-#if PLATFORM(GTK)
-=======
-#if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
     performDragControllerAction(DragControllerAction::PerformDragOperation, dragData);
-<<<<<<< HEAD
-#endif
-#if PLATFORM(COCOA)
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-#endif
-#if PLATFORM(COCOA)
-    if (!hasRunningProcess())
-        return;
-=======
 #elif PLATFORM(COCOA)
-    if (!hasRunningProcess())
-        return;
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
     grantAccessToCurrentPasteboardData(dragStorageName, [this, protectedThis = Ref { *this }, dragStorageName, dragData = WTFMove(dragData), sandboxExtensionHandle = WTFMove(sandboxExtensionHandle), sandboxExtensionsForUpload = WTFMove(sandboxExtensionsForUpload)] () mutable {
         sendWithAsyncReply(Messages::WebPage::PerformDragOperation(dragData, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload)), [this, protectedThis = Ref { *this }] (bool handled) {
             protectedPageClient()->didPerformDragOperation(handled);
@@ -3648,36 +3626,14 @@ void WebPageProxy::performDragControllerAction(DragControllerAction action, Drag
         dragData.setClientPosition(remoteUserInputEventData->transformedPoint);
         performDragControllerAction(action, dragData, remoteUserInputEventData->targetFrameID);
     };
-#if PLATFORM(GTK)
+#if PLATFORM(GTK) || PLATFORM(WPE)
     ASSERT(dragData.platformData());
     sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
 #else
     auto filenames = dragData.fileNames();
 
-<<<<<<< HEAD
     auto afterAllowed = [this, weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
         if (!weakThis)
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK)
-        UNUSED_PARAM(frameID);
-        String url = dragData.asURL();
-        if (!url.isEmpty()) {
-            weakThis->protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*weakThis, url, [weakThis = WTFMove(weakThis), frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-                ASSERT(dragData.platformData());
-                weakThis->sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-            });
-=======
-    auto afterAllowed = [weakThis = WeakPtr { *this }, frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-#if PLATFORM(GTK) || PLATFORM(WPE)
-        UNUSED_PARAM(frameID);
-        String url = dragData.asURL();
-        if (!url.isEmpty()) {
-            weakThis->protectedLegacyMainFrameProcess()->assumeReadAccessToBaseURL(*weakThis, url, [weakThis = WTFMove(weakThis), frameID, action, dragData = WTFMove(dragData), completionHandler = WTFMove(completionHandler)] () mutable {
-                ASSERT(dragData.platformData());
-                weakThis->sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(action, dragData.clientPosition(), dragData.globalPosition(), dragData.draggingSourceOperationMask(), *dragData.platformData(), dragData.flags()), WTFMove(completionHandler));
-            });
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
             return;
 
         sendWithAsyncReplyToProcessContainingFrame(frameID, Messages::WebPage::PerformDragControllerAction(frameID, action, dragData), WTFMove(completionHandler));

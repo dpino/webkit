@@ -4013,16 +4013,8 @@ AccessibilityObjectInclusion AccessibilityObject::defaultObjectInclusion() const
     }
     return platformBehavior;
 }
-<<<<<<< HEAD
     
 bool AccessibilityObject::isIgnored() const
-||||||| parent of 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
-    
-bool AccessibilityObject::accessibilityIsIgnored() const
-=======
-
-bool AccessibilityObject::accessibilityIsIgnored() const
->>>>>>> 2a61fb5761c5 (chore(webkit): bootstrap build #2068)
 {
     AXComputedObjectAttributeCache* attributeCache = nullptr;
     auto* axObjectCache = this->axObjectCache();
