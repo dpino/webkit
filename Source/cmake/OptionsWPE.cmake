@@ -23,6 +23,10 @@ find_package(WebP REQUIRED COMPONENTS demux)
 find_package(WPE REQUIRED)
 find_package(ZLIB REQUIRED)
 
+if (DEFINED ENV{PLAYWRIGHT_USE_LIBCXX})
+    WEBKIT_PREPEND_GLOBAL_COMPILER_FLAGS(-stdlib=libc++)
+endif ()
+
 # TODO(277627): Remove once the SDKs include the package.
 if (DEVELOPER_MODE)
     set(USE_SYSTEM_SYSPROF_CAPTURE_DEFAULT OFF)
