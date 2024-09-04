@@ -56,16 +56,8 @@ WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, WebPageProxyIdentifi
     if (networkSession() && networkSession()->networkProcess().localhostAliasesForTesting().contains<StringViewHashTranslator>(m_request.url().host()))
         localhostAlias = WebCore::CurlStream::LocalhostAlias::Enable;
 
-<<<<<<< HEAD
-    m_streamID = m_scheduler.createStream(request.url(), *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
-    m_channel->didSendHandshakeRequest(WebCore::ResourceRequest(m_request));
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-    m_streamID = m_scheduler.createStream(request.url(), *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
-    m_channel.didSendHandshakeRequest(WebCore::ResourceRequest(m_request));
-=======
     m_streamID = m_scheduler.createStream(request.url(), ignoreCertificateErrors, *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
-    m_channel.didSendHandshakeRequest(WebCore::ResourceRequest(m_request));
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
+    m_channel->didSendHandshakeRequest(WebCore::ResourceRequest(m_request));
 }
 
 WebSocketTask::~WebSocketTask()

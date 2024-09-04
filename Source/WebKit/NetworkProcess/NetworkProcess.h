@@ -33,12 +33,8 @@
 #include "DownloadManager.h"
 #include "NetworkContentRuleListManager.h"
 #include "QuotaIncreaseRequestIdentifier.h"
-<<<<<<< HEAD
-#include "UseDownloadPlaceholder.h"
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-=======
 #include "StorageNamespaceIdentifier.h"
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
+#include "UseDownloadPlaceholder.h"
 #include "WebPageProxyIdentifier.h"
 #include "WebResourceLoadStatisticsStore.h"
 #include "WebsiteData.h"

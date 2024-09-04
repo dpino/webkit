@@ -90,15 +90,9 @@ void DownloadProxy::cancel(CompletionHandler<void(API::Data*)>&& completionHandl
         m_dataStore->networkProcess().sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler), instrumentation] (std::span<const uint8_t> resumeData) mutable {
             m_legacyResumeData = createData(resumeData);
             completionHandler(m_legacyResumeData.get());
-<<<<<<< HEAD
-            m_downloadProxyMap->downloadFinished(*this);
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-            m_downloadProxyMap.downloadFinished(*this);
-=======
             if (instrumentation)
                 instrumentation->downloadFinished(m_uuid, "canceled"_s);
-            m_downloadProxyMap.downloadFinished(*this);
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
+            m_downloadProxyMap->downloadFinished(*this);
         });
     } else
         completionHandler(nullptr);
