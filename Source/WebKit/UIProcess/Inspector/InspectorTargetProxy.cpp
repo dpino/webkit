@@ -102,8 +102,8 @@ void InspectorTargetProxy::didCommitProvisionalTarget()
 
 void InspectorTargetProxy::willResume()
 {
-    if (m_page.hasRunningProcess())
-        m_page.legacyMainFrameProcess().send(Messages::WebPage::ResumeInspectorIfPausedInNewWindow(), m_page.webPageIDInMainFrameProcess());
+    if (m_page->hasRunningProcess())
+        m_page->legacyMainFrameProcess().send(Messages::WebPage::ResumeInspectorIfPausedInNewWindow(), m_page->webPageIDInMainFrameProcess());
 }
 
 void InspectorTargetProxy::activate(String& error)
@@ -120,9 +120,9 @@ void InspectorTargetProxy::close(String& error, bool runBeforeUnload)
         return InspectorTarget::close(error, runBeforeUnload);
 
     if (runBeforeUnload)
-        m_page.tryClose();
+        m_page->tryClose();
     else
-        m_page.closePage();
+        m_page->closePage();
 }
 
 bool InspectorTargetProxy::isProvisional() const

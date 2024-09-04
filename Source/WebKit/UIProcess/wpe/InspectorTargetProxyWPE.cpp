@@ -33,7 +33,7 @@ namespace WebKit {
 
 void InspectorTargetProxy::platformActivate(String& error) const
 {
-    struct wpe_view_backend* backend = m_page.viewBackend();
+    struct wpe_view_backend* backend = m_page->viewBackend();
     wpe_view_backend_add_activity_state(backend, wpe_view_activity_state_visible | wpe_view_activity_state_focused | wpe_view_activity_state_in_window);
 }
 

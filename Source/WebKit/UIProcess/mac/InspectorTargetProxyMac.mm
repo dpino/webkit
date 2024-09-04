@@ -33,7 +33,7 @@ namespace WebKit {
 
 void InspectorTargetProxy::platformActivate(String& error) const
 {
-    NSWindow* window = m_page.platformWindow();
+    NSWindow* window = m_page->platformWindow();
     [window makeKeyAndOrderFront:nil];
 }
 
