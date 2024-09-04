@@ -60,17 +60,11 @@ public:
     void close(String& error, bool runBeforeUnload) override;
 
 private:
-<<<<<<< HEAD
-    WeakRef<WebPageProxy> m_page;
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-    WebPageProxy& m_page;
-=======
     void willResume() override;
     void platformActivate(String& error) const;
 
-    WebPageProxy& m_page;
+    WeakRef<WebPageProxy> m_page;
     WeakPtr<ProvisionalPageProxy> m_provisionalPage;
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
     String m_identifier;
     Inspector::InspectorTargetType m_type;
 };

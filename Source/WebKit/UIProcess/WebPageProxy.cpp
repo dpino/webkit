@@ -1873,11 +1873,6 @@ WebProcessProxy& WebPageProxy::ensureRunningProcess()
     return m_legacyMainFrameProcess;
 }
 
-<<<<<<< HEAD
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, IsPerformingHTTPFallback isPerformingHTTPFallback, API::Object* userData)
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData, IsPerformingHTTPFallback isPerformingHTTPFallback)
-=======
 RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceRequest&& request, WebFrameProxy* frame)
 {
     if (!frame || frame == mainFrame())
@@ -1893,8 +1888,7 @@ RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceR
     return navigation;
 }
 
-RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, API::Object* userData, IsPerformingHTTPFallback isPerformingHTTPFallback)
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
+RefPtr<API::Navigation> WebPageProxy::loadRequest(ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, IsPerformingHTTPFallback isPerformingHTTPFallback, API::Object* userData)
 {
     if (m_isClosed)
         return nullptr;
@@ -3611,20 +3605,10 @@ void WebPageProxy::performDragOperation(DragData& dragData, const String& dragSt
             protectedPageClient()->didPerformDragOperation(handled);
         });
     });
-<<<<<<< HEAD
 #else
     sendWithAsyncReply(Messages::WebPage::PerformDragOperation(dragData, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload)), [this, protectedThis = Ref { *this }] (bool handled) {
         protectedPageClient()->didPerformDragOperation(handled);
     });
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-=======
-#else
-    if (!hasRunningProcess())
-        return;
-    sendWithAsyncReply(Messages::WebPage::PerformDragOperation(dragData, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload)), [this, protectedThis = Ref { *this }] (bool handled) {
-        protectedPageClient()->didPerformDragOperation(handled);
-    });
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
 #endif
 }
 
@@ -10807,7 +10791,6 @@ bool WebPageProxy::useGPUProcessForDOMRenderingEnabled() const
 
 WebPageCreationParameters WebPageProxy::creationParameters(WebProcessProxy& process, DrawingAreaProxy& drawingArea, WebCore::FrameIdentifier mainFrameIdentifier, std::optional<RemotePageParameters>&& remotePageParameters, bool isProcessSwap, RefPtr<API::WebsitePolicies>&& websitePolicies)
 {
-<<<<<<< HEAD
     Ref userContentController = m_userContentController;
     if (RefPtr userContentControllerFromWebsitePolicies = websitePolicies ? websitePolicies->userContentController() : nullptr)
         userContentController = userContentControllerFromWebsitePolicies.releaseNonNull();
@@ -10817,12 +10800,6 @@ WebPageCreationParameters WebPageProxy::creationParameters(WebProcessProxy& proc
         .pageGroupData = m_pageGroup->data(),
         .userContentControllerParameters = userContentController->parameters()
     };
-||||||| parent of 94820bbad720 (chore(webkit): bootstrap build #2069)
-    WebPageCreationParameters parameters;
-=======
-
-    WebPageCreationParameters parameters;
->>>>>>> 94820bbad720 (chore(webkit): bootstrap build #2069)
 
     parameters.processDisplayName = configuration().processDisplayName();
 
