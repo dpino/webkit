@@ -1036,7 +1036,7 @@ std::optional<FrameIdentifier> InspectorPageAgent::parseFrameID(String frameID)
     String frameIDString = frameID.substring(dotPos + 1);
     uint64_t frameIDNumber = strtoull(frameIDString.ascii().data(), 0, 10);
     return WebCore::FrameIdentifier {
-       LegacyNullableObjectIdentifier<WebCore::FrameIdentifierType>(frameIDNumber),
+       ObjectIdentifier<WebCore::FrameIdentifierType>(frameIDNumber),
        processID
     };
 }
