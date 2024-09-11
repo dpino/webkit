@@ -32,7 +32,14 @@ PACKAGES+=(
     libxtst-dev
     unifdef
     xfonts-utils
+<<<<<<< HEAD
     $(aptIfExists libgtk-4-dev)
+||||||| parent of 08a5f0e8f429 (chore(webkit): bootstrap build #2073)
+=======
+    $(aptIfElse libenchant-dev libenchant-2-dev)
+    $(aptIfExists libwpe-1.0-dev)
+    $(aptIfExists libwpebackend-fdo-1.0-dev)
+>>>>>>> 08a5f0e8f429 (chore(webkit): bootstrap build #2073)
 
     # These are dependencies necessary for running tests.
     cups-daemon
