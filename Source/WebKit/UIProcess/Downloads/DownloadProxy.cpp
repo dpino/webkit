@@ -172,7 +172,9 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
             if (auto handle = SandboxExtension::createHandle(destination, SandboxExtension::Type::ReadWrite))
                 sandboxExtensionHandle = WTFMove(*handle);
         }
-        completionHandler(destination, WTFMove(sandboxExtensionHandle), AllowOverwrite::Yes, WebKit::UseDownloadPlaceholder::No);
+        m_client->decidePlaceholderPolicy(*this, [completionHandler = WTFMove(completionHandler), destination = WTFMove(destination), sandboxExtensionHandle = WTFMove(sandboxExtensionHandle)] (WebKit::UseDownloadPlaceholder usePlaceholder, const URL& url) mutable {
+            completionHandler(destination, WTFMove(sandboxExtensionHandle), AllowOverwrite::Yes, WebKit::UseDownloadPlaceholder::No, url);
+        });
         return;
     }
 
