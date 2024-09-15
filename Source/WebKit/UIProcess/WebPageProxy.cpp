@@ -1909,7 +1909,7 @@ RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceR
     loadParameters.request = WTFMove(request);
     loadParameters.shouldOpenExternalURLsPolicy = WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow;
     loadParameters.shouldTreatAsContinuingLoad = ShouldTreatAsContinuingLoad::No;
-    m_legacyMainFrameProcess->send(Messages::WebPage::LoadRequestInFrameForInspector(WTFMove(loadParameters), frame->frameID()), internals().webPageID);
+    m_legacyMainFrameProcess->send(Messages::WebPage::LoadRequestInFrameForInspector(WTFMove(loadParameters), frame->frameID()), m_webPageID);
     return navigation;
 }
 
