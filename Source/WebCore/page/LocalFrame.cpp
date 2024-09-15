@@ -1355,7 +1355,6 @@ OptionSet<AdvancedPrivacyProtections> LocalFrame::advancedPrivacyProtections() c
     return { };
 }
 
-<<<<<<< HEAD
 SandboxFlags LocalFrame::effectiveSandboxFlags() const
 {
     auto effectiveSandboxFlags = m_sandboxFlags;
@@ -1370,8 +1369,6 @@ void LocalFrame::updateSandboxFlags(SandboxFlags flags, NotifyUIProcess notifyUI
     m_sandboxFlags = flags;
 }
 
-||||||| parent of 694cac415dbe (chore(webkit): bootstrap build #2075)
-=======
 #if !PLATFORM(IOS_FAMILY)
 
 void LocalFrame::betterApproximateNode(const IntPoint& testPoint, const NodeQualifier& nodeQualifierFunction, Node*& best, Node* failedNode, IntPoint& bestPoint, IntRect& bestRect, const IntRect& testRect)
@@ -1728,7 +1725,6 @@ Node* LocalFrame::nodeRespondingToScrollWheelEvents(const FloatPoint& viewportLo
 
 #endif // !PLATFORM(IOS_FAMILY)
 
->>>>>>> 694cac415dbe (chore(webkit): bootstrap build #2075)
 } // namespace WebCore
 
 #undef FRAME_RELEASE_LOG_ERROR
