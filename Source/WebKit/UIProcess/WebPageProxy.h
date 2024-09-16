@@ -828,19 +828,13 @@ public:
 
     void setPageLoadStateObserver(std::unique_ptr<PageLoadStateObserverBase>&&);
 
-<<<<<<< HEAD
-    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags);
-||||||| parent of a23bdbe532b9 (chore(webkit): bootstrap build #2076)
-    void initializeWebPage(const WebCore::Site&);
-=======
     void setAuthCredentialsForAutomation(std::optional<WebCore::Credential>&&, std::optional<URL>&&);
     void setPermissionsForAutomation(const HashMap<String, HashSet<String>>&);
     void setOrientationOverride(std::optional<int>&& angle);
     void setActiveForAutomation(std::optional<bool> active);
     void logToStderr(const String& str);
 
-    void initializeWebPage(const WebCore::Site&);
->>>>>>> a23bdbe532b9 (chore(webkit): bootstrap build #2076)
+    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags);
     void setDrawingArea(std::unique_ptr<DrawingAreaProxy>&&);
 
     WeakPtr<SecKeyProxyStore> secKeyProxyStore(const WebCore::AuthenticationChallenge&);

@@ -33,28 +33,10 @@ void WebPreferences::platformInitializeStore()
     setAcceleratedCompositingEnabled(true);
     setForceCompositingMode(true);
     setThreadedScrollingEnabled(true);
-<<<<<<< HEAD
-||||||| parent of a23bdbe532b9 (chore(webkit): bootstrap build #2076)
-
-#if USE(SKIA)
-    // FIXME: Expose this as a setting when we switch to Skia.
-    static const char* disableAccelerated2DCanvas = getenv("WEBKIT_DISABLE_ACCELERATED_2D_CANVAS");
-    if (disableAccelerated2DCanvas && strcmp(disableAccelerated2DCanvas, "0"))
-        setCanvasUsesAcceleratedDrawing(false);
-#endif
-=======
 
     // Playwright override begin
-     setThreadedScrollingEnabled(false);
+    setThreadedScrollingEnabled(false);
     // Playwright override end
-
-#if USE(SKIA)
-    // FIXME: Expose this as a setting when we switch to Skia.
-    static const char* disableAccelerated2DCanvas = getenv("WEBKIT_DISABLE_ACCELERATED_2D_CANVAS");
-    if (disableAccelerated2DCanvas && strcmp(disableAccelerated2DCanvas, "0"))
-        setCanvasUsesAcceleratedDrawing(false);
-#endif
->>>>>>> a23bdbe532b9 (chore(webkit): bootstrap build #2076)
 }
 
 } // namespace WebKit

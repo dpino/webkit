@@ -86,14 +86,8 @@ static RefPtr<API::Data> createData(std::span<const uint8_t> data)
 void DownloadProxy::cancel(CompletionHandler<void(API::Data*)>&& completionHandler)
 {
     if (m_dataStore) {
-<<<<<<< HEAD
-        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (std::span<const uint8_t> resumeData) mutable {
-||||||| parent of a23bdbe532b9 (chore(webkit): bootstrap build #2076)
-        m_dataStore->networkProcess().sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (std::span<const uint8_t> resumeData) mutable {
-=======
         auto* instrumentation = m_dataStore->downloadInstrumentation();
-        m_dataStore->networkProcess().sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler), instrumentation] (std::span<const uint8_t> resumeData) mutable {
->>>>>>> a23bdbe532b9 (chore(webkit): bootstrap build #2076)
+        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler), instrumentation] (std::span<const uint8_t> resumeData) mutable {
             m_legacyResumeData = createData(resumeData);
             completionHandler(m_legacyResumeData.get());
             if (instrumentation)
