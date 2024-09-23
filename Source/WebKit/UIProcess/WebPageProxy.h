@@ -926,19 +926,9 @@ public:
     void clearSelection(std::optional<WebCore::FrameIdentifier> = std::nullopt);
     void restoreSelectionInFocusedEditableElement();
 
-<<<<<<< HEAD
     PageClient* pageClient() const;
     RefPtr<PageClient> protectedPageClient() const;
-||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
-    PageClient& pageClient() const;
-    Ref<PageClient> protectedPageClient() const;
-    RefPtr<PageClient> optionalProtectedPageClient() const;
-=======
-    PageClient& pageClient() const;
-    Ref<PageClient> protectedPageClient() const;
-    RefPtr<PageClient> optionalProtectedPageClient() const;
     bool hasPageClient() const { return !!m_pageClient; }
->>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
 
     void setViewNeedsDisplay(const WebCore::Region&);
     void requestScroll(const WebCore::FloatPoint& scrollPosition, const WebCore::IntPoint& scrollOrigin, WebCore::ScrollIsAnimated);

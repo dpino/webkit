@@ -3707,39 +3707,25 @@ void WebPageProxy::didPerformDragControllerAction(std::optional<WebCore::DragOpe
     m_currentDragNumberOfFilesToBeAccepted = numberOfItemsToBeAccepted;
     internals().currentDragCaretEditableElementRect = editableElementRect;
     setDragCaretRect(insertionRect);
-<<<<<<< HEAD
     if (RefPtr pageClient = this->pageClient())
         pageClient->didPerformDragControllerAction();
-||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
-    protectedPageClient()->didPerformDragControllerAction();
-=======
-    protectedPageClient()->didPerformDragControllerAction();
     m_dragEventsQueued--;
     if (m_dragEventsQueued == 0 && internals().mouseEventQueue.isEmpty())
         m_inspectorController->didProcessAllPendingMouseEvents();
->>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
 }
 
 #if PLATFORM(GTK) || PLATFORM(WPE)
 void WebPageProxy::startDrag(SelectionData&& selectionData, OptionSet<WebCore::DragOperation> dragOperationMask, std::optional<ShareableBitmap::Handle>&& dragImageHandle, IntPoint&& dragImageHotspot)
 {
-<<<<<<< HEAD
-    if (RefPtr pageClient = this->pageClient()) {
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-        pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
-    }
-||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
-    RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-    protectedPageClient()->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
-
-=======
     if (m_interceptDrags) {
         m_dragSelectionData = WTFMove(selectionData);
         m_dragSourceOperationMask = dragOperationMask;
     } else {
 #if PLATFORM(GTK)
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-        protectedPageClient()->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
+        if (RefPtr pageClient = this->pageClient()) {
+            RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
+            pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
+        }
 #endif
     }
     didStartDrag();
@@ -3753,7 +3739,6 @@ void WebPageProxy::startDrag(WebCore::DragDataMap&& dragDataMap)
         m_dragSelectionData = WTFMove(dragDataMap);
         m_dragSourceOperationMask = WebCore::anyDragOperation();
     }
->>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
     didStartDrag();
 }
 #endif
