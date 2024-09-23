@@ -169,7 +169,7 @@ void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, 
 {
     page.callAfterNextPresentationUpdate([protectedPage = Ref{ page }, clip = WTFMove(clip), nominalResolution, completionHandler = WTFMove(completionHandler)]() mutable {
 #if PLATFORM(GTK)
-        RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+        RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient()->takeViewSnapshot(WTFMove(clip), nominalResolution);
         if (viewSnapshot) {
             std::optional<String> data = WebAutomationSession::platformGetBase64EncodedPNGData(*viewSnapshot);
             if (data) {
@@ -179,11 +179,11 @@ void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, 
         }
 #elif PLATFORM(WPE)
 #if USE(SKIA)
-        sk_sp<SkImage> protectPtr = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+        sk_sp<SkImage> protectPtr = protectedPage->pageClient()->takeViewSnapshot(WTFMove(clip), nominalResolution);
         SkImage* surface = protectPtr.get();
 #elif USE(CAIRO)
         cairo_surface_t* surface = nullptr;
-        RefPtr<cairo_surface_t> protectPtr = protectedPage->pageClient().takeViewSnapshot(WTFMove(clip), nominalResolution);
+        RefPtr<cairo_surface_t> protectPtr = protectedPage->pageClient()->takeViewSnapshot(WTFMove(clip), nominalResolution);
         surface = protectPtr.get();
 #endif
         if (surface) {
