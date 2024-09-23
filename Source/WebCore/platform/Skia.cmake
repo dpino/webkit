@@ -13,6 +13,13 @@ list(APPEND WebCore_PRIVATE_FRAMEWORK_HEADERS
 
     platform/graphics/skia/GraphicsContextSkia.h
     platform/graphics/skia/ImageBufferSkiaBackend.h
+<<<<<<< HEAD
+||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
+    platform/graphics/skia/SkiaAcceleratedBufferPool.h
+=======
+    platform/graphics/skia/ImageBufferUtilitiesSkia.h
+    platform/graphics/skia/SkiaAcceleratedBufferPool.h
+>>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
     platform/graphics/skia/SkiaHarfBuzzFont.h
     platform/graphics/skia/SkiaHarfBuzzFontCache.h
 )

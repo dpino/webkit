@@ -429,7 +429,13 @@
 #define HAVE_FOUNDATION_WITH_SAME_SITE_COOKIE_SUPPORT 1
 #endif
 
+<<<<<<< HEAD
 #if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(HAIKU) || PLATFORM(WPE)
+||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
+#if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)
+=======
+#if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE) || PLATFORM(WIN)
+>>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
 #define HAVE_OS_DARK_MODE_SUPPORT 1
 #endif
 
@@ -1242,7 +1248,8 @@
 #endif
 
 #if PLATFORM(MAC)
-#define HAVE_GPU_AVAILABILITY_CHECK 1
+// Playwright: disable the check to make WebGL always work.
+#define HAVE_GPU_AVAILABILITY_CHECK 0
 #endif
 
 #if !defined(HAVE_LOCKDOWN_MODE_PDF_ADDITIONS) && \
