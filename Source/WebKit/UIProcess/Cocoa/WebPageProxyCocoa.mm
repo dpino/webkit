@@ -319,12 +319,6 @@ bool WebPageProxy::scrollingUpdatesDisabledForTesting()
 
 void WebPageProxy::startDrag(const DragItem& dragItem, ShareableBitmap::Handle&& dragImageHandle)
 {
-<<<<<<< HEAD
-    if (RefPtr pageClient = this->pageClient())
-        pageClient->startDrag(dragItem, WTFMove(dragImageHandle));
-||||||| parent of 64b9da9a8214 (chore(webkit): bootstrap build #2081)
-    protectedPageClient()->startDrag(dragItem, WTFMove(dragImageHandle));
-=======
     if (m_interceptDrags) {
         NSPasteboard *pasteboard = [NSPasteboard pasteboardWithName: m_overrideDragPasteboardName];
 
@@ -356,8 +350,8 @@ void WebPageProxy::startDrag(const DragItem& dragItem, ShareableBitmap::Handle&&
         return;
     }
 
-    protectedPageClient()->startDrag(dragItem, WTFMove(dragImageHandle));
->>>>>>> 64b9da9a8214 (chore(webkit): bootstrap build #2081)
+    if (RefPtr pageClient = this->pageClient())
+        pageClient->startDrag(dragItem, WTFMove(dragImageHandle));
 }
 
 void WebPageProxy::releaseInspectorDragPasteboard() {
