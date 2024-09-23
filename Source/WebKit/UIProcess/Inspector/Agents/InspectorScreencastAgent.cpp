@@ -334,7 +334,7 @@ void InspectorScreencastAgent::encodeFrame()
 {
     if (!m_encoder && !m_screencast)
         return;
-    RetainPtr<CGImageRef> imageRef = m_page.pageClient().takeSnapshotForAutomation();
+    RetainPtr<CGImageRef> imageRef = m_page.pageClient()->takeSnapshotForAutomation();
     if (m_screencast && m_screencastFramesInFlight <= kMaxFramesInFlight) {
         CGImage* imagePtr = imageRef.get();
         WebCore::IntSize imageSize(CGImageGetWidth(imagePtr), CGImageGetHeight(imagePtr));

@@ -81,7 +81,7 @@ void InspectorPlaywrightAgentClientMac::takePageScreenshot(WebPageProxy& page, W
 {
     int toolbarHeight = headless_ ? 0 : 59;
     page.callAfterNextPresentationUpdate([protectedPage = Ref { page }, toolbarHeight, clipRect = WTFMove(clipRect), completionHandler = WTFMove(completionHandler)]() mutable {
-        RetainPtr<CGImageRef> imageRef = protectedPage->pageClient().takeSnapshotForAutomation();
+        RetainPtr<CGImageRef> imageRef = protectedPage->pageClient()->takeSnapshotForAutomation();
         if (!imageRef) {
             completionHandler("Could not take view snapshot"_s, emptyString());
             return;

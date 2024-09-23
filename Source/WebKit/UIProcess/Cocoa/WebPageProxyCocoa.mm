@@ -393,7 +393,7 @@ void WebPageProxy::setDragCaretRect(const IntRect& dragCaretRect)
 
     auto previousRect = m_currentDragCaretRect;
     m_currentDragCaretRect = dragCaretRect;
-    pageClient().didChangeDragCaretRect(previousRect, dragCaretRect);
+    pageClient()->didChangeDragCaretRect(previousRect, dragCaretRect);
 }
 
 #endif // PLATFORM(IOS_FAMILY)
