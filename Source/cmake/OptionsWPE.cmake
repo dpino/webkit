@@ -3,8 +3,6 @@ include(VersioningUtils)
 
 SET_PROJECT_VERSION(2 47 0)
 
-set(ENABLE_WEBKIT_LEGACY OFF)
-
 set(USER_AGENT_BRANDING "" CACHE STRING "Branding to add to user agent string")
 
 find_package(HarfBuzz 1.4.2 REQUIRED COMPONENTS ICU)
