@@ -44,7 +44,12 @@
 #include <WebCore/LocalFrame.h>
 #include <WebCore/LocalFrameLoaderClient.h>
 #include <WebCore/Page.h>
+<<<<<<< HEAD
 #include <WebCore/ScriptTelemetryCategory.h>
+||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
+=======
+#include <WebCore/ResourceLoader.h>
+>>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 #include <WebCore/Settings.h>
 #include <WebCore/StorageSessionProvider.h>
 #include <optional>
@@ -428,6 +433,12 @@ void WebCookieJar::removeChangeListener(const String& host, const WebCore::Cooki
     WebProcess::singleton().ensureNetworkProcessConnection().connection().send(Messages::NetworkConnectionToWebProcess::UnsubscribeFromCookieChangeNotifications(host), 0, IPC::SendOption::DispatchMessageEvenWhenWaitingForSyncReply);
 }
 #endif
+
+void WebCookieJar::setCookieFromResponse(ResourceLoader& loader, const String& setCookieValue)
+{
+    const auto& request = loader.request();
+    WebProcess::singleton().ensureNetworkProcessConnection().connection().send(Messages::NetworkConnectionToWebProcess::SetCookieFromResponse(request.firstPartyForCookies(), SameSiteInfo::create(request), request.url(), setCookieValue), 0);
+}
 
 #if !PLATFORM(COCOA)
 
