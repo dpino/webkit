@@ -78,15 +78,9 @@ WebPageInspectorController::WebPageInspectorController(WebPageProxy& inspectedPa
 {
 }
 
-<<<<<<< HEAD
 WebPageInspectorController::~WebPageInspectorController() = default;
 
-Ref<WebPageProxy> WebPageInspectorController::protectedInspectedPage()
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-Ref<WebPageProxy> WebPageInspectorController::protectedInspectedPage()
-=======
 WeakRef<WebPageProxy> WebPageInspectorController::protectedInspectedPage()
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 {
     return m_inspectedPage;
 }
