@@ -53,14 +53,29 @@ public:
     Protocol::ErrorStringOr<void> setPauseOnStart(bool) final;
     Protocol::ErrorStringOr<void> resume(const String& targetId) final;
     Protocol::ErrorStringOr<void> sendMessageToTarget(const String& targetId, const String& message) final;
+    Protocol::ErrorStringOr<void> activate(const String& targetId) override;
+    Protocol::ErrorStringOr<void> close(const String& targetId, std::optional<bool>&& runBeforeUnload) override;
 
     // Target lifecycle.
+<<<<<<< HEAD
     JS_EXPORT_PRIVATE void targetCreated(InspectorTarget&);
     JS_EXPORT_PRIVATE void targetDestroyed(InspectorTarget&);
     JS_EXPORT_PRIVATE void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
+||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
+    void targetCreated(InspectorTarget&);
+    void targetDestroyed(InspectorTarget&);
+    void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
+=======
+    void targetCreated(InspectorTarget&);
+    void targetDestroyed(InspectorTarget&);
+    void targetCrashed(InspectorTarget&);
+    void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
+>>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 
     // Target messages.
     JS_EXPORT_PRIVATE void sendMessageFromTargetToFrontend(const String& targetId, const String& message);
+
+    bool isConnected() { return m_isConnected; }
 
 private:
     // FrontendChannel
