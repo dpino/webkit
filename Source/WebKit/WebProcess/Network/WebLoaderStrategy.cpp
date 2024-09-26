@@ -564,7 +564,7 @@ void WebLoaderStrategy::scheduleLoadFromNetworkProcess(ResourceLoader& resourceL
     }
 
     auto loader = WebResourceLoader::create(resourceLoader, trackingParameters);
-    m_webResourceLoaders.set(resourceLoader.identifier(), WTFMove(loader));
+    m_webResourceLoaders.set(*resourceLoader.identifier(), WTFMove(loader));
 }
 
 void WebLoaderStrategy::scheduleInternallyFailedLoad(WebCore::ResourceLoader& resourceLoader)
