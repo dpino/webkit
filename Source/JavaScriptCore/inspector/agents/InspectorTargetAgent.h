@@ -57,30 +57,10 @@ public:
     Protocol::ErrorStringOr<void> close(const String& targetId, std::optional<bool>&& runBeforeUnload) override;
 
     // Target lifecycle.
-<<<<<<< HEAD
     void targetCreated(InspectorTarget&);
-    void targetDestroyed(InspectorTarget&);
-    void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-||||||| parent of ca17fb4dd659 (chore(webkit): bootstrap build #2083)
-    JS_EXPORT_PRIVATE void targetCreated(InspectorTarget&);
-    JS_EXPORT_PRIVATE void targetDestroyed(InspectorTarget&);
-    JS_EXPORT_PRIVATE void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-=======
-<<<<<<< HEAD
-    JS_EXPORT_PRIVATE void targetCreated(InspectorTarget&);
-    JS_EXPORT_PRIVATE void targetDestroyed(InspectorTarget&);
-    JS_EXPORT_PRIVATE void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-    void targetCreated(InspectorTarget&);
-    void targetDestroyed(InspectorTarget&);
-    void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-=======
-    void targetCreated(InspectorTarget&);
-    void targetDestroyed(InspectorTarget&);
     void targetCrashed(InspectorTarget&);
+    void targetDestroyed(InspectorTarget&);
     void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
->>>>>>> ca17fb4dd659 (chore(webkit): bootstrap build #2083)
 
     // Target messages.
     void sendMessageFromTargetToFrontend(const String& targetId, const String& message);
