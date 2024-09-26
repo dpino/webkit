@@ -50,7 +50,7 @@ public:
     void willDestroyFrontendAndBackend(DisconnectReason) final;
 
     // TargetBackendDispatcherHandler
-    Protocol::ErrorStringOr<void> setPauseOnStart(bool) final;
+    JS_EXPORT_PRIVATE Protocol::ErrorStringOr<void> setPauseOnStart(bool) final;
     Protocol::ErrorStringOr<void> resume(const String& targetId) final;
     Protocol::ErrorStringOr<void> sendMessageToTarget(const String& targetId, const String& message) final;
     Protocol::ErrorStringOr<void> activate(const String& targetId) override;
