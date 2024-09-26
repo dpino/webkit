@@ -27,13 +27,9 @@
 #pragma once
 
 #include <algorithm>
-<<<<<<< HEAD
+#include <bit>
 #include <climits>
 #include <concepts>
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-=======
-#include <bit>
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 #include <cstring>
 #include <functional>
 #include <memory>
@@ -48,11 +44,8 @@
 #include <wtf/IterationStatus.h>
 #include <wtf/TypeCasts.h>
 
-<<<<<<< HEAD
 #define SINGLE_ARG(...) __VA_ARGS__ // useful when a macro argument includes a comma
 
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-=======
 // FIXME: Custom implementation not needed once all Linux systems use >libstdc++-10.
 #if !defined(__cpp_lib_bit_cast) || __cpp_lib_bit_cast < 201806L
 namespace std {
@@ -69,7 +62,6 @@ inline constexpr T bit_cast(const U &value) {
 }
 #endif
 
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 // Use this macro to declare and define a debug-only global variable that may have a
 // non-trivial constructor and destructor. When building with clang, this will suppress
 // warnings about global constructors and exit-time destructors.

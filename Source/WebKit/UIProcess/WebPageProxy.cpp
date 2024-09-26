@@ -325,15 +325,9 @@
 #if USE(GBM)
 #include "AcceleratedBackingStoreDMABuf.h"
 #endif
-<<<<<<< HEAD
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-#include "GtkSettingsManager.h"
-=======
-#include "GtkSettingsManager.h"
 #endif
 
 #if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
 #include <WebCore/SelectionData.h>
 #endif
 

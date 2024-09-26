@@ -44,12 +44,8 @@
 #include <WebCore/LocalFrame.h>
 #include <WebCore/LocalFrameLoaderClient.h>
 #include <WebCore/Page.h>
-<<<<<<< HEAD
-#include <WebCore/ScriptTelemetryCategory.h>
-||||||| parent of 92420a6f3081 (chore(webkit): bootstrap build #2083)
-=======
 #include <WebCore/ResourceLoader.h>
->>>>>>> 92420a6f3081 (chore(webkit): bootstrap build #2083)
+#include <WebCore/ScriptTelemetryCategory.h>
 #include <WebCore/Settings.h>
 #include <WebCore/StorageSessionProvider.h>
 #include <optional>
