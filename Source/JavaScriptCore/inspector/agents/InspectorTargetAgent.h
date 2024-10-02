@@ -57,31 +57,15 @@ public:
     Protocol::ErrorStringOr<void> close(const String& targetId, std::optional<bool>&& runBeforeUnload) override;
 
     // Target lifecycle.
-<<<<<<< HEAD
-    void targetCreated(InspectorTarget&);
-    void targetDestroyed(InspectorTarget&);
-    void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-||||||| parent of 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
-    JS_EXPORT_PRIVATE void targetCreated(InspectorTarget&);
-    JS_EXPORT_PRIVATE void targetDestroyed(InspectorTarget&);
-    JS_EXPORT_PRIVATE void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
-=======
-    void targetCreated(InspectorTarget&);
-    void targetDestroyed(InspectorTarget&);
     void targetCrashed(InspectorTarget&);
+    void targetCreated(InspectorTarget&);
+    void targetDestroyed(InspectorTarget&);
     void didCommitProvisionalTarget(const String& oldTargetID, const String& committedTargetID);
->>>>>>> 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
 
     // Target messages.
-<<<<<<< HEAD
-    void sendMessageFromTargetToFrontend(const String& targetId, const String& message);
-||||||| parent of 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
-    JS_EXPORT_PRIVATE void sendMessageFromTargetToFrontend(const String& targetId, const String& message);
-=======
     void sendMessageFromTargetToFrontend(const String& targetId, const String& message);
 
     bool isConnected() { return m_isConnected; }
->>>>>>> 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
 
 private:
     // FrontendChannel

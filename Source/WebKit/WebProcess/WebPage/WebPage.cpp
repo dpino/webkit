@@ -2694,7 +2694,6 @@ void WebPage::didScaleView(double scale)
     }
 
     m_page->setViewScaleFactor(scale);
-<<<<<<< HEAD
     didScalePage(pageScale, scrollPositionAtNewScale);
 }
 
@@ -2704,12 +2703,6 @@ void WebPage::scaleView(double scale)
         return;
     didScaleView(scale);
     send(Messages::WebPageProxy::ViewScaleFactorDidChange(scale));
-||||||| parent of 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
-    scalePage(pageScale, scrollPositionAtNewScale);
-=======
-    send(Messages::WebPageProxy::ViewScaleFactorDidChange(scale));
-    scalePage(pageScale, scrollPositionAtNewScale);
->>>>>>> 9c01300b2bd0 (chore(webkit): bootstrap build #2084)
 }
 
 void WebPage::setDeviceScaleFactor(float scaleFactor)
