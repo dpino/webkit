@@ -5893,18 +5893,13 @@ void WebPageProxy::viewScaleFactorDidChange(IPC::Connection& connection, double 
     MESSAGE_CHECK_BASE(scaleFactorIsValid(scaleFactor), connection);
     if (!legacyMainFrameProcess().hasConnection(connection))
         return;
+    m_viewScaleFactor = scaleFactor;
 
     forEachWebContentProcess([&] (auto& process, auto pageID) {
         if (&process == &legacyMainFrameProcess())
             return;
         process.send(Messages::WebPage::DidScaleView(scaleFactor), pageID);
     });
-}
-
-void WebPageProxy::viewScaleFactorDidChange(IPC::Connection& connection, double scaleFactor)
-{
-    MESSAGE_CHECK_BASE(scaleFactorIsValid(scaleFactor), connection);
-    m_viewScaleFactor = scaleFactor;
 }
 
 void WebPageProxy::pluginScaleFactorDidChange(IPC::Connection& connection, double pluginScaleFactor)
