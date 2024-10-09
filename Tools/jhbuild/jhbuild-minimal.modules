@@ -3,8 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
 
-  <include href="../gstreamer/jhbuild.modules"/>
-
   <metamodule id="webkitgtk-minimal-dependencies">
     <dependencies>
       <dep package="atk"/>
@@ -66,9 +64,7 @@
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-              version="0.64.0"
               tag="0.64.0"
-              checkoutdir="meson-${version}"
               repo="github.com"/>
     </distutils>
   </if>
@@ -150,6 +146,7 @@
             version="3.6.0"
             repo="download.gnome.org"
             hash="sha256:62959f791e8e8442f8c13cedac8c4919d78f9120d5bb5301be67a5e53318b4a3">
+      <patch file="libsoup-glib-version-max-allowed-2-76.patch" strip="1"/>
     </branch>
   </meson>
 
@@ -229,7 +226,8 @@
 
   <!-- atk needed to build with A11y support -->
   <meson id="atk" mesonargs="-Dintrospection=false">
-      <branch module="/sources/atk/2.38/atk-${version}.tar.xz" version="2.38.0"
+    <pkg-config>atk.pc</pkg-config>
+    <branch module="/sources/atk/2.38/atk-${version}.tar.xz" version="2.38.0"
             repo="download.gnome.org"
             hash="sha256:ac4de2a4ef4bd5665052952fe169657e65e895c5057dffb3c2a810f6191a0c36"/>
     <dependencies>
@@ -239,6 +237,7 @@
 
   <!-- at-spi2-core needed to build with A11y support -->
   <meson id="at-spi2-core" mesonargs="-Dintrospection=no -Dx11=no">
+    <pkg-config>atspi-2.pc</pkg-config>
     <branch module="/sources/at-spi2-core/2.44/at-spi2-core-${version}.tar.xz" version="2.44.1"
             repo="download.gnome.org"
             hash="sha256:4beb23270ba6cf7caf20b597354d75194d89afb69d2efcf15f4271688ba6f746">
@@ -250,7 +249,8 @@
 
   <!-- at-spi2-atk needed to build with A11y support -->
   <meson id="at-spi2-atk" mesonargs="">
-      <branch module="/sources/at-spi2-atk/2.38/at-spi2-atk-${version}.tar.xz" version="2.38.0"
+    <pkg-config>atk-bridge-2.0.pc</pkg-config>
+    <branch module="/sources/at-spi2-atk/2.38/at-spi2-atk-${version}.tar.xz" version="2.38.0"
             repo="download.gnome.org"
             hash="sha256:cfa008a5af822b36ae6287f18182c40c91dd699c55faa38605881ed175ca464f">
     </branch>
