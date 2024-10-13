@@ -5,11 +5,13 @@
 
   <metamodule id="webkitgtk-minimal-dependencies">
     <dependencies>
+      <dep package="icu"/>
+      <dep package="harfbuzz"/>
+      <dep package="libxml2"/>
       <dep package="atk"/>
       <dep package="at-spi2-atk"/>
       <dep package="glib"/>
       <dep package="glib-networking"/>
-      <dep package="icu"/>
       <dep package="libavif"/>
       <dep package="libdrm"/>
       <dep package="libjxl"/>
@@ -24,11 +26,13 @@
 
   <metamodule id="webkitwpe-minimal-dependencies">
     <dependencies>
+      <dep package="icu"/>
+      <dep package="harfbuzz"/>
+      <dep package="libxml2"/>
       <dep package="atk"/>
       <dep package="at-spi2-atk"/>
       <dep package="glib"/>
       <dep package="glib-networking"/>
-      <dep package="icu"/>
       <dep package="libavif"/>
       <dep package="libdrm"/>
       <dep package="libjxl"/>
@@ -62,7 +66,7 @@
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-              tag="0.62.0"
+              tag="0.62.2"
               repo="github.com"/>
     </distutils>
   </if>
@@ -89,39 +93,97 @@
     </branch>
   </meson>
 
-  <autotools id="icu" autogen-sh="./source/configure" autogenargs="--disable-samples --enable-weak-threads">
-    <pkg-config>icu-i18n.pc</pkg-config>
-    <branch module="unicode-org/icu/releases/download/release-63-1/icu4c-63_1-src.tgz" version="63.1" checkoutdir="icu"
-            repo="github-tarball"
-            hash="sha256:05c490b69454fce5860b7e8e2821231674af0a11d7ef2febea9a32512998cb9d">
-      <patch file="icudata-stdlibs.patch" strip="1"/>
-    </branch>
+  <autotools id="icu" autogen-sh="./source/configure" autogenargs="--disable-samples --disable-tests">
+     <pkg-config>icu-i18n.pc</pkg-config>
+     <branch module="/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz"
+             version="70.1"
+             checkoutdir="icu-${version}"
+             repo="github-tarball"
+             hash="sha256:8d205428c17bf13bb535300669ed28b338a157b1c01ae66d31d0d3e2d47c3fd5">
+       <patch file="icudata-stdlibs.patch" strip="1"/>
+     </branch>
   </autotools>
+
+  <meson id="harfbuzz" mesonargs="-Dintrospection=enabled -Dgobject=enabled -Dtests=disabled -Ddocs=disabled">
+    <pkg-config>harfbuzz.pc</pkg-config>
+    <dependencies>
+      <dep package="freetype"/>
+      <dep package="glib"/>
+      <dep package="gobject-introspection"/>
+      <dep package="icu"/>
+    </dependencies>
+    <branch module="harfbuzz/harfbuzz"
+            repo="github.com"
+            tag="2.7.4"
+            version="2.7.4"
+            checkoutdir="harfbuzz-${version}">
+       <patch file="harfbuzz-disable-Wcast-function-type-strict.patch" strip="1"/>
+    </branch>
+  </meson>
+
+  <meson id="freetype" mesonargs="-Dbrotli=enabled -Dbzip2=enabled -Dharfbuzz=disabled -Dpng=enabled -Dzlib=enabled">
+    <pkg-config>freetype2.pc</pkg-config>
+    <branch repo="git.freedesktop.org"
+            module="freetype/freetype"
+            tag="VER-2-11-1"
+            version="2.11.1"
+            checkoutdir="libpsl-${version}"/>
+  </meson>
+
+  <meson id="gobject-introspection">
+    <pkg-config>gobject-introspection-1.0.pc</pkg-config>
+    <dependencies>
+      <dep package="glib"/>
+    </dependencies>
+    <branch module="GNOME/gobject-introspection"
+            repo="github.com"
+            tag="1.72.0"
+            version="1.72.0"
+            checkoutdir="gobject-introspection-${version}"/>
+  </meson>
+
+  <autotools id="libxml2">
+    <pkg-config>libxml-2.0.pc</pkg-config>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="icu"/>
+    </dependencies>
+    <branch module="GNOME/libxml2"
+            repo="github.com"
+            version="2.9.13"
+            tag="v2.9.13"
+            checkoutdir="libxml2-${version}"/>
+  </autotools>
+
+  <!-- Allows USE_AVIF support -->
+  <cmake id="libavif" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DAVIF_ENABLE_WERROR=OFF">
+    <pkg-config>libavif.pc</pkg-config>
+    <dependencies>
+      <dep package="aom"/>
+      <dep package="libyuv"/>
+    </dependencies>
+    <branch module="AOMediaCodec/libavif"
+            repo="github.com"
+            version="0.9.3"
+            tag="v0.9.3"/>
+  </cmake>
 
   <cmake id="libyuv">
     <branch module="libyuv/libyuv"
             repo="chromium.googlesource.com"
-            tag="stable"/>
+            tag="stable"
+            checkoutdir="libyuv"/>
   </cmake>
 
-  <cmake id="libaom" cmakeargs="-DENABLE_DOCS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_TOOLS=OFF -DENABLE_TESTS=OFF">
-    <pkg-config>libaom.pc</pkg-config>
+  <cmake id="aom" cmakeargs="-DBUILD_SHARED_LIBS=1 -DENABLE_DOCS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_TOOLS=OFF -DENABLE_TESTS=OFF">
+    <pkg-config>aom.pc</pkg-config>
     <branch module="aom"
             repo="aomedia.googlesource.com"
+            version="3.3.0"
             tag="v3.3.0"
-            version="3.3.0" />
-  </cmake>
-
-  <cmake id="libavif" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DAVIF_ENABLE_WERROR=OFF">
-    <pkg-config>libavif.pc</pkg-config>
-    <dependencies>
-      <dep package="libyuv"/>
-      <dep package="libaom"/>
-    </dependencies>
-    <branch module="AOMediaCodec/libavif"
-            repo="github.com"
-            tag="v0.9.3"
-            version="0.9.3" />
+            checkoutdir="libaom-${version}">
+       <patch file="fix-aom-build-arm32.patch" strip="1"/>
+    </branch>
   </cmake>
 
   <!-- libdrm required for function 'drmGetFormatName' (defined since 'libdrm-2.4.113') -->
@@ -151,10 +213,11 @@
     <dependencies>
       <dep package="icu"/>
     </dependencies>
-    <branch module="rockdaboot/libpsl/releases/download/libpsl-${version}/libpsl-${version}.tar.gz"
-            version="0.20.2"
-            repo="github-tarball"
-            hash="sha256:f8fd0aeb66252dfcc638f14d9be1e2362fdaf2ca86bde0444ff4d5cc961b560f"/>
+    <branch module="rockdaboot/libpsl"
+            repo="github.com"
+            version="0.21.0"
+            tag="libpsl-0.21.0"
+            checkoutdir="libpsl-${version}"/>
   </autotools>
 
   <!-- libmanette >= 0.2.4 required for GamePad support -->
