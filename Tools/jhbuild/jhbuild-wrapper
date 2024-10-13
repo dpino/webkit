@@ -24,7 +24,7 @@ import shlex
 import subprocess
 import sys
 
-jhbuild_revision = '1fd39a82717816562dbcf16d8284a56f1d45dfcb'
+jhbuild_revision = 'cmake-do-not-skip-configure-after-checkout'
 
 def determine_platform():
     if '--gtk' in sys.argv:
@@ -77,6 +77,7 @@ def update_jhbuild():
 
 def clone_jhbuild():
     JHBUILD_GIT_URLS = [
+        'https://gitlab.gnome.org/dpino/jhbuild.git',
         'https://gitlab.gnome.org/GNOME/jhbuild.git',
         'https://github.com/GNOME/jhbuild.git',
     ]
