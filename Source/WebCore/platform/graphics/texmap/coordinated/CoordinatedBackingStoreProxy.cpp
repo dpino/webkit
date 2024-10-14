@@ -32,7 +32,7 @@ namespace WebCore {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(CoordinatedBackingStoreProxy);
 
-static constexpr int s_defaultTileDimension = 512;
+static constexpr int s_defaultTileDimension = 256;
 
 static uint32_t generateTileID()
 {
@@ -96,6 +96,21 @@ CoordinatedBackingStoreProxy::CoordinatedBackingStoreProxy(float contentsScale, 
     : m_contentsScale(contentsScale)
     , m_tileSize(tileSize)
 {
+    char* tileWidthString = getenv("DEFAULT_TILE_WIDTH");
+    if (tileWidthString) {
+        size_t tileWidth = 0;
+        if (sscanf(tileWidthString, "%zu", &tileWidth) == 1) {
+            m_tileSize.setWidth(tileWidth);
+        }
+    }
+
+    char* tileHeightString = getenv("DEFAULT_TILE_HEIGHT");
+    if (tileHeightString) {
+        size_t tileHeight = 0;
+        if (sscanf(tileHeightString, "%zu", &tileHeight) == 1) {
+            m_tileSize.setHeight(tileHeight);
+        }
+    }
 }
 
 CoordinatedBackingStoreProxy::~CoordinatedBackingStoreProxy() = default;
