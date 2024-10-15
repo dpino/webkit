@@ -35,6 +35,8 @@ class CoordinatedPlatformLayer;
 class CoordinatedTileBuffer;
 class GraphicsLayer;
 
+static const uint32_t s_minimunUnionDirtyArea = 128 * 128;
+
 class CoordinatedBackingStoreProxy final : public ThreadSafeRefCounted<CoordinatedBackingStoreProxy> {
     WTF_MAKE_TZONE_ALLOCATED(CoordinatedBackingStoreProxy);
 public:
@@ -91,8 +93,16 @@ private:
             : id(id)
             , position(position)
             , rect(WTFMove(tileRect))
-            , dirtyRect(rect)
+            , dirtyRects({ rect })
+            , minimumDirtyAreaUnionRatio(0.7f)
         {
+            char* mimimumCoverageRatioString = getenv("TILE_DIRTY_AREA_UNION_COVERAGE_RATIO");
+            if (mimimumCoverageRatioString) {
+                float ratio;
+                if (sscanf(mimimumCoverageRatioString, "%f", &ratio) == 1) {
+                    minimumDirtyAreaUnionRatio = ratio;
+                }
+            }
         }
         Tile(const Tile&) = delete;
         Tile& operator=(const Tile&) = delete;
@@ -102,29 +112,66 @@ private:
         void resize(const IntSize& size)
         {
             rect.setSize(size);
-            dirtyRect = rect;
+            dirtyRects = { rect };
         }
 
         void addDirtyRect(const IntRect& dirty)
         {
             auto tileDirtyRect = intersection(dirty, rect);
-            dirtyRect.unite(tileDirtyRect);
+
+            // Do quick best effort to find dirty rect which is closest
+            // to incoming rect to avoid unification of huge areas
+
+            int uniteIndex = -1;
+            if (minimumDirtyAreaUnionRatio > 0) {
+                float highestCoverageAreaRatio = 0;
+                int highestCoverageAreaRatioIndex = -1;
+                for (size_t idx = 0; idx < dirtyRects.size(); ++idx) {
+                    float unitedArea = unionRect(tileDirtyRect, dirtyRects[idx]).area();
+                    if (unitedArea <= s_minimunUnionDirtyArea) {
+                        uniteIndex = idx;
+                        break;
+                    } else {
+                        float dirtyRectArea1 = tileDirtyRect.area();
+                        float dirtyRectArea2 = dirtyRects[idx].area();
+                        float interectionArea = intersection(tileDirtyRect, dirtyRects[idx]).area();
+                        float coverageAreaRatio = (dirtyRectArea1 + dirtyRectArea2 - interectionArea) / unitedArea;
+                        if (coverageAreaRatio >= highestCoverageAreaRatio) {
+                            highestCoverageAreaRatio = coverageAreaRatio;
+                            highestCoverageAreaRatioIndex = idx;
+                        }
+                    }
+                }
+
+                if (highestCoverageAreaRatio > minimumDirtyAreaUnionRatio) {
+                    uniteIndex = highestCoverageAreaRatioIndex;
+                }
+            } else if (dirtyRects.size() > 0) {
+                uniteIndex = 0;
+            }
+
+            if (uniteIndex != -1) {
+                dirtyRects[uniteIndex].unite(tileDirtyRect);
+            } else {
+                dirtyRects.append(tileDirtyRect);
+            }
         }
 
         bool isDirty() const
         {
-            return !dirtyRect.isEmpty();
+            return !dirtyRects.isEmpty();
         }
 
         void markClean()
         {
-            dirtyRect = { };
+            dirtyRects.clear();
         }
 
         uint32_t id { 0 };
         IntPoint position;
         IntRect rect;
-        IntRect dirtyRect;
+        Vector<IntRect> dirtyRects;
+        float minimumDirtyAreaUnionRatio;
     };
 
     CoordinatedBackingStoreProxy(float contentsScale, const IntSize& tileSize);
