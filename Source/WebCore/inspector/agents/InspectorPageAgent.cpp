@@ -1698,14 +1698,8 @@ static String roleFromObject(RefPtr<AXCoreObject> axObject)
             return "Row"_s;
         case AccessibilityRole::RowGroup:
             return "RowGroup"_s;
-        case AccessibilityRole::RubyBase:
-            return "RubyBase"_s;
-        case AccessibilityRole::RubyBlock:
-            return "RubyBlock"_s;
         case AccessibilityRole::RubyInline:
             return "RubyInline"_s;
-        case AccessibilityRole::RubyRun:
-            return "RubyRun"_s;
         case AccessibilityRole::RubyText:
             return "RubyText"_s;
         case AccessibilityRole::ScrollArea:
