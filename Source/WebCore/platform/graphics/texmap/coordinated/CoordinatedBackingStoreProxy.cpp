@@ -119,7 +119,8 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
         if (!tile.isDirty())
             continue;
 
-        tileDirtyRectUnion.unite(tile.dirtyRect);
+        for (const auto& each : tile.dirtyRects)
+            tileDirtyRectUnion.unite(each);
         ++dirtyTilesCount;
     }
 
@@ -137,22 +138,25 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
             if (!tile.isDirty())
                 continue;
 
-            WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", ++dirtyTileIndex, dirtyTilesCount, tile.id,
-                tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), tile.dirtyRect.x(), tile.dirtyRect.y(), tile.dirtyRect.width(), tile.dirtyRect.height());
+        ++dirtyTileIndex;
+        for (auto& dirtyRect : tile.dirtyRects) {
+                WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", dirtyTileIndex, dirtyTilesCount, tile.id,
+                    tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
 
 #if USE(SKIA)
-            auto buffer = layer.replay(recording.copyRef(), tile.rect, tile.dirtyRect);
+                auto buffer = layer.replay(recording.copyRef(), tile.rect, dirtyRect);
 #else
-            auto buffer = layer.paint(tile.dirtyRect);
+                auto buffer = layer.paint(dirtyRect);
 #endif
 
-            IntRect updateRect(tile.dirtyRect);
-            updateRect.move(-tile.rect.x(), -tile.rect.y());
-            tilesToUpdate.append({ tile.id, tile.rect, WTF::move(updateRect), WTF::move(buffer) });
-            tile.markClean();
-            result.add(UpdateResult::BuffersChanged);
+                IntRect updateRect(dirtyRect);
+                updateRect.move(-tile.rect.x(), -tile.rect.y());
+                tilesToUpdate.append({ tile.id, tile.rect, WTF::move(updateRect), WTF::move(buffer) });
+                result.add(UpdateResult::BuffersChanged);
 
-            WTFEndSignpost(this, UpdateTile);
+                WTFEndSignpost(this, UpdateTile);
+        }
+            tile.markClean();
         }
 
 #if !HAVE(OS_SIGNPOST) && !USE(SYSPROF_CAPTURE)
@@ -332,9 +336,11 @@ void CoordinatedBackingStoreProxy::createOrDestroyTiles(const IntRect& unscaledV
         for (const auto& position : tilePositionsToCreate) {
             auto tile = Tile(generateTileID(), tileRectForPosition(position));
 #if ENABLE(DAMAGE_TRACKING)
-            IntRect unscaledDirtyRect = tile.dirtyRect;
-            unscaledDirtyRect.scale(1 / contentsScale);
-            damage.add(unscaledDirtyRect);
+            for (const auto& dirtyRect : tile.dirtyRects) {
+                IntRect unscaledDirtyRect = dirtyRect;
+                unscaledDirtyRect.scale(1 / contentsScale);
+                damage.add(unscaledDirtyRect);
+            }
 #else
             UNUSED_PARAM(damage);
 #endif
