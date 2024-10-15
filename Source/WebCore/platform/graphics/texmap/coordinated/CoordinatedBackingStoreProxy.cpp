@@ -174,7 +174,8 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
         if (!tile.isDirty())
             continue;
 
-        tileDirtyRectUnion.unite(tile.dirtyRect);
+        for (const auto& each : tile.dirtyRects)
+            tileDirtyRectUnion.unite(each);
         ++dirtyTilesCount;
     }
 
@@ -193,22 +194,24 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
         if (!tile.isDirty())
             continue;
 
-        WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", ++dirtyTileIndex, dirtyTilesCount, tile.id,
-            tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), tile.dirtyRect.x(), tile.dirtyRect.y(), tile.dirtyRect.width(), tile.dirtyRect.height());
+        ++dirtyTileIndex;
+        for (auto& dirtyRect : tile.dirtyRects) {
+            WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", dirtyTileIndex, dirtyTilesCount, tile.id,
+                tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
 
 #if USE(SKIA)
-        auto buffer = recording ? layer.replay(recording, tile.dirtyRect) : layer.paint(tile.dirtyRect);
+        auto buffer = recording ? layer.replay(recording, dirtyRect) : layer.paint(dirtyRect);
 #else
-        auto buffer = layer.paint(tile.dirtyRect);
+        auto buffer = layer.paint(dirtyRect);
 #endif
+            IntRect updateRect(dirtyRect);
+            updateRect.move(-tile.rect.x(), -tile.rect.y());
+            tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
+            result.add(UpdateResult::BuffersChanged);
 
-        IntRect updateRect(tile.dirtyRect);
-        updateRect.move(-tile.rect.x(), -tile.rect.y());
-        tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
+            WTFEndSignpost(this, UpdateTile);
+        }
         tile.markClean();
-        result.add(UpdateResult::BuffersChanged);
-
-        WTFEndSignpost(this, UpdateTile);
     }
 
     WTFEndSignpost(this, UpdateTiles);
