@@ -193,9 +193,12 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
         if (!tile.isDirty())
             continue;
 
-        WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", ++dirtyTileIndex, dirtyTilesCount, tile.id,
-            tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), tile.dirtyRect.x(), tile.dirtyRect.y(), tile.dirtyRect.width(), tile.dirtyRect.height());
+        ++dirtyTileIndex;
+        for (auto& dirtyRect : tile.dirtyRects) {
+            WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", dirtyTileIndex, dirtyTilesCount, tile.id,
+                tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
 
+<<<<<<< HEAD
 #if USE(SKIA)
         auto buffer = recording ? layer.replay(recording, tile.dirtyRect) : layer.paint(tile.dirtyRect);
 #else
@@ -205,10 +208,22 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
         IntRect updateRect(tile.dirtyRect);
         updateRect.move(-tile.rect.x(), -tile.rect.y());
         tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
-        tile.markClean();
-        result.add(UpdateResult::BuffersChanged);
+||||||| parent of fa7ee5b9aaf1 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
+        auto buffer = layer.paint(tile.dirtyRect);
+        IntRect updateRect(tile.dirtyRect);
+        updateRect.move(-tile.rect.x(), -tile.rect.y());
+        tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
+=======
+            auto buffer = layer.paint(dirtyRect);
+            IntRect updateRect(dirtyRect);
+            updateRect.move(-tile.rect.x(), -tile.rect.y());
+            tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
+            result.add(UpdateResult::BuffersChanged);
 
-        WTFEndSignpost(this, UpdateTile);
+            WTFEndSignpost(this, UpdateTile);
+        }
+>>>>>>> fa7ee5b9aaf1 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
+        tile.markClean();
     }
 
     WTFEndSignpost(this, UpdateTiles);
