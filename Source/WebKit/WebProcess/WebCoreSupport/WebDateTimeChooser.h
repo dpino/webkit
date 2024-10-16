@@ -28,6 +28,7 @@
 #if ENABLE(DATE_AND_TIME_INPUT_TYPES)
 
 #include <WebCore/DateTimeChooser.h>
+#include <wtf/CheckedRef.h>
 #include <wtf/WeakRef.h>
 
 namespace WebKit {
