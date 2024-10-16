@@ -31,17 +31,9 @@ namespace Inspector {
 
 class IdentifiersFactory {
 public:
-<<<<<<< HEAD
+    JS_EXPORT_PRIVATE static void initializeWithProcessID(uint64_t);
     JS_EXPORT_PRIVATE static String createIdentifier();
     JS_EXPORT_PRIVATE static String requestId(unsigned long identifier);
-||||||| parent of 7adc6076b9b3 (chore(webkit): bootstrap build #2092)
-    static String createIdentifier();
-    static String requestId(unsigned long identifier);
-=======
-    static void initializeWithProcessID(uint64_t);
-    static String createIdentifier();
-    static String requestId(unsigned long identifier);
->>>>>>> 7adc6076b9b3 (chore(webkit): bootstrap build #2092)
 };
 
 } // namespace Inspector

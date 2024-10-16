@@ -192,14 +192,8 @@ LocalFrame::LocalFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifie
 
 void LocalFrame::init()
 {
-<<<<<<< HEAD
-    protectedLoader()->init();
-||||||| parent of 7adc6076b9b3 (chore(webkit): bootstrap build #2092)
-    checkedLoader()->init();
-=======
     InspectorInstrumentation::frameAttached(this);
-    checkedLoader()->init();
->>>>>>> 7adc6076b9b3 (chore(webkit): bootstrap build #2092)
+    protectedLoader()->init();
 }
 
 Ref<LocalFrame> LocalFrame::createMainFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifier identifier, SandboxFlags effectiveSandboxFlags, Frame* opener)
