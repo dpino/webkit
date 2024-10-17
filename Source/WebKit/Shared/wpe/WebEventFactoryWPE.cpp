@@ -182,7 +182,7 @@ WebWheelEvent WebEventFactory::createWebWheelEvent(WPEEvent* event, WebWheelEven
     auto wheelTicks = FloatSize(deltaX, deltaY);
     FloatSize delta;
     if (hasPreciseScrollingDeltas) {
-        static const double wpeScrollDeltaMultiplier = 2.5;
+        static const double wpeScrollDeltaMultiplier = 1.0;
         delta = wheelTicks.scaled(wpeScrollDeltaMultiplier);
     } else {
         auto* view = wpe_event_get_view(event);
