@@ -83,8 +83,19 @@ public:
         ServerError
     };
 
+<<<<<<< HEAD
     JS_EXPORT_PRIVATE void registerDispatcherForDomain(const String& domain, SupplementalBackendDispatcher*);
     JS_EXPORT_PRIVATE void dispatch(const String& message);
+||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
+    void registerDispatcherForDomain(const String& domain, SupplementalBackendDispatcher*);
+    void dispatch(const String& message);
+=======
+    void registerDispatcherForDomain(const String& domain, SupplementalBackendDispatcher*);
+
+    enum class InterceptionResult { Intercepted, Continue };
+    using Interceptor = WTF::Function<InterceptionResult(const RefPtr<JSON::Object>&)>;
+    void dispatch(const String& message, Interceptor&& interceptor = Interceptor());
+>>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 
     // Note that 'unused' is a workaround so the compiler can pick the right sendResponse based on arity.
     // When <http://webkit.org/b/179847> is fixed or this class is renamed for the JSON::Object case,
