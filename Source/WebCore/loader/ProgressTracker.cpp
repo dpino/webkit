@@ -188,17 +188,7 @@ void ProgressTracker::finalProgressComplete()
     frame->protectedLoader()->protectedClient()->setMainFrameDocumentReady(true);
     m_client->progressFinished(*frame);
     protectedPage()->progressFinished(*frame);
-<<<<<<< HEAD
     frame->protectedLoader()->loadProgressingStatusChanged();
-
-    InspectorInstrumentation::frameStoppedLoading(*frame);
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    frame->checkedLoader()->loadProgressingStatusChanged();
-
-    InspectorInstrumentation::frameStoppedLoading(*frame);
-=======
-    frame->checkedLoader()->loadProgressingStatusChanged();
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 }
 
 void ProgressTracker::incrementProgress(ResourceLoaderIdentifier identifier, const ResourceResponse& response)

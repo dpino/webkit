@@ -211,24 +211,12 @@ struct AuxiliaryProcessInitializationParameters {
     std::optional<WebCore::ProcessIdentifier> processIdentifier;
     IPC::Connection::Identifier connectionIdentifier;
     HashMap<String, String> extraInitializationData;
-<<<<<<< HEAD
     WTF::AuxiliaryProcessType processType;
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    WebCore::AuxiliaryProcessType processType;
-#if PLATFORM(COCOA)
-    SDKAlignedBehaviors clientSDKAlignedBehaviors;
-#endif
-=======
-    WebCore::AuxiliaryProcessType processType;
-#if PLATFORM(COCOA)
-    SDKAlignedBehaviors clientSDKAlignedBehaviors;
-#endif
 // Playwright begin
 #if !PLATFORM(COCOA)
     bool shouldEnableSharedArrayBuffer { false };
 #endif
 // Playwright end
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 };
 
 } // namespace WebKit

@@ -66,17 +66,7 @@
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-<<<<<<< HEAD
-              version="0.64.0"
               tag="0.64.0"
-              checkoutdir="meson-${version}"
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-              version="0.62.2"
-              tag="0.62.2"
-              checkoutdir="meson-${version}"
-=======
-              tag="0.64.0"
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
               repo="github.com"/>
     </distutils>
   </if>

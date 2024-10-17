@@ -194,14 +194,8 @@ LocalFrame::LocalFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifie
 
 void LocalFrame::init()
 {
-<<<<<<< HEAD
-    protectedLoader()->init();
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    checkedLoader()->init();
-=======
     InspectorInstrumentation::frameAttached(this);
-    checkedLoader()->init();
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
+    protectedLoader()->init();
 }
 
 Ref<LocalFrame> LocalFrame::createMainFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifier identifier, SandboxFlags effectiveSandboxFlags, Frame* opener)
@@ -1382,7 +1376,6 @@ void LocalFrame::updateSandboxFlags(SandboxFlags flags, NotifyUIProcess notifyUI
     m_sandboxFlags = flags;
 }
 
-<<<<<<< HEAD
 void LocalFrame::updateScrollingMode()
 {
     m_scrollingMode = ownerElement() ? ownerElement()->scrollingMode() : ScrollbarMode::Auto;
@@ -1390,8 +1383,6 @@ void LocalFrame::updateScrollingMode()
         view->setCanHaveScrollbars(m_scrollingMode != ScrollbarMode::AlwaysOff);
 }
 
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-=======
 #if !PLATFORM(IOS_FAMILY)
 
 void LocalFrame::betterApproximateNode(const IntPoint& testPoint, const NodeQualifier& nodeQualifierFunction, Node*& best, Node* failedNode, IntPoint& bestPoint, IntRect& bestRect, const IntRect& testRect)
@@ -1748,7 +1739,6 @@ Node* LocalFrame::nodeRespondingToScrollWheelEvents(const FloatPoint& viewportLo
 
 #endif // !PLATFORM(IOS_FAMILY)
 
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 } // namespace WebCore
 
 #undef FRAME_RELEASE_LOG_ERROR

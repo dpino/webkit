@@ -162,11 +162,6 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
         suggestedFilename = m_suggestedFilename;
     suggestedFilename = MIMETypeRegistry::appendFileExtensionIfNecessary(suggestedFilename, response.mimeType());
 
-<<<<<<< HEAD
-    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    m_client->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
-=======
     if (auto* instrumentation = m_dataStore->downloadInstrumentation())
       instrumentation->downloadFilenameSuggested(m_uuid, suggestedFilename);
 
@@ -194,8 +189,7 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
         return;
     }
 
-    m_client->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
+    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
         SandboxExtension::Handle sandboxExtensionHandle;
         if (!destination.isNull()) {
             if (auto handle = SandboxExtension::createHandle(destination, SandboxExtension::Type::ReadWrite))

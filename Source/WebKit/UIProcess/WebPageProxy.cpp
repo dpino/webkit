@@ -238,13 +238,7 @@
 #include <WebCore/RenderEmbeddedObject.h>
 #include <WebCore/ResourceLoadStatistics.h>
 #include <WebCore/RunJavaScriptParameters.h>
-<<<<<<< HEAD
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-#include <WebCore/RuntimeApplicationChecks.h>
-=======
-#include <WebCore/RuntimeApplicationChecks.h>
 #include <WebCore/SecurityOriginData.h>
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 #include <WebCore/SerializedCryptoKeyWrap.h>
 #include <WebCore/ScreenOrientationType.h>
 #include <WebCore/ShareData.h>
@@ -1484,14 +1478,8 @@ void WebPageProxy::finishAttachingToWebProcess(const Site& site, ProcessLaunchRe
 
     if (RefPtr pageClient = this->pageClient())
         pageClient->didRelaunchProcess();
-<<<<<<< HEAD
     protectedPageLoadState()->didSwapWebProcesses();
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    internals().pageLoadState.didSwapWebProcesses();
-=======
-    internals().pageLoadState.didSwapWebProcesses();
     m_inspectorController->didFinishAttachingToWebProcess();
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
 }
 
 void WebPageProxy::didAttachToRunningProcess()
@@ -10773,19 +10761,13 @@ void WebPageProxy::dispatchProcessDidTerminate(WebProcessProxy& process, Process
 {
     WEBPAGEPROXY_RELEASE_LOG_ERROR(Loading, "dispatchProcessDidTerminate: reason=%" PUBLIC_LOG_STRING, processTerminationReasonToString(reason).characters());
 
-<<<<<<< HEAD
     if (m_preferences->siteIsolationEnabled())
         m_browsingContextGroup->processDidTerminate(*this, process);
 
-    bool handledByClient = false;
-||||||| parent of f3ab25cfd637 (chore(webkit): bootstrap build #2092)
-    bool handledByClient = false;
-=======
     bool handledByClient = m_inspectorController->pageCrashed(reason);
     if (handledByClient)
         return;
 
->>>>>>> f3ab25cfd637 (chore(webkit): bootstrap build #2092)
     if (m_loaderClient)
         handledByClient = reason != ProcessTerminationReason::RequestedByClient && m_loaderClient->processDidCrash(*this);
     else
