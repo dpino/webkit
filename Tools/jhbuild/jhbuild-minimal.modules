@@ -12,6 +12,7 @@
       <dep package="glib"/>
       <dep package="glib-networking"/>
       <dep package="icu"/>
+      <dep package="libavif"/>
       <dep package="libdrm"/>
       <dep package="libjxl"/>
       <dep package="libsoup"/>
@@ -31,12 +32,12 @@
       <dep package="glib"/>
       <dep package="glib-networking"/>
       <dep package="icu"/>
+      <dep package="libavif"/>
       <dep package="libdrm"/>
       <dep package="libjxl"/>
       <dep package="libsoup"/>
       <dep package="libspiel"/>
       <dep package="libvpx"/>
-      <dep package="openxr"/>
       <dep package="wayland"/>
       <dep package="wayland-protocols"/>
       <dep package="wpebackend-fdo"/>
@@ -65,9 +66,7 @@
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-              version="0.64.0"
               tag="0.64.0"
-              checkoutdir="meson-${version}"
               repo="github.com"/>
     </distutils>
   </if>
@@ -103,6 +102,32 @@
     </branch>
   </autotools>
 
+  <cmake id="libyuv">
+    <branch module="libyuv/libyuv"
+            repo="chromium.googlesource.com"
+            tag="stable"/>
+  </cmake>
+
+  <cmake id="libaom" cmakeargs="-DENABLE_DOCS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_TOOLS=OFF -DENABLE_TESTS=OFF">
+    <pkg-config>libaom.pc</pkg-config>
+    <branch module="aom"
+            repo="aomedia.googlesource.com"
+            tag="v3.3.0"
+            version="3.3.0" />
+  </cmake>
+
+  <cmake id="libavif" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DAVIF_ENABLE_WERROR=OFF">
+    <pkg-config>libavif.pc</pkg-config>
+    <dependencies>
+      <dep package="libyuv"/>
+      <dep package="libaom"/>
+    </dependencies>
+    <branch module="AOMediaCodec/libavif"
+            repo="github.com"
+            tag="v0.9.3"
+            version="0.9.3" />
+  </cmake>
+
   <!-- libdrm required for function 'drmGetFormatName' (defined since 'libdrm-2.4.113') -->
   <meson id="libdrm" mesonargs="-Dtegra=enabled -Dcairo-tests=disabled -Dman-pages=disabled -Dvalgrind=disabled -Dudev=false -Dtests=false">
     <pkg-config>libdrm.pc</pkg-config>
@@ -114,7 +139,6 @@
   </meson>
 
   <meson id="libsoup" mesonargs="-Dgssapi=disabled -Dvapi=disabled -Dntlm=disabled -Dsysprof=disabled -Dautobahn=disabled -Dpkcs11_tests=disabled">
-    <pkg-config>libsoup-3.0.pc</pkg-config>
     <dependencies>
       <dep package="glib"/>
       <dep package="glib-networking"/>
@@ -124,6 +148,7 @@
             version="3.6.0"
             repo="download.gnome.org"
             hash="sha256:62959f791e8e8442f8c13cedac8c4919d78f9120d5bb5301be67a5e53318b4a3">
+      <patch file="libsoup-glib-version-max-allowed-2-76.patch" strip="1"/>
     </branch>
   </meson>
 
@@ -203,7 +228,8 @@
 
   <!-- atk needed to build with A11y support -->
   <meson id="atk" mesonargs="-Dintrospection=false">
-      <branch module="/sources/atk/2.38/atk-${version}.tar.xz" version="2.38.0"
+    <pkg-config>atk.pc</pkg-config>
+    <branch module="/sources/atk/2.38/atk-${version}.tar.xz" version="2.38.0"
             repo="download.gnome.org"
             hash="sha256:ac4de2a4ef4bd5665052952fe169657e65e895c5057dffb3c2a810f6191a0c36"/>
     <dependencies>
@@ -213,6 +239,7 @@
 
   <!-- at-spi2-core needed to build with A11y support -->
   <meson id="at-spi2-core" mesonargs="-Dintrospection=no -Dx11=no">
+    <pkg-config>atspi-2.pc</pkg-config>
     <branch module="/sources/at-spi2-core/2.44/at-spi2-core-${version}.tar.xz" version="2.44.1"
             repo="download.gnome.org"
             hash="sha256:4beb23270ba6cf7caf20b597354d75194d89afb69d2efcf15f4271688ba6f746">
@@ -224,7 +251,8 @@
 
   <!-- at-spi2-atk needed to build with A11y support -->
   <meson id="at-spi2-atk" mesonargs="">
-      <branch module="/sources/at-spi2-atk/2.38/at-spi2-atk-${version}.tar.xz" version="2.38.0"
+    <pkg-config>atk-bridge-2.0.pc</pkg-config>
+    <branch module="/sources/at-spi2-atk/2.38/at-spi2-atk-${version}.tar.xz" version="2.38.0"
             repo="download.gnome.org"
             hash="sha256:cfa008a5af822b36ae6287f18182c40c91dd699c55faa38605881ed175ca464f">
     </branch>
