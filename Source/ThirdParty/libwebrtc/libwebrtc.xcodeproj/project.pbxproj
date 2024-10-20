@@ -5166,9 +5166,6 @@
 		DDF30D9127C5C725006A526F /* receive_side_congestion_controller.h in Headers */ = {isa = PBXBuildFile; fileRef = DDF30D9027C5C725006A526F /* receive_side_congestion_controller.h */; };
 		DDF30D9527C5C756006A526F /* bwe_defines.h in Headers */ = {isa = PBXBuildFile; fileRef = DDF30D9327C5C756006A526F /* bwe_defines.h */; };
 		DDF30D9627C5C756006A526F /* remote_bitrate_estimator.h in Headers */ = {isa = PBXBuildFile; fileRef = DDF30D9427C5C756006A526F /* remote_bitrate_estimator.h */; };
-		F3B7819924C7CC5200FCB122 /* mkvmuxerutil.cc in Sources */ = {isa = PBXBuildFile; fileRef = F3B7819624C7CC5100FCB122 /* mkvmuxerutil.cc */; };
-		F3B7819A24C7CC5200FCB122 /* mkvmuxer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F3B7819724C7CC5200FCB122 /* mkvmuxer.cc */; };
-		F3B7819B24C7CC5200FCB122 /* mkvwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = F3B7819824C7CC5200FCB122 /* mkvwriter.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -11273,9 +11270,6 @@
 		DDF30D9027C5C725006A526F /* receive_side_congestion_controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = receive_side_congestion_controller.h; sourceTree = "<group>"; };
 		DDF30D9327C5C756006A526F /* bwe_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bwe_defines.h; sourceTree = "<group>"; };
 		DDF30D9427C5C756006A526F /* remote_bitrate_estimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = remote_bitrate_estimator.h; sourceTree = "<group>"; };
-		F3B7819624C7CC5100FCB122 /* mkvmuxerutil.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkvmuxerutil.cc; path = mkvmuxer/mkvmuxerutil.cc; sourceTree = "<group>"; };
-		F3B7819724C7CC5200FCB122 /* mkvmuxer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkvmuxer.cc; path = mkvmuxer/mkvmuxer.cc; sourceTree = "<group>"; };
-		F3B7819824C7CC5200FCB122 /* mkvwriter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkvwriter.cc; path = mkvmuxer/mkvwriter.cc; sourceTree = "<group>"; };
 		FB39D0D11200F0E300088E69 /* libwebrtc.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwebrtc.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -20142,12 +20136,7 @@
 			isa = PBXGroup;
 			children = (
 				CDFD2F9224C4B2F90048DAC3 /* common */,
-<<<<<<< HEAD
 				514C7F052CACC70600808ADE /* mkvmuxer */,
-||||||| parent of 0872c3417ca7 (chore(webkit): bootstrap build #2094)
-=======
-				F3B7819524C7CC1300FCB122 /* mkvmuxer */,
->>>>>>> 0872c3417ca7 (chore(webkit): bootstrap build #2094)
 				CDEBB19224C0191800ADBD44 /* webm_parser */,
 			);
 			path = libwebm;
@@ -20558,16 +20547,6 @@
 				DDF30D9427C5C756006A526F /* remote_bitrate_estimator.h */,
 			);
 			path = include;
-			sourceTree = "<group>";
-		};
-		F3B7819524C7CC1300FCB122 /* mkvmuxer */ = {
-			isa = PBXGroup;
-			children = (
-				F3B7819724C7CC5200FCB122 /* mkvmuxer.cc */,
-				F3B7819624C7CC5100FCB122 /* mkvmuxerutil.cc */,
-				F3B7819824C7CC5200FCB122 /* mkvwriter.cc */,
-			);
-			name = mkvmuxer;
 			sourceTree = "<group>";
 		};
 		FB39D06E1200ED9200088E69 = {
@@ -26042,9 +26021,6 @@
 				5CDD865E1E43B8B500621E92 /* min_max_operations.c in Sources */,
 				4189395B242A71F5007FDC41 /* min_video_bitrate_experiment.cc in Sources */,
 				41B8D8FB28CB85CB00E5FA37 /* missing_mandatory_parameter_cause.cc in Sources */,
-				F3B7819A24C7CC5200FCB122 /* mkvmuxer.cc in Sources */,
-				F3B7819924C7CC5200FCB122 /* mkvmuxerutil.cc in Sources */,
-				F3B7819B24C7CC5200FCB122 /* mkvwriter.cc in Sources */,
 				4131C387234B957D0028A615 /* moving_average.cc in Sources */,
 				41FCBB1521B1F7AA00A5DF27 /* moving_average.cc in Sources */,
 				5CD286101E6A64C90094FDC8 /* moving_max.cc in Sources */,

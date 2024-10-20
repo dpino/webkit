@@ -80,17 +80,7 @@
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-<<<<<<< HEAD
-              version="0.62.2"
               tag="0.62.2"
-              checkoutdir="meson-${version}"
-||||||| parent of 0872c3417ca7 (chore(webkit): bootstrap build #2094)
-              version="0.64.0"
-              tag="0.64.0"
-              checkoutdir="meson-${version}"
-=======
-              tag="0.62.0"
->>>>>>> 0872c3417ca7 (chore(webkit): bootstrap build #2094)
               repo="github.com"/>
     </distutils>
   </if>
@@ -215,28 +205,11 @@
             hash="sha256:965e51c91ad9851e2337aebcc0f517440c637c506f3a03948062e3d5ea129a83"/>
   </autotools>
 
-<<<<<<< HEAD
-  <meson id="glib"
-         mesonargs="-Dlibmount=disabled -Dselinux=disabled">
-||||||| parent of 0872c3417ca7 (chore(webkit): bootstrap build #2094)
-  <!-- Glib 2.76 is required by libspiel 1.0.1 -->
   <meson id="glib" mesonargs="-Dlibmount=disabled -Dselinux=disabled -Dgtk_doc=false -Dtests=false">
-=======
-  <meson id="glib" mesonargs="-Dlibmount=disabled -Dselinux=disabled -Dgtk_doc=false -Dtests=false">
->>>>>>> 0872c3417ca7 (chore(webkit): bootstrap build #2094)
     <pkg-config>glib-2.0.pc</pkg-config>
-<<<<<<< HEAD
-    <branch module="/sources/glib/2.72/glib-${version}.tar.xz"
-            version="2.72.4"
-||||||| parent of 0872c3417ca7 (chore(webkit): bootstrap build #2094)
-    <branch module="/sources/glib/2.76/glib-${version}.tar.xz"
-            version="2.76.0"
-            checkoutdir="glib-${version}"
-=======
     <branch module="/sources/glib/2.72/glib-${version}.tar.xz"
             version="2.72.4"
             checkoutdir="glib-${version}"
->>>>>>> 0872c3417ca7 (chore(webkit): bootstrap build #2094)
             repo="download.gnome.org"
             hash="sha256:8848aba518ba2f4217d144307a1d6cb9afcc92b54e5c13ac1f8c4d4608e96f0e">
     </branch>
@@ -246,17 +219,9 @@
     <dependencies>
       <dep package="glib"/>
     </dependencies>
-<<<<<<< HEAD
-    <branch module="/sources/glib-networking/2.70/glib-networking-${version}.tar.xz" version="2.70.0"
-||||||| parent of 0872c3417ca7 (chore(webkit): bootstrap build #2094)
-    <branch module="/sources/glib-networking/2.72/glib-networking-${version}.tar.xz"
-            version="2.72.0"
-            checkoutdir="glib-networking-${version}"
-=======
     <branch module="/sources/glib-networking/2.70/glib-networking-${version}.tar.xz"
             version="2.70.0"
             checkoutdir="glib-networking-${version}"
->>>>>>> 0872c3417ca7 (chore(webkit): bootstrap build #2094)
             repo="download.gnome.org"
             hash="sha256:66b408e7afa86c582fe38963db56133869ab4b57d34e48ec56aba621940d6f35"/>
   </meson>
