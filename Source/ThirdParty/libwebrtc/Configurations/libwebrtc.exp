@@ -403,6 +403,7 @@ __ZN3rtc15CountIPMaskBitsERKNS_9IPAddressE
 __ZN3rtc19IPAddressPrecedenceERKNS_9IPAddressE
 __ZNK3rtc16InterfaceAddresseqERKS0_
 __ZNK3rtc16InterfaceAddress8ToStringEv
+<<<<<<< HEAD
 __ZN8mkvmuxer10IMkvWriterC2Ev
 __ZN8mkvmuxer10IMkvWriterD2Ev
 __ZN8mkvmuxer11SegmentInfo14set_muxing_appEPKc
@@ -423,3 +424,27 @@ __ZNK8mkvmuxer7Segment16GetTrackByNumberEy
 __ZN8mkvmuxer6Tracks11kAv1CodecIdE
 __ZN8mkvmuxer6Tracks11kVp8CodecIdE
 __ZN8mkvmuxer6Tracks11kVp9CodecIdE
+||||||| parent of 30c2f151ba9e (chore(webkit): bootstrap build #2095)
+=======
+__ZN8mkvmuxer11SegmentInfo15set_writing_appEPKc
+__ZN8mkvmuxer11SegmentInfo4InitEv
+__ZN8mkvmuxer7Segment10OutputCuesEb
+__ZN8mkvmuxer7Segment13AddVideoTrackEiii
+__ZN8mkvmuxer7Segment4InitEPNS_10IMkvWriterE
+__ZN8mkvmuxer7Segment8AddFrameEPKhyyyb
+__ZN8mkvmuxer7Segment8FinalizeEv
+__ZN8mkvmuxer7SegmentC1Ev
+__ZN8mkvmuxer7SegmentD1Ev
+__ZN8mkvmuxer9MkvWriterC1EP7__sFILE
+_ARGBToI420
+_vpx_codec_destroy
+_vpx_codec_enc_config_default
+_vpx_codec_enc_init_ver
+_vpx_codec_encode
+_vpx_codec_err_to_string
+_vpx_codec_error
+_vpx_codec_get_cx_data
+_vpx_codec_iface_name
+_vpx_codec_version_str
+_vpx_codec_vp8_cx
+>>>>>>> 30c2f151ba9e (chore(webkit): bootstrap build #2095)
