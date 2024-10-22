@@ -100,34 +100,12 @@ OBJC_CLASS WKView;
 #endif
 #endif
 
-<<<<<<< HEAD
-||||||| parent of 82b5eb566c19 (chore(webkit): bootstrap build #2095)
-namespace WebKit {
-class PageClient;
-}
-
-namespace WTF {
-template<typename T> struct IsDeprecatedWeakRefSmartPointerException;
-template<> struct IsDeprecatedWeakRefSmartPointerException<WebKit::PageClient> : std::true_type { };
-}
-
-=======
 #if PLATFORM(GTK) || PLATFORM(WPE)
 #if USE(CAIRO)
 #include <WebCore/RefPtrCairo.h>
 #endif
 #endif
 
-namespace WebKit {
-class PageClient;
-}
-
-namespace WTF {
-template<typename T> struct IsDeprecatedWeakRefSmartPointerException;
-template<> struct IsDeprecatedWeakRefSmartPointerException<WebKit::PageClient> : std::true_type { };
-}
-
->>>>>>> 82b5eb566c19 (chore(webkit): bootstrap build #2095)
 namespace API {
 class Attachment;
 class HitTestResult;
