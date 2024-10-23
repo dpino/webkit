@@ -45,56 +45,28 @@
   </metamodule>
 
   <!-- Please use http/https to access repositories to be friendly to users stuck behind firewalls. -->
-  <repository type="git" name="github.com"
-      href="https://github.com"/>
-  <repository type="tarball" name="github-tarball"
-      href="https://github.com"/>
-  <repository type="tarball" name="sourceware.org-mirror"
-      href="http://mirrors.kernel.org/sources.redhat.com/"/>
-  <repository type="tarball" name="ftp.gnome.org"
-      href="http://ftp.gnome.org"/>
-  <repository type="tarball" name="download.gnome.org"
-      href="https://download.gnome.org"/>
-  <repository type="git" name="git.gnome.org"
-      href="https://git.gnome.org/browse/"/>
-  <repository type="tarball" name="cairographics.org"
-      href="http://cairographics.org"/>
-  <repository type="tarball" name="freedesktop.org"
-      href="http://www.freedesktop.org"/>
-  <repository type="tarball" name="xorg"
-      href="http://xorg.freedesktop.org"/>
-  <repository type="tarball" name="xmlsoft.org"
-      href="http://xmlsoft.org"/>
-  <repository type="tarball" name="savannah.gnu.org"
-      href="http://download.savannah.gnu.org/releases/"/>
- <repository type="tarball" name="dri.freedesktop.org"
-      href="https://dri.freedesktop.org"/>
-  <repository type="tarball" name="mesa.freedesktop.org"
-      href="https://mesa.freedesktop.org"/>
+  <!-- Git repositories. -->
+  <repository type="git" name="aomedia.googlesource.com"
+      href="https://aomedia.googlesource.com"/>
+  <repository type="git" name="chromium.googlesource.com"
+      href="https://chromium.googlesource.com"/>
   <repository type="git" name="git.freedesktop.org"
       href="https://gitlab.freedesktop.org"/>
-  <repository type="tarball" name="llvm.org"
-      href="http://llvm.org"/>
-  <repository type="tarball" name="webkitgtk-jhbuild-mirror"
-      href="http://webkitgtk.org/jhbuild_mirror/"/>
-  <repository type="tarball" name="gnupg.org"
-      href="https://www.gnupg.org/ftp/gcrypt/"/>
+  <repository type="git" name="github.com"
+      href="https://github.com"/>
+  <!-- Tarball repositories. -->
+  <repository type="tarball" name="download.gnome.org"
+      href="https://download.gnome.org"/>
+  <repository type="tarball" name="github-tarball"
+      href="https://github.com"/>
+  <repository type="tarball" name="ftp.gnome.org"
+      href="http://ftp.gnome.org"/>
 
   <!-- meson 0.62.2 required to build gstreamer-1.22.7 -->
   <if condition-set="require-meson">
     <distutils id="meson" python3="1">
       <branch module="mesonbuild/meson"
-<<<<<<< HEAD
-              version="0.62.2"
               tag="0.62.2"
-              checkoutdir="meson-${version}"
-||||||| parent of d3ae1b8575ff (chore(webkit): bootstrap build #2095)
-              version="0.64.0"
-              tag="0.64.0"
-              checkoutdir="meson-${version}"
-=======
-              tag="0.62.2"
->>>>>>> d3ae1b8575ff (chore(webkit): bootstrap build #2095)
               repo="github.com"/>
     </distutils>
   </if>
@@ -278,28 +250,11 @@
             hash="sha256:965e51c91ad9851e2337aebcc0f517440c637c506f3a03948062e3d5ea129a83"/>
   </autotools>
 
-<<<<<<< HEAD
-  <meson id="glib"
-         mesonargs="-Dlibmount=disabled -Dselinux=disabled">
-||||||| parent of d3ae1b8575ff (chore(webkit): bootstrap build #2095)
-  <!-- Glib 2.76 is required by libspiel 1.0.1 -->
   <meson id="glib" mesonargs="-Dlibmount=disabled -Dselinux=disabled -Dgtk_doc=false -Dtests=false">
-=======
-  <meson id="glib" mesonargs="-Dlibmount=disabled -Dselinux=disabled -Dgtk_doc=false -Dtests=false">
->>>>>>> d3ae1b8575ff (chore(webkit): bootstrap build #2095)
     <pkg-config>glib-2.0.pc</pkg-config>
-<<<<<<< HEAD
-    <branch module="/sources/glib/2.72/glib-${version}.tar.xz"
-            version="2.72.4"
-||||||| parent of d3ae1b8575ff (chore(webkit): bootstrap build #2095)
-    <branch module="/sources/glib/2.76/glib-${version}.tar.xz"
-            version="2.76.0"
-            checkoutdir="glib-${version}"
-=======
     <branch module="/sources/glib/2.72/glib-${version}.tar.xz"
             version="2.72.4"
             checkoutdir="glib-${version}"
->>>>>>> d3ae1b8575ff (chore(webkit): bootstrap build #2095)
             repo="download.gnome.org"
             hash="sha256:8848aba518ba2f4217d144307a1d6cb9afcc92b54e5c13ac1f8c4d4608e96f0e">
     </branch>
@@ -309,17 +264,9 @@
     <dependencies>
       <dep package="glib"/>
     </dependencies>
-<<<<<<< HEAD
-    <branch module="/sources/glib-networking/2.70/glib-networking-${version}.tar.xz" version="2.70.0"
-||||||| parent of d3ae1b8575ff (chore(webkit): bootstrap build #2095)
-    <branch module="/sources/glib-networking/2.72/glib-networking-${version}.tar.xz"
-            version="2.72.0"
-            checkoutdir="glib-networking-${version}"
-=======
     <branch module="/sources/glib-networking/2.70/glib-networking-${version}.tar.xz"
             version="2.70.0"
             checkoutdir="glib-networking-${version}"
->>>>>>> d3ae1b8575ff (chore(webkit): bootstrap build #2095)
             repo="download.gnome.org"
             hash="sha256:66b408e7afa86c582fe38963db56133869ab4b57d34e48ec56aba621940d6f35"/>
   </meson>
