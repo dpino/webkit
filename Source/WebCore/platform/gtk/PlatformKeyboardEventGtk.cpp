@@ -1304,9 +1304,9 @@ int PlatformKeyboardEvent::windowsKeyCodeForGdkKeyCode(unsigned keycode)
 
 }
 
-static const HashMap<int, unsigned>& gdkToWindowsKeyCodeMap()
+static const UncheckedKeyHashMap<int, unsigned>& gdkToWindowsKeyCodeMap()
 {
-    static HashMap<int, unsigned>* result;
+    static UncheckedKeyHashMap<int, unsigned>* result;
     static std::once_flag once;
     std::call_once(
         once,
@@ -1529,7 +1529,7 @@ static const HashMap<int, unsigned>& gdkToWindowsKeyCodeMap()
                 GDK_KEY_Subtitle,
                 GDK_KEY_Video
             };
-            result = new HashMap<int, unsigned>();
+            result = new UncheckedKeyHashMap<int, unsigned>();
             for (unsigned gdkKeyCode : gdkKeyCodes) {
                 int winKeyCode = PlatformKeyboardEvent::windowsKeyCodeForGdkKeyCode(gdkKeyCode);
                 // If several gdk key codes map to the same win key code first one is used.

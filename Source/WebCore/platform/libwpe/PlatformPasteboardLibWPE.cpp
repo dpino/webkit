@@ -37,9 +37,9 @@
 
 namespace WebCore {
 
-static HashMap<String, String>& sharedPasteboard()
+static UncheckedKeyHashMap<String, String>& sharedPasteboard()
 {
-    static NeverDestroyed<HashMap<String, String>> pasteboard;
+    static NeverDestroyed<UncheckedKeyHashMap<String, String>> pasteboard;
     return pasteboard.get();
 }
 
