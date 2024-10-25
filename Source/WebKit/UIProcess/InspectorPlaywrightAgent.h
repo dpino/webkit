@@ -127,11 +127,11 @@ private:
     std::unique_ptr<InspectorPlaywrightAgentClient> m_client;
     std::unique_ptr<Inspector::PlaywrightFrontendDispatcher> m_frontendDispatcher;
     Ref<Inspector::PlaywrightBackendDispatcher> m_playwrightDispatcher;
-    HashMap<String, std::unique_ptr<PageProxyChannel>> m_pageProxyChannels;
+    UncheckedKeyHashMap<String, std::unique_ptr<PageProxyChannel>> m_pageProxyChannels;
     BrowserContext* m_defaultContext;
-    HashMap<String, RefPtr<DownloadProxy>> m_downloads;
-    HashMap<String, std::unique_ptr<BrowserContext>> m_browserContexts;
-    HashMap<String, std::unique_ptr<BrowserContextDeletion>> m_browserContextDeletions;
+    UncheckedKeyHashMap<String, RefPtr<DownloadProxy>> m_downloads;
+    UncheckedKeyHashMap<String, std::unique_ptr<BrowserContext>> m_browserContexts;
+    UncheckedKeyHashMap<String, std::unique_ptr<BrowserContextDeletion>> m_browserContextDeletions;
     bool m_isEnabled { false };
 };
 
