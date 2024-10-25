@@ -28,6 +28,7 @@
 #include <JavaScriptCore/InspectorAgentBase.h>
 #include <JavaScriptCore/InspectorBackendDispatchers.h>
 
+#include <wtf/HashMap.h>
 #include <wtf/Forward.h>
 #include <wtf/Function.h>
 #include <wtf/Noncopyable.h>
@@ -70,7 +71,7 @@ private:
     Ref<Inspector::EmulationBackendDispatcher> m_backendDispatcher;
     WebPageProxy& m_page;
     Vector<Function<void()>> m_commandsToRunWhenShown;
-    HashMap<String, HashSet<String>> m_permissions;
+    UncheckedKeyHashMap<String, HashSet<String>> m_permissions;
 };
 
 } // namespace WebKit
