@@ -2612,7 +2612,7 @@ void WebPageProxy::setAuthCredentialsForAutomation(std::optional<WebCore::Creden
     m_authOriginForAutomation = WTFMove(origin);
 }
 
-void WebPageProxy::setPermissionsForAutomation(const HashMap<String, HashSet<String>>& permissions)
+void WebPageProxy::setPermissionsForAutomation(const UncheckedKeyHashMap<String, HashSet<String>>& permissions)
 {
     m_permissionsForAutomation = permissions;
 }

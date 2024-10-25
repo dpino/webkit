@@ -36,6 +36,7 @@
 #include <wtf/ApproximateTime.h>
 #include <wtf/CheckedRef.h>
 #include <wtf/CompletionHandler.h>
+#include <wtf/HashMap.h>
 #include <wtf/OptionSet.h>
 #include <wtf/ProcessID.h>
 #include <wtf/UniqueRef.h>
@@ -832,7 +833,7 @@ public:
     void setPageLoadStateObserver(RefPtr<PageLoadStateObserverBase>&&);
 
     void setAuthCredentialsForAutomation(std::optional<WebCore::Credential>&&, std::optional<URL>&&);
-    void setPermissionsForAutomation(const HashMap<String, HashSet<String>>&);
+    void setPermissionsForAutomation(const UncheckedKeyHashMap<String, HashSet<String>>&);
     void setOrientationOverride(std::optional<int>&& angle);
     void setActiveForAutomation(std::optional<bool> active);
     void logToStderr(const String& str);
@@ -3699,7 +3700,7 @@ private:
     Vector<InjectedBundleMessage> m_pendingInjectedBundleMessages;
     std::optional<WebCore::Credential> m_credentialsForAutomation;
     std::optional<URL> m_authOriginForAutomation;
-    HashMap<String, HashSet<String>> m_permissionsForAutomation;
+    UncheckedKeyHashMap<String, HashSet<String>> m_permissionsForAutomation;
     std::optional<bool> m_activeForAutomation;
         
 #if PLATFORM(IOS_FAMILY) && ENABLE(DEVICE_ORIENTATION)

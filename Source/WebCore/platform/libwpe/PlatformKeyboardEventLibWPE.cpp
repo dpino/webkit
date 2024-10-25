@@ -1305,9 +1305,9 @@ int PlatformKeyboardEvent::windowsKeyCodeForWPEKeyCode(unsigned keycode)
     return 0;
 }
 
-static const HashMap<int, unsigned>& WPEToWindowsKeyCodeMap()
+static const UncheckedKeyHashMap<int, unsigned>& WPEToWindowsKeyCodeMap()
 {
-    static HashMap<int, unsigned>* result;
+    static UncheckedKeyHashMap<int, unsigned>* result;
     static std::once_flag once;
     std::call_once(
         once,
@@ -1530,7 +1530,7 @@ static const HashMap<int, unsigned>& WPEToWindowsKeyCodeMap()
                 WPE_KEY_Subtitle,
                 WPE_KEY_Video
             };
-            result = new HashMap<int, unsigned>();
+            result = new UncheckedKeyHashMap<int, unsigned>();
             for (unsigned WPEKeyCode : WPEKeyCodes) {
                 int winKeyCode = PlatformKeyboardEvent::windowsKeyCodeForWPEKeyCode(WPEKeyCode);
                 // If several gdk key codes map to the same win key code first one is used.
