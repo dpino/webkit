@@ -927,8 +927,11 @@ void WebProcess::createWebPage(PageIdentifier pageID, WebPageCreationParameters&
 #if OS(LINUX)
         RealTimeThreads::singleton().setEnabled(hasVisibleWebPage());
 #endif
-    } else
-        result.iterator->value->reinitializeWebPage(WTFMove(parameters));
+    } else {
+        if (parameters.shouldPauseInInspectorWhenShown) {
+            result.iterator->value->reinitializeWebPage(WTFMove(parameters));
+        }
+    }
 
     if (m_hasPendingAccessibilityUnsuspension) {
         m_hasPendingAccessibilityUnsuspension = false;
