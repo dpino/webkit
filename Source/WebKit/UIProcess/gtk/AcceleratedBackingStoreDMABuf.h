@@ -94,6 +94,7 @@ private:
 #else
     bool paint(cairo_t*, const WebCore::IntRect&) override;
 #endif
+    cairo_surface_t* surface() override;
     void unrealize() override;
     void update(const LayerTreeContext&) override;
     RendererBufferFormat bufferFormat() const override;
@@ -241,7 +242,22 @@ private:
     RefPtr<Buffer> m_pendingBuffer;
     RefPtr<Buffer> m_committedBuffer;
     WebCore::Region m_pendingDamageRegion;
+<<<<<<< HEAD
     HashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+||||||| parent of 2c60110eb4fb (chore(webkit): bootstrap build #2096)
+    UncheckedKeyHashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+=======
+<<<<<<< HEAD
+    UncheckedKeyHashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+||||||| parent of ec699e4a7764 (chore(webkit): bootstrap build #2096)
+    HashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+=======
+    HashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+// Playwright begin
+    RefPtr<cairo_surface_t> m_flippedSurface;
+// Playwright end
+>>>>>>> ec699e4a7764 (chore(webkit): bootstrap build #2096)
+>>>>>>> 2c60110eb4fb (chore(webkit): bootstrap build #2096)
 };
 
 } // namespace WebKit
