@@ -174,6 +174,7 @@ private:
 
     CheckedPtr<Inspector::InspectorTargetAgent> m_targetAgent;
 <<<<<<< HEAD
+<<<<<<< HEAD
     HashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
 ||||||| parent of 2c60110eb4fb (chore(webkit): bootstrap build #2096)
     UncheckedKeyHashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
@@ -183,17 +184,32 @@ private:
 ||||||| parent of ec699e4a7764 (chore(webkit): bootstrap build #2096)
     HashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
 =======
+||||||| parent of 015a1a5bfd4f (Resolve conflicts)
+<<<<<<< HEAD
+    UncheckedKeyHashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
+||||||| parent of ec699e4a7764 (chore(webkit): bootstrap build #2096)
+    HashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
+=======
+=======
+>>>>>>> 015a1a5bfd4f (Resolve conflicts)
     WebPageInspectorEmulationAgent* m_emulationAgent { nullptr };
     WebPageInspectorInputAgent* m_inputAgent { nullptr };
     InspectorScreencastAgent* m_screecastAgent { nullptr };
+<<<<<<< HEAD
     HashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
 >>>>>>> ec699e4a7764 (chore(webkit): bootstrap build #2096)
 >>>>>>> 2c60110eb4fb (chore(webkit): bootstrap build #2096)
+||||||| parent of 015a1a5bfd4f (Resolve conflicts)
+    HashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
+>>>>>>> ec699e4a7764 (chore(webkit): bootstrap build #2096)
+=======
+    UncheckedKeyHashMap<String, std::unique_ptr<InspectorTargetProxy>> m_targets;
+>>>>>>> 015a1a5bfd4f (Resolve conflicts)
 
     CheckedPtr<InspectorBrowserAgent> m_enabledBrowserAgent;
 
     bool m_didCreateLazyAgents { false };
-    HashMap<WebCore::NavigationIdentifier, NavigationHandler> m_pendingNavigations;
+    UncheckedKeyHashMap<WebCore::NavigationIdentifier, NavigationHandler> m_pendingNavigations;
 
     static WebPageInspectorControllerObserver* s_observer;
 };

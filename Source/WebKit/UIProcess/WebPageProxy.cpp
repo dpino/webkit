@@ -6631,14 +6631,8 @@ void WebPageProxy::didDestroyNavigationShared(Ref<WebProcessProxy>&& process, We
 
     RefPtr protectedPageClient { pageClient() };
 
-<<<<<<< HEAD
     protectedNavigationState()->didDestroyNavigation(process->coreProcessIdentifier(), navigationID);
-||||||| parent of ec699e4a7764 (chore(webkit): bootstrap build #2096)
-    m_navigationState->didDestroyNavigation(process->coreProcessIdentifier(), navigationID);
-=======
-    m_navigationState->didDestroyNavigation(process->coreProcessIdentifier(), navigationID);
     m_inspectorController->didDestroyNavigation(navigationID);
->>>>>>> ec699e4a7764 (chore(webkit): bootstrap build #2096)
 }
 
 void WebPageProxy::didStartProvisionalLoadForFrame(FrameIdentifier frameID, FrameInfoData&& frameInfo, ResourceRequest&& request, std::optional<WebCore::NavigationIdentifier> navigationID, URL&& url, URL&& unreachableURL, const UserData& userData, WallTime timestamp)
