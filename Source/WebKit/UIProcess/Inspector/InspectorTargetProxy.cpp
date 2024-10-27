@@ -48,22 +48,11 @@ std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(WebPageProxy&
 
 std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(ProvisionalPageProxy& provisionalPage, const String& targetId)
 {
-<<<<<<< HEAD
     RefPtr page = provisionalPage.page();
     if (!page)
         return nullptr;
 
-    auto target = InspectorTargetProxy::create(*page, targetId, type);
-    target->m_provisionalPage = provisionalPage;
-    return target;
-||||||| parent of 31734584f541 (chore(webkit): bootstrap build #2096)
-    Ref page = provisionalPage.page();
-    auto target = InspectorTargetProxy::create(page, targetId, type);
-    target->m_provisionalPage = provisionalPage;
-    return target;
-=======
     return makeUnique<InspectorTargetProxy>(provisionalPage.page(), &provisionalPage, targetId, Inspector::InspectorTargetType::Page);
->>>>>>> 31734584f541 (chore(webkit): bootstrap build #2096)
 }
 
 InspectorTargetProxy::InspectorTargetProxy(WebPageProxy& page, ProvisionalPageProxy* provisionalPage, const String& targetId, Inspector::InspectorTargetType type)

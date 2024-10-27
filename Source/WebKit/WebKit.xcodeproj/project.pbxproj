@@ -13868,16 +13868,8 @@
 				1C6BE7A22B0A94E500D01D93 /* WebExtensionMenuItemType.h */,
 				1C4EBD712ABA47610005868F /* WebExtensionMessageSenderParameters.h */,
 				1C4EBD732ABA481B0005868F /* WebExtensionMessageSenderParameters.serialization.in */,
-<<<<<<< HEAD
 				1CE2323D2CBF1A8B00DFD6C6 /* WebExtensionMessageTargetParameters.h */,
 				1CE2323E2CBF1A8B00DFD6C6 /* WebExtensionMessageTargetParameters.serialization.in */,
-				67AD7CB32CBB361D00B9B22B /* WebExtensionPermission.cpp */,
-				67AD7CB22CBB361C00B9B22B /* WebExtensionPermission.h */,
-||||||| parent of 31734584f541 (chore(webkit): bootstrap build #2096)
-=======
-				67AD7CB32CBB361D00B9B22B /* WebExtensionPermission.cpp */,
-				67AD7CB22CBB361C00B9B22B /* WebExtensionPermission.h */,
->>>>>>> 31734584f541 (chore(webkit): bootstrap build #2096)
 				1C9A15C72ABDEEB4002CC12A /* WebExtensionPortChannelIdentifier.h */,
 				B69E1A672AFF5F0B000FB98E /* WebExtensionRegisteredScriptParameters.h */,
 				B6D031082AC1F631006C8E0B /* WebExtensionScriptInjectionParameters.h */,
