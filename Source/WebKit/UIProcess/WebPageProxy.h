@@ -866,16 +866,10 @@ public:
     // Default values are in cpp file to avoid including headers from this header.
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&);
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy);
-<<<<<<< HEAD
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, WebCore::IsPerformingHTTPFallback);
     RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, WebCore::IsPerformingHTTPFallback, std::unique_ptr<NavigationActionData>&&, API::Object* userData = nullptr);
-
-||||||| parent of 31734584f541 (chore(webkit): bootstrap build #2096)
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, WebCore::IsPerformingHTTPFallback, API::Object* userData = nullptr);
-=======
-    RefPtr<API::Navigation> loadRequest(WebCore::ResourceRequest&&, WebCore::ShouldOpenExternalURLsPolicy, WebCore::IsPerformingHTTPFallback, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadRequestForInspector(WebCore::ResourceRequest&&, WebFrameProxy*);
->>>>>>> 31734584f541 (chore(webkit): bootstrap build #2096)
+
     RefPtr<API::Navigation> loadFile(const String& fileURL, const String& resourceDirectoryURL, bool isAppInitiated = true, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadData(Ref<WebCore::SharedBuffer>&&, const String& MIMEType, const String& encoding, const String& baseURL, API::Object* userData = nullptr);
     RefPtr<API::Navigation> loadData(Ref<WebCore::SharedBuffer>&&, const String& MIMEType, const String& encoding, const String& baseURL, API::Object* userData, WebCore::ShouldOpenExternalURLsPolicy);
