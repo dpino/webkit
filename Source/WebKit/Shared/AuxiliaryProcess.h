@@ -211,6 +211,11 @@ struct AuxiliaryProcessInitializationParameters {
     IPC::Connection::Identifier connectionIdentifier;
     HashMap<String, String> extraInitializationData;
     WTF::AuxiliaryProcessType processType;
+// Playwright begin
+#if !PLATFORM(COCOA)
+    bool shouldEnableSharedArrayBuffer { false };
+#endif
+// Playwright end
 };
 
 } // namespace WebKit
