@@ -8,8 +8,6 @@
       <dep package="icu"/>
       <dep package="harfbuzz"/>
       <dep package="libxml2"/>
-      <dep package="atk"/>
-      <dep package="at-spi2-atk"/>
       <dep package="glib"/>
       <dep package="glib-networking"/>
       <dep package="libavif"/>
@@ -29,8 +27,6 @@
       <dep package="icu"/>
       <dep package="harfbuzz"/>
       <dep package="libxml2"/>
-      <dep package="atk"/>
-      <dep package="at-spi2-atk"/>
       <dep package="glib"/>
       <dep package="glib-networking"/>
       <dep package="libavif"/>
@@ -52,8 +48,6 @@
       href="https://chromium.googlesource.com"/>
   <repository type="git" name="git.freedesktop.org"
       href="https://gitlab.freedesktop.org"/>
-  <repository type="git" name="gitlab.gnome.org"
-      href="https://gitlab.gnome.org"/>
   <repository type="git" name="github.com"
       href="https://github.com"/>
   <!-- Tarball repositories. -->
@@ -269,47 +263,6 @@
             tag="2.70.0"
             version="2.70.0"
             checkoutdir="glib-networking-${version}"/>
-  </meson>
-
-  <!-- atk needed to build with A11y support -->
-  <meson id="atk" mesonargs="-Dintrospection=false">
-    <pkg-config>atk.pc</pkg-config>
-    <branch module="Archive/atk.git"
-            repo="gitlab.gnome.org"
-            tag="2.38.0"
-            version="2.38.0"
-            checkoutdir="atk-${version}"/>
-    <dependencies>
-      <dep package="glib"/>
-    </dependencies>
-  </meson>
-
-  <!-- at-spi2-core needed to build with A11y support -->
-  <meson id="at-spi2-core" mesonargs="-Dintrospection=no -Dx11=no">
-    <pkg-config>atspi-2.pc</pkg-config>
-    <branch module="GNOME/at-spi2-core"
-            repo="github.com"
-            tag="AT_SPI2_CORE_2_44_1"
-            version="2.44.1"
-            checkoutdir="at-spi2-core-${version}"/>
-    <dependencies>
-      <dep package="glib"/>
-    </dependencies>
-  </meson>
-
-  <!-- at-spi2-atk needed to build with A11y support -->
-  <meson id="at-spi2-atk" mesonargs="">
-    <pkg-config>atk-bridge-2.0.pc</pkg-config>
-    <branch module="Archive/at-spi2-atk.git"
-            repo="gitlab.gnome.org"
-            tag="AT_SPI2_ATK_2_38_0"
-            version="2.38.0"
-            checkoutdir="at-spi2-atk-${version}"/>
-    <dependencies>
-      <dep package="glib"/>
-      <dep package="atk"/>
-      <dep package="at-spi2-core"/>
-    </dependencies>
   </meson>
 
   <!-- libjxl required for JPEGXL support -->
