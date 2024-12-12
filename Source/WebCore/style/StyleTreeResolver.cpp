@@ -1283,10 +1283,12 @@ std::unique_ptr<Update> TreeResolver::resolve()
 
     if (m_hasUnresolvedAnchorPositionedElements) {
         // We need to ensure that style resolution visits any unresolved anchor-positioned elements.
-        for (auto elementAndState : m_document->styleScope().anchorPositionedStates()) {
-            if (elementAndState.value->stage < AnchorPositionResolutionStage::Resolved)
-                elementAndState.key.invalidateForResumingAnchorPositionedElementResolution();
-        }
+        AnchorPositionEvaluator::visitAllAnchorPositionedStates(m_document.get(), [](auto& states) {
+            for (auto elementAndState : states) {
+                if (elementAndState.value->stage < AnchorPositionResolutionStage::Resolved)
+                    elementAndState.key.invalidateForResumingAnchorPositionedElementResolution();
+            }
+        });
     }
 
     for (auto& elementAndOptions : m_positionOptions) {
@@ -1311,7 +1313,7 @@ auto TreeResolver::updateAnchorPositioningState(Element& element, const RenderSt
 
     AnchorPositionEvaluator::updateAnchorPositionedStateForLayoutTimePositioned(element, *style);
 
-    auto* anchorPositionedState = m_document->styleScope().anchorPositionedStates().get(element);
+    auto* anchorPositionedState = Style::Scope::forNode(element).anchorPositionedStates().get(element);
 
     auto needsInterleavedLayout = anchorPositionedState && anchorPositionedState->stage < AnchorPositionResolutionStage::Resolved;
     if (!needsInterleavedLayout)
@@ -1347,7 +1349,7 @@ void TreeResolver::generatePositionOptionsIfNeeded(const ResolvedStyle& resolved
     auto options = generatePositionOptions();
 
     // If the fallbacks contain anchor references we need to resolve the anchors first and regenerate the options.
-    auto* anchorPositionedState = m_document->styleScope().anchorPositionedStates().get(styleable.element);
+    auto* anchorPositionedState = Style::Scope::forNode(styleable.element).anchorPositionedStates().get(styleable.element);
     if (anchorPositionedState && anchorPositionedState->stage < AnchorPositionResolutionStage::Resolved)
         return;
 
