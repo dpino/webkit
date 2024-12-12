@@ -41,6 +41,7 @@
 #include "RenderStyle.h"
 #include "RenderStyleInlines.h"
 #include "RenderView.h"
+#include "ShadowRoot.h"
 #include "StyleBuilderConverter.h"
 #include "StyleBuilderState.h"
 #include "StyleScope.h"
@@ -432,7 +433,7 @@ RefPtr<Element> AnchorPositionEvaluator::findAnchorForAnchorFunctionAndAttemptRe
 
     Ref anchorPositionedElement = *builderState.element();
 
-    auto& anchorPositionedStates = anchorPositionedElement->document().styleScope().anchorPositionedStates();
+    auto& anchorPositionedStates = Style::Scope::forNode(const_cast<Element&>(anchorPositionedElement.get())).anchorPositionedStates();
     auto& anchorPositionedState = *anchorPositionedStates.ensure(anchorPositionedElement, [&] {
         return WTF::makeUnique<AnchorPositionedState>();
     }).iterator->value.get();
@@ -693,6 +694,11 @@ static bool firstChildPrecedesSecondChild(const RenderObject* firstChild, const 
 // See: https://drafts.csswg.org/css-anchor-position-1/#acceptable-anchor-element
 static bool isAcceptableAnchorElement(const RenderBoxModelObject& anchorRenderer, Ref<const Element> anchorPositionedElement)
 {
+    // An element is not acceptable anchor element if positioned element uses different style scope (as it resides in (different) shadow tree).
+    // FIXME: Add support for ::part().
+    if (&Style::Scope::forNode(*static_cast<const RenderObject&>(anchorRenderer).node()) != &Style::Scope::forNode(anchorPositionedElement))
+        return false;
+
     CheckedPtr anchorPositionedRenderer = anchorPositionedElement->renderer();
     ASSERT(anchorPositionedRenderer);
     CheckedPtr containingBlock = anchorPositionedRenderer->containingBlock();
@@ -772,8 +778,9 @@ AnchorElements AnchorPositionEvaluator::findAnchorsForAnchorPositionedElement(co
     return anchorElements;
 }
 
-void AnchorPositionEvaluator::updateAnchorPositioningStatesAfterInterleavedLayout(const Document& document)
+void AnchorPositionEvaluator::updateAnchorPositioningStatesAfterInterleavedLayout(Document& document)
 {
+<<<<<<< HEAD
     if (document.styleScope().anchorPositionedStates().isEmptyIgnoringNullReferences())
         return;
 
@@ -790,10 +797,41 @@ void AnchorPositionEvaluator::updateAnchorPositioningStatesAfterInterleavedLayou
             }
             state.stage = state.hasAnchorFunctions ? AnchorPositionResolutionStage::ResolveAnchorFunctions : AnchorPositionResolutionStage::Resolved;
             continue;
+||||||| constructed merge base
+    if (document.styleScope().anchorPositionedStates().isEmptyIgnoringNullReferences())
+        return;
+
+    auto anchorsForAnchorName = collectAnchorsForAnchorName(document);
+
+    for (auto elementAndState : document.styleScope().anchorPositionedStates()) {
+        auto& state = *elementAndState.value;
+        if (state.stage == AnchorPositionResolutionStage::Initial) {
+            Ref element { elementAndState.key };
+            if (element->renderer())
+                state.anchorElements = findAnchorsForAnchorPositionedElement(element, state.anchorNames, anchorsForAnchorName);
+            state.stage = AnchorPositionResolutionStage::FoundAnchors;
+            continue;
+=======
+    visitAllAnchorPositionedStates(document, [&document](AnchorPositionedStates& states) {
+        if (states.isEmptyIgnoringNullReferences())
+            return;
+
+        auto anchorsForAnchorName = collectAnchorsForAnchorName(document);
+
+        for (auto elementAndState : states) {
+            auto& state = *elementAndState.value;
+            if (state.stage == AnchorPositionResolutionStage::Initial) {
+                Ref element { elementAndState.key };
+                if (element->renderer())
+                    state.anchorElements = findAnchorsForAnchorPositionedElement(element, state.anchorNames, anchorsForAnchorName);
+                state.stage = AnchorPositionResolutionStage::FoundAnchors;
+                continue;
+            }
+            if (state.stage == AnchorPositionResolutionStage::Resolved)
+                state.stage = AnchorPositionResolutionStage::Positioned;
+>>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
         }
-        if (state.stage == AnchorPositionResolutionStage::Resolved)
-            state.stage = AnchorPositionResolutionStage::Positioned;
-    }
+    });
 }
 
 void AnchorPositionEvaluator::updateAnchorPositionedStateForLayoutTimePositioned(Element& element, const RenderStyle& style)
@@ -812,47 +850,57 @@ void AnchorPositionEvaluator::updateSnapshottedScrollOffsets(Document& document)
 {
     // https://drafts.csswg.org/css-anchor-position-1/#scroll
 
-    auto& states = document.styleScope().anchorPositionedStates();
-    for (auto elementAndState : states) {
-        CheckedRef anchorPositionedElement = elementAndState.key;
-        if (!anchorPositionedElement->renderer())
-            continue;
+    visitAllAnchorPositionedStates(document, [](AnchorPositionedStates& states) {
+        for (auto elementAndState : states) {
+            CheckedRef anchorPositionedElement = elementAndState.key;
+            if (!anchorPositionedElement->renderer())
+                continue;
 
-        CheckedPtr anchorPositionedRenderer = dynamicDowncast<RenderBox>(anchorPositionedElement->renderer());
-        if (!anchorPositionedRenderer || !anchorPositionedRenderer->layer())
-            continue;
+            CheckedPtr anchorPositionedRenderer = dynamicDowncast<RenderBox>(anchorPositionedElement->renderer());
+            if (!anchorPositionedRenderer || !anchorPositionedRenderer->layer())
+                continue;
 
-        auto needsScrollAdjustment = [&] {
-            // FIXME: This is incomplete.
-            if (!anchorPositionedRenderer->style().positionAnchor())
-                return false;
+            auto needsScrollAdjustment = [&] {
+                // FIXME: This is incomplete.
+                if (!anchorPositionedRenderer->style().positionAnchor())
+                    return false;
 
-            if (elementAndState.value->anchorElements.size() != 1)
-                return false;
+                if (elementAndState.value->anchorElements.size() != 1)
+                    return false;
 
-            return true;
-        }();
+                return true;
+            }();
 
+<<<<<<< HEAD
         if (!needsScrollAdjustment) {
             anchorPositionedRenderer->layer()->clearSnapshottedScrollOffsetForAnchorPositioning();
             continue;
         }
-
-        auto anchorElement = *elementAndState.value->anchorElements.values().begin();
-        if (!anchorElement->renderer())
+||||||| constructed merge base
+        if (!needsScrollAdjustment)
             continue;
+=======
+            if (!needsScrollAdjustment)
+                continue;
+>>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
 
-        CheckedPtr containingBlock = anchorPositionedRenderer->containingBlock();
+            auto anchorElement = *elementAndState.value->anchorElements.values().begin();
+            if (!anchorElement->renderer())
+                continue;
 
-        auto scrollOffset = scrollOffsetFromAncestorContainer(*anchorElement->renderer(), *containingBlock);
+            CheckedPtr containingBlock = anchorPositionedRenderer->containingBlock();
 
-        if (scrollOffset.isZero() && !anchorPositionedRenderer->layer()->snapshottedScrollOffsetForAnchorPositioning())
-            continue;
+            auto scrollOffset = scrollOffsetFromAncestorContainer(*anchorElement->renderer(), *containingBlock);
 
-        anchorPositionedRenderer->layer()->setSnapshottedScrollOffsetForAnchorPositioning(scrollOffset);
-    }
+            if (scrollOffset.isZero() && !anchorPositionedRenderer->layer()->snapshottedScrollOffsetForAnchorPositioning())
+                continue;
+
+            anchorPositionedRenderer->layer()->setSnapshottedScrollOffsetForAnchorPositioning(scrollOffset);
+        }
+    });
 }
 
+<<<<<<< HEAD
 auto AnchorPositionEvaluator::makeAnchorPositionedForAnchorMap(Document& document) -> AnchorToAnchorPositionedMap
 {
     AnchorToAnchorPositionedMap map;
@@ -875,11 +923,15 @@ auto AnchorPositionEvaluator::makeAnchorPositionedForAnchorMap(Document& documen
 }
 
 void AnchorPositionEvaluator::cleanupAnchorPositionedState(Element& element)
+||||||| constructed merge base
+void AnchorPositionEvaluator::cleanupAnchorPositionedState(Element& element)
+=======
+void AnchorPositionEvaluator::visitAllAnchorPositionedStates(Document& document, std::function<void(AnchorPositionedStates&)> visitor)
+>>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
 {
-    if (element.document().styleScope().anchorPositionedStates().remove(element)) {
-        if (auto* renderer = dynamicDowncast<RenderBox>(element.renderer()); renderer && renderer->layer())
-            renderer->layer()->clearSnapshottedScrollOffsetForAnchorPositioning();
-    }
+    visitor(document.styleScope().anchorPositionedStates());
+    for (auto& shadowRoot : document.inDocumentShadowRoots())
+        visitor(const_cast<ShadowRoot&>(shadowRoot).styleScope().anchorPositionedStates());
 }
 
 bool AnchorPositionEvaluator::isLayoutTimeAnchorPositioned(const RenderStyle& style)

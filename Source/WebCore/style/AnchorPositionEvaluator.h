@@ -108,13 +108,13 @@ public:
     static bool propertyAllowsAnchorSizeFunction(CSSPropertyID);
     static std::optional<double> evaluateSize(const BuilderState&, std::optional<ScopedName> elementName, std::optional<AnchorSizeDimension>);
 
-    static void updateAnchorPositioningStatesAfterInterleavedLayout(const Document&);
-    static void cleanupAnchorPositionedState(Element&);
+    static void updateAnchorPositioningStatesAfterInterleavedLayout(Document&);
     static void updateSnapshottedScrollOffsets(Document&);
     static void updateAnchorPositionedStateForLayoutTimePositioned(Element&, const RenderStyle&);
 
     static LayoutRect computeAnchorRectRelativeToContainingBlock(CheckedRef<const RenderBoxModelObject> anchorBox, const RenderBlock& containingBlock);
 
+<<<<<<< HEAD
     using AnchorToAnchorPositionedMap = SingleThreadWeakHashMap<const RenderBoxModelObject, Vector<Ref<Element>>>;
     static AnchorToAnchorPositionedMap makeAnchorPositionedForAnchorMap(Document&);
 
@@ -123,6 +123,11 @@ public:
 
     static bool overflowsContainingBlock(const RenderBox& anchoredBox);
 
+||||||| constructed merge base
+=======
+    static void visitAllAnchorPositionedStates(Document&, std::function<void(AnchorPositionedStates&)>);
+
+>>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
 private:
     static AnchorElements findAnchorsForAnchorPositionedElement(const Element&, const UncheckedKeyHashSet<AtomString>& anchorNames, const AnchorsForAnchorName&);
 };
