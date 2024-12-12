@@ -799,6 +799,11 @@ static bool isAcceptableAnchorElement(const RenderBoxModelObject& anchorRenderer
     if (!anchorElement)
         return false;
 
+    // An element is not acceptable anchor element if positioned element uses different style scope (as it resides in (different) shadow tree).
+    // FIXME: Add support for ::part().
+    if (&Style::Scope::forNode(*anchorElement) != &Style::Scope::forNode(anchorPositionedElement))
+        return false;
+
     if (auto anchorScopeElement = anchorScopeForAnchorElement(*anchorElement, anchorRenderer.style().anchorNames())) {
         // If the anchor is scoped, the anchor-positioned element must also be in the same scope.
         if (!anchorPositionedElement->isComposedTreeDescendantOf(*anchorScopeElement))
