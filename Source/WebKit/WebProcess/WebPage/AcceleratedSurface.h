@@ -31,6 +31,12 @@
 #include <wtf/TZoneMalloc.h>
 #include <wtf/WeakRef.h>
 
+#if USE(LIBEPOXY)
+#include <epoxy/gl.h>
+#else
+#include <GLES2/gl2.h>
+#endif
+
 namespace WTF {
 class RunLoop;
 }
@@ -56,8 +62,8 @@ public:
     virtual bool resize(const WebCore::IntSize&);
     virtual bool shouldPaintMirrored() const { return false; }
 
-    virtual void didCreateGLContext() { }
-    virtual void willDestroyGLContext() { }
+    virtual void didCreateGLContext();
+    virtual void willDestroyGLContext();
     virtual void finalize() { }
     virtual void willRenderFrame() { }
     virtual void didRenderFrame() { }
@@ -83,10 +89,19 @@ protected:
 
     void frameComplete() const;
 
+    static void checkClearShader();
+
     WeakRef<WebPage> m_webPage;
     Function<void()> m_frameCompleteHandler;
     WebCore::IntSize m_size;
     std::atomic<bool> m_isOpaque { true };
+
+    GLuint m_clearProgram;
+    GLuint m_vertexShader;
+    GLuint m_fragmentShader;
+    GLuint m_vao;
+    GLuint m_vbo;
+    static bool m_force_shader_clear;
 };
 
 } // namespace WebKit
