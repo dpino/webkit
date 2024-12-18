@@ -128,6 +128,7 @@ public:
 #endif
 
     void willDestroyGLContext();
+    void didCreateGLContext();
     void willRenderFrame(const WebCore::IntSize&);
     void didRenderFrame();
     void clear(const OptionSet<WebCore::CompositionReason>&);
@@ -411,8 +412,14 @@ private:
 #endif
     };
 
+<<<<<<< HEAD
     static constexpr ColorComponents white { 1.f, 1.f, 1.f, WebCore::AlphaTraits<float>::opaque };
 
+||||||| parent of 4e807c5fac4b ([PATCH] ThreadedCompositor: Avoid calling glClear in each composition.)
+=======
+    static void checkClearShader();
+
+>>>>>>> 4e807c5fac4b ([PATCH] ThreadedCompositor: Avoid calling glClear in each composition.)
     WeakRef<WebPage> m_webPage;
     Function<void()> m_frameCompleteHandler;
     uint64_t m_id { 0 };
@@ -426,6 +433,13 @@ private:
 #if ENABLE(DAMAGE_TRACKING)
     std::optional<WebCore::Damage> m_frameDamage;
 #endif
+
+    guint m_clearProgram;
+    guint m_vertexShader;
+    guint m_fragmentShader;
+    guint m_vao;
+    guint m_vbo;
+    static bool m_force_shader_clear;
 };
 
 } // namespace WebKit
