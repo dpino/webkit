@@ -38,14 +38,34 @@
 #include "AcceleratedSurfaceDMABuf.h"
 #endif
 
-#if USE(LIBEPOXY)
-#include <epoxy/gl.h>
-#else
-#include <GLES2/gl2.h>
-#endif
-
 namespace WebKit {
 using namespace WebCore;
+
+#define STRINGIFY(...) #__VA_ARGS__
+
+static const char* vertexFullscreenQuadShader =
+    STRINGIFY(
+        precision highp float;
+
+        attribute vec2 position;
+
+        void main()
+        {
+            gl_Position = vec4(position, 0.0, 1.0);
+        }
+    );
+
+static const char* fragmentFullscreenQuadShader =
+    STRINGIFY(
+        precision highp float;
+
+        void main()
+        {
+            gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+        }
+    );
+
+bool AcceleratedSurface::m_force_shader_clear;
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(AcceleratedSurface);
 
@@ -99,8 +119,93 @@ void AcceleratedSurface::clearIfNeeded()
     if (m_isOpaque)
         return;
 
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    static bool stop_glClear = false;
+    static std::once_flag glClear_flag;
+    std::call_once(glClear_flag, []{
+        const char* var = getenv("WEBKIT_STOP_CLEAR_COMPOSITING");
+        if (var && !strcmp(var, "1"))
+            stop_glClear = true;
+    });
+
+    if (!stop_glClear) {
+        if (m_force_shader_clear) {
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ZERO);
+            glUseProgram(m_clearProgram);
+            glBindVertexArray(m_vao);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            glBindVertexArray(0);
+            glUseProgram(0);
+        } else {
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+}
+
+void AcceleratedSurface::didCreateGLContext()
+{
+    static std::once_flag shader_clear_flag;
+    std::call_once(shader_clear_flag, checkClearShader);
+
+    if (m_force_shader_clear) {
+        m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(m_vertexShader, 1, &vertexFullscreenQuadShader, NULL);
+        glCompileShader(m_vertexShader);
+
+        m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(m_fragmentShader, 1, &fragmentFullscreenQuadShader, NULL);
+        glCompileShader(m_fragmentShader);
+
+        m_clearProgram = glCreateProgram();
+        glAttachShader(m_clearProgram, m_vertexShader);
+        glAttachShader(m_clearProgram, m_fragmentShader);
+        glLinkProgram(m_clearProgram);
+
+        float quad[] =
+        {
+            -1.0f,  1.0f,
+            -1.0f, -1.0f,
+            1.0f,  1.0f,
+            1.0f, -1.0f
+        };
+
+        glGenVertexArrays(1, &m_vao);
+        glBindVertexArray(m_vao);
+        glGenBuffers(1, &m_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
+        GLint posAttrib = glGetAttribLocation(m_clearProgram, "position");
+        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(posAttrib);
+
+        glBindVertexArray(0);
+    }
+}
+
+void AcceleratedSurface::willDestroyGLContext()
+{
+    if (m_force_shader_clear) {
+        glDeleteVertexArrays(1, &m_vao);
+        glDeleteBuffers(1, &m_vbo);
+        glDetachShader(m_clearProgram, m_vertexShader);
+        glDeleteShader(m_vertexShader);
+        glDetachShader(m_clearProgram, m_fragmentShader);
+        glDeleteShader(m_fragmentShader);
+        glDeleteProgram(m_clearProgram);
+    }
+}
+
+void AcceleratedSurface::checkClearShader()
+{
+    const char* var = getenv("WEBKIT_FORCE_SHADER_CLEAR_COMPOSITING");
+    if (var && !strcmp(var, "1")) {
+        m_force_shader_clear = true;
+    } else {
+        m_force_shader_clear = false;
+    }
 }
 
 void AcceleratedSurface::frameComplete() const
