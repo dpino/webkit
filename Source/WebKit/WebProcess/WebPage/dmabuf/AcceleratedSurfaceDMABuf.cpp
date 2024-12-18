@@ -640,6 +640,7 @@ void AcceleratedSurfaceDMABuf::willDestroyCompositingRunLoop()
 void AcceleratedSurfaceDMABuf::willDestroyGLContext()
 {
     m_swapChain.reset();
+    AcceleratedSurface::willDestroyGLContext();
 }
 
 uint64_t AcceleratedSurfaceDMABuf::surfaceID() const
