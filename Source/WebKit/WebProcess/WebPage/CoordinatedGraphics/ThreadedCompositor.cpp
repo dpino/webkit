@@ -101,6 +101,8 @@ ThreadedCompositor::ThreadedCompositor(LayerTreeHost& layerTreeHost)
             glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_maxTextureSize);
 
             m_textureMapper = TextureMapper::create();
+
+            m_surface->didCreateGLContext();
         }
     });
 }
