@@ -116,6 +116,8 @@ ThreadedCompositor::ThreadedCompositor(WebPage& webPage, LayerTreeHost& layerTre
 
             if (!m_useSkia)
                 m_textureMapper = TextureMapper::create();
+
+            m_surface->didCreateGLContext();
         }
     });
 }
