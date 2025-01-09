@@ -373,11 +373,6 @@ webkit.org/b/98940 fast/events/clipboard-dataTransferItemList.html [ Skip ]
 webkit.org/b/98940 fast/events/drag-dataTransferItemList.html [ Skip ]
 webkit.org/b/98940 fast/events/drag-dataTransferItemList-file-handling.html [ Skip ]
 
-# Custom MIME type support in DataTransfer is not yet implemented; this test was added
-# by Google while implementing a different pasteboard API that was only being used by
-# Chromium and Qt, might make sense to remove.
-webkit.org/b/99068 editing/pasteboard/clipboard-customData.html [ Failure ]
-
 # Quota API is not supported.
 webkit.org/b/98942 storage/storageinfo-missing-arguments.html [ Failure ]
 webkit.org/b/98942 storage/storageinfo-no-callbacks.html [ Failure ]
@@ -916,9 +911,6 @@ webkit.org/b/214470 imported/w3c/web-platform-tests/css/css-images/image-orienta
 webkit.org/b/214470 imported/w3c/web-platform-tests/css/css-values/ch-unit-002.html [ ImageOnlyFailure ]
 webkit.org/b/214470 imported/w3c/web-platform-tests/css/css-values/ch-unit-011.html [ ImageOnlyFailure ]
 webkit.org/b/277995 imported/w3c/web-platform-tests/css/css-values/attr-all-types.html [ Failure ]
-imported/w3c/web-platform-tests/css/css-images/object-fit-contain-svg-001p.html [ ImageOnlyFailure ]
-imported/w3c/web-platform-tests/css/css-images/object-fit-contain-svg-003p.html [ ImageOnlyFailure ]
-imported/w3c/web-platform-tests/css/css-images/object-fit-contain-svg-005i.html [ ImageOnlyFailure ]
 
 webkit.org/b/219614 inspector/css/getComputedPrimaryFontForNode.html [ Failure ]
 
@@ -1002,8 +994,6 @@ webkit.org/b/264664 fast/media/mq-inverted-colors-live-update-for-listener.html 
 webkit.org/b/264664 fast/media/mq-prefers-reduced-motion-live-update-for-listener.html [ Pass Failure ]
 
 webkit.org/b/127742 fast/spatial-navigation/snav-unit-overflow-and-scroll-in-direction.html [ Failure ]
-
-webkit.org/b/132385 compositing/repaint/repaint-on-layer-grouping-change.html [ Failure ]
 
 webkit.org/b/143985 editing/pasteboard/drop-text-events.html [ Failure ]
 
@@ -1444,7 +1434,6 @@ Bug(GTK) fast/forms/select-type-ahead-non-latin.html [ Failure ]
 # Selection doesn't work properly.
 Bug(GTK) editing/selection/context-menu-text-selection-lookup.html [ Failure ]
 
-
 Bug(GTK) fast/backgrounds/background-position-parsing.html [ Failure ]
 
 Bug(GTK) fast/css/sticky/sticky-top-zoomed.html [ ImageOnlyFailure ]
@@ -1649,9 +1638,6 @@ webkit.org/b/186601 fullscreen/full-screen-layer-dump.html [ Failure ]
 
 webkit.org/b/187994 compositing/backing/backing-store-attachment-fill-forwards-animation.html [ Failure ]
 
-# No support for compositing clip-path?
-webkit.org/b/282148 compositing/masks/clip-path-on-tiled-toggle.html [ Failure ]
-
 webkit.org/b/188218 fast/repaint/canvas-object-fit.html [ Failure ]
 
 webkit.org/b/188436 svg/custom/href-svg-namespace-static.svg [ ImageOnlyFailure ]
@@ -1686,7 +1672,6 @@ webkit.org/b/196061 editing/pasteboard/smart-paste-paragraph-004.html [ Failure 
 
 webkit.org/b/196197 http/wpt/cache-storage/cache-quota-after-restart.any.html [ Failure ]
 
-
 webkit.org/b/199868 accessibility/gtk/aria-haspopup.html [ Failure ]
 
 webkit.org/b/201260 http/wpt/service-workers/server-trust-evaluation.https.html [ Failure ]
@@ -1707,7 +1692,6 @@ webkit.org/b/224076 imported/w3c/web-platform-tests/css/css-text/white-space/whi
 
 imported/w3c/web-platform-tests/css/css-transforms/ttwf-css-3d-polygon-cycle.html [ ImageOnlyFailure ]
 
-webkit.org/b/279023 imported/w3c/web-platform-tests/css/css-transforms/backface-visibility-hidden-animated-002.html [ ImageOnlyFailure ]
 webkit.org/b/279023 imported/w3c/web-platform-tests/css/css-transforms/composited-under-rotateY-180deg-perspective.html [ ImageOnlyFailure ]
 
 webkit.org/b/234782 imported/w3c/web-platform-tests/css/css-writing-modes/text-shadow-orientation-upright-001.html [ ImageOnlyFailure ]
@@ -1853,7 +1837,6 @@ webkit.org/b/261024 webgl/2.0.0/conformance2/query/occlusion-query.html [ Pass T
 webkit.org/b/261024 webgl/2.0.y/conformance2/textures/canvas/tex-3d-r8-red-unsigned_byte.html [ Pass Timeout ]
 webkit.org/b/261024 webrtc/utf8-sdp.html [ Pass Timeout ]
 
-
 imported/w3c/web-platform-tests/css/filter-effects/backdrop-filter-plus-filter.html [ ImageOnlyFailure ]
 
 fast/canvas/font-family-system-ui-canvas.html [ Skip ]
@@ -1887,7 +1870,6 @@ imported/w3c/web-platform-tests/html/semantics/popovers/popover-focus-harness.ht
 webkit.org/b/273196 imported/w3c/web-platform-tests/html/semantics/popovers/popover-top-layer-combinations.html [ Failure ]
 
 compositing/overflow/dynamic-composited-scrolling-status.html [ Failure ]
-http/tests/security/svg-image-with-cached-remote-image.html [ ImageOnlyFailure ]
 fast/scrolling/gtk/repeated-mouse-wheel-smooth.html [ Pass Timeout ]
 compositing/repaint/copy-forward-dirty-region.html [ ImageOnlyFailure ]
 imported/w3c/web-platform-tests/css/css-view-transitions/web-animations-api.html [ ImageOnlyFailure ]
