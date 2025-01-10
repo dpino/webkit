@@ -43,6 +43,7 @@ public:
     void removeTile(uint32_t tileID);
     void updateTile(uint32_t tileID, const IntRect&, const IntRect&, RefPtr<CoordinatedTileBuffer>&&, const IntPoint&);
 
+    void waitUntilPaintingComplete();
     void processPendingUpdates(TextureMapper&);
 
     void paintToTextureMapper(TextureMapper&, const FloatRect&, const TransformationMatrix&, float) override;

@@ -41,6 +41,16 @@ void CoordinatedBackingStoreTile::addUpdate(Update&& update)
     m_updates.append(WTFMove(update));
 }
 
+void CoordinatedBackingStoreTile::waitUntilPaintingComplete()
+{
+    WTFBeginSignpost(this, WaitPaintingCompletion);
+
+    for (auto& update : m_updates)
+        update.buffer->waitUntilPaintingComplete();
+
+    WTFEndSignpost(this, WaitPaintingCompletion);
+}
+
 void CoordinatedBackingStoreTile::processPendingUpdates(TextureMapper& textureMapper)
 {
     auto updates = WTFMove(m_updates);
@@ -73,10 +83,6 @@ void CoordinatedBackingStoreTile::processPendingUpdates(TextureMapper& textureMa
         } else if (update.buffer->supportsAlpha() == m_texture->isOpaque())
             m_texture->reset(update.tileRect.size(), flags);
         WTFEndSignpost(this, AcquireTexture);
-
-        WTFBeginSignpost(this, WaitPaintingCompletion);
-        update.buffer->waitUntilPaintingComplete();
-        WTFEndSignpost(this, WaitPaintingCompletion);
 
 #if USE(SKIA)
         if (update.buffer->isBackedByOpenGL()) {
