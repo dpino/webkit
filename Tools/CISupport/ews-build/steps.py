@@ -4886,6 +4886,7 @@ class RunWebKitTestsRepeatFailuresRedTree(RunWebKitTestsRedTree):
     NUM_REPEATS_PER_TEST = 10
     EXIT_AFTER_FAILURES = None
     MAX_SECONDS_STEP_RUN = 18000  # 5h
+    NUMBER_OF_PROCESSES = 4
 
     def __init__(self, **kwargs):
         super().__init__(maxTime=self.MAX_SECONDS_STEP_RUN, **kwargs)
@@ -4895,7 +4896,11 @@ class RunWebKitTestsRepeatFailuresRedTree(RunWebKitTestsRedTree):
         # On the repeat steps we don't enable coredump generation (makes the run much slower if there are crashes)
         self.setCommand([arg for arg in self.command if arg != '--enable-core-dumps-nolimit'])
         first_results_failing_tests = set(self.getProperty('first_run_failures', []))
-        self.setCommand(self.command + ['--fully-parallel', '--repeat-each=%s' % self.NUM_REPEATS_PER_TEST] + sorted(first_results_failing_tests))
+        command = self.command + ['--fully-parallel', '--repeat-each=%s' % self.NUM_REPEATS_PER_TEST]
+        if self.getProperty('platform') == 'gtk':
+            command.append(f'--child-processes={self.NUMBER_OF_PROCESSES}')
+        command.extend(sorted(first_results_failing_tests))
+        self.setCommand(command)
 
     def evaluateCommand(self, cmd):
         with_change_repeat_failures_results_nonflaky_failures = set(self.getProperty('with_change_repeat_failures_results_nonflaky_failures', []))
@@ -4966,6 +4971,7 @@ class RunWebKitTestsRepeatFailuresWithoutChangeRedTree(RunWebKitTestsRedTree):
     NUM_REPEATS_PER_TEST = 10
     EXIT_AFTER_FAILURES = None
     MAX_SECONDS_STEP_RUN = 10800  # 3h
+    NUMBER_OF_PROCESSES = 4
 
     def __init__(self, **kwargs):
         super().__init__(maxTime=self.MAX_SECONDS_STEP_RUN, **kwargs)
@@ -4982,7 +4988,11 @@ class RunWebKitTestsRepeatFailuresWithoutChangeRedTree(RunWebKitTestsRedTree):
         # is skipped anyways if is marked as such on the Expectation files or if is marked
         # as failure (since we are passing also '--skip-failing-tests'). That way we ensure
         # to report the case of a change removing an expectation that still fails with it.
-        self.setCommand(self.command + ['--fully-parallel', '--repeat-each=%s' % self.NUM_REPEATS_PER_TEST, '--skipped=always'] + sorted(failures_to_repeat))
+        command = self.command + ['--fully-parallel', '--repeat-each=%s' % self.NUM_REPEATS_PER_TEST, '--skipped=always']
+        if self.getProperty('platform') == 'gtk':
+            command.append(f'--child-processes={self.NUMBER_OF_PROCESSES}')
+        command.extend(sorted(failures_to_repeat))
+        self.setCommand(command)
 
     def evaluateCommand(self, cmd):
         rc = self.evaluateResult(cmd)
