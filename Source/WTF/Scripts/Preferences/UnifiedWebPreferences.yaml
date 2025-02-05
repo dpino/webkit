@@ -7200,8 +7200,10 @@ SpeakerSelectionRequiresUserGesture:
     WebKitLegacy:
       default: true
     WebKit:
+      "USE(GSTREAMER) && PLATFORM(WPE)": false
       default: true
     WebCore:
+      "USE(GSTREAMER) && PLATFORM(WPE)": false
       default: true
 
 SpeechRecognitionEnabled:
