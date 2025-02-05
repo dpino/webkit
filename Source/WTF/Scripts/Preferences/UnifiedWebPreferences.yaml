@@ -2980,7 +2980,7 @@ ExposeSpeakersEnabled:
   condition: ENABLE(MEDIA_STREAM)
   defaultValue:
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || USE(GSTREAMER)": true
       default: false
     WebCore:
       default: false
@@ -2994,7 +2994,7 @@ ExposeSpeakersWithoutMicrophoneEnabled:
   condition: ENABLE(MEDIA_STREAM)
   defaultValue:
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || USE(GSTREAMER)": true
       default: false
     WebCore:
       default: false
@@ -3939,7 +3939,7 @@ ImageCaptureEnabled:
   condition: ENABLE(MEDIA_STREAM)
   defaultValue:
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || USE(GSTREAMER)": true
       default: false
     WebCore:
       "PLATFORM(COCOA)": true
