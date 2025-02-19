@@ -212,6 +212,7 @@ bool GraphicsContextGLANGLE::initialize()
 
     // Enable the extensions needed for antialias and preserveDrawingBuffer, to avoid IPC.
     (void) enableExtensionsImpl({ "GL_ANGLE_framebuffer_multisample"_s, "GL_ANGLE_framebuffer_blit"_s, "GL_OES_rgb8_rgba8"_s });
+    m_useBlitFallback = !m_isForWebGL2 && !enableExtensionsImpl({ "GL_ANGLE_framebuffer_blit"_s });
 
     if (m_isForWebGL2 && !enableExtensionsImpl({ "GL_EXT_occlusion_query_boolean"_s, "GL_ANGLE_framebuffer_multisample"_s }))
         return false;
@@ -734,6 +735,14 @@ void GraphicsContextGLANGLE::bindFramebuffer(GCGLenum target, PlatformGLObject b
         return;
 
     GLuint fbo = buffer ? buffer : m_fbo;
+
+    if (m_useBlitFallback && (target == GL_READ_FRAMEBUFFER || target == GL_DRAW_FRAMEBUFFER)) {
+        if (target == GL_READ_FRAMEBUFFER)
+            m_state.boundReadFBO = fbo;
+        else
+            m_state.boundDrawFBO = fbo;
+        return;
+    }
 
     GL_BindFramebuffer(target, fbo);
     if (target == GL_FRAMEBUFFER) {
@@ -2360,6 +2369,17 @@ void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
 {
     if (!makeContextCurrent())
         return;
+    if (m_useBlitFallback) {
+        GL_BindFramebuffer(GL_FRAMEBUFFER, m_state.boundReadFBO);
+        GLint texture2DBinding = 0;
+        GL_GetIntegerv(GL_TEXTURE_BINDING_2D, &texture2DBinding);
+        GL_BindTexture(GL_TEXTURE_2D, m_texture);
+        GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, dstX0, dstY0, srcX0, srcY0, srcX1 - srcX0, srcY1 - srcY0);
+        GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
+        GL_BindFramebuffer(GL_FRAMEBUFFER, m_state.boundDrawFBO);
+        checkGPUStatus();
+        return;
+    }
     if (m_isForWebGL2)
         GL_BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     else if (isExtensionEnabledImpl("GL_NV_framebuffer_blit"_s))
