@@ -600,8 +600,7 @@ void WebGLRenderingContextBase::initializeContextState()
                 m_attributes.antialias = false;
         }
         if (m_attributes.preserveDrawingBuffer && !m_attributes.antialias) {
-            if (!(context->enableExtension(GCGLExtension::ANGLE_framebuffer_blit)
-                && context->enableExtension(GCGLExtension::OES_rgb8_rgba8)))
+            if (!context->enableExtension(GCGLExtension::OES_rgb8_rgba8))
                 m_attributes.preserveDrawingBuffer = false;
         }
     }
