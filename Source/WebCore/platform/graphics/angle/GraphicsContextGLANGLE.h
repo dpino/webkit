@@ -455,7 +455,12 @@ protected:
     uint32_t m_nextExternalSyncName { 0 };
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglImages;
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglSyncs;
+<<<<<<< HEAD
     IntSize m_maxInternalFramebufferSize;
+||||||| parent of 8b618349c134 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
+=======
+    bool m_useBlitFallback { false };
+>>>>>>> 8b618349c134 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
 };
 
 
