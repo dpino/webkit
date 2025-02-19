@@ -601,8 +601,9 @@ void WebGLRenderingContextBase::initializeContextState()
                 m_attributes.antialias = false;
         }
         if (m_attributes.preserveDrawingBuffer && !m_attributes.antialias) {
-            if (!(context->enableExtension(GCGLExtension::ANGLE_framebuffer_blit)
-                && context->enableExtension(GCGLExtension::OES_rgb8_rgba8)))
+            // Blit is only an optimization here: try to enable it but don't condition preserveDrawingBuffer on it.
+            context->enableExtension(GCGLExtension::ANGLE_framebuffer_blit);
+            if (!context->enableExtension(GCGLExtension::OES_rgb8_rgba8))
                 m_attributes.preserveDrawingBuffer = false;
         }
     }

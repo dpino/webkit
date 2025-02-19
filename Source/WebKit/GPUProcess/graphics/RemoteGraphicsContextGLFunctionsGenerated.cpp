@@ -1155,6 +1155,12 @@ void RemoteGraphicsContextGL::blitFramebuffer(int32_t srcX0, int32_t srcY0, int3
     protect(m_context)->blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
+void RemoteGraphicsContextGL::blitFramebufferWithFallback(int32_t srcX0, int32_t srcY0, int32_t srcX1, int32_t srcY1, int32_t dstX0, int32_t dstY0, int32_t dstX1, int32_t dstY1, uint32_t mask, uint32_t filter)
+{
+    assertIsCurrent(workQueue());
+    protect(m_context)->blitFramebufferWithFallback(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
+
 void RemoteGraphicsContextGL::framebufferTextureLayer(uint32_t target, uint32_t attachment, uint32_t texture, int32_t level, int32_t layer)
 {
     assertIsCurrent(workQueue());

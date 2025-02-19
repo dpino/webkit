@@ -129,7 +129,8 @@ void WebGLDefaultFramebuffer::resolveColorIntoResult(std::optional<IntRect> rect
     // READ_BUFFER. The result FBO is the draw framebuffer here, so its READ_BUFFER is not touched.
     ScopedEnableReadBuffer0 scopedReadBuffer { context, *this };
     IntRect srcRect = (context->isWebGL2() && rect) ? *rect : IntRect { { }, m_size };
-    gl->blitFramebuffer(srcRect.x(), srcRect.y(), srcRect.maxX(), srcRect.maxY(),
+    // To just resolve color, blit with fallback is allowed.
+    gl->blitFramebufferWithFallback(srcRect.x(), srcRect.y(), srcRect.maxX(), srcRect.maxY(),
         srcRect.x(), srcRect.y(), srcRect.maxX(), srcRect.maxY(),
         GraphicsContextGL::COLOR_BUFFER_BIT, GraphicsContextGL::NEAREST);
 }

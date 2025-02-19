@@ -2378,6 +2378,25 @@ void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
     checkGPUStatus();
 }
 
+void GraphicsContextGLANGLE::blitFramebufferWithFallback(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
+{
+    if (m_isForWebGL2 || isExtensionEnabledImpl("GL_NV_framebuffer_blit"_s) || isExtensionEnabledImpl("GL_ANGLE_framebuffer_blit"_s)) {
+        blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+        return;
+    }
+
+    if (!makeContextCurrent())
+        return;
+    ASSERT(mask == GL_COLOR_BUFFER_BIT);
+    ASSERT(srcX1 - srcX0 == dstX1 - dstX0 && srcY1 - srcY0 == dstY1 - dstY0);
+    GLint texture2DBinding = 0;
+    GL_GetIntegerv(GL_TEXTURE_BINDING_2D, &texture2DBinding);
+    GL_BindTexture(GL_TEXTURE_2D, m_texture);
+    GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, dstX0, dstY0, srcX0, srcY0, srcX1 - srcX0, srcY1 - srcY0);
+    GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
+    checkGPUStatus();
+}
+
 void GraphicsContextGLANGLE::framebufferTextureLayer(GCGLenum target, GCGLenum attachment, PlatformGLObject texture, GCGLint level, GCGLint layer)
 {
     if (!makeContextCurrent())

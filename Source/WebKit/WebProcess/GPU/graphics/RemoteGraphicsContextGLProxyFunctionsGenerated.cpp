@@ -1751,6 +1751,17 @@ void RemoteGraphicsContextGLProxy::blitFramebuffer(GCGLint srcX0, GCGLint srcY0,
     }
 }
 
+void RemoteGraphicsContextGLProxy::blitFramebufferWithFallback(GCGLint srcX0, GCGLint srcY0, GCGLint srcX1, GCGLint srcY1, GCGLint dstX0, GCGLint dstY0, GCGLint dstX1, GCGLint dstY1, GCGLbitfield mask, GCGLenum filter)
+{
+    if (isContextLost())
+        return;
+    auto sendResult = send(Messages::RemoteGraphicsContextGL::BlitFramebufferWithFallback(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
+    if (sendResult != IPC::Error::NoError) {
+        markContextLost();
+        return;
+    }
+}
+
 void RemoteGraphicsContextGLProxy::framebufferTextureLayer(GCGLenum target, GCGLenum attachment, PlatformGLObject texture, GCGLint level, GCGLint layer)
 {
     if (isContextLost())
