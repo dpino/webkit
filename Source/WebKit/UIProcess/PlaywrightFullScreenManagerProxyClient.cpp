@@ -45,11 +45,14 @@ void PlaywrightFullScreenManagerProxyClient::enterFullScreen(CompletionHandler<v
     m_pageProxy.fullScreenManager()->didEnterFullScreen();
 }
 
-void PlaywrightFullScreenManagerProxyClient::exitFullScreen()
+void PlaywrightFullScreenManagerProxyClient::exitFullScreen(CompletionHandler<void()>&& completionHandler)
 {
-    m_pageProxy.fullScreenManager()->willExitFullScreen();
-    m_pageProxy.fullScreenManager()->didExitFullScreen();
+    completionHandler();
+}
 
+void PlaywrightFullScreenManagerProxyClient::beganExitFullScreen(const WebCore::IntRect&, const WebCore::IntRect&, CompletionHandler<void()>&& completionHandler)
+{
+    completionHandler();
 }
 
 } // namespace WebKit

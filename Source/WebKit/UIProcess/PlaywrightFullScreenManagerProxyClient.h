@@ -43,9 +43,9 @@ private:
     void closeFullScreenManager() override { }
     bool isFullScreen() override { return m_isFullScreen; }
     void enterFullScreen(CompletionHandler<void(bool)>&&) override;
-    void exitFullScreen() override;
+    void exitFullScreen(CompletionHandler<void()>&&) override;
     void beganEnterFullScreen(const WebCore::IntRect& initialFrame, const WebCore::IntRect& finalFrame) override { }
-    void beganExitFullScreen(const WebCore::IntRect& initialFrame, const WebCore::IntRect& finalFrame) override { }
+    void beganExitFullScreen(const WebCore::IntRect& initialFrame, const WebCore::IntRect& finalFrame, CompletionHandler<void()>&&) override;
 
     WebPageProxy& m_pageProxy;
     bool m_isFullScreen { false };
