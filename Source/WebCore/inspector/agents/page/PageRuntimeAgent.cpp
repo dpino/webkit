@@ -131,7 +131,7 @@ JSC_DEFINE_HOST_FUNCTION(bindingCallback, (JSC::JSGlobalObject * globalObject, J
 
 static void addBindingToFrame(LocalFrame& frame, const String& name)
 {
-    JSC::JSGlobalObject* globalObject = frame.script().globalObject(mainThreadNormalWorld());
+    JSC::JSGlobalObject* globalObject = frame.script().globalObject(mainThreadNormalWorldSingleton());
     auto& vm = globalObject->vm();
     JSC::JSLockHolder lock(vm);
     globalObject->putDirectNativeFunction(vm, globalObject, JSC::Identifier::fromString(vm, name), 1, bindingCallback, JSC::ImplementationVisibility::Public, JSC::NoIntrinsic, JSC::attributesForStructure(static_cast<unsigned>(JSC::PropertyAttribute::Function)));
