@@ -668,6 +668,15 @@ void GraphicsContextGLANGLE::prepareTexture()
         resolveMultisamplingIfNecessary();
 
     if (m_preserveDrawingBufferTexture) {
+        IntRect rectToCopy { 0, 0, m_currentWidth, m_currentHeight };
+        if (m_damage && m_previousDamage) {
+            FloatRect actualDamage = *m_damage;
+            actualDamage.unite(*m_previousDamage);
+            rectToCopy.intersect(enclosingIntRect(actualDamage));
+        }
+        m_previousDamage = m_damage;
+        m_damage = std::nullopt;
+
         prepareForDrawingBufferWrite();
         // Blit m_preserveDrawingBufferTexture into m_texture.
         ScopedGLCapability scopedScissor(GL_SCISSOR_TEST, GL_FALSE);
@@ -677,12 +686,12 @@ void GraphicsContextGLANGLE::prepareTexture()
             GLint texture2DBinding = 0;
             GL_GetIntegerv(GL_TEXTURE_BINDING_2D, &texture2DBinding);
             GL_BindTexture(GL_TEXTURE_2D, m_texture);
-            GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_currentWidth, m_currentHeight);
+            GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, rectToCopy.x(), rectToCopy.y(), rectToCopy.x(), rectToCopy.y(), rectToCopy.width(), rectToCopy.height());
             GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
         } else {
             GL_BindFramebuffer(GL_DRAW_FRAMEBUFFER_ANGLE, m_preserveDrawingBufferFBO);
             GL_BindFramebuffer(GL_READ_FRAMEBUFFER_ANGLE, m_fbo);
-            GL_BlitFramebufferANGLE(0, 0, m_currentWidth, m_currentHeight, 0, 0, m_currentWidth, m_currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            GL_BlitFramebufferANGLE(rectToCopy.x(), rectToCopy.y(), rectToCopy.width(), rectToCopy.height(), rectToCopy.x(), rectToCopy.y(), rectToCopy.width(), rectToCopy.height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
 
         if (m_isForWebGL2) {
@@ -791,6 +800,11 @@ void GraphicsContextGLANGLE::reshape(int width, int height)
     }
 
     GL_Flush();
+}
+
+void GraphicsContextGLANGLE::setDamage(const FloatRect& r)
+{
+    m_damage = r;
 }
 
 void GraphicsContextGLANGLE::activeTexture(GCGLenum texture)
