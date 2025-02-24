@@ -352,6 +352,8 @@ public:
 
     virtual RefPtr<NativeImage> bufferAsNativeImage(SurfaceBuffer);
 
+    void setDamage(const FloatRect&) final;
+
     // Returns the span of valid data read on success.
     bool getBufferSubDataWithStatus(GCGLenum target, GCGLintptr offset, std::span<uint8_t> data);
 
@@ -456,6 +458,8 @@ protected:
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglImages;
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglSyncs;
     bool m_useBlitFallback { false };
+    std::optional<FloatRect> m_damage;
+    std::optional<FloatRect> m_previousDamage;
 };
 
 
