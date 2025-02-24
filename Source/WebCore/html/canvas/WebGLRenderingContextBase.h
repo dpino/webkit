@@ -493,6 +493,8 @@ public:
 
     bool compositingResultsNeedUpdating() const final { return m_compositingResultsNeedUpdating; }
     void prepareForDisplay() final;
+
+    void clearAccumulatedDirtyRect() final;
 protected:
     WebGLRenderingContextBase(CanvasBase&, CanvasRenderingContext::Type, WebGLContextAttributes&&);
 
@@ -1056,6 +1058,8 @@ private:
     // The ordinal number of when the context was last active (drew, read pixels).
     uint64_t m_activeOrdinal { 0 };
     WeakPtrFactory<WebGLRenderingContextBase> m_contextObjectWeakPtrFactory;
+    std::optional<FloatRect> m_latestScissor;
+    std::optional<FloatRect> m_dirtyRect;
 };
 
 template<typename T>
