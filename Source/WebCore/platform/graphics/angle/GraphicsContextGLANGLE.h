@@ -352,6 +352,8 @@ public:
 
     virtual RefPtr<NativeImage> bufferAsNativeImage(SurfaceBuffer);
 
+    void setDamage(const FloatRect&) final;
+
     // Returns the span of valid data read on success.
     bool getBufferSubDataWithStatus(GCGLenum target, GCGLintptr offset, std::span<uint8_t> data);
 
@@ -460,7 +462,13 @@ protected:
 ||||||| parent of 19ed8092e083 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
 =======
     bool m_useBlitFallback { false };
+<<<<<<< HEAD
 >>>>>>> 19ed8092e083 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
+||||||| parent of 4e54e24daf8d (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
+=======
+    std::optional<FloatRect> m_damage;
+    std::optional<FloatRect> m_previousDamage;
+>>>>>>> 4e54e24daf8d (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
 };
 
 
