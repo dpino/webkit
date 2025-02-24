@@ -353,6 +353,8 @@ public:
 
     virtual RefPtr<NativeImage> bufferAsNativeImage(SurfaceBuffer);
 
+    void setDamage(const FloatRect&) final;
+
     // Returns the span of valid data read on success.
     bool getBufferSubDataWithStatus(GCGLenum target, GCGLintptr offset, std::span<uint8_t> data);
 
@@ -459,6 +461,8 @@ protected:
     IntSize m_maxInternalFramebufferSize;
 
     bool m_useBlitFallback { false };
+    std::optional<FloatRect> m_damage;
+    std::optional<FloatRect> m_previousDamage;
 };
 
 
