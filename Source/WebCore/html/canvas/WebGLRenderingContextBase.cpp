@@ -1538,8 +1538,10 @@ void WebGLRenderingContextBase::disable(GCGLenum cap)
 {
     if (isContextLost() || !validateCapability("disable"_s, cap))
         return;
-    if (cap == GraphicsContextGL::SCISSOR_TEST)
+    if (cap == GraphicsContextGL::SCISSOR_TEST) {
         m_scissorEnabled = false;
+        m_dirtyRect = std::nullopt;
+    }
     if (cap == GraphicsContextGL::RASTERIZER_DISCARD)
         m_rasterizerDiscardEnabled = false;
     protectedGraphicsContextGL()->disable(cap);
@@ -3064,6 +3066,9 @@ void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, G
     if (!validateSize("scissor"_s, width, height))
         return;
     protectedGraphicsContextGL()->scissor(x, y, width, height);
+    m_latestScissor = IntRect { IntPoint { x, y }, IntSize { width, height } };
+    if (m_scissorEnabled && m_dirtyRect)
+        m_dirtyRect->unite(*m_latestScissor);
 }
 
 void WebGLRenderingContextBase::shaderSource(WebGLShader& shader, const String& string)
@@ -5632,6 +5637,9 @@ void WebGLRenderingContextBase::prepareForDisplay()
         return;
 
     clearIfComposited(CallerTypeOther);
+    if (m_dirtyRect)
+        m_context->setDamage(*m_dirtyRect);
+    clearAccumulatedDirtyRect();
     protectedGraphicsContextGL()->prepareForDisplay();
     m_defaultFramebuffer->markAllUnpreservedBuffersDirty();
 
@@ -5650,6 +5658,11 @@ void WebGLRenderingContextBase::updateActiveOrdinal()
 bool WebGLRenderingContextBase::isOpaque() const
 {
     return !m_attributes.alpha;
+}
+
+void WebGLRenderingContextBase::clearAccumulatedDirtyRect()
+{
+    m_dirtyRect = (m_scissorEnabled && m_latestScissor) ? m_latestScissor : std::nullopt;
 }
 
 WebCoreOpaqueRoot root(WebGLRenderingContextBase* context)
