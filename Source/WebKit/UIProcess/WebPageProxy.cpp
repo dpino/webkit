@@ -8690,13 +8690,9 @@ void WebPageProxy::createNewPage(IPC::Connection& connection, WindowFeatures&& w
     configuration->setInitialSandboxFlags(effectiveSandboxFlags);
     configuration->setWindowFeatures(WTFMove(windowFeatures));
     configuration->setOpenedMainFrameName(openedMainFrameName);
-<<<<<<< HEAD
     if (!protectedPreferences()->siteIsolationEnabled())
         configuration->setRelatedPage(*this);
-||||||| parent of 411f061c943b (chore(webkit): bootstrap build #2140)
-=======
     configuration->setOpenerPageForInspector(*this);
->>>>>>> 411f061c943b (chore(webkit): bootstrap build #2140)
 
     if (RefPtr openerFrame = WebFrameProxy::webFrame(originatingFrameInfoData.frameID); navigationActionData.hasOpener && openerFrame) {
         configuration->setOpenerInfo({ {
