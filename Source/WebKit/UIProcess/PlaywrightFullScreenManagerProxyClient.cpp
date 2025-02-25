@@ -39,15 +39,19 @@ PlaywrightFullScreenManagerProxyClient::PlaywrightFullScreenManagerProxyClient(W
 {
 }
 
-void PlaywrightFullScreenManagerProxyClient::enterFullScreen(CompletionHandler<void(bool)>&& completionHandler)
+void PlaywrightFullScreenManagerProxyClient::enterFullScreen(WebCore::FloatSize, CompletionHandler<void(bool)>&& completionHandler)
 {
-    m_pageProxy.fullScreenManager()->willEnterFullScreen(WTFMove(completionHandler));
-    m_pageProxy.fullScreenManager()->didEnterFullScreen();
+    completionHandler(true);
 }
 
 void PlaywrightFullScreenManagerProxyClient::exitFullScreen(CompletionHandler<void()>&& completionHandler)
 {
     completionHandler();
+}
+
+void PlaywrightFullScreenManagerProxyClient::beganEnterFullScreen(const WebCore::IntRect&, const WebCore::IntRect&, CompletionHandler<void(bool)>&& completionHandler)
+{
+    completionHandler(true);
 }
 
 void PlaywrightFullScreenManagerProxyClient::beganExitFullScreen(const WebCore::IntRect&, const WebCore::IntRect&, CompletionHandler<void()>&& completionHandler)
