@@ -1509,7 +1509,7 @@ Protocol::ErrorStringOr<void> InspectorPageAgent::insertText(const String& text)
         frame->editor().confirmComposition(text);
     } else {
         Document* focusedDocument = frame->document();
-        TypingCommand::insertText(*focusedDocument, text, { });
+        TypingCommand::insertText(*focusedDocument, text, nullptr, { });
     }
     return { };
 }
