@@ -773,14 +773,8 @@ void DocumentLoader::willSendRequest(ResourceRequest&& newRequest, const Resourc
     if (!didReceiveRedirectResponse)
         return completionHandler(WTFMove(newRequest));
 
-<<<<<<< HEAD
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormState>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
-||||||| parent of d083b071e50e (chore(webkit): bootstrap build #2140)
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, protectedFrame = Ref { *m_frame }, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormState>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
-=======
     InspectorInstrumentation::willCheckNavigationPolicy(*m_frame);
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, protectedFrame = Ref { *m_frame }, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormState>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
->>>>>>> d083b071e50e (chore(webkit): bootstrap build #2140)
+    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormState>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
         m_waitingForNavigationPolicy = false;
         InspectorInstrumentation::didCheckNavigationPolicy(protectedFrame.get(), navigationPolicyDecision != NavigationPolicyDecision::ContinueLoad);
         switch (navigationPolicyDecision) {
@@ -1581,14 +1575,6 @@ void DocumentLoader::detachFromFrame(LoadWillContinueInAnotherProcess loadWillCo
     if (auto navigationID = std::exchange(m_navigationID, { }))
         frame->loader().client().documentLoaderDetached(*navigationID, loadWillContinueInAnotherProcess);
 
-<<<<<<< HEAD
-    InspectorInstrumentation::loaderDetachedFromFrame(*frame, *this);
-
-||||||| parent of d083b071e50e (chore(webkit): bootstrap build #2140)
-    InspectorInstrumentation::loaderDetachedFromFrame(*m_frame, *this);
-
-=======
->>>>>>> d083b071e50e (chore(webkit): bootstrap build #2140)
     observeFrame(nullptr);
 }
 
