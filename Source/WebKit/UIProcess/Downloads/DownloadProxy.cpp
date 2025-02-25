@@ -94,7 +94,7 @@ DownloadProxy::DownloadProxy(DownloadProxyMap& downloadProxyMap, WebsiteDataStor
     , m_uuid(createVersion4UUIDString())
 {
     if (auto* instrumentation = m_dataStore->downloadInstrumentation())
-      instrumentation->downloadCreated(m_uuid, m_request, frameInfoData, originatingPage, this);
+      instrumentation->downloadCreated(m_uuid, m_request, *frameInfoData, originatingPage, this);
 }
 
 DownloadProxy::~DownloadProxy()
