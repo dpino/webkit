@@ -2745,20 +2745,9 @@ void Document::resolveStyle(ResolveStyleType type)
                 documentElement->invalidateStyleForSubtree();
         }
 
-<<<<<<< HEAD
-||||||| constructed merge base
-        // FIXME: Be smarter about invalidation for anchor positioning.
-        // This simply repeats the entire anchor-positioning process.
-        styleScope().clearAnchorPositioningState();
-
-=======
-        // FIXME: Be smarter about invalidation for anchor positioning.
-        // This simply repeats the entire anchor-positioning process.
-        styleScope().clearAnchorPositioningState();
         for (auto& shadowRoot : inDocumentShadowRoots())
-            const_cast<ShadowRoot&>(shadowRoot).styleScope().clearAnchorPositioningState();
+            const_cast<ShadowRoot&>(shadowRoot).styleScope().resetAnchorPositioningStateBeforeStyleResolution();
 
->>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
         Style::TreeResolver resolver(*this, WTFMove(m_pendingRenderTreeUpdate));
         auto styleUpdate = resolver.resolve();
 

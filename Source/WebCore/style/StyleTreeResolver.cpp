@@ -1311,20 +1311,12 @@ auto TreeResolver::updateAnchorPositioningState(Element& element, const RenderSt
     if (!style)
         return AnchorPositionedElementAction::None;
 
-<<<<<<< HEAD
     AnchorPositionEvaluator::updateAnchorPositionedStateForLayoutTimePositioned(element, *style);
 
-    auto* anchorPositionedState = m_document->styleScope().anchorPositionedStates().get(element);
+    auto* anchorPositionedState = Style::Scope::forNode(element).anchorPositionedStates().get(element);
 
     auto needsInterleavedLayout = anchorPositionedState && anchorPositionedState->stage < AnchorPositionResolutionStage::Resolved;
     if (!needsInterleavedLayout)
-||||||| constructed merge base
-    auto* anchorPositionedState = m_document->styleScope().anchorPositionedStates().get(element);
-    if (!anchorPositionedState || anchorPositionedState->stage >= AnchorPositionResolutionStage::Resolved)
-=======
-    auto* anchorPositionedState = Style::Scope::forNode(element).anchorPositionedStates().get(element);
-    if (!anchorPositionedState || anchorPositionedState->stage >= AnchorPositionResolutionStage::Resolved)
->>>>>>> Implement anchor name encapsulation within shadow trees https://bugs.webkit.org/show_bug.cgi?id=281963
         return AnchorPositionedElementAction::None;
 
     m_hasUnresolvedAnchorPositionedElements = true;
