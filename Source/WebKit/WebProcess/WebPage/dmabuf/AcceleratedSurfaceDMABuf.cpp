@@ -632,41 +632,10 @@ void AcceleratedSurfaceDMABuf::willDestroyCompositingRunLoop()
     WebProcess::singleton().parentProcessConnection()->removeMessageReceiver(Messages::AcceleratedSurfaceDMABuf::messageReceiverName(), m_id);
 }
 
-<<<<<<< HEAD
-||||||| constructed merge base
-void AcceleratedSurfaceDMABuf::didCreateGLContext()
-{
-    glGenFramebuffers(1, &m_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-}
-
-=======
-void AcceleratedSurfaceDMABuf::didCreateGLContext()
-{
-    AcceleratedSurface::didCreateGLContext();
-    glGenFramebuffers(1, &m_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-}
-
->>>>>>> ThreadedCompositor: Avoid calling glClear in each composition.
 void AcceleratedSurfaceDMABuf::willDestroyGLContext()
 {
     m_swapChain.reset();
-<<<<<<< HEAD
-||||||| constructed merge base
-
-    if (m_fbo) {
-        glDeleteFramebuffers(1, &m_fbo);
-        m_fbo = 0;
-    }
-=======
-
-    if (m_fbo) {
-        glDeleteFramebuffers(1, &m_fbo);
-        m_fbo = 0;
-    }
     AcceleratedSurface::willDestroyGLContext();
->>>>>>> ThreadedCompositor: Avoid calling glClear in each composition.
 }
 
 uint64_t AcceleratedSurfaceDMABuf::surfaceID() const
