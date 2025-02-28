@@ -72,13 +72,7 @@
 #include <FileChooser.h>
 #include "FileList.h"
 #include "FrameTree.h"
-<<<<<<< HEAD
-||||||| parent of f2804d308df3 (chore(webkit): bootstrap build #2140)
-#include "FullscreenManager.h"
-=======
-#include "FullscreenManager.h"
 #include "FloatQuad.h"
->>>>>>> f2804d308df3 (chore(webkit): bootstrap build #2140)
 #include "HTMLElement.h"
 #include "HTMLFrameOwnerElement.h"
 #include "HTMLInputElement.h"
