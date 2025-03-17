@@ -77,6 +77,10 @@ OBJC_CLASS NSMutableDictionary;
 #include "RendererBufferTransportMode.h"
 #endif
 
+#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
+#include "AvailableInputTypes.h"
+#endif
+
 #if PLATFORM(IOS_FAMILY)
 #include "ViewUpdateDispatcher.h"
 #endif
@@ -483,6 +487,10 @@ public:
     void initializePlatformDisplayIfNeeded() const;
 #endif
 
+#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
+    const OptionSet<AvailableInputTypes>& availableInputTypes() const { return m_availableInputTypes; }
+#endif
+
     String mediaKeysStorageDirectory() const { return m_mediaKeysStorageDirectory; }
     FileSystem::Salt mediaKeysStorageSalt() const { return m_mediaKeysStorageSalt; }
 
@@ -845,6 +853,10 @@ private:
 
 #if PLATFORM(GTK) || PLATFORM(WPE)
     OptionSet<RendererBufferTransportMode> m_rendererBufferTransportMode;
+#endif
+
+#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
+    OptionSet<AvailableInputTypes> m_availableInputTypes;
 #endif
 
     bool m_hasSuspendedPageProxy { false };

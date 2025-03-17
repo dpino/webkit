@@ -198,6 +198,8 @@ void WebProcess::platformInitializeWebProcess(WebProcessCreationParameters& para
         } else
             initializePlatformDisplayIfNeeded();
     }
+
+    m_availableInputTypes = parameters.availableInputTypes;
 #endif
 
 #if USE(GSTREAMER)

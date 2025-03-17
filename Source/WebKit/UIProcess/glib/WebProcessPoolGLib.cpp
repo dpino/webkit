@@ -133,6 +133,8 @@ void WebProcessPool::platformInitializeWebProcess(const WebProcessProxy& process
         parameters.hostClientFileDescriptor = UnixFileDescriptor { wpe_renderer_host_create_client(), UnixFileDescriptor::Adopt };
         parameters.implementationLibraryName = FileSystem::fileSystemRepresentation(String::fromLatin1(wpe_loader_get_loaded_implementation_library_name()));
     }
+
+    parameters.availableInputTypes = availableInputTypes();
 #endif
 
     parameters.memoryCacheDisabled = m_memoryCacheDisabled || LegacyGlobalSettings::singleton().cacheModel() == CacheModel::DocumentViewer;
@@ -301,6 +303,31 @@ const String& WebProcessPool::generateNextAccessibilityBusName()
 
     return accessibilityBusName();
 }
+
+#if PLATFORM(WPE)
+OptionSet<AvailableInputTypes> WebProcessPool::availableInputTypes()
+{
+#if ENABLE(WPE_PLATFORM)
+    bool usingWPEPlatformAPI = !!g_type_class_peek(WPE_TYPE_DISPLAY);
+    if (!usingWPEPlatformAPI)
+        return AvailableInputTypes::Mouse;
+
+    const auto inputTypes = wpe_display_get_available_input_types(wpe_display_get_primary());
+    OptionSet<AvailableInputTypes> availableInputTypes;
+    if (inputTypes & WPE_AVAILABLE_INPUT_TYPE_MOUSE)
+        availableInputTypes.add(AvailableInputTypes::Mouse);
+    if (inputTypes & WPE_AVAILABLE_INPUT_TYPE_KEYBOARD)
+        availableInputTypes.add(AvailableInputTypes::Keyboard);
+    if (inputTypes & WPE_AVAILABLE_INPUT_TYPE_TOUCH)
+        availableInputTypes.add(AvailableInputTypes::Touch);
+    return availableInputTypes;
+#elif ENABLE(TOUCH_EVENTS)
+    return AvailableInputTypes::Touch;
+#else
+    return AvailableInputTypes::Mouse;
+#endif
+}
+#endif
 
 #endif
 
