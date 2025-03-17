@@ -120,6 +120,8 @@ list(APPEND WebKit_SERIALIZATION_IN_FILES
     Shared/glib/UserMessage.serialization.in
 
     Shared/soup/WebCoreArgumentCodersSoup.serialization.in
+
+    Shared/wpe/AvailableInputTypes.serialization.in
 )
 
 list(APPEND WebKit_DERIVED_SOURCES

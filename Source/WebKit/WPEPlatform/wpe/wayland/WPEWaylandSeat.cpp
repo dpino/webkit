@@ -39,9 +39,10 @@ namespace WPE {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(WaylandSeat);
 
-WaylandSeat::WaylandSeat(struct wl_seat* seat)
+WaylandSeat::WaylandSeat(struct wl_seat* seat, Function<void()>&& callback)
     : m_seat(seat)
     , m_keymap(adoptGRef(wpe_keymap_xkb_new()))
+    , m_capabilitiesChangedCallback(WTFMove(callback))
 {
 }
 
@@ -523,6 +524,8 @@ const struct wl_seat_listener WaylandSeat::s_listener = {
             wl_touch_release(seat.m_touch.object);
             seat.m_touch = { };
         }
+
+        seat.m_capabilitiesChangedCallback();
     },
     // name
     [](void*, struct wl_seat*, const char*) { }
@@ -742,6 +745,18 @@ bool WaylandSeat::keyRepeat(Seconds& delay, Seconds& interval)
     // rate is the number of characters per second.
     interval = Seconds(1. / m_keyboard.repeat.rate.value());
     return true;
+}
+
+WPEAvailableInputTypes WaylandSeat::availableInputTypes() const
+{
+    WPEAvailableInputTypes source = WPE_AVAILABLE_INPUT_TYPE_NONE;
+    if (m_pointer.object)
+        source = WPE_AVAILABLE_INPUT_TYPE_MOUSE;
+    if (m_keyboard.object)
+        source = static_cast<WPEAvailableInputTypes>(source | WPE_AVAILABLE_INPUT_TYPE_KEYBOARD);
+    if (m_touch.object)
+        source = static_cast<WPEAvailableInputTypes>(source | WPE_AVAILABLE_INPUT_TYPE_TOUCH);
+    return source;
 }
 
 } // namespace WPE
