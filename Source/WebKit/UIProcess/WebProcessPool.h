@@ -751,6 +751,10 @@ private:
     void platformCompileResourceMonitorRuleList(const String& rulesText, CompletionHandler<void(RefPtr<WebCompiledContentRuleList>)>&&);
 #endif
 
+#if PLATFORM(WPE)
+    OptionSet<AvailableInputTypes> availableInputTypes();
+#endif
+
     Ref<API::ProcessPoolConfiguration> m_configuration;
 
     IPC::MessageReceiverMap m_messageReceiverMap;

@@ -227,8 +227,14 @@ const struct wl_registry_listener registryListener = {
         else if (interfaceName == "xdg_wm_base"_s)
             priv->xdgWMBase = static_cast<struct xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
         // FIXME: support zxdg_shell_v6?
-        else if (interfaceName == "wl_seat"_s)
-            priv->wlSeat = makeUnique<WPE::WaylandSeat>(static_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, std::min<uint32_t>(version, 8))));
+        else if (interfaceName == "wl_seat"_s) {
+            priv->wlSeat = makeUnique<WPE::WaylandSeat>(static_cast<struct wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, std::min<uint32_t>(version, 8))), [weakDisplay = GWeakPtr { display }]() {
+                if (GRefPtr<WPEDisplayWayland> protectedDisplay { weakDisplay.get() }) {
+                    auto* priv = protectedDisplay->priv;
+                    g_object_set(protectedDisplay.get(), "available-input-types", priv->wlSeat->availableInputTypes(), nullptr);
+                }
+            });
+        }
         else if (interfaceName == "wl_output"_s) {
             GRefPtr<WPEScreen> screen = adoptGRef(wpeScreenWaylandCreate(name, static_cast<struct wl_output*>(wl_registry_bind(registry, name, &wl_output_interface, std::min<uint32_t>(version, 2)))));
             auto* screenPtr = screen.get();
