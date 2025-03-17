@@ -29,6 +29,7 @@
 #include "WPEKeymap.h"
 #include "WPEToplevelWayland.h"
 #include <wayland-client.h>
+#include <wtf/Function.h>
 #include <wtf/HashMap.h>
 #include <wtf/Seconds.h>
 #include <wtf/TZoneMalloc.h>
@@ -40,7 +41,7 @@ namespace WPE {
 class WaylandSeat {
     WTF_MAKE_TZONE_ALLOCATED(WaylandSeat);
 public:
-    explicit WaylandSeat(struct wl_seat*);
+    explicit WaylandSeat(struct wl_seat*, Function<void()>&& callback);
     ~WaylandSeat();
 
     struct wl_seat* seat() const { return m_seat; }
@@ -54,6 +55,8 @@ public:
 
     void emitPointerEnter(WPEView*) const;
     void emitPointerLeave(WPEView*) const;
+
+    WPEAvailableInputTypes availableInputTypes() const;
 
 private:
     static const struct wl_seat_listener s_listener;
@@ -119,6 +122,7 @@ private:
         GWeakPtr<WPEToplevelWayland> toplevel;
         HashMap<int32_t, std::pair<double, double>, IntHash<int32_t>, WTF::SignedWithZeroKeyHashTraits<int32_t>> points;
     } m_touch;
+    Function<void ()> m_capabilitiesChangedCallback;
 };
 
 } // namespace WPE

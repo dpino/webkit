@@ -60,9 +60,20 @@ struct _WPEDisplayPrivate {
     GRefPtr<WPEBufferDMABufFormats> preferredDMABufFormats;
     GRefPtr<WPEKeymap> keymap;
     GRefPtr<WPESettings> settings;
+    WPEAvailableInputTypes availableInputTypes;
 };
 
 WEBKIT_DEFINE_ABSTRACT_TYPE(WPEDisplay, wpe_display, G_TYPE_OBJECT)
+
+enum {
+    PROP_0,
+
+    PROP_AVAILABLE_INPUT_TYPES,
+
+    N_PROPERTIES
+};
+
+static std::array<GParamSpec*, N_PROPERTIES> sObjProperties;
 
 enum {
     SCREEN_ADDED,
@@ -104,11 +115,59 @@ static void wpeDisplayDispose(GObject* object)
     G_OBJECT_CLASS(wpe_display_parent_class)->dispose(object);
 }
 
+static void wpeDisplaySetProperty(GObject* object, guint propId, const GValue* value, GParamSpec* paramSpec)
+{
+    auto* display = WPE_DISPLAY(object);
+
+    switch (propId) {
+    case PROP_AVAILABLE_INPUT_TYPES:
+        if (display->priv->availableInputTypes != g_value_get_flags(value))  {
+            display->priv->availableInputTypes =  static_cast<WPEAvailableInputTypes>(g_value_get_flags(value));
+            g_object_notify_by_pspec(object, paramSpec);
+        }
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
+    }
+}
+
+static void wpeDisplayGetProperty(GObject* object, guint propId, GValue* value, GParamSpec* paramSpec)
+{
+    auto* display = WPE_DISPLAY(object);
+
+    switch (propId) {
+    case PROP_AVAILABLE_INPUT_TYPES:
+        g_value_set_flags(value, wpe_display_get_available_input_types(display));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
+    }
+}
+
 static void wpe_display_class_init(WPEDisplayClass* displayClass)
 {
     GObjectClass* objectClass = G_OBJECT_CLASS(displayClass);
     objectClass->constructed = wpeDisplayConstructed;
     objectClass->dispose = wpeDisplayDispose;
+    objectClass->set_property = wpeDisplaySetProperty;
+    objectClass->get_property = wpeDisplayGetProperty;
+
+    /**
+     * WPEDisplay:available-input-types:
+     *
+     * The input types (e.g. mouse, keyboard or touch) available to use for this display.
+     *
+     * This property can be used by creators to adjust their UI based on the available interactions.
+     */
+    sObjProperties[PROP_AVAILABLE_INPUT_TYPES] =
+        g_param_spec_flags(
+            "available-input-types",
+            nullptr, nullptr,
+            WPE_TYPE_AVAILABLE_INPUT_TYPES,
+            WPE_AVAILABLE_INPUT_TYPE_NONE,
+            static_cast<GParamFlags>(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
+
+    g_object_class_install_properties(objectClass, N_PROPERTIES, sObjProperties.data());
 
     /**
      * WPEDisplay::screen-added:
@@ -584,4 +643,19 @@ gboolean wpe_display_use_explicit_sync(WPEDisplay* display)
 
     auto* wpeDisplayClass = WPE_DISPLAY_GET_CLASS(display);
     return wpeDisplayClass->use_explicit_sync ? wpeDisplayClass->use_explicit_sync(display) : FALSE;
+}
+
+/**
+ * wpe_display_get_available_input_types:
+ * @display: a #WPEDisplay
+ *
+ * Get availableInputTypes of @display that can be used by creators to adjust their UI based on the available interactions.
+ *
+ * Returns: a #WPEAvailableInputTypes
+ */
+WPEAvailableInputTypes wpe_display_get_available_input_types(WPEDisplay* display)
+{
+    g_return_val_if_fail(WPE_IS_DISPLAY(display), WPE_AVAILABLE_INPUT_TYPE_NONE);
+
+    return display->priv->availableInputTypes;
 }
