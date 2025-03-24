@@ -96,12 +96,9 @@ protected:
     Function<void()> m_frameCompleteHandler;
     WebCore::IntSize m_size;
     std::atomic<bool> m_isOpaque { true };
-<<<<<<< HEAD
 #if ENABLE(DAMAGE_TRACKING)
     std::optional<WebCore::Damage> m_frameDamage;
 #endif
-||||||| parent of 66b0b832b6bf (ThreadedCompositor: Avoid calling glClear in each composition.)
-=======
 
     GLuint m_clearProgram;
     GLuint m_vertexShader;
@@ -109,7 +106,6 @@ protected:
     GLuint m_vao;
     GLuint m_vbo;
     static bool m_force_shader_clear;
->>>>>>> 66b0b832b6bf (ThreadedCompositor: Avoid calling glClear in each composition.)
 };
 
 } // namespace WebKit
