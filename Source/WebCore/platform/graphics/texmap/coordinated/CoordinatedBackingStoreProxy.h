@@ -116,12 +116,7 @@ private:
         void addDirtyRect(const IntRect& dirty)
         {
             auto tileDirtyRect = intersection(dirty, rect);
-<<<<<<< HEAD
             ASSERT(!tileDirtyRect.isEmpty());
-            dirtyRect.unite(tileDirtyRect);
-||||||| parent of 27498764f4c0 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
-            dirtyRect.unite(tileDirtyRect);
-=======
 
             // Do quick best effort to find dirty rect which is closest
             // to incoming rect to avoid unification of huge areas
@@ -159,7 +154,6 @@ private:
             } else {
                 dirtyRects.append(tileDirtyRect);
             }
->>>>>>> 27498764f4c0 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
         }
 
         bool isDirty() const
