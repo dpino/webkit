@@ -198,23 +198,11 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
             WTFBeginSignpost(this, UpdateTile, "%u/%u, id: %d, rect: %ix%i+%i+%i, dirty: %ix%i+%i+%i", dirtyTileIndex, dirtyTilesCount, tile.id,
                 tile.rect.x(), tile.rect.y(), tile.rect.width(), tile.rect.height(), dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
 
-<<<<<<< HEAD
 #if USE(SKIA)
-        auto buffer = recording ? layer.replay(recording, tile.dirtyRect) : layer.paint(tile.dirtyRect);
+            auto buffer = recording ? layer.replay(recording, tile.dirtyRect) : layer.paint(tile.dirtyRect);
 #else
-        auto buffer = layer.paint(tile.dirtyRect);
+            auto buffer = layer.paint(tile.dirtyRect);
 #endif
-
-        IntRect updateRect(tile.dirtyRect);
-        updateRect.move(-tile.rect.x(), -tile.rect.y());
-        tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
-||||||| parent of fa7ee5b9aaf1 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
-        auto buffer = layer.paint(tile.dirtyRect);
-        IntRect updateRect(tile.dirtyRect);
-        updateRect.move(-tile.rect.x(), -tile.rect.y());
-        tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
-=======
-            auto buffer = layer.paint(dirtyRect);
             IntRect updateRect(dirtyRect);
             updateRect.move(-tile.rect.x(), -tile.rect.y());
             tilesToUpdate.append({ tile.id, tile.rect, WTFMove(updateRect), WTFMove(buffer) });
@@ -222,7 +210,6 @@ OptionSet<CoordinatedBackingStoreProxy::UpdateResult> CoordinatedBackingStorePro
 
             WTFEndSignpost(this, UpdateTile);
         }
->>>>>>> fa7ee5b9aaf1 (Allow multiple tile dirty regions. Need the bug URL (OOPS!).)
         tile.markClean();
     }
 
