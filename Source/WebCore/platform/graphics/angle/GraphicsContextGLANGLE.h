@@ -457,18 +457,11 @@ protected:
     uint32_t m_nextExternalSyncName { 0 };
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglImages;
     UncheckedKeyHashMap<uint32_t, void*, IntHash<uint32_t>, WTF::UnsignedWithZeroKeyHashTraits<uint32_t>> m_eglSyncs;
-<<<<<<< HEAD
     IntSize m_maxInternalFramebufferSize;
-||||||| parent of 19ed8092e083 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
-=======
+
     bool m_useBlitFallback { false };
-<<<<<<< HEAD
->>>>>>> 19ed8092e083 (Rendering is broken in certain scenarios with preserveDrawingBuffer: true https://bugs.webkit.org/show_bug.cgi?id=287952)
-||||||| parent of 4e54e24daf8d (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
-=======
     std::optional<FloatRect> m_damage;
     std::optional<FloatRect> m_previousDamage;
->>>>>>> 4e54e24daf8d (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
 };
 
 
