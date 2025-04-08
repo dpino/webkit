@@ -1176,8 +1176,11 @@ void TreeResolver::resolveComposedTree()
             if (queryContainerAction == LayoutInterleavingAction::SkipDescendants)
                 return false;
             // Style resolution will be resumed after the anchor-positioned element has been resolved.
-            if (anchorPositionedElementAction == LayoutInterleavingAction::SkipDescendants)
+            if (anchorPositionedElementAction == LayoutInterleavingAction::SkipDescendants) {
+                if (element.childNeedsStyleRecalc() || descendantsToResolve != DescendantsToResolve::None)
+                    element.invalidateStyleForSubtree();
                 return false;
+            }
             return element.childNeedsStyleRecalc() || descendantsToResolve != DescendantsToResolve::None;
         }();
 
