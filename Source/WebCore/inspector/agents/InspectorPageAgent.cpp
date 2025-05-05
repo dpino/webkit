@@ -65,15 +65,9 @@
 #include "MIMETypeRegistry.h"
 #include "MemoryCache.h"
 #include "Page.h"
-<<<<<<< HEAD
-#include "RenderObjectInlines.h"
-||||||| parent of f831a52675e4 (chore(webkit): bootstrap build #2166)
-#include "RenderObject.h"
-=======
 #include "PageRuntimeAgent.h"
 #include "PlatformScreen.h"
-#include "RenderObject.h"
->>>>>>> f831a52675e4 (chore(webkit): bootstrap build #2166)
+#include "RenderObjectInlines.h"
 #include "RenderTheme.h"
 #include "DeprecatedGlobalSettings.h"
 #include "SimpleRange.h"
