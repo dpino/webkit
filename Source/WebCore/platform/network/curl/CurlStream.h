@@ -56,12 +56,30 @@ public:
         virtual void didFail(CurlStreamID, CURLcode, CertificateInfo&&) = 0;
     };
 
+<<<<<<< HEAD
     static std::unique_ptr<CurlStream> create(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreTLSErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+    static std::unique_ptr<CurlStream> create(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+=======
+    static std::unique_ptr<CurlStream> create(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreCertificateErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     {
+<<<<<<< HEAD
         return makeUnique<CurlStream>(scheduler, streamID, ignoreTLSErrors, WTFMove(url), serverTrustEvaluation, localhostAlias);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+        return makeUnique<CurlStream>(scheduler, streamID, WTFMove(url), serverTrustEvaluation, localhostAlias);
+=======
+        return makeUnique<CurlStream>(scheduler, streamID, ignoreCertificateErrors, WTFMove(url), serverTrustEvaluation, localhostAlias);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     }
 
+<<<<<<< HEAD
     CurlStream(CurlStreamScheduler&, CurlStreamID, bool ignoreTLSErrors, URL&&, ServerTrustEvaluation, LocalhostAlias);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+    CurlStream(CurlStreamScheduler&, CurlStreamID, URL&&, ServerTrustEvaluation, LocalhostAlias);
+=======
+    CurlStream(CurlStreamScheduler&, CurlStreamID, bool ignoreCertificateErrors, URL&&, ServerTrustEvaluation, LocalhostAlias);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     virtual ~CurlStream();
 
     void send(UniqueArray<uint8_t>&&, size_t);

@@ -74,9 +74,14 @@ struct NetworkSessionCreationParameters {
     WebCore::SoupNetworkProxySettings proxySettings;
     WebCore::HTTPCookieAcceptPolicy cookieAcceptPolicy { WebCore::HTTPCookieAcceptPolicy::ExclusivelyFromMainDocumentDomain };
 #endif
+<<<<<<< HEAD
 #if USE(SOUP) || USE(CURL)
     bool ignoreTLSErrors { false };
 #endif
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+=======
+    bool ignoreTLSErrors { false };
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
 #if USE(CURL)
     String cookiePersistentStorageFile;
     WebCore::CurlProxySettings proxySettings;
