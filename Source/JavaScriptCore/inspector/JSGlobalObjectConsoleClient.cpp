@@ -224,7 +224,7 @@ void JSGlobalObjectConsoleClient::screenshot(JSGlobalObject*, Ref<ScriptArgument
 
 void JSGlobalObjectConsoleClient::bindingCalled(JSGlobalObject*, const String&, const String&)
 {
-    if (LIKELY(!m_consoleAgent->developerExtrasEnabled()))
+    if (!m_consoleAgent->developerExtrasEnabled())
         return;
 
     warnUnimplemented("console.bindingCalled"_s);
