@@ -43,13 +43,7 @@ CurlStreamScheduler::~CurlStreamScheduler()
     ASSERT(isMainThread());
 }
 
-<<<<<<< HEAD
 CurlStreamID CurlStreamScheduler::createStream(const URL& url, bool ignoreTLSErrors, CurlStream::Client& client, CurlStream::ServerTrustEvaluation serverTrustEvaluation, CurlStream::LocalhostAlias localhostAlias)
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-CurlStreamID CurlStreamScheduler::createStream(const URL& url, CurlStream::Client& client, CurlStream::ServerTrustEvaluation serverTrustEvaluation, CurlStream::LocalhostAlias localhostAlias)
-=======
-CurlStreamID CurlStreamScheduler::createStream(const URL& url, bool ignoreCertificateErrors, CurlStream::Client& client, CurlStream::ServerTrustEvaluation serverTrustEvaluation, CurlStream::LocalhostAlias localhostAlias)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
 {
     ASSERT(isMainThread());
 
@@ -60,16 +54,8 @@ CurlStreamID CurlStreamScheduler::createStream(const URL& url, bool ignoreCertif
     auto streamID = m_currentStreamID;
     m_clientList.add(streamID, &client);
 
-<<<<<<< HEAD
     callOnWorkerThread([this, streamID, ignoreTLSErrors, url = url.isolatedCopy(), serverTrustEvaluation, localhostAlias]() mutable {
         m_streamList.add(streamID, CurlStream::create(*this, streamID, ignoreTLSErrors, WTFMove(url), serverTrustEvaluation, localhostAlias));
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-    callOnWorkerThread([this, streamID, url = url.isolatedCopy(), serverTrustEvaluation, localhostAlias]() mutable {
-        m_streamList.add(streamID, CurlStream::create(*this, streamID, WTFMove(url), serverTrustEvaluation, localhostAlias));
-=======
-    callOnWorkerThread([this, streamID, ignoreCertificateErrors, url = url.isolatedCopy(), serverTrustEvaluation, localhostAlias]() mutable {
-        m_streamList.add(streamID, CurlStream::create(*this, streamID, ignoreCertificateErrors, WTFMove(url), serverTrustEvaluation, localhostAlias));
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     });
 
     return streamID;

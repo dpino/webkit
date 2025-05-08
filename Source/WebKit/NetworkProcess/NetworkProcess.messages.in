@@ -36,15 +36,7 @@ messages -> NetworkProcess : AuxiliaryProcess WantsAsyncDispatchMessage {
     SetIgnoreTLSErrors(PAL::SessionID sessionID, bool ignoreTLSErrors)
 #endif
 
-<<<<<<< HEAD
 #if USE(SOUP)
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-#if USE(SOUP)
-    SetIgnoreTLSErrors(PAL::SessionID sessionID, bool ignoreTLSErrors)
-=======
-    SetIgnoreTLSErrors(PAL::SessionID sessionID, bool ignoreTLSErrors)
-#if USE(SOUP)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     UserPreferredLanguagesChanged(Vector<String> languages)
     SetNetworkProxySettings(PAL::SessionID sessionID, struct WebCore::SoupNetworkProxySettings settings)
     PrefetchDNS(String hostname)

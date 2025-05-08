@@ -335,16 +335,6 @@ public:
 #if USE(SOUP)
     void setPersistentCredentialStorageEnabled(bool);
     bool persistentCredentialStorageEnabled() const { return m_persistentCredentialStorageEnabled && isPersistent(); }
-<<<<<<< HEAD
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-    void setIgnoreTLSErrors(bool);
-    bool ignoreTLSErrors() const { return m_ignoreTLSErrors; }
-=======
-#endif
-    void setIgnoreTLSErrors(bool);
-    bool ignoreTLSErrors() const { return m_ignoreTLSErrors; }
-#if USE(SOUP)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     void setNetworkProxySettings(WebCore::SoupNetworkProxySettings&&);
     const WebCore::SoupNetworkProxySettings& networkProxySettings() const { return m_networkProxySettings; }
     void setCookiePersistentStorage(const String&, SoupCookiePersistentStorageType);
@@ -650,14 +640,6 @@ private:
 
 #if USE(SOUP)
     bool m_persistentCredentialStorageEnabled { true };
-<<<<<<< HEAD
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-    bool m_ignoreTLSErrors { true };
-=======
-#endif
-    bool m_ignoreTLSErrors { false };
-#if USE(SOUP)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     WebCore::SoupNetworkProxySettings m_networkProxySettings;
     String m_cookiePersistentStoragePath;
     SoupCookiePersistentStorageType m_cookiePersistentStorageType { SoupCookiePersistentStorageType::SQLite };
