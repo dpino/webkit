@@ -39,12 +39,23 @@
 namespace WebKit {
 WTF_MAKE_TZONE_ALLOCATED_IMPL(WebSocketTask);
 
+<<<<<<< HEAD
 WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, WebPageProxyIdentifier webProxyPageID, const WebCore::ResourceRequest& request, const String& protocol, bool ignoreTLSErrors, const WebCore::ClientOrigin& clientOrigin)
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, WebPageProxyIdentifier webProxyPageID, const WebCore::ResourceRequest& request, const String& protocol, const WebCore::ClientOrigin& clientOrigin)
+=======
+WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, WebPageProxyIdentifier webProxyPageID, const WebCore::ResourceRequest& request, const String& protocol, bool ignoreCertificateErrors, const WebCore::ClientOrigin& clientOrigin)
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     : m_channel(channel)
     , m_webProxyPageID(webProxyPageID)
     , m_request(request.isolatedCopy())
     , m_protocol(protocol)
+<<<<<<< HEAD
     , m_ignoreTLSErrors(ignoreTLSErrors)
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+=======
+    , m_ignoreCertificateErrors(ignoreCertificateErrors)
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     , m_scheduler(WebCore::CurlContext::singleton().streamScheduler())
 {
     // We use topOrigin in case of service worker websocket connections, for which pageID does not link to a real page.
@@ -56,7 +67,13 @@ WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, WebPageProxyIdentifi
     if (networkSession() && networkSession()->networkProcess().localhostAliasesForTesting().contains<StringViewHashTranslator>(m_request.url().host()))
         localhostAlias = WebCore::CurlStream::LocalhostAlias::Enable;
 
+<<<<<<< HEAD
     m_streamID = m_scheduler.createStream(request.url(), ignoreTLSErrors, *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+    m_streamID = m_scheduler.createStream(request.url(), *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
+=======
+    m_streamID = m_scheduler.createStream(request.url(), ignoreCertificateErrors, *this, WebCore::CurlStream::ServerTrustEvaluation::Enable, localhostAlias);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     channel.didSendHandshakeRequest(WebCore::ResourceRequest(m_request));
 }
 
@@ -266,7 +283,13 @@ void WebSocketTask::tryServerTrustEvaluation(WebCore::AuthenticationChallenge&& 
             if (networkSession() && networkSession()->networkProcess().localhostAliasesForTesting().contains<StringViewHashTranslator>(m_request.url().host()))
                 localhostAlias = WebCore::CurlStream::LocalhostAlias::Enable;
 
+<<<<<<< HEAD
             m_streamID = m_scheduler.createStream(m_request.url(), m_ignoreTLSErrors, *this, WebCore::CurlStream::ServerTrustEvaluation::Disable, localhostAlias);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+            m_streamID = m_scheduler.createStream(m_request.url(), *this, WebCore::CurlStream::ServerTrustEvaluation::Disable, localhostAlias);
+=======
+            m_streamID = m_scheduler.createStream(m_request.url(), m_ignoreCertificateErrors, *this, WebCore::CurlStream::ServerTrustEvaluation::Disable, localhostAlias);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
         } else
             didFail(WTFMove(errorReason));
     });

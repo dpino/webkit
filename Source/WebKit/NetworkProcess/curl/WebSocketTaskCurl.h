@@ -55,7 +55,13 @@ class WebSocketTask : public CanMakeWeakPtr<WebSocketTask>, public CanMakeChecke
     WTF_MAKE_TZONE_ALLOCATED(WebSocketTask);
     WTF_OVERRIDE_DELETE_FOR_CHECKED_PTR(WebSocketTask);
 public:
+<<<<<<< HEAD
     WebSocketTask(NetworkSocketChannel&, WebPageProxyIdentifier, const WebCore::ResourceRequest&, const String& protocol,  bool ignoreTLSErrors, const WebCore::ClientOrigin&);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+    WebSocketTask(NetworkSocketChannel&, WebPageProxyIdentifier, const WebCore::ResourceRequest&, const String& protocol, const WebCore::ClientOrigin&);
+=======
+    WebSocketTask(NetworkSocketChannel&, WebPageProxyIdentifier, const WebCore::ResourceRequest&, const String& protocol,  bool ignoreCertificateErrors, const WebCore::ClientOrigin&);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     virtual ~WebSocketTask();
 
     void sendString(std::span<const uint8_t>, CompletionHandler<void()>&&);
@@ -110,7 +116,12 @@ private:
     WebPageProxyIdentifier m_webProxyPageID;
     WebCore::ResourceRequest m_request;
     String m_protocol;
+<<<<<<< HEAD
     bool m_ignoreTLSErrors { false };
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+=======
+    bool m_ignoreCertificateErrors { false };
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     WebCore::SecurityOriginData m_topOrigin;
 
     WebCore::CurlStreamScheduler& m_scheduler;
