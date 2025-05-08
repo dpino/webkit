@@ -39,7 +39,13 @@ public:
     CurlStreamScheduler();
     virtual ~CurlStreamScheduler();
 
+<<<<<<< HEAD
     WEBCORE_EXPORT CurlStreamID createStream(const URL&, bool ignoreTLSErrors, CurlStream::Client&, CurlStream::ServerTrustEvaluation, CurlStream::LocalhostAlias);
+||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
+    WEBCORE_EXPORT CurlStreamID createStream(const URL&, CurlStream::Client&, CurlStream::ServerTrustEvaluation, CurlStream::LocalhostAlias);
+=======
+    WEBCORE_EXPORT CurlStreamID createStream(const URL&, bool ignoreCertificateErrors, CurlStream::Client&, CurlStream::ServerTrustEvaluation, CurlStream::LocalhostAlias);
+>>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     WEBCORE_EXPORT void destroyStream(CurlStreamID);
     WEBCORE_EXPORT void send(CurlStreamID, UniqueArray<uint8_t>&&, size_t);
 
