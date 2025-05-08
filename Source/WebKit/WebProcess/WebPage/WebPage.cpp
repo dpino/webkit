@@ -3949,7 +3949,7 @@ void WebPage::fakeTouchTap(const WebCore::IntPoint& position, uint8_t modifiers,
         WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, WallTime::now()}, WTFMove(touchPoints), {}, {});
 
         CurrentEvent currentEvent(touchEvent);
-        handled = handleTouchEvent(m_page->mainFrame().frameID(), touchEvent, m_page.get()).wasHandled();
+        handled = handleTouchEvent(m_page->mainFrame().frameID(), touchEvent, m_page.get()).value_or(false);
     }
     {
         Vector<WebPlatformTouchPoint> touchPoints;
@@ -3959,7 +3959,7 @@ void WebPage::fakeTouchTap(const WebCore::IntPoint& position, uint8_t modifiers,
         WebTouchEvent touchEvent({WebEventType::TouchEnd, eventModifiers, WallTime::now()}, WTFMove(touchPoints), {}, {});
 
         CurrentEvent currentEvent(touchEvent);
-        handled = handleTouchEvent(m_page->mainFrame().frameID(), touchEvent, m_page.get()).wasHandled() || handled;
+        handled = handleTouchEvent(m_page->mainFrame().frameID(), touchEvent, m_page.get()).value_or(handled);
     }
     if (!handled) {
         FloatPoint adjustedPoint;

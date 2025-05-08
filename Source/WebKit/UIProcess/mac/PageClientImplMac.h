@@ -233,7 +233,7 @@ private:
 #endif
 
 #if ENABLE(TOUCH_EVENTS)
-    void doneWithTouchEvent(const NativeWebTouchEvent&, bool wasEventHandled) override;
+    void doneWithTouchEvent(const WebTouchEvent&, bool wasEventHandled) override;
 #endif
 
     void navigationGestureDidBegin() override;
