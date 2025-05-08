@@ -743,11 +743,13 @@ void InspectorPlaywrightAgent::takePageScreenshot(const String& pageProxyID, int
 Inspector::Protocol::ErrorStringOr<void> InspectorPlaywrightAgent::setIgnoreCertificateErrors(const String& browserContextID, bool ignore)
 {
     String errorString;
-    BrowserContext* browserContext = lookupBrowserContext(errorString, browserContextID);
     if (!errorString.isEmpty())
         return makeUnexpected(errorString);
 
+#if USE(SOUP) || USE(CURL)
+    BrowserContext* browserContext = lookupBrowserContext(errorString, browserContextID);
     browserContext->dataStore->setIgnoreTLSErrors(ignore);
+#endif
     return { };
 }
 
