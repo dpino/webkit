@@ -28,21 +28,11 @@
 #pragma once
 
 #include "AdjustViewSizeOrNot.h"
-<<<<<<< HEAD
-#include "DOMPasteAccess.h"
-||||||| parent of 6343a1f95d94 (chore(webkit): bootstrap build #2169)
-#include "Document.h"
-=======
 #include "DOMPasteAccess.h"
 #include "Document.h"
->>>>>>> 6343a1f95d94 (chore(webkit): bootstrap build #2169)
 #include "Frame.h"
-<<<<<<< HEAD
-#include "RegistrableDomain.h"
-||||||| parent of 6343a1f95d94 (chore(webkit): bootstrap build #2169)
-=======
 #include "IntDegrees.h"
->>>>>>> 6343a1f95d94 (chore(webkit): bootstrap build #2169)
+#include "RegistrableDomain.h"
 #include "ScrollTypes.h"
 #include "UserScriptTypes.h"
 #include <wtf/CheckedRef.h>

@@ -34,12 +34,8 @@
 #include "NotImplemented.h"
 #include "Pasteboard.h"
 #include "Settings.h"
-<<<<<<< HEAD
 #include "SimpleRange.h"
-||||||| parent of 6343a1f95d94 (chore(webkit): bootstrap build #2169)
-=======
 #include "WebContentReader.h"
->>>>>>> 6343a1f95d94 (chore(webkit): bootstrap build #2169)
 #include "markup.h"
 
 namespace WebCore {
