@@ -8894,18 +8894,10 @@ void WebPageProxy::runJavaScriptAlert(IPC::Connection& connection, FrameIdentifi
             automationSession->willShowJavaScriptDialog(*this, message, std::nullopt);
     }
 
-<<<<<<< HEAD
     runModalJavaScriptDialog(WTFMove(frame), WTFMove(frameInfo), WTFMove(message), [reply = WTFMove(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, String&& message, CompletionHandler<void()>&& completion) mutable {
-        page.m_uiClient->runJavaScriptAlert(page, WTFMove(message), frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
-||||||| parent of d7283757cd94 (chore(webkit): bootstrap build #2169)
-    runModalJavaScriptDialog(WTFMove(frame), WTFMove(frameInfo), message, [reply = WTFMove(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, const String& message, CompletionHandler<void()>&& completion) mutable {
-        page.m_uiClient->runJavaScriptAlert(page, message, frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
-=======
-    runModalJavaScriptDialog(WTFMove(frame), WTFMove(frameInfo), message, [reply = WTFMove(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, const String& message, CompletionHandler<void()>&& completion) mutable {
         if (page.m_inspectorDialogAgent)
             page.m_inspectorDialogAgent->javascriptDialogOpening("alert"_s, message);
-        page.m_uiClient->runJavaScriptAlert(page, message, frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
->>>>>>> d7283757cd94 (chore(webkit): bootstrap build #2169)
+        page.m_uiClient->runJavaScriptAlert(page, WTFMove(message), frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
             reply();
             completion();
         });

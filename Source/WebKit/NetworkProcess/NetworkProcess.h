@@ -545,15 +545,7 @@ private:
     void setProxyConfigData(PAL::SessionID, Vector<std::pair<Vector<uint8_t>, std::optional<WTF::UUID>>>&& proxyConfigurations);
 #endif
     
-<<<<<<< HEAD
 #if USE(SOUP)
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-#if USE(SOUP)
-    void setIgnoreTLSErrors(PAL::SessionID, bool);
-=======
-    void setIgnoreTLSErrors(PAL::SessionID, bool);
-#if USE(SOUP)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     void userPreferredLanguagesChanged(const Vector<String>&);
     void setNetworkProxySettings(PAL::SessionID, WebCore::SoupNetworkProxySettings&&);
     void setPersistentCredentialStorageEnabled(PAL::SessionID, bool);
