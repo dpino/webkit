@@ -877,7 +877,7 @@ void PageClientImpl::beganExitFullScreen(const IntRect& initialFrame, const IntR
 #endif // ENABLE(FULLSCREEN_API)
 
 #if ENABLE(TOUCH_EVENTS)
-void PageClientImpl::doneWithTouchEvent(const NativeWebTouchEvent& event, bool wasEventHandled)
+void PageClientImpl::doneWithTouchEvent(const WebTouchEvent& event, bool wasEventHandled)
 {
     notImplemented();
 }
