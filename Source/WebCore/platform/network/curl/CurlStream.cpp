@@ -37,13 +37,7 @@ namespace WebCore {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(CurlStream);
 
-<<<<<<< HEAD
 CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreTLSErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
-=======
-CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, bool ignoreCertificateErrors, URL&& url, ServerTrustEvaluation serverTrustEvaluation, LocalhostAlias localhostAlias)
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
     : m_scheduler(scheduler)
     , m_streamID(streamID)
 {
@@ -58,15 +52,8 @@ CurlStream::CurlStream(CurlStreamScheduler& scheduler, CurlStreamID streamID, bo
         m_curlHandle->disableServerTrustEvaluation();
 
     m_curlHandle->enableConnectionOnly();
-<<<<<<< HEAD
     if (ignoreTLSErrors)
         m_curlHandle->disableServerTrustEvaluation();
-||||||| parent of a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
-=======
-    if (ignoreCertificateErrors)
-        m_curlHandle->disableServerTrustEvaluation();
-
->>>>>>> a3f2a5424cd2 (chore(webkit): bootstrap build #2169)
 
     auto errorCode = m_curlHandle->perform();
     if (errorCode != CURLE_OK) {
