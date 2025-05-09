@@ -28,17 +28,17 @@
 
 #if ENABLE(DRAG_SUPPORT)
 
-//#include "ArgumentCodersWPE.h"
 #include "MessageSenderInlines.h"
 #include "WebPage.h"
 #include "WebPageProxyMessages.h"
 #include <WebCore/DataTransfer.h>
 #include <WebCore/DragData.h>
+#include <WebCore/ElementIdentifier.h>
 #include <WebCore/Pasteboard.h>
 #include <WebCore/ShareableBitmap.h>
 #include <wtf/win/GDIObject.h>
 
-//#include <WebCore/SelectionData.h>
+#include <optional>
 
 namespace WebKit {
 using namespace WebCore;
@@ -47,7 +47,7 @@ void WebDragClient::didConcludeEditDrag()
 {
 }
 
-void WebDragClient::startDrag(DragItem, DataTransfer& dataTransfer, Frame& frame)
+void WebDragClient::startDrag(DragItem, DataTransfer& dataTransfer, Frame& frame, const std::optional<ElementIdentifier>&)
 {
     m_page->willStartDrag();
     m_page->send(Messages::WebPageProxy::StartDrag(dataTransfer.pasteboard().createDragDataMap()));

@@ -32,9 +32,12 @@
 #include "WebPageProxyMessages.h"
 #include <WebCore/DataTransfer.h>
 #include <WebCore/DragData.h>
+#include <WebCore/ElementIdentifier.h>
 #include <WebCore/Pasteboard.h>
 #include <WebCore/SelectionData.h>
 #include <WebCore/ShareableBitmap.h>
+
+#include <optional>
 
 namespace WebKit {
 using namespace WebCore;
@@ -43,7 +46,7 @@ void WebDragClient::didConcludeEditDrag()
 {
 }
 
-void WebDragClient::startDrag(DragItem, DataTransfer& dataTransfer, Frame&)
+void WebDragClient::startDrag(DragItem, DataTransfer& dataTransfer, Frame&, const std::optional<ElementIdentifier>&)
 {
     m_page->willStartDrag();
 
