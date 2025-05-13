@@ -312,7 +312,7 @@ public:
 
     WEBCORE_EXPORT FloatSize screenSize() const;
     void setOverrideScreenSize(FloatSize&&);
-    bool hasScreenSizeOverride() const { return !m_overrideScreenSize.isEmpty(); }
+    bool hasScreenSizeOverride() const { return !!m_overrideScreenSize; }
 
     void selfOnlyRef();
     void selfOnlyDeref();
