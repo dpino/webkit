@@ -374,18 +374,14 @@ messages -> WebPage WantsAsyncDispatchMessage {
     StageModeSessionDidEnd(std::optional<WebCore::ElementIdentifier> elementID)
 #endif
 
-<<<<<<< HEAD
 #if ENABLE(MODEL_PROCESS) && ENABLE(DRAG_SUPPORT)
     ModelDragEnded(WebCore::ElementIdentifier elementID)
 #endif
 
-||||||| parent of 3a606471e3cc (chore(webkit): bootstrap build #2170)
-=======
 #if PLATFORM(MAC) && ENABLE(DRAG_SUPPORT)
     SetDragPasteboardName(String pasteboardName)
 #endif
 
->>>>>>> 3a606471e3cc (chore(webkit): bootstrap build #2170)
 #if PLATFORM(IOS_FAMILY) && ENABLE(DRAG_SUPPORT)
     RequestDragStart(std::optional<WebCore::FrameIdentifier> remoteFrameID, WebCore::IntPoint clientPosition, WebCore::IntPoint globalPosition, OptionSet<WebCore::DragSourceAction> allowedActionsMask) -> (struct WebKit::DragInitiationResult result)
     RequestAdditionalItemsForDragSession(std::optional<WebCore::FrameIdentifier> rootFrameID, WebCore::IntPoint clientPosition, WebCore::IntPoint globalPosition, OptionSet<WebCore::DragSourceAction> allowedActionsMask) -> (struct WebKit::DragInitiationResult result)

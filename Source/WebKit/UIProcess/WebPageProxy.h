@@ -1655,16 +1655,12 @@ public:
 #if PLATFORM(GTK) || PLATFORM(WPE)
     void startDrag(WebCore::SelectionData&&, OptionSet<WebCore::DragOperation>, std::optional<WebCore::ShareableBitmapHandle>&& dragImage, WebCore::IntPoint&& dragImageHotspot);
 #endif
-<<<<<<< HEAD
 #if ENABLE(MODEL_PROCESS)
     void modelDragEnded(const WebCore::ElementIdentifier);
 #endif
-||||||| parent of 3a606471e3cc (chore(webkit): bootstrap build #2170)
-=======
 #if PLATFORM(WIN)
     void startDrag(WebCore::DragDataMap&& dragDataMap);
 #endif
->>>>>>> 3a606471e3cc (chore(webkit): bootstrap build #2170)
 #endif
 
     void processDidBecomeUnresponsive();

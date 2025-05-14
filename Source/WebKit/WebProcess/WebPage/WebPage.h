@@ -1299,16 +1299,12 @@ public:
     void didStartDrag();
     void dragCancelled();
     OptionSet<WebCore::DragSourceAction> allowedDragSourceActions() const { return m_allowedDragSourceActions; }
-<<<<<<< HEAD
 #if ENABLE(MODEL_PROCESS)
     void modelDragEnded(WebCore::ElementIdentifier);
 #endif
-||||||| parent of 3a606471e3cc (chore(webkit): bootstrap build #2170)
-=======
 #if PLATFORM(MAC)
     void setDragPasteboardName(const String& pasteboardName) { m_page->setDragPasteboardName(pasteboardName); }
 #endif
->>>>>>> 3a606471e3cc (chore(webkit): bootstrap build #2170)
 #endif
 
 #if ENABLE(MODEL_PROCESS)

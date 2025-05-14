@@ -29,18 +29,8 @@
 
 #include "DOMPasteAccess.h"
 #include "Frame.h"
-<<<<<<< HEAD
-#include "ScrollbarMode.h"
-||||||| parent of 3a606471e3cc (chore(webkit): bootstrap build #2170)
-#include "RegistrableDomain.h"
-#include "ScrollTypes.h"
-#include "UserScriptTypes.h"
-=======
 #include "IntDegrees.h"
-#include "RegistrableDomain.h"
-#include "ScrollTypes.h"
-#include "UserScriptTypes.h"
->>>>>>> 3a606471e3cc (chore(webkit): bootstrap build #2170)
+#include "ScrollbarMode.h"
 #include <wtf/CheckedRef.h>
 #include <wtf/HashSet.h>
 #include <wtf/UniqueRef.h>

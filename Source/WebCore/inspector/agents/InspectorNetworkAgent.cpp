@@ -1358,18 +1358,12 @@ Inspector::Protocol::ErrorStringOr<void> InspectorNetworkAgent::interceptRequest
     }
     response.setHTTPHeaderFields(WTFMove(explicitHeaders));
     response.setHTTPHeaderField(HTTPHeaderName::ContentType, response.mimeType());
-<<<<<<< HEAD
-    loader->didReceiveResponse(WTFMove(response), [loader, buffer = data.releaseNonNull()]() {
-||||||| parent of 3a606471e3cc (chore(webkit): bootstrap build #2170)
-    loader->didReceiveResponse(response, [loader, buffer = data.releaseNonNull()]() {
-=======
 
     auto* frame = loader->frame();
     if (!setCookieValue.isEmpty() && frame && frame->page())
         frame->page()->cookieJar().setCookieFromResponse(*loader.get(), setCookieValue);
 
-    loader->didReceiveResponse(response, [loader, buffer = data.releaseNonNull()]() mutable {
->>>>>>> 3a606471e3cc (chore(webkit): bootstrap build #2170)
+    loader->didReceiveResponse(WTFMove(response), [loader, buffer = data.releaseNonNull()]() {
         if (loader->reachedTerminalState())
             return;
 
