@@ -41,6 +41,7 @@
 #include "WebPageProxy.h"
 #include "WebPreferences.h"
 #include <WebCore/ResourceError.h>
+#include <WebCore/StorageBlockingPolicy.h>
 #include <WebCore/WindowFeatures.h>
 #include <JavaScriptCore/InspectorAgentBase.h>
 #include <JavaScriptCore/InspectorBackendDispatcher.h>
