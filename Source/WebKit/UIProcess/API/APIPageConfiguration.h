@@ -519,14 +519,8 @@ private:
 #endif
         RefPtr<WebKit::WebPageGroup> pageGroup;
         WeakPtr<WebKit::WebPageProxy> relatedPage;
-<<<<<<< HEAD
-        Box<std::optional<OpenerInfo>> openerInfo;
-||||||| parent of f1fd3076e8a5 (chore(webkit/): bootstrap build #2173)
-        std::optional<OpenerInfo> openerInfo;
-=======
         WeakPtr<WebKit::WebPageProxy> openerPageForInspector;
-        std::optional<OpenerInfo> openerInfo;
->>>>>>> f1fd3076e8a5 (chore(webkit/): bootstrap build #2173)
+        Box<std::optional<OpenerInfo>> openerInfo;
         WebCore::Site openedSite;
         WTF::String openedMainFrameName;
         std::optional<WebCore::WindowFeatures> windowFeatures;
