@@ -175,14 +175,15 @@
     </branch>
   </meson>
 
-  <meson id="glib-networking"
-	 mesonargs="-Dgnutls=disabled -Dopenssl=enabled">
+  <meson id="glib-networking">
     <dependencies>
       <dep package="glib"/>
     </dependencies>
-    <branch module="/sources/glib-networking/2.70/glib-networking-${version}.tar.xz" version="2.70.0"
-            repo="download.gnome.org"
-            hash="sha256:66b408e7afa86c582fe38963db56133869ab4b57d34e48ec56aba621940d6f35"/>
+    <branch module="GNOME/glib-networking"
+            repo="github.com"
+            tag="2.70.0"
+            version="2.70.0"
+            checkoutdir="glib-networking-${version}"/>
   </meson>
 
   <!-- atk needed to build with A11y support -->
