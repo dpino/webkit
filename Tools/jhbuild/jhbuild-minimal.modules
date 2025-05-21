@@ -137,14 +137,12 @@
             hash="sha256:4fe0a4bed6b4c3ae7249d341031c27b32f8d9e0ffb5337d71cbcec7160362cf7"/>
   </meson>
 
-  <!-- meson 0.50.1 required to build libsoup 2.69 -->
-  <distutils id="meson" python3="1">
-    <branch repo="github-tarball"
-            version="0.50.1"
-            module="mesonbuild/meson/releases/download/${version}/meson-${version}.tar.gz"
-            checkoutdir="meson-${version}"
-            hash="sha256:f68f56d60c80a77df8fc08fa1016bc5831605d4717b622c96212573271e14ecc"/>
-  </distutils>
+  <!-- meson 0.62.2 required to build gstreamer-1.22.7 -->                                                                                                                              
+  <distutils id="meson" python3="1">                                                                                                                                                  
+    <branch module="mesonbuild/meson"                                                                                                                                                 
+            tag="0.62.2"                                                                                                                                                              
+            repo="github.com"/>                                                                                                                                                       
+  </distutils>                                                                                                                                                                        
 
   <!-- OpenXR required for WebXR support -->
   <cmake id="openxr">
