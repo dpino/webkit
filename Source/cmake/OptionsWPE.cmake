@@ -84,17 +84,6 @@ else ()
     WEBKIT_OPTION_DEFAULT_PORT_VALUE(USE_SKIA PRIVATE OFF)
 endif ()
 
-<<<<<<< HEAD
-||||||| parent of 00bd48945f81 (chore(webkit): bootstrap build #2175)
-if (WPE_VERSION VERSION_GREATER_EQUAL 1.13.90)
-    WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_GAMEPAD PUBLIC ON)
-endif ()
-
-=======
-if (WPE_VERSION VERSION_GREATER_EQUAL 1.13.90)
-    WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_GAMEPAD PUBLIC ON)
-endif ()
-
 # Playwright begin.
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_MINIBROWSER PUBLIC ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_PDFJS PUBLIC OFF)
@@ -110,7 +99,6 @@ WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_SPEECH_SYNTHESIS PRIVATE ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_POINTER_LOCK PRIVATE ON)
 # Playwright end.
 
->>>>>>> 00bd48945f81 (chore(webkit): bootstrap build #2175)
 # Public options specific to the WPE port. Do not add any options here unless
 # there is a strong reason we should support changing the value of the option,
 # and the option is not relevant to other WebKit ports.
