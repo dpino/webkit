@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include "DragImage.h"
+#include "NativeImage.h"
 #include "NotImplemented.h"
 
 #include "Image.h"
