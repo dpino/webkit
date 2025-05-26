@@ -8776,15 +8776,8 @@ void WebPageProxy::createNewPage(IPC::Connection& connection, WindowFeatures&& w
     if (RefPtr page = originatingFrameInfo->page())
         openerAppInitiatedState = page->lastNavigationWasAppInitiated();
 
-<<<<<<< HEAD
-||||||| parent of ce7d39429c0f (chore(webkit): bootstrap build #2176)
-    auto navigationDataForNewProcess = navigationActionData.hasOpener ? nullptr : makeUnique<NavigationActionData>(navigationActionData);
-
-=======
     m_inspectorController->willCreateNewPage(windowFeatures, request.url());
 
-    auto navigationDataForNewProcess = navigationActionData.hasOpener ? nullptr : makeUnique<NavigationActionData>(navigationActionData);
->>>>>>> ce7d39429c0f (chore(webkit): bootstrap build #2176)
     auto completionHandler = [
         this,
         protectedThis = Ref { *this },
