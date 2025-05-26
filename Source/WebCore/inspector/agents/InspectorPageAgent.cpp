@@ -1779,8 +1779,6 @@ static String roleFromObject(RefPtr<AXCoreObject> axObject)
             return "WebApplication"_s;
         case AccessibilityRole::WebArea:
             return "WebArea"_s;
-        case AccessibilityRole::WebCoreLink:
-            return "WebCoreLink"_s;
     };
     return "Unknown"_s;
 }
