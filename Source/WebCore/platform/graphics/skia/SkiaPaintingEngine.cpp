@@ -413,13 +413,13 @@ SkiaPaintingEngine::HybridPaintingStrategy SkiaPaintingEngine::hybridPaintingStr
 bool SkiaPaintingEngine::shouldUseLinearTileTextures()
 {
     static std::once_flag onceFlag;
-    static bool shouldUseLinearTextures = false;
+    static bool shouldUseLinearTextures = true;
 
     std::call_once(onceFlag, [] {
         if (const char* envString = getenv("WEBKIT_SKIA_USE_LINEAR_TILE_TEXTURES")) {
             auto envStringView = StringView::fromLatin1(envString);
-            if (envStringView == "1"_s)
-                shouldUseLinearTextures = true;
+            if (envStringView == "0"_s)
+                shouldUseLinearTextures = false;
         }
     });
 
