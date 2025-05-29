@@ -67,7 +67,10 @@
 <!-- Its intended to allow building WebKit using as much as libraries from your distribution as possible -->
 <!-- In order to ensure its minimal, all the modules should have a pkg-config declaration line -->
 
-  <meson id="mesa" mesonargs="-Dglx=dri -Degl=enabled -Dplatforms=x11,wayland -Dgallium-drivers=swrast -Dvulkan-drivers=swrast">
+  <meson id="mesa" mesonargs="-Db_ndebug=true -Ddri3=enabled -Degl=enabled -Dgallium-drivers=softpipe,llvmpipe,nouveau -Dgallium-nine=true -Dgallium-omx=disabled
+      -Dgallium-xa=disabled -Dgbm=enabled -Dgles1=disabled -Dgles2=enabled -Dglvnd=enabled -Dglx=auto -Dllvm=enabled -Dlmsensors=disabled
+      -Dmicrosoft-clc=disabled -Dandroid-libbacktrace=disabled -Dosmesa=false -Dplatforms=x11,wayland -Dselinux=false -Dshared-glapi=enabled
+      -Dvalgrind=disabled -Dvulkan-layers=device-select,overlay -Dvulkan-drivers=swrast -Dxlib-lease=enabled -Dzstd=enabled">
     <pkg-config>mesa.pc</pkg-config>
     <branch module="mesa/mesa.git"
             repo="gitlab.freedesktop.org"
