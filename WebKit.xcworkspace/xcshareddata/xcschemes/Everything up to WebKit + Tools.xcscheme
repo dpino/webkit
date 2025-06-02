@@ -196,7 +196,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-<<<<<<< HEAD
                BlueprintIdentifier = "07A58BCC2D0400B300CAB4ED"
                BuildableName = "SwiftBrowser"
                BlueprintName = "SwiftBrowser"
@@ -211,8 +210,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-||||||| parent of 00031f1c491b (chore(webkit): bootstrap build #2181)
-=======
                BlueprintIdentifier = "8D1107260486CEB800E47091"
                BuildableName = "Playwright.app"
                BlueprintName = "Playwright"
@@ -227,7 +224,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
->>>>>>> 00031f1c491b (chore(webkit): bootstrap build #2181)
                BlueprintIdentifier = "8D07F2BC0486CC7A007CD1D0"
                BuildableName = "gtest.framework"
                BlueprintName = "gtest-framework"
