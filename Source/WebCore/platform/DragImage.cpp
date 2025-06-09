@@ -280,13 +280,7 @@ DragImage::~DragImage()
         deleteDragImage(m_dragImageRef);
 }
 
-<<<<<<< HEAD
 #if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WIN) && !(PLATFORM(WPE) && ENABLE(DRAG_SUPPORT) && USE(SKIA))
-||||||| parent of 3a536e69f64d (chore(webkit): bootstrap build #2182)
-#if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WIN)
-=======
-#if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WIN) && !PLATFORM(WPE)
->>>>>>> 3a536e69f64d (chore(webkit): bootstrap build #2182)
 
 IntSize dragImageSize(DragImageRef)
 {

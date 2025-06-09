@@ -241,15 +241,9 @@ void WebPageInspectorController::disconnectAllFrontends()
     // Disconnect any remaining remote frontends.
     m_frontendRouter->disconnectAllFrontends();
 
-<<<<<<< HEAD
-    Ref inspectedPage = m_inspectedPage.get();
-||||||| parent of fd3267afea73 (chore(webkit): bootstrap build #2182)
-    auto inspectedPage = protectedInspectedPage();
-=======
     m_pendingNavigations.clear();
 
-    auto inspectedPage = protectedInspectedPage();
->>>>>>> fd3267afea73 (chore(webkit): bootstrap build #2182)
+    Ref inspectedPage = m_inspectedPage.get();
     inspectedPage->didChangeInspectorFrontendCount(m_frontendRouter->frontendCount());
 
 #if ENABLE(REMOTE_INSPECTOR)
