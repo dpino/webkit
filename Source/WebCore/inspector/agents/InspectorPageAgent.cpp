@@ -1511,7 +1511,7 @@ static String roleFromObject(RefPtr<AXCoreObject> axObject)
     String computedRoleString = axObject->computedRoleString();
     if (!computedRoleString.isEmpty())
         return computedRoleString;
-    AccessibilityRole role = axObject->roleValue();
+    AccessibilityRole role = axObject->role();
     switch(role) {
         case AccessibilityRole::Application:
             return "Application"_s;
