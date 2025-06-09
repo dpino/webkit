@@ -87,12 +87,22 @@ if (USE_OPENXR)
     list(APPEND WebCore_SYSTEM_INCLUDE_DIRECTORIES ${OPENXR_INCLUDE_DIRS})
 endif ()
 
+<<<<<<< HEAD
 if (USE_SKIA AND ENABLE_DRAG_SUPPORT)
     list(APPEND WebCore_SOURCES
         platform/skia/DragImageSkia.cpp
     )
 endif ()
 
+||||||| parent of 3a536e69f64d (chore(webkit): bootstrap build #2182)
+=======
+if (USE_SKIA)
+    list(APPEND WebCore_SOURCES
+        platform/skia/DragImageSkia.cpp
+    )
+endif ()
+
+>>>>>>> 3a536e69f64d (chore(webkit): bootstrap build #2182)
 if (USE_ATSPI)
     set(WebCore_AtspiInterfaceFiles
         ${WEBCORE_DIR}/accessibility/atspi/xml/Accessible.xml

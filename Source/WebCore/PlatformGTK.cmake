@@ -119,11 +119,21 @@ if (ENABLE_BUBBLEWRAP_SANDBOX)
     list(APPEND WebCore_LIBRARIES Libseccomp::Libseccomp)
 endif ()
 
+<<<<<<< HEAD
 if (USE_CAIRO)
     list(APPEND WebCore_SOURCES
         platform/cairo/DragImageCairo.cpp
     )
 elseif (USE_SKIA)
+||||||| parent of 3a536e69f64d (chore(webkit): bootstrap build #2182)
+if (USE_SKIA)
+=======
+if (USE_CAIRO)
+    list(APPEND WebCore_SOURCES
+        platform/gtk/DragImageGtk.cpp
+    )
+elseif (USE_SKIA)
+>>>>>>> 3a536e69f64d (chore(webkit): bootstrap build #2182)
     # When building with Skia we don't build Cairo sources, but since
     # Cairo is still needed in the UI process API we need to include
     # here the Cairo sources required.
