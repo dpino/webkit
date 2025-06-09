@@ -217,12 +217,18 @@ if (USE_CAIRO)
         platform/graphics/win/cairo/MediaPlayerPrivateMediaFoundationCairo.cpp
 
         platform/win/cairo/DragImageWinCairo.cpp
+        platform/win/DragImageWin.cpp
     )
 elseif (USE_SKIA)
     list(APPEND WebCore_SOURCES
         platform/graphics/win/FontCacheSkiaWin.cpp
+<<<<<<< HEAD
 
         platform/skia/DragImageSkia.cpp
+||||||| parent of 3a536e69f64d (chore(webkit): bootstrap build #2182)
+=======
+        platform/skia/DragImageSkia.cpp
+>>>>>>> 3a536e69f64d (chore(webkit): bootstrap build #2182)
     )
 endif ()
 
