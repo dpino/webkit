@@ -391,6 +391,8 @@ private:
 
     void clearPageSpecificData(WebCore::PageIdentifier);
 
+    void setCookieFromResponse(const URL& firstParty, const WebCore::SameSiteInfo&, const URL& url, const String& setCookieValue);
+
     void removeStorageAccessForFrame(WebCore::FrameIdentifier, WebCore::PageIdentifier);
 
     void logUserInteraction(RegistrableDomain&&);
