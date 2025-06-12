@@ -205,12 +205,8 @@
 #include <WebCore/ArchiveError.h>
 #include <WebCore/BitmapImage.h>
 #include <WebCore/CaptureDeviceManager.h>
-<<<<<<< HEAD
 #include <WebCore/CaptureDeviceWithCapabilities.h>
-||||||| parent of 62735735ac32 (chore(webkit): bootstrap build #2183)
-=======
 #include <WebCore/Color.h>
->>>>>>> 62735735ac32 (chore(webkit): bootstrap build #2183)
 #include <WebCore/CompositionHighlight.h>
 #include <WebCore/CrossSiteNavigationDataTransfer.h>
 #include <WebCore/CryptoKey.h>
