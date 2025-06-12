@@ -74,7 +74,7 @@ static WebCore::SoupNetworkProxySettings parseProxySettings(const String& proxyS
         }
     }
     ignoreHosts.append(nullptr);
-    return parseRawProxySettings(proxyServer, ignoreHosts.data());
+    return parseRawProxySettings(proxyServer, ignoreHosts.mutableSpan().data());
 }
 
 InspectorPlaywrightAgentClientGlib::InspectorPlaywrightAgentClientGlib(const WTF::String& proxyURI, const char* const* ignoreHosts)

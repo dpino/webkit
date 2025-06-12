@@ -296,7 +296,7 @@ void InspectorScreencastAgent::encodeFrame()
 
         // Do not send the same frame over and over.
         auto cryptoDigest = PAL::CryptoDigest::create(PAL::CryptoDigest::Algorithm::SHA_1);
-        cryptoDigest->addBytes(std::span(data.data(), data.size()));
+        cryptoDigest->addBytes(std::span(data.mutableSpan().data(), data.size()));
         auto digest = cryptoDigest->computeHash();
         if (m_lastFrameDigest != digest) {
             String base64Data = base64EncodeToString(data);
