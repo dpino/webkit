@@ -220,14 +220,8 @@ LocalFrame::LocalFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifie
 
 void LocalFrame::init()
 {
-<<<<<<< HEAD
-    loader().init();
-||||||| parent of 6dd041490ffa (chore(webkit): bootstrap build #2184)
-    protectedLoader()->init();
-=======
     InspectorInstrumentation::frameAttached(this);
-    protectedLoader()->init();
->>>>>>> 6dd041490ffa (chore(webkit): bootstrap build #2184)
+    loader().init();
 }
 
 Ref<LocalFrame> LocalFrame::createMainFrame(Page& page, ClientCreator&& clientCreator, FrameIdentifier identifier, SandboxFlags effectiveSandboxFlags, Frame* opener, Ref<FrameTreeSyncData>&& frameTreeSyncData)
