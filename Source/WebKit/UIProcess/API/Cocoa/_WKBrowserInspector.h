@@ -35,7 +35,10 @@ NS_ASSUME_NONNULL_BEGIN
 WK_CLASS_AVAILABLE(macos(10.14.0))
 @interface _WKBrowserContext : NSObject
 @property (nonatomic, strong) WKWebsiteDataStore *dataStore;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic, strong) WKProcessPool *processPool;
+#pragma clang diagnostic pop
 @end
 
 @protocol _WKBrowserInspectorDelegate <NSObject>
