@@ -163,6 +163,8 @@ void ProgressTracker::progressCompleted(LocalFrame& frame)
     if (!m_numProgressTrackedFrames || originatingProgressFrame == &frame)
         finalProgressComplete();
 
+    InspectorInstrumentation::frameStoppedLoading(frame);
+
     m_client->didChangeEstimatedProgress();
 }
 
@@ -188,9 +190,17 @@ void ProgressTracker::finalProgressComplete()
         frame->loader().protectedClient()->setMainFrameDocumentReady(true);
         m_client->progressFinished(*frame);
         protectedPage()->progressFinished(*frame);
+<<<<<<< HEAD
         frame->loader().loadProgressingStatusChanged();
 
         InspectorInstrumentation::frameStoppedLoading(*frame);
+||||||| parent of 6dd041490ffa (chore(webkit): bootstrap build #2184)
+        frame->protectedLoader()->loadProgressingStatusChanged();
+
+        InspectorInstrumentation::frameStoppedLoading(*frame);
+=======
+        frame->protectedLoader()->loadProgressingStatusChanged();
+>>>>>>> 6dd041490ffa (chore(webkit): bootstrap build #2184)
     }
 }
 
