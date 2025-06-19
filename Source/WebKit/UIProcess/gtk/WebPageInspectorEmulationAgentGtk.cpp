@@ -27,6 +27,8 @@
 #include "DrawingAreaProxyCoordinatedGraphics.h"
 #include "WebPageInspectorEmulationAgent.h"
 #include "WebPageProxy.h"
+#include <WebCore/GtkUtilities.h>
+#include <WebCore/GtkVersioning.h>
 #include <WebCore/IntSize.h>
 #include <gtk/gtk.h>
 
