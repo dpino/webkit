@@ -33,6 +33,10 @@
 #include <wtf/Noncopyable.h>
 #include <wtf/WeakPtr.h>
 
+#if USE(SKIA)
+#include <skia/core/SkImage.h>
+#endif
+
 namespace Inspector {
 class BackendDispatcher;
 class FrontendChannel;
