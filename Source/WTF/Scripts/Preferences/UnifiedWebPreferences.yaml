@@ -5890,27 +5890,13 @@ PropagateDamagingInformation:
    humanReadableDescription: "Propagate Damaging Information"
    condition: ENABLE(DAMAGE_TRACKING)
    defaultValue:
-<<<<<<< HEAD
-||||||| parent of 5480aedcbb9e ([GLib] Enable damage propagation by default)
-     WebCore:
-       default: false
-=======
-     WebCore:
-       default: true
->>>>>>> 5480aedcbb9e ([GLib] Enable damage propagation by default)
      WebKitLegacy:
        default: true
      WebKit:
-<<<<<<< HEAD
        "PLATFORM(GTK)": true
-       default: false
-     WebCore:
-       default: false
-||||||| parent of 5480aedcbb9e ([GLib] Enable damage propagation by default)
-       default: false
-=======
        default: true
->>>>>>> 5480aedcbb9e ([GLib] Enable damage propagation by default)
+     WebCore:
+       default: true
 
 PunchOutWhiteBackgroundsInDarkMode:
   type: bool
