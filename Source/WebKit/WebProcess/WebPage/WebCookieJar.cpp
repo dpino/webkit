@@ -44,14 +44,8 @@
 #include <WebCore/LocalFrame.h>
 #include <WebCore/LocalFrameLoaderClient.h>
 #include <WebCore/Page.h>
-<<<<<<< HEAD
-#include <WebCore/ScriptTrackingPrivacyCategory.h>
-||||||| parent of 38631917d835 (chore(webkit): bootstrap build #2186)
-#include <WebCore/ScriptTelemetryCategory.h>
-=======
 #include <WebCore/ResourceLoader.h>
-#include <WebCore/ScriptTelemetryCategory.h>
->>>>>>> 38631917d835 (chore(webkit): bootstrap build #2186)
+#include <WebCore/ScriptTrackingPrivacyCategory.h>
 #include <WebCore/Settings.h>
 #include <WebCore/StorageSessionProvider.h>
 #include <optional>
