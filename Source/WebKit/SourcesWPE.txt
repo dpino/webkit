@@ -260,12 +260,8 @@ UIProcess/linux/MemoryPressureMonitor.cpp
 UIProcess/soup/WebProcessPoolSoup.cpp
 
 UIProcess/wpe/AcceleratedBackingStoreDMABuf.cpp
-<<<<<<< HEAD
 UIProcess/wpe/DisplayVBlankMonitorWPE.cpp
-||||||| parent of cf609be94191 (chore(webkit): bootstrap build #2186)
-=======
 UIProcess/wpe/InspectorTargetProxyWPE.cpp
->>>>>>> cf609be94191 (chore(webkit): bootstrap build #2186)
 UIProcess/wpe/ScreenManagerWPE.cpp
 UIProcess/wpe/SystemSettingsManagerProxyWPE.cpp
 UIProcess/wpe/WPEUtilities.cpp
