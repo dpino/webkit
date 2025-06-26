@@ -99,11 +99,8 @@ platform/wpe/PasteboardWPE.cpp
 platform/wpe/PlatformScreenWPE.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
-<<<<<<< HEAD
 
 platform/xr/openxr/PlatformXROpenXR.cpp
-||||||| parent of fd25b0457c30 (chore(webkit): bootstrap build #2187)
-=======
 
 // Playwright: begin.
 platform/wpe/DragDataWPE.cpp
@@ -113,4 +110,3 @@ JSSpeechSynthesisErrorEvent.cpp
 JSSpeechSynthesisErrorEventInit.cpp
 JSSpeechSynthesisEventInit.cpp
 // Playwright: end.
->>>>>>> fd25b0457c30 (chore(webkit): bootstrap build #2187)
