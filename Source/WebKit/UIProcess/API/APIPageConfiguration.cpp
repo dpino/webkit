@@ -268,20 +268,16 @@ WebPageProxy* PageConfiguration::relatedPage() const
     return m_data.relatedPage.get();
 }
 
-<<<<<<< HEAD
 RefPtr<WebPageProxy> PageConfiguration::protectedRelatedPage() const
 {
     return relatedPage();
 }
 
-||||||| parent of 011c8f23f56e (chore(webkit): bootstrap build #2187)
-=======
 WebKit::WebPageProxy* PageConfiguration::openerPageForInspector() const
 {
     return m_data.openerPageForInspector.get();
 }
 
->>>>>>> 011c8f23f56e (chore(webkit): bootstrap build #2187)
 WebPageProxy* PageConfiguration::pageToCloneSessionStorageFrom() const
 {
     return m_data.pageToCloneSessionStorageFrom.get();
