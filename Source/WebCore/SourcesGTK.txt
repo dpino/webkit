@@ -111,5 +111,16 @@ platform/unix/LoggingUnix.cpp
 platform/unix/SharedMemoryUnix.cpp
 
 platform/xdg/MIMETypeRegistryXdg.cpp
+<<<<<<< HEAD
 
 platform/xr/openxr/PlatformXROpenXR.cpp
+||||||| parent of fd25b0457c30 (chore(webkit): bootstrap build #2187)
+=======
+
+// Playwright: begin.
+JSSpeechSynthesisErrorCode.cpp
+JSSpeechSynthesisErrorEvent.cpp
+JSSpeechSynthesisErrorEventInit.cpp
+JSSpeechSynthesisEventInit.cpp
+// Playwright: end.
+>>>>>>> fd25b0457c30 (chore(webkit): bootstrap build #2187)
