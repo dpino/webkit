@@ -3067,16 +3067,10 @@ void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, G
         return;
     if (!validateSize("scissor"_s, width, height))
         return;
-<<<<<<< HEAD
     protectedGraphicsContextGL()->scissor(x, y, width, height);
-||||||| parent of 9efef483cd22 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
-    m_context->scissor(x, y, width, height);
-=======
-    m_context->scissor(x, y, width, height);
     m_latestScissor = IntRect { IntPoint { x, y }, IntSize { width, height } };
     if (m_scissorEnabled && m_dirtyRect)
         m_dirtyRect->unite(*m_latestScissor);
->>>>>>> 9efef483cd22 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
 }
 
 void WebGLRenderingContextBase::shaderSource(WebGLShader& shader, const String& string)
@@ -5645,16 +5639,10 @@ void WebGLRenderingContextBase::prepareForDisplay()
         return;
 
     clearIfComposited(CallerTypeOther);
-<<<<<<< HEAD
-    protectedGraphicsContextGL()->prepareForDisplay();
-||||||| parent of 9efef483cd22 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
-    m_context->prepareForDisplay();
-=======
     if (m_dirtyRect)
         m_context->setDamage(*m_dirtyRect);
     clearAccumulatedDirtyRect();
-    m_context->prepareForDisplay();
->>>>>>> 9efef483cd22 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
+    protectedGraphicsContextGL()->prepareForDisplay();
     m_defaultFramebuffer->markAllUnpreservedBuffersDirty();
 
     m_compositingResultsNeedUpdating = false;
