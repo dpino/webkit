@@ -283,14 +283,8 @@ void PageClientImpl::didRelaunchProcess()
 
 void PageClientImpl::preferencesDidChange()
 {
-<<<<<<< HEAD
-    checkedImpl()->preferencesDidChange();
-||||||| parent of dedaa63d13d8 (chore(webkit): bootstrap build #2188)
-    m_impl->preferencesDidChange();
-=======
-    if (m_impl)
-        m_impl->preferencesDidChange();
->>>>>>> dedaa63d13d8 (chore(webkit): bootstrap build #2188)
+    if (CheckedPtr impl = m_impl.get())
+        impl->preferencesDidChange();
 }
 
 void PageClientImpl::toolTipChanged(const String& oldToolTip, const String& newToolTip)
@@ -500,15 +494,9 @@ IntRect PageClientImpl::rootViewToAccessibilityScreen(const IntRect& rect)
 
 void PageClientImpl::doneWithKeyEvent(const NativeWebKeyboardEvent& event, bool eventWasHandled)
 {
-<<<<<<< HEAD
-    checkedImpl()->doneWithKeyEvent(event.nativeEvent(), eventWasHandled);
-||||||| parent of dedaa63d13d8 (chore(webkit): bootstrap build #2188)
-    m_impl->doneWithKeyEvent(event.nativeEvent(), eventWasHandled);
-=======
     if (!event.nativeEvent())
         return;
-    m_impl->doneWithKeyEvent(event.nativeEvent(), eventWasHandled);
->>>>>>> dedaa63d13d8 (chore(webkit): bootstrap build #2188)
+    checkedImpl()->doneWithKeyEvent(event.nativeEvent(), eventWasHandled);
 }
 
 #if ENABLE(IMAGE_ANALYSIS)
@@ -527,15 +515,9 @@ void PageClientImpl::computeHasVisualSearchResults(const URL& imageURL, Shareabl
 
 RefPtr<WebPopupMenuProxy> PageClientImpl::createPopupMenuProxy(WebPageProxy& page)
 {
-<<<<<<< HEAD
-    return WebPopupMenuProxyMac::create(m_view.get().get(), page.checkedPopupMenuClient().get());
-||||||| parent of dedaa63d13d8 (chore(webkit): bootstrap build #2188)
-    return WebPopupMenuProxyMac::create(m_view.get().get(), page.popupMenuClient());
-=======
     if (_headless)
         return nullptr;
-    return WebPopupMenuProxyMac::create(m_view.get().get(), page.popupMenuClient());
->>>>>>> dedaa63d13d8 (chore(webkit): bootstrap build #2188)
+    return WebPopupMenuProxyMac::create(m_view.get().get(), page.checkedPopupMenuClient().get());
 }
 
 #if ENABLE(CONTEXT_MENUS)
@@ -1064,16 +1046,10 @@ void PageClientImpl::requestScrollToRect(const WebCore::FloatRect& targetRect, c
 
 bool PageClientImpl::windowIsFrontWindowUnderMouse(const NativeWebMouseEvent& event)
 {
-<<<<<<< HEAD
-    return checkedImpl()->windowIsFrontWindowUnderMouse(event.nativeEvent());
-||||||| parent of dedaa63d13d8 (chore(webkit): bootstrap build #2188)
-    return m_impl->windowIsFrontWindowUnderMouse(event.nativeEvent());
-=======
     // Simulated event.
     if (!event.nativeEvent())
         return false;
-    return m_impl->windowIsFrontWindowUnderMouse(event.nativeEvent());
->>>>>>> dedaa63d13d8 (chore(webkit): bootstrap build #2188)
+    return checkedImpl()->windowIsFrontWindowUnderMouse(event.nativeEvent());
 }
 
 std::optional<float> PageClientImpl::computeAutomaticTopObscuredInset()
