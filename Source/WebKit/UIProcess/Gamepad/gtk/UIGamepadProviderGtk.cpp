@@ -71,6 +71,14 @@ static WebPageProxy* getWebPageProxy(GtkWidget* widget)
 WebPageProxy* UIGamepadProvider::platformWebPageProxyForGamepadInput()
 {
     GUniquePtr<GList> toplevels(gtk_window_list_toplevels());
+
+    // Work around for WebKitTestRunner.
+    // If there's only one toplevel window available, try to get WebPageProxy from that window.
+    if (g_list_length(toplevels.get()) == 1) {
+        WebPageProxy* proxy = getWebPageProxy(GTK_WIDGET(toplevels.get()->data));
+        return proxy ? proxy : nullptr;
+    }
+
     for (GList* iter = toplevels.get(); iter; iter = g_list_next(iter)) {
         if (!WebCore::widgetIsOnscreenToplevelWindow(GTK_WIDGET(iter->data)))
             continue;
