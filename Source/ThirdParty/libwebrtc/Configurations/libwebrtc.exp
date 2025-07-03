@@ -301,6 +301,7 @@ __ZN6webrtc18VideoFrameMetadata7SetSsrcEj
 __ZN6webrtc18VideoFrameMetadata8SetCsrcsENSt3__16vectorIjNS1_9allocatorIjEEEE
 __ZN6webrtc18VideoFrameMetadata8SetWidthEt
 __ZN6webrtc18VideoFrameMetadata9SetHeightEt
+<<<<<<< HEAD
 __ZN6webrtc10LogMessage14AddLogToStreamEPNS_7LogSinkENS_15LoggingSeverityE
 __ZN6webrtc10LogMessage17RemoveLogToStreamEPNS_7LogSinkE
 __ZN6webrtc12SSLCertChainD1Ev
@@ -404,3 +405,21 @@ __ZTVN6webrtc14NetworkManagerE
 __ZTVN6webrtc17AsyncPacketSocketE
 __ZTVN6webrtc18NetworkManagerBaseE
 __ZNK6webrtc9IPAddressneERKS0_
+||||||| parent of 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)
+__ZN3rtc22GetAdapterTypeFromNameENSt3__117basic_string_viewIcNS0_11char_traitsIcEEEE
+=======
+__ZN3rtc22GetAdapterTypeFromNameENSt3__117basic_string_viewIcNS0_11char_traitsIcEEEE
+__ZN8mkvmuxer11SegmentInfo4InitEv
+__ZN8mkvmuxer9MkvWriterC1EP7__sFILE
+_ARGBToI420
+_vpx_codec_destroy
+_vpx_codec_enc_config_default
+_vpx_codec_enc_init_ver
+_vpx_codec_encode
+_vpx_codec_err_to_string
+_vpx_codec_error
+_vpx_codec_get_cx_data
+_vpx_codec_iface_name
+_vpx_codec_version_str
+_vpx_codec_vp8_cx
+>>>>>>> 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)

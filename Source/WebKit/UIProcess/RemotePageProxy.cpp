@@ -57,6 +57,7 @@
 
 #if ENABLE(VIDEO_PRESENTATION_MODE)
 #include "RemotePageVideoPresentationManagerProxy.h"
+#include "VideoPresentationManagerProxy.h"
 #endif
 
 namespace WebKit {
