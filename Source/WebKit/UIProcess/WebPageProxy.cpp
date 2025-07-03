@@ -1600,13 +1600,7 @@ void WebPageProxy::didAttachToRunningProcess()
 
 #if ENABLE(FULLSCREEN_API)
     ASSERT(!m_fullScreenManager);
-<<<<<<< HEAD
-    m_fullScreenManager = WebFullScreenManagerProxy::create(*this, protectedPageClient()->checkedFullScreenManagerProxyClient().get());
-||||||| parent of 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)
-    m_fullScreenManager = WebFullScreenManagerProxy::create(*this, protectedPageClient()->fullScreenManagerProxyClient());
-=======
-    m_fullScreenManager = WebFullScreenManagerProxy::create(*this, m_fullScreenManagerClientOverride ? *m_fullScreenManagerClientOverride : protectedPageClient()->fullScreenManagerProxyClient());
->>>>>>> 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)
+    m_fullScreenManager = WebFullScreenManagerProxy::create(*this, m_fullScreenManagerClientOverride ? *m_fullScreenManagerClientOverride : protectedPageClient()->checkedFullScreenManagerProxyClient().get());
 #endif
 #if ENABLE(VIDEO_PRESENTATION_MODE)
     ASSERT(!m_playbackSessionManager);
@@ -4234,35 +4228,16 @@ void WebPageProxy::processNextQueuedMouseEvent()
         std::optional<Vector<SandboxExtension::Handle>> sandboxExtensions;
 
 #if PLATFORM(MAC)
-<<<<<<< HEAD
-    bool eventMayStartDrag = !m_currentDragOperation && eventType == WebEventType::MouseMove && event->button() != WebMouseEventButton::None;
-    if (eventMayStartDrag)
-        sandboxExtensions = SandboxExtension::createHandlesForMachLookup({ "com.apple.iconservices"_s, "com.apple.iconservices.store"_s }, process->auditToken(), SandboxExtension::MachBootstrapOptions::EnableMachBootstrap);
-||||||| parent of 9f4633df2243 (chore(webkit): bootstrap build #2189)
-    bool eventMayStartDrag = !m_currentDragOperation && eventType == WebEventType::MouseMove && event.button() != WebMouseEventButton::None;
-    if (eventMayStartDrag)
-        sandboxExtensions = SandboxExtension::createHandlesForMachLookup({ "com.apple.iconservices"_s, "com.apple.iconservices.store"_s }, process->auditToken(), SandboxExtension::MachBootstrapOptions::EnableMachBootstrap);
-=======
-        bool eventMayStartDrag = !m_currentDragOperation && eventType == WebEventType::MouseMove && event.button() != WebMouseEventButton::None;
+        bool eventMayStartDrag = !m_currentDragOperation && eventType == WebEventType::MouseMove && event->button() != WebMouseEventButton::None;
         if (eventMayStartDrag)
             sandboxExtensions = SandboxExtension::createHandlesForMachLookup({ "com.apple.iconservices"_s, "com.apple.iconservices.store"_s }, process->auditToken(), SandboxExtension::MachBootstrapOptions::EnableMachBootstrap);
->>>>>>> 9f4633df2243 (chore(webkit): bootstrap build #2189)
 #endif
 
         auto eventWithCoalescedEvents = event;
 
-<<<<<<< HEAD
-    if (event->type() == WebEventType::MouseMove) {
-        internals().coalescedMouseEvents.append(event);
-        eventWithCoalescedEvents->setCoalescedEvents(internals().coalescedMouseEvents);
-||||||| parent of 9f4633df2243 (chore(webkit): bootstrap build #2189)
-    if (event.type() == WebEventType::MouseMove) {
-        internals().coalescedMouseEvents.append(event);
-        eventWithCoalescedEvents.setCoalescedEvents(internals().coalescedMouseEvents);
-=======
-        if (event.type() == WebEventType::MouseMove) {
+        if (event->type() == WebEventType::MouseMove) {
             internals().coalescedMouseEvents.append(event);
-            eventWithCoalescedEvents.setCoalescedEvents(internals().coalescedMouseEvents);
+            eventWithCoalescedEvents->setCoalescedEvents(internals().coalescedMouseEvents);
         }
 
         LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
@@ -4288,7 +4263,6 @@ void WebPageProxy::processNextQueuedMouseEvent()
             dragEnded(event.position(), event.globalPosition(), m_dragSourceOperationMask);
         }
         didReceiveEventIPC(process->connection(), eventType, true, std::nullopt);
->>>>>>> 9f4633df2243 (chore(webkit): bootstrap build #2189)
     }
 }
 

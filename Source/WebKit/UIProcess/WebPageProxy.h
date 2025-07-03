@@ -759,15 +759,9 @@ public:
     bool isControlledByAutomation() const { return m_controlledByAutomation; }
     void setControlledByAutomation(bool);
 
-<<<<<<< HEAD
     WebPageInspectorController& inspectorController() { return m_inspectorController.get(); }
-||||||| parent of 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)
-    WebPageInspectorController& inspectorController() { return *m_inspectorController; }
-=======
-    WebPageInspectorController& inspectorController() { return *m_inspectorController; }
     InspectorDialogAgent* inspectorDialogAgent() { return m_inspectorDialogAgent; }
     void setInspectorDialogAgent(InspectorDialogAgent * dialogAgent) { m_inspectorDialogAgent = dialogAgent; }
->>>>>>> 4e2c5e23d8d3 (chore(webkit): bootstrap build #2189)
 
 #if PLATFORM(IOS_FAMILY)
     void showInspectorIndication();
