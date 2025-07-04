@@ -1493,7 +1493,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorPageAgent::setScreenSizeOverri
 Protocol::ErrorStringOr<void> InspectorPageAgent::insertText(const String& text)
 {
     UserGestureIndicator indicator { IsProcessingUserGesture::Yes };
-    RefPtr frame = m_inspectedPage->checkedFocusController()->focusedOrMainFrame();
+    RefPtr frame = m_inspectedPage->focusController().focusedOrMainFrame();
     if (!frame)
         return { };
 
