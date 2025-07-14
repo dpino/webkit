@@ -38,11 +38,17 @@ public:
     WEBCORE_EXPORT HTMLTextFormControlElement& textFormControlElement() const;
     WEBCORE_EXPORT Ref<HTMLTextFormControlElement> protectedTextFormControlElement() const;
 
-#if PLATFORM(IOS_FAMILY)
     bool canScroll() const;
+<<<<<<< HEAD
 
     // Returns the line height of the inner renderer.
     int innerLineHeight() const override;
+||||||| parent of e08f10d530e2 (chore(webkit): bootstrap build #2193)
+    WEBCORE_EXPORT int innerLineHeight() const;
+=======
+#if PLATFORM(IOS_FAMILY)
+    WEBCORE_EXPORT int innerLineHeight() const;
+>>>>>>> e08f10d530e2 (chore(webkit): bootstrap build #2193)
 #endif
 
 protected:
