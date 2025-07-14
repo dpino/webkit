@@ -35,6 +35,7 @@
 #import "WebPopupItem.h"
 #import <pal/spi/mac/NSCellSPI.h>
 #import <pal/system/mac/PopupMenu.h>
+#import <wtf/cocoa/TypeCastsCocoa.h>
 #import <wtf/BlockObjCExceptions.h>
 #import <wtf/ProcessPrivilege.h>
 
