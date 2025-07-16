@@ -101,6 +101,12 @@ std::unique_ptr<MemoryMappedGPUBuffer> MemoryMappedGPUBuffer::create(const IntSi
     };
 
     auto bufferFormat = negotiateBufferFormat();
+
+    if (flags.contains(BufferFlag::ForceLinear) && (!bufferFormat.has_value() || !bufferFormat->modifiers.contains(DRM_FORMAT_MOD_LINEAR))) {
+        LOG_ERROR("ForceLinear flag set but DRM_FORMAT_MOD_LINEAR not supported by the negotiated buffer format");
+        CRASH();
+    }
+
     if (!bufferFormat.has_value()) {
         LOG_ERROR("MemoryMappedGPUBuffer::create(), failed to negotiate buffer format");
         return nullptr;
