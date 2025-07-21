@@ -189,7 +189,7 @@ void RemoteInspectorPipe::workerRun()
     while (!m_terminated) {
         size_t size = ReadBytes(buffer.get(), bufSize, false);
         if (!size) {
-            RunLoop::main().dispatch([this] {
+            RunLoop::mainSingleton().dispatch([this] {
                 if (!m_terminated)
                     m_playwrightAgent.disconnectFrontend();
             });
@@ -208,7 +208,7 @@ void RemoteInspectorPipe::workerRun()
 
             if (end > start) {
                 String message = String::fromUTF8({ line.mutableSpan().data() + start, end - start });
-                RunLoop::main().dispatch([this, message = WTFMove(message)] {
+                RunLoop::mainSingleton().dispatch([this, message = WTFMove(message)] {
                     if (!m_terminated)
                         m_playwrightAgent.dispatchMessageFromFrontend(message);
                 });

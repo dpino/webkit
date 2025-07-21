@@ -254,7 +254,7 @@ void InspectorScreencastAgent::scheduleFrameEncoding()
     if (!m_encoder && !m_screencast)
         return;
 
-    RunLoop::main().dispatchAfter(Seconds(1.0 / ScreencastEncoder::fps), [agent = WeakPtr { this }]() mutable {
+    RunLoop::mainSingleton().dispatchAfter(Seconds(1.0 / ScreencastEncoder::fps), [agent = WeakPtr { this }]() mutable {
         if (!agent)
             return;
         if (!agent->m_page.hasPageClient())

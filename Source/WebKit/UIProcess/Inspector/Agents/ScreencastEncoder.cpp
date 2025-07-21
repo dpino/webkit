@@ -386,7 +386,7 @@ void ScreencastEncoder::finish(Function<void()>&& callback)
 
     flushLastFrame();
     m_vpxCodec->finishAsync([protectRef = Ref { *this }, callback = WTFMove(callback)] () mutable {
-        RunLoop::main().dispatch([callback = WTFMove(callback)] {
+        RunLoop::mainSingleton().dispatch([callback = WTFMove(callback)] {
             callback();
         });
     });
