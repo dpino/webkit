@@ -33,7 +33,7 @@ OBJC_PROTOCOL(_WKBrowserInspectorDelegate);
 namespace WebKit {
 
 class InspectorPlaywrightAgentClientMac : public InspectorPlaywrightAgentClient {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgentClientMac);
 public:
     InspectorPlaywrightAgentClientMac(_WKBrowserInspectorDelegate* delegate, bool headless);
     ~InspectorPlaywrightAgentClientMac() override = default;

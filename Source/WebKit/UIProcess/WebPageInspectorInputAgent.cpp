@@ -47,7 +47,7 @@ namespace {
 
 template<class T>
 class CallbackList {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(CallbackList);
 public:
     ~CallbackList()
     {

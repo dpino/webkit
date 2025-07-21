@@ -78,7 +78,7 @@ using namespace Inspector;
 namespace WebKit {
 
 class InspectorPlaywrightAgent::PageProxyChannel : public FrontendChannel {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgent);
 public:
     PageProxyChannel(FrontendChannel& frontendChannel, String browserContextID, String pageProxyID, WebPageProxy& page)
         : m_browserContextID(browserContextID)
@@ -279,7 +279,7 @@ BrowserContext::~BrowserContext() = default;
 
 class InspectorPlaywrightAgent::BrowserContextDeletion {
     WTF_MAKE_NONCOPYABLE(BrowserContextDeletion);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgent::BrowserContextDeletion);
 public:
     BrowserContextDeletion(std::unique_ptr<BrowserContext>&& context, size_t numberOfPages, Ref<DeleteContextCallback>&& callback)
         : m_browserContext(WTFMove(context))

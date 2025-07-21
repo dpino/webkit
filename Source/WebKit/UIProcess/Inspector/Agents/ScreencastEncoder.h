@@ -42,7 +42,7 @@ class WebPageProxy;
 
 class ScreencastEncoder : public ThreadSafeRefCounted<ScreencastEncoder> {
     WTF_MAKE_NONCOPYABLE(ScreencastEncoder);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(ScreencastEncoder);
 public:
     static constexpr int fps = 25;
 

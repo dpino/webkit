@@ -41,7 +41,7 @@ class InspectorPlaywrightAgent;
 
 class RemoteInspectorPipe {
     WTF_MAKE_NONCOPYABLE(RemoteInspectorPipe);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(RemoteInspectorPipe);
 public:
     explicit RemoteInspectorPipe(InspectorPlaywrightAgent&);
     ~RemoteInspectorPipe();

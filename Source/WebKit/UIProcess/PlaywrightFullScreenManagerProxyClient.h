@@ -34,7 +34,7 @@ namespace WebKit {
 class WebPageProxy;
 
 class PlaywrightFullScreenManagerProxyClient : public WebFullScreenManagerProxyClient {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(PlaywrightFullScreenManagerProxyClient);
 public:
     PlaywrightFullScreenManagerProxyClient(WebPageProxy&);
     ~PlaywrightFullScreenManagerProxyClient() override = default;

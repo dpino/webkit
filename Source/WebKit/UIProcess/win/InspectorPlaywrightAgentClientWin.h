@@ -39,7 +39,7 @@ typedef void (*QuitCallback)();
 namespace WebKit {
 
 class InspectorPlaywrightAgentClientWin : public InspectorPlaywrightAgentClient {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgentClientWin);
 public:
     InspectorPlaywrightAgentClientWin(ConfigureDataStoreCallback, CreatePageCallback, QuitCallback);
     ~InspectorPlaywrightAgentClientWin() override = default;

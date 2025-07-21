@@ -112,8 +112,7 @@ void WriteBytes(const char* bytes, size_t size)
 }  // namespace
 
 class RemoteInspectorPipe::RemoteFrontendChannel : public Inspector::FrontendChannel {
-    WTF_MAKE_FAST_ALLOCATED;
-
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(RemoteInspectorPipe::RemoteFrontendChannel);
 public:
     RemoteFrontendChannel()
         : m_senderQueue(WorkQueue::create("Inspector pipe writer"_s))

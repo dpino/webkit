@@ -66,7 +66,7 @@ class InspectorPlaywrightAgent final
     , public Inspector::PlaywrightBackendDispatcherHandler
     , public DownloadInstrumentation {
     WTF_MAKE_NONCOPYABLE(InspectorPlaywrightAgent);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgent);
 public:
     explicit InspectorPlaywrightAgent(std::unique_ptr<InspectorPlaywrightAgentClient> client);
     ~InspectorPlaywrightAgent() override;

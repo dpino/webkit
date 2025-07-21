@@ -38,7 +38,7 @@
 namespace WebKit {
 
 class InspectorPlaywrightAgentClientGlib : public InspectorPlaywrightAgentClient {
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgentClientGlib);
 public:
     InspectorPlaywrightAgentClientGlib(const WTF::String& proxyURI, const char* const* ignoreHosts);
     ~InspectorPlaywrightAgentClientGlib() override = default;

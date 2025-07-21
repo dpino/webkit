@@ -46,7 +46,7 @@ class WebPageProxy;
 
 class WebPageInspectorInputAgent : public Inspector::InspectorAgentBase, public Inspector::InputBackendDispatcherHandler {
     WTF_MAKE_NONCOPYABLE(WebPageInspectorInputAgent);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(WebPageInspectorInputAgent);
 public:
     WebPageInspectorInputAgent(Inspector::BackendDispatcher& backendDispatcher, WebPageProxy& page);
     ~WebPageInspectorInputAgent() override;

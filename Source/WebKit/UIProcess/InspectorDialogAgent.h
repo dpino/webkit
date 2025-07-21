@@ -46,7 +46,7 @@ class WebPageProxy;
 
 class InspectorDialogAgent : public Inspector::InspectorAgentBase, public Inspector::DialogBackendDispatcherHandler {
     WTF_MAKE_NONCOPYABLE(InspectorDialogAgent);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorDialogAgent);
 public:
     InspectorDialogAgent(Inspector::BackendDispatcher& backendDispatcher, Inspector::FrontendRouter& frontendRouter, WebPageProxy& page);
     ~InspectorDialogAgent() override;

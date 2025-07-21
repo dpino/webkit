@@ -132,7 +132,7 @@ void createImage(unsigned int width, unsigned int height,
 
 class ScreencastEncoder::VPXFrame {
     WTF_MAKE_NONCOPYABLE(VPXFrame);
-    WTF_MAKE_FAST_ALLOCATED;
+    WTF_DEPRECATED_MAKE_FAST_ALLOCATED(ScreencastEncoder::VPXFrame);
 public:
 #if USE(SKIA)
     explicit VPXFrame(sk_sp<SkImage>&& surface)
