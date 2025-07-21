@@ -33,7 +33,12 @@
 #import "WKWebView.h"
 #import "WebPageProxy.h"
 #import "WebViewImpl.h"
+<<<<<<< HEAD
 #import <WebCore/NativeImage.h>
+||||||| parent of 244550f4456f (chore(webkit): bootstrap build #2195)
+=======
+#import <WebKit/WKWebView.h>
+>>>>>>> 244550f4456f (chore(webkit): bootstrap build #2195)
 #import <WebCore/TextAnimationTypes.h>
 #import <pal/cocoa/WritingToolsUISoftLink.h>
 
