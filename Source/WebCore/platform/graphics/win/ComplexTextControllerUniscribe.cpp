@@ -168,11 +168,6 @@ static Vector<unsigned> stringIndicesFromClusters(const Vector<WORD>& clusters, 
     return stringIndices;
 }
 
-<<<<<<< HEAD
-void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const char16_t> cp, unsigned stringLocation, const Font* font)
-||||||| parent of 244550f4456f (chore(webkit): bootstrap build #2195)
-void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const UChar> cp, unsigned stringLocation, const Font* font)
-=======
 static int compactScriptItemsIfNeeded(std::span<const UChar> cp, Vector<SCRIPT_ITEM>& items, int numItems, const Font* font)
 {
     // https://bugs.webkit.org/show_bug.cgi?id=201214
@@ -200,8 +195,7 @@ static int compactScriptItemsIfNeeded(std::span<const UChar> cp, Vector<SCRIPT_I
     return 1;
 }
 
-void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const UChar> cp, unsigned stringLocation, const Font* font)
->>>>>>> 244550f4456f (chore(webkit): bootstrap build #2195)
+void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const char16_t> cp, unsigned stringLocation, const Font* font)
 {
     if (!font) {
         // Create a run of missing glyphs from the primary font.

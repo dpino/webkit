@@ -206,12 +206,8 @@
 #include <WebCore/BitmapImage.h>
 #include <WebCore/CaptureDeviceManager.h>
 #include <WebCore/CaptureDeviceWithCapabilities.h>
-<<<<<<< HEAD
 #include <WebCore/ChromeClient.h>
-||||||| parent of 244550f4456f (chore(webkit): bootstrap build #2195)
-=======
 #include <WebCore/Color.h>
->>>>>>> 244550f4456f (chore(webkit): bootstrap build #2195)
 #include <WebCore/CompositionHighlight.h>
 #include <WebCore/CrossSiteNavigationDataTransfer.h>
 #include <WebCore/CryptoKey.h>
