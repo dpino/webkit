@@ -161,7 +161,7 @@ static void wpe_screen_wayland_class_init(WPEScreenWaylandClass* screenWaylandCl
 
     WPEScreenClass* screenClass = WPE_SCREEN_CLASS(screenWaylandClass);
     screenClass->invalidate = wpeScreenWaylandInvalidate;
-#if USE(LIBDRM)
+#if USE(LIBDRM) && 0
     screenClass->get_sync_observer = wpeScreenWaylandGetSyncObserver;
 #endif
 }
