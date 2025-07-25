@@ -58,7 +58,7 @@ public:
     void setAltText(const String& altText) { m_altText = altText; }
     
 private:
-    void setTextInternal(const String&, bool force) override;
+    void setTextInternal(const String&, bool force, bool) override;
     Node* nodeForHitTest() const override;
     char32_t previousCharacter() const override;
 
