@@ -90,6 +90,7 @@ public:
     bool insertedIntoTree(const RenderElement& parent, RenderObject& child);
     bool removedFromTree(const RenderElement& parent, RenderObject& child);
     bool updateTextContent(const RenderText&, std::optional<size_t> offset, size_t oldLength);
+    bool propagateInplaceTextContentChange(const RenderText&);
     bool rootStyleWillChange(const RenderBlockFlow&, const Style::ComputedStyle& newStyle);
     bool styleWillChange(const RenderElement&, const Style::ComputedStyle& newStyle, Style::Difference);
     bool boxContentWillChange(const RenderBox&);
@@ -158,6 +159,8 @@ public:
     FloatRect applySVGTextFragments(SVGTextFragmentMap&&);
 
     bool NODELETE hasBlocks() const;
+
+    bool preventsSkippingLayout() const;
 
 private:
     void preparePlacedFloats();
