@@ -5812,7 +5812,6 @@ PitchCorrectionAlgorithm:
     WebCore:
       default: MediaPlayerEnums::PitchCorrectionAlgorithm::BestAllAround
 
-<<<<<<< HEAD
 PointerLockEnabled:
   type: bool
   status: internal
@@ -5830,22 +5829,6 @@ PointerLockEnabled:
     WebCore:
       default: false
 
-||||||| parent of d7bdff6e8da7 (chore(webkit): bootstrap build #2198)
-=======
-# Playwright: add preference 'PointerLockEnabled'.
-PointerLockEnabled:
-  type: bool
-  status: embedder
-  condition: ENABLE(POINTER_LOCK)
-  defaultValue:
-    WebKitLegacy:
-      default: true
-    WebKit:
-      default: true
-    WebCore:
-      default: true
-
->>>>>>> d7bdff6e8da7 (chore(webkit): bootstrap build #2198)
 PointerLockOptionsEnabled:
   type: bool
   status: stable
