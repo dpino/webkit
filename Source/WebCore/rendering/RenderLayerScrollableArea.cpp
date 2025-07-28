@@ -994,6 +994,21 @@ int RenderLayerScrollableArea::verticalScrollbarWidth(OverlayScrollbarSizeReleva
     return vBar->width();
 }
 
+int RenderLayerScrollableArea::scrollbarGutterWidth()
+{
+    if (!m_gutterWidth) {
+        // Create a temporary scrollbar to determine the gutter width.
+        // This is necessary because the gutter width can depend on the scrollbar style.
+         if (RefPtr tempBar = createScrollbar(ScrollbarOrientation::Vertical)) {
+            m_gutterWidth = tempBar->width();
+            tempBar->theme().unregisterScrollbar(*tempBar);
+            willRemoveScrollbar(*tempBar, ScrollbarOrientation::Vertical);
+            tempBar = nullptr;
+        }
+    }
+    return (m_gutterWidth ? m_gutterWidth : ScrollbarTheme::theme().scrollbarThickness(scrollbarWidthStyle()));
+}
+
 int RenderLayerScrollableArea::horizontalScrollbarHeight(OverlayScrollbarSizeRelevancy relevancy, bool isHorizontalWritingMode) const
 {
     RefPtr hBar = m_hBar;
