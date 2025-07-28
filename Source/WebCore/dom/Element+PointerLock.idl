@@ -24,15 +24,8 @@
  */
 
 [
-<<<<<<< HEAD
     Conditional=POINTER_LOCK,
     EnabledBySetting=PointerLockEnabled
-||||||| parent of decfc76ff779 (chore(webkit): bootstrap build #2198)
-    Conditional=POINTER_LOCK
-=======
-    EnabledBySetting=PointerLockEnabled,
-    Conditional=POINTER_LOCK
->>>>>>> decfc76ff779 (chore(webkit): bootstrap build #2198)
 ] partial interface Element {
     // Returns Promise<undefined> if PointerLockOptionsEnabled Runtime Flag is set, otherwise returns undefined.
     [CallWith=CurrentGlobalObject] any requestPointerLock(optional PointerLockOptions options = {});
