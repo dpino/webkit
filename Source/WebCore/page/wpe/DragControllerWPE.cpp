@@ -33,6 +33,8 @@
 #include "Element.h"
 #include "Frame.h"
 #include "FrameDestructionObserverInlines.h"
+#include "LocalFrameInlines.h"
+#include "NodeInlines.h"
 #include "Pasteboard.h"
 #include "markup.h"
 
