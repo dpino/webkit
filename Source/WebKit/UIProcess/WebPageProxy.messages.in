@@ -334,13 +334,7 @@ messages -> WebPageProxy {
     StartDrag(struct WebCore::DragItem dragItem, WebCore::ShareableBitmapHandle dragImage, std::optional<WebCore::NodeIdentifier> nodeID)
     SetPromisedDataForImage(String pasteboardName, WebCore::SharedMemory::Handle imageHandle, String filename, String extension, String title, String url, String visibleURL, WebCore::SharedMemory::Handle archiveHandle, String originIdentifier)
 #endif
-<<<<<<< HEAD
 #if PLATFORM(GTK) || PLATFORM(WPE) && ENABLE(DRAG_SUPPORT)
-||||||| parent of 6685731cc01c (chore(webkit): bootstrap build #2199)
-#if PLATFORM(GTK) && ENABLE(DRAG_SUPPORT)
-=======
-#if (PLATFORM(GTK) || PLATFORM(WPE)) && ENABLE(DRAG_SUPPORT)
->>>>>>> 6685731cc01c (chore(webkit): bootstrap build #2199)
     StartDrag(WebCore::SelectionData selectionData, OptionSet<WebCore::DragOperation> dragOperationMask, std::optional<WebCore::ShareableBitmapHandle> dragImage, WebCore::IntPoint dragImageHotspot)
 #endif
 
