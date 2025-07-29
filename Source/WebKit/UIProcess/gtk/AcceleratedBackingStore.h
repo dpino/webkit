@@ -241,6 +241,7 @@ private:
 
         RefPtr<WebCore::ShareableBitmap> m_bitmap;
         RefPtr<cairo_surface_t> m_surface;
+        virtual cairo_surface_t* surface();
     };
 
     WeakPtr<WebPageProxy> m_webPage;
@@ -253,6 +254,9 @@ private:
     RefPtr<Buffer> m_committedBuffer;
     Rects m_pendingDamageRects;
     HashMap<uint64_t, RefPtr<Buffer>> m_buffers;
+// Playwright begin
+    RefPtr<cairo_surface_t> m_flippedSurface;
+// Playwright end
 };
 
 } // namespace WebKit
