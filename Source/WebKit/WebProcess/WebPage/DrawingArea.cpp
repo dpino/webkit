@@ -72,7 +72,7 @@ RefPtr<DrawingArea> DrawingArea::create(WebPage& webPage, const WebPageCreationP
 #elif PLATFORM(IOS_FAMILY)
     return RemoteLayerTreeDrawingArea::create(webPage, parameters);
 #elif USE(GRAPHICS_LAYER_WC)
-    return DrawingAreaWC::create(webPage, parameters);
+    return DrawingAreaCoordinatedGraphics::create(webPage, parameters);
 #elif USE(COORDINATED_GRAPHICS) || USE(TEXTURE_MAPPER)
     return DrawingAreaCoordinatedGraphics::create(webPage, parameters);
 #endif
@@ -153,7 +153,7 @@ bool DrawingArea::supportsGPUProcessRendering()
 #if PLATFORM(COCOA)
     return true;
 #elif USE(GRAPHICS_LAYER_WC)
-    return true;
+    return false;
 #elif USE(COORDINATED_GRAPHICS) || USE(TEXTURE_MAPPER)
     return false;
 #endif
