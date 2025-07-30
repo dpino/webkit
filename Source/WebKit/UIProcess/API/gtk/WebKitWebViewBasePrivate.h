@@ -145,12 +145,6 @@ void webkitWebViewBaseCallAfterNextPresentationUpdate(WebKitWebViewBase*, Comple
 void webkitWebViewBaseSetPlugID(WebKitWebViewBase*, const String&);
 #endif
 
-<<<<<<< HEAD
 WebKit::RendererBufferDescription webkitWebViewBaseGetRendererBufferDescription(WebKitWebViewBase*);
-||||||| parent of 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
-WebKit::RendererBufferFormat webkitWebViewBaseGetRendererBufferFormat(WebKitWebViewBase*);
-=======
-WebKit::RendererBufferFormat webkitWebViewBaseGetRendererBufferFormat(WebKitWebViewBase*);
 
 WebKit::AcceleratedBackingStore* webkitWebViewBaseGetAcceleratedBackingStore(WebKitWebViewBase*);
->>>>>>> 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
