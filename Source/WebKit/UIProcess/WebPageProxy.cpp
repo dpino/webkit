@@ -351,20 +351,7 @@
 #include "ViewSnapshotStore.h"
 #endif
 
-#if PLATFORM(GTK)
-<<<<<<< HEAD
-||||||| parent of a53fd2552a8e (chore(webkit): bootstrap build #2199)
-#if USE(GBM)
-#include "AcceleratedBackingStoreDMABuf.h"
-#endif
-=======
-#if USE(GBM)
-#include "AcceleratedBackingStoreDMABuf.h"
-#endif
-#endif
-
 #if PLATFORM(GTK) || PLATFORM(WPE)
->>>>>>> a53fd2552a8e (chore(webkit): bootstrap build #2199)
 #include <WebCore/SelectionData.h>
 #endif
 
