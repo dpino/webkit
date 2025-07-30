@@ -40,7 +40,14 @@
 #include <wtf/glib/GRefPtr.h>
 #include <wtf/unix/UnixFileDescriptor.h>
 
+<<<<<<< HEAD
 typedef void *EGLImage;
+||||||| parent of 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
+typedef struct _cairo cairo_t;
+=======
+typedef struct _cairo cairo_t;
+typedef struct _cairo_surface cairo_surface_t;
+>>>>>>> 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
 
 #if USE(GBM)
 struct gbm_bo;
@@ -68,8 +75,24 @@ public:
 #if USE(GBM)
     static Vector<RendererBufferFormat> preferredBufferFormats();
 #endif
+<<<<<<< HEAD
     static RefPtr<AcceleratedBackingStore> create(WebPageProxy&);
     ~AcceleratedBackingStore();
+||||||| parent of 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
+    virtual void realize() { };
+    virtual void unrealize() { };
+    virtual int renderHostFileDescriptor() { return -1; }
+    virtual RendererBufferFormat bufferFormat() const { return { }; }
+    virtual RefPtr<WebCore::NativeImage> bufferAsNativeImageForTesting() const = 0;
+=======
+    virtual cairo_surface_t* surface() { return nullptr; }
+
+    virtual void realize() { };
+    virtual void unrealize() { };
+    virtual int renderHostFileDescriptor() { return -1; }
+    virtual RendererBufferFormat bufferFormat() const { return { }; }
+    virtual RefPtr<WebCore::NativeImage> bufferAsNativeImageForTesting() const = 0;
+>>>>>>> 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
 
     void ref() const final { RefCounted::ref(); }
     void deref() const final { RefCounted::deref(); }

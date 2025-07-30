@@ -25,8 +25,15 @@
 
 // https://w3c.github.io/pointerlock/#extensions-to-the-document-interface
 [
+<<<<<<< HEAD
     Conditional=POINTER_LOCK,
     EnabledBySetting=PointerLockEnabled
+||||||| parent of 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
+    Conditional=POINTER_LOCK
+=======
+    EnabledBySetting=PointerLockEnabled,
+    Conditional=POINTER_LOCK
+>>>>>>> 8ea69485bbb1 (chore(webkit): bootstrap build #2198)
 ] partial interface Document {
     attribute EventHandler onpointerlockchange;
     attribute EventHandler onpointerlockerror;
