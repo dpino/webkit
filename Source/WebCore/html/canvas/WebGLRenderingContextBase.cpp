@@ -5654,20 +5654,16 @@ void WebGLRenderingContextBase::updateActiveOrdinal()
     m_activeOrdinal = s_lastActiveOrdinal++;
 }
 
-<<<<<<< HEAD
 bool WebGLRenderingContextBase::isOpaque() const
 {
     return !m_attributes.alpha;
 }
 
-||||||| parent of 120946309df2 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
-=======
 void WebGLRenderingContextBase::clearAccumulatedDirtyRect()
 {
     m_dirtyRect = (m_scissorEnabled && m_latestScissor) ? m_latestScissor : std::nullopt;
 }
 
->>>>>>> 120946309df2 (Improve the preserveDrawingBuffer: true performance using damage Need the bug URL (OOPS!).)
 WebCoreOpaqueRoot root(WebGLRenderingContextBase* context)
 {
     return WebCoreOpaqueRoot { context };
