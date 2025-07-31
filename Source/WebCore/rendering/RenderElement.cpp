@@ -1180,13 +1180,7 @@ inline void RenderElement::clearSubtreeLayoutRootIfNeeded() const
     // This indicates a failure to layout the child, which is why
     // the layout root is still set to |this|. Make sure to clear it
     // since we are getting destroyed.
-<<<<<<< HEAD
-    view().frameView().layoutContext().clearSubtreeLayoutRoot();
-||||||| parent of 1a072e2add89 (Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    view().protectedFrameView()->layoutContext().clearSubtreeLayoutRoot();
-=======
-    view().protectedFrameView()->layoutContext().removeSubtreeLayoutRoot(*this);
->>>>>>> 1a072e2add89 (Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
+    view().frameView().layoutContext().removeSubtreeLayoutRoot(*this);
 }
 
 void RenderElement::willBeDestroyed()
