@@ -282,16 +282,10 @@ bool LocalFrameViewLayoutContext::performLayout(bool canDeferUpdateLayerPosition
 #if ENABLE(TEXT_AUTOSIZING)
         applyTextSizingIfNeeded(*layoutRoot.get());
 #endif
-<<<<<<< HEAD
         layoutRoot->absoluteQuads(layoutAreas);
 
-        clearSubtreeLayoutRoot();
-||||||| parent of 7e8f03805477 (Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-        clearSubtreeLayoutRoot();
-=======
         if (subtreeLayoutRoot)
             removeSubtreeLayoutRoot(*subtreeLayoutRoot);
->>>>>>> 7e8f03805477 (Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
         ASSERT(m_percentHeightIgnoreList.isEmptyIgnoringNullReferences());
 
 #if !LOG_DISABLED && ENABLE(TREE_DEBUGGING)
