@@ -53,7 +53,13 @@ OptionSet<DragSourceAction> WebDragClient::dragSourceActionMaskForPoint(const In
     return protectedPage()->allowedDragSourceActions();
 }
 
+<<<<<<< HEAD
 #if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WPE)
+||||||| parent of d6655857f22b (chore(webkit): bootstrap build #2199)
+#if !PLATFORM(COCOA) && !PLATFORM(GTK)
+=======
+#if !PLATFORM(COCOA) && !PLATFORM(GTK) && !PLATFORM(WPE) && !PLATFORM(WIN)
+>>>>>>> d6655857f22b (chore(webkit): bootstrap build #2199)
 void WebDragClient::startDrag(DragItem, DataTransfer&, Frame&, const std::optional<NodeIdentifier>&)
 {
 }
