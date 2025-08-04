@@ -198,23 +198,6 @@ public:
 #endif
 #endif
 
-<<<<<<< HEAD
-||||||| parent of aeb2458e05fd (chore(webkit): bootstrap build #2198)
-#if PLATFORM(WPE)
-    explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, const String& name);
-#endif
-
-=======
-#if PLATFORM(WPE)
-    explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, const String& name);
-#endif
-
-#if PLATFORM(WPE) && ENABLE(DRAG_SUPPORT)
-    explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, SelectionData&);
-    explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, SelectionData&&);
-#endif
-
->>>>>>> aeb2458e05fd (chore(webkit): bootstrap build #2198)
 #if PLATFORM(WIN)
     explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, IDataObject*);
     explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, WCDataObject*);

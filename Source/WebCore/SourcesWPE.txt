@@ -48,14 +48,8 @@ editing/glib/WebContentReaderGLib.cpp
 
 loader/soup/ResourceLoaderSoup.cpp
 
-<<<<<<< HEAD
 page/glib/DragControllerGLib.cpp
 
-||||||| parent of aeb2458e05fd (chore(webkit): bootstrap build #2198)
-=======
-page/wpe/DragControllerWPE.cpp
-
->>>>>>> aeb2458e05fd (chore(webkit): bootstrap build #2198)
 page/linux/ResourceUsageOverlayLinux.cpp
 page/linux/ResourceUsageThreadLinux.cpp
 
