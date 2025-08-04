@@ -266,12 +266,6 @@ public:
     static std::unique_ptr<Pasteboard> createForGlobalSelection(std::unique_ptr<PasteboardContext>&&);
 #endif
 
-#if PLATFORM(WPE)
-    const SelectionData& selectionData() const {
-        return *m_selectionData;
-    }
-#endif
-
 #if PLATFORM(IOS_FAMILY)
     explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, int64_t changeCount);
     explicit Pasteboard(std::unique_ptr<PasteboardContext>&&, const String& pasteboardName);
@@ -371,10 +365,6 @@ private:
 #if PLATFORM(GTK) || PLATFORM(WPE)
     String m_name;
     int64_t m_changeCount { 0 };
-#endif
-
-#if PLATFORM(WPE)
-    std::optional<SelectionData> m_selectionData;
 #endif
 
 #if PLATFORM(COCOA)
