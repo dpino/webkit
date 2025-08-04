@@ -3963,16 +3963,6 @@ void WebPageProxy::didPerformDragControllerAction(std::optional<WebCore::DragOpe
 #if PLATFORM(GTK) || PLATFORM(WPE)
 void WebPageProxy::startDrag(SelectionData&& selectionData, OptionSet<WebCore::DragOperation> dragOperationMask, std::optional<ShareableBitmap::Handle>&& dragImageHandle, IntPoint&& dragImageHotspot)
 {
-<<<<<<< HEAD
-#if PLATFORM(GTK)
-    if (RefPtr pageClient = this->pageClient()) {
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-        pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
-||||||| parent of d6655857f22b (chore(webkit): bootstrap build #2199)
-    if (RefPtr pageClient = this->pageClient()) {
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-        pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
-=======
     if (m_interceptDrags) {
         m_dragSelectionData = WTFMove(selectionData);
         m_dragSourceOperationMask = dragOperationMask;
@@ -3994,9 +3984,7 @@ void WebPageProxy::startDrag(WebCore::DragDataMap&& dragDataMap)
     if (m_interceptDrags) {
         m_dragSelectionData = WTFMove(dragDataMap);
         m_dragSourceOperationMask = WebCore::anyDragOperation();
->>>>>>> d6655857f22b (chore(webkit): bootstrap build #2199)
     }
-#endif
     didStartDrag();
 }
 #endif

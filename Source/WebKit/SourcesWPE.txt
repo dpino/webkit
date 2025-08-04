@@ -304,13 +304,8 @@ WebProcess/WebCoreSupport/glib/WebEditorClientGLib.cpp
 
 WebProcess/WebCoreSupport/soup/WebFrameNetworkingContext.cpp
 
-<<<<<<< HEAD
-WebProcess/WebCoreSupport/wpe/WebDragClientWPE.cpp
-||||||| parent of d6655857f22b (chore(webkit): bootstrap build #2199)
-=======
 WebProcess/WebCoreSupport/wpe/WebDragClientWPE.cpp
 
->>>>>>> d6655857f22b (chore(webkit): bootstrap build #2199)
 WebProcess/WebCoreSupport/wpe/WebEditorClientWPE.cpp
 
 WebProcess/WebPage/AcceleratedSurface.cpp
