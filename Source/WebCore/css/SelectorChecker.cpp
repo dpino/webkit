@@ -159,6 +159,14 @@ static inline bool NODELETE isLastOfType(const Element& element, const Qualified
     return true;
 }
 
+static inline int countElementsBeforeSlow(const Element& element)
+{
+    int count = 0;
+    for (const Element* sibling = ElementTraversal::previousSibling(element); sibling; sibling = ElementTraversal::previousSibling(*sibling))
+        count++;
+    return count;
+}
+
 static inline int NODELETE countElementsBefore(const Element& element)
 {
     int count = 0;
@@ -170,6 +178,7 @@ static inline int NODELETE countElementsBefore(const Element& element)
         }
         count++;
     }
+    ASSERT(count == countElementsBeforeSlow(element));
     return count;
 }
 
