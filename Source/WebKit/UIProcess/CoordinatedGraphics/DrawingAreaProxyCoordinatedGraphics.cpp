@@ -56,11 +56,6 @@
 #include <wtf/glib/RunLoopSourcePriority.h>
 #endif
 
-#if PLATFORM(WIN)
-#include <windows.h>
-#include <WebCore/HWndDC.h>
-#endif
-
 namespace WebKit {
 using namespace WebCore;
 
@@ -297,21 +292,6 @@ void DrawingAreaProxyCoordinatedGraphics::captureFrame()
     protectedPage()->inspectorController().didPaint(WTFMove(skImage));
 }
 #endif // PLATFORM(GTK)
-
-#if PLATFORM(WIN)
-void DrawingAreaProxyCoordinatedGraphics::captureFrame()
-{
-    if (!m_backingStore)
-        return;
-    auto surface = m_backingStore->surface();
-    if (!surface)
-        return;
-    auto image = surface->makeImageSnapshot();
-    if (!image)
-        return;
-    protectedPage()->inspectorController().didPaint(WTFMove(image));
-}
-#endif // PLATFORM(WIN)
 
 bool DrawingAreaProxyCoordinatedGraphics::alwaysUseCompositing() const
 {

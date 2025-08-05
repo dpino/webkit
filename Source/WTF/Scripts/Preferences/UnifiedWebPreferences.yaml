@@ -8010,7 +8010,6 @@ UseGPUProcessForMediaEnabled:
   sharedPreferenceForWebProcess: true
   mediaPlaybackRelated: true
 
-# Playwright: force-disable on Windows.
 UseGPUProcessForWebGLEnabled:
   type: bool
   status: internal
@@ -8022,7 +8021,7 @@ UseGPUProcessForWebGLEnabled:
       default: false
     WebKit:
       "ENABLE(GPU_PROCESS_BY_DEFAULT) && ENABLE(GPU_PROCESS_WEBGL_BY_DEFAULT)": true
-      "USE(GRAPHICS_LAYER_WC)": false
+      "USE(GRAPHICS_LAYER_WC)": true
       default: false
     WebCore:
       "ENABLE(GPU_PROCESS_BY_DEFAULT) && ENABLE(GPU_PROCESS_WEBGL_BY_DEFAULT)": true

@@ -55,6 +55,10 @@
 #include <WebCore/ImageBufferUtilitiesCG.h>
 #endif
 
+#if PLATFORM(WIN)
+#include "DrawingAreaProxyWC.h"
+#endif
+
 WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
 
 namespace WebKit {
@@ -310,7 +314,7 @@ void InspectorScreencastAgent::encodeFrame()
 }
 #endif
 
-#if PLATFORM(GTK) || PLATFORM(WIN)
+#if PLATFORM(GTK)
 void InspectorScreencastAgent::encodeFrame()
 {
     if (!m_encoder && !m_screencast)
@@ -318,6 +322,17 @@ void InspectorScreencastAgent::encodeFrame()
 
     if (auto* drawingArea = m_page.drawingArea())
         static_cast<DrawingAreaProxyCoordinatedGraphics*>(drawingArea)->captureFrame();
+}
+#endif
+
+#if PLATFORM(WIN)
+void InspectorScreencastAgent::encodeFrame()
+{
+    if (!m_encoder && !m_screencast)
+        return;
+
+    if (auto* drawingArea = m_page.drawingArea())
+        static_cast<DrawingAreaProxyWC*>(drawingArea)->captureFrame();
 }
 #endif
 
