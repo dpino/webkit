@@ -993,6 +993,26 @@ bool RenderBox::includeHorizontalScrollbarSize() const
             || (style().overflowX() == Overflow::Hidden && !style().scrollbarGutter().isAuto()));
 }
 
+bool RenderBox::shouldReserveVerticalScrollbarGutterSpace() const
+{
+    CheckedPtr<RenderLayerScrollableArea> scrollableArea = layer() ? layer()->scrollableArea() : nullptr;
+    if (style().scrollbarWidth() != ScrollbarWidth::None
+        && style().scrollbarGutter().isStable()
+        && (scrollableArea && scrollableArea->verticalScrollbar() == nullptr && !verticalScrollbarWidth())
+        && hasNonVisibleOverflow() && layer() && !layer()->hasOverlayScrollbars())
+        return true;
+    return false;
+}
+
+int RenderBox::effectiveScrollbarGutterWidth() const
+{
+    if (shouldReserveVerticalScrollbarGutterSpace()) {
+        CheckedPtr<RenderLayerScrollableArea> scrollableArea = layer() ? layer()->scrollableArea() : nullptr;
+        return scrollableArea ? scrollableArea->computeVerticalScrollbarGutterWidth() : 0;
+    }
+    return 0;
+}
+
 int RenderBox::verticalScrollbarWidth() const
 {
     CheckedPtr scrollableArea = layer() ? layer()->scrollableArea() : nullptr;
