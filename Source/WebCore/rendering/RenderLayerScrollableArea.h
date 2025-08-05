@@ -134,6 +134,7 @@ public:
 
     int verticalScrollbarWidth(OverlayScrollbarSizeRelevancy = OverlayScrollbarSizeRelevancy::IgnoreOverlayScrollbarSize, bool isHorizontalWritingMode = true) const;
     int horizontalScrollbarHeight(OverlayScrollbarSizeRelevancy = OverlayScrollbarSizeRelevancy::IgnoreOverlayScrollbarSize, bool isHorizontalWritingMode = true) const;
+    int computeVerticalScrollbarGutterWidth();
 
     bool hasOverflowControls() const;
     bool hitTestOverflowControls(HitTestResult&, const IntPoint& localPoint);
@@ -328,6 +329,10 @@ private:
     // The width/height of our scrolled area.
     int m_scrollWidth { 0 };
     int m_scrollHeight { 0 };
+
+    // Reserve gutter space to prevent layout shift with 'scrollbar-gutter: stable'.
+    // Space must be preserved regardless of scrollbar visibility or overflow state.
+    int m_gutterWidth { 0 };
 
     RenderLayer& m_layer;
     ScrollPosition m_scrollPosition;
