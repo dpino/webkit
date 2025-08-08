@@ -48,8 +48,14 @@ editing/glib/WebContentReaderGLib.cpp
 
 loader/soup/ResourceLoaderSoup.cpp
 
+<<<<<<< HEAD
 page/glib/DragControllerGLib.cpp
 
+||||||| parent of f438ef464efb (chore(webkit): bootstrap build #2199)
+=======
+page/wpe/DragControllerWPE.cpp
+
+>>>>>>> f438ef464efb (chore(webkit): bootstrap build #2199)
 page/linux/ResourceUsageOverlayLinux.cpp
 page/linux/ResourceUsageThreadLinux.cpp
 
@@ -104,3 +110,12 @@ platform/wpe/PlatformScreenWPE.cpp
 platform/xdg/MIMETypeRegistryXdg.cpp
 
 platform/xr/openxr/PlatformXROpenXR.cpp
+
+// Playwright: begin.
+platform/wpe/DragDataWPE.cpp
+
+JSSpeechSynthesisErrorCode.cpp
+JSSpeechSynthesisErrorEvent.cpp
+JSSpeechSynthesisErrorEventInit.cpp
+JSSpeechSynthesisEventInit.cpp
+// Playwright: end.

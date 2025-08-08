@@ -33,8 +33,203 @@
 #include "SelectionData.h"
 #include "SharedBuffer.h"
 
+#if ENABLE(DRAG_SUPPORT)
+#include "DragData.h"
+#endif
+
 namespace WebCore {
 
+<<<<<<< HEAD
+||||||| parent of f438ef464efb (chore(webkit): bootstrap build #2199)
+std::unique_ptr<Pasteboard> Pasteboard::createForCopyAndPaste(std::unique_ptr<PasteboardContext>&& context)
+{
+    return makeUnique<Pasteboard>(WTFMove(context), "CLIPBOARD"_s);
+}
+
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context, const String& name)
+    : m_context(WTFMove(context))
+    , m_name(name)
+    , m_changeCount(platformStrategies()->pasteboardStrategy()->changeCount(m_name))
+{
+}
+
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context)
+    : m_context(WTFMove(context))
+{
+}
+
+void Pasteboard::writeString(const String&, const String&)
+{
+    notImplemented();
+}
+
+void Pasteboard::writePlainText(const String& text, SmartReplaceOption)
+{
+    SelectionData data;
+    data.setText(text);
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::write(const PasteboardURL& pasteboardURL)
+{
+    ASSERT(!pasteboardURL.url.isEmpty());
+    SelectionData data;
+    data.setURL(pasteboardURL.url, pasteboardURL.title);
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::writeTrustworthyWebURLsPboardType(const PasteboardURL&)
+{
+    notImplemented();
+}
+
+void Pasteboard::write(const PasteboardImage& pasteboardImage)
+{
+    SelectionData data;
+    if (!pasteboardImage.url.url.isEmpty()) {
+        data.setURL(pasteboardImage.url.url, pasteboardImage.url.title);
+        data.setMarkup(pasteboardImage.url.markup);
+    }
+    data.setImage(pasteboardImage.image.get());
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::write(const PasteboardBuffer&)
+{
+    notImplemented();
+}
+
+void Pasteboard::write(const PasteboardWebContent& pasteboardContent)
+{
+    SelectionData data;
+    data.setText(pasteboardContent.text);
+    data.setMarkup(pasteboardContent.markup);
+    PasteboardCustomData customData;
+    customData.setOrigin(pasteboardContent.contentOrigin);
+    data.setCustomData(customData.createSharedBuffer());
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::clear()
+{
+    platformStrategies()->pasteboardStrategy()->clearClipboard(m_name);
+}
+
+void Pasteboard::clear(const String&)
+{
+    notImplemented();
+}
+
+=======
+std::unique_ptr<Pasteboard> Pasteboard::createForCopyAndPaste(std::unique_ptr<PasteboardContext>&& context)
+{
+    return makeUnique<Pasteboard>(WTFMove(context), "CLIPBOARD"_s);
+}
+
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context, const String& name)
+    : m_context(WTFMove(context))
+    , m_name(name)
+    , m_changeCount(platformStrategies()->pasteboardStrategy()->changeCount(m_name))
+{
+}
+
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context)
+    : m_context(WTFMove(context))
+{
+}
+
+void Pasteboard::writeString(const String& type, const String& text)
+{
+   if (m_selectionData) {
+        if (type == "Files"_s || type == "text/uri-list"_s)
+            m_selectionData->setURIList(text);
+        else if (type == "text/html"_s)
+            m_selectionData->setMarkup(text);
+        else if (type == "text/plain"_s)
+            m_selectionData->setText(text);
+        return;
+    }
+    notImplemented();
+}
+
+void Pasteboard::writePlainText(const String& text, SmartReplaceOption)
+{
+    SelectionData data;
+    data.setText(text);
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::write(const PasteboardURL& pasteboardURL)
+{
+    if (m_selectionData) {
+        m_selectionData->clearAll();
+        m_selectionData->setURL(pasteboardURL.url, pasteboardURL.title);
+        return;
+    }
+    ASSERT(!pasteboardURL.url.isEmpty());
+    SelectionData data;
+    data.setURL(pasteboardURL.url, pasteboardURL.title);
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::writeTrustworthyWebURLsPboardType(const PasteboardURL&)
+{
+    notImplemented();
+}
+
+void Pasteboard::write(const PasteboardImage& pasteboardImage)
+{
+    if (m_selectionData) {
+        m_selectionData->clearAll();
+        if (!pasteboardImage.url.url.isEmpty()) {
+            m_selectionData->setURL(pasteboardImage.url.url, pasteboardImage.url.title);
+            m_selectionData->setMarkup(pasteboardImage.url.markup);
+        }
+        m_selectionData->setImage(pasteboardImage.image.get());
+        return;
+    }
+    SelectionData data;
+    if (!pasteboardImage.url.url.isEmpty()) {
+        data.setURL(pasteboardImage.url.url, pasteboardImage.url.title);
+        data.setMarkup(pasteboardImage.url.markup);
+    }
+    data.setImage(pasteboardImage.image.get());
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::write(const PasteboardBuffer&)
+{
+    notImplemented();
+}
+
+void Pasteboard::write(const PasteboardWebContent& pasteboardContent)
+{
+    if (m_selectionData) {
+        m_selectionData->clearAll();
+        m_selectionData->setText(pasteboardContent.text);
+        m_selectionData->setMarkup(pasteboardContent.markup);
+        return;
+    }
+    SelectionData data;
+    data.setText(pasteboardContent.text);
+    data.setMarkup(pasteboardContent.markup);
+    PasteboardCustomData customData;
+    customData.setOrigin(pasteboardContent.contentOrigin);
+    data.setCustomData(customData.createSharedBuffer());
+    platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTFMove(data));
+}
+
+void Pasteboard::clear()
+{
+    platformStrategies()->pasteboardStrategy()->clearClipboard(m_name);
+}
+
+void Pasteboard::clear(const String&)
+{
+    notImplemented();
+}
+
+>>>>>>> f438ef464efb (chore(webkit): bootstrap build #2199)
 bool Pasteboard::canSmartReplace()
 {
     return false;
@@ -45,6 +240,353 @@ void Pasteboard::read(PasteboardPlainText& text, PlainTextURLReadingPolicy, std:
     text.text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/plain;charset=utf-8"_s);
 }
 
+<<<<<<< HEAD
+||||||| parent of f438ef464efb (chore(webkit): bootstrap build #2199)
+void Pasteboard::read(PasteboardWebContentReader& reader, WebContentReadingPolicy policy, std::optional<size_t>)
+{
+    reader.setContentOrigin(readOrigin());
+
+    auto types = platformStrategies()->pasteboardStrategy()->types(m_name);
+    if (types.contains("text/html"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/html"_s);
+        if (!text.isNull() && reader.readHTML(text))
+            return;
+    }
+
+    if (policy == WebContentReadingPolicy::OnlyRichTextTypes)
+        return;
+
+    static const ASCIILiteral imageTypes[] = { "image/png"_s, "image/jpeg"_s, "image/gif"_s, "image/bmp"_s, "image/vnd.microsoft.icon"_s, "image/x-icon"_s };
+    for (const auto& imageType : imageTypes) {
+        if (types.contains(imageType)) {
+            auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, imageType);
+            if (!buffer->isEmpty() && reader.readImage(buffer.releaseNonNull(), imageType))
+                return;
+        }
+    }
+
+    if (types.contains("text/uri-list"_s)) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        if (reader.readFilePaths(filePaths))
+            return;
+    }
+
+    if (types.contains("text/plain"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/plain"_s);
+        if (!text.isNull() && reader.readPlainText(text))
+            return;
+    }
+
+    if (types.contains("text/plain;charset=utf-8"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/plain;charset=utf-8"_s);
+        if (!text.isNull() && reader.readPlainText(text))
+            return;
+    }
+}
+
+void Pasteboard::read(PasteboardFileReader& reader, std::optional<size_t> index)
+{
+    if (!index) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        for (const auto& filePath : filePaths)
+            reader.readFilename(filePath);
+        return;
+    }
+
+    if (reader.shouldReadBuffer("image/png"_s)) {
+        if (auto buffer = readBuffer(index, "image/png"_s))
+            reader.readBuffer({ }, { }, buffer.releaseNonNull());
+    }
+}
+
+bool Pasteboard::hasData()
+{
+    return !platformStrategies()->pasteboardStrategy()->types(m_name).isEmpty();
+}
+
+Vector<String> Pasteboard::typesSafeForBindings(const String& origin)
+{
+    return platformStrategies()->pasteboardStrategy()->typesSafeForDOMToReadAndWrite(m_name, origin, context());
+}
+
+Vector<String> Pasteboard::typesForLegacyUnsafeBindings()
+{
+    return platformStrategies()->pasteboardStrategy()->types(m_name);
+}
+
+String Pasteboard::readOrigin()
+{
+    // FIXME: cache custom data?
+    if (auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, PasteboardCustomData::wpeType()))
+        return PasteboardCustomData::fromSharedBuffer(*buffer).origin();
+
+    return { };
+}
+
+String Pasteboard::readString(const String& type)
+{
+    return platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, type);
+}
+
+String Pasteboard::readStringInCustomData(const String& type)
+{
+    // FIXME: cache custom data?
+    if (auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, PasteboardCustomData::wpeType()))
+        return PasteboardCustomData::fromSharedBuffer(*buffer).readStringInCustomData(type);
+
+    return { };
+}
+
+Pasteboard::FileContentState Pasteboard::fileContentState()
+{
+    auto types = platformStrategies()->pasteboardStrategy()->types(m_name);
+    if (types.contains("text/uri-list"_s)) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        if (!filePaths.isEmpty())
+            return FileContentState::MayContainFilePaths;
+    }
+
+    auto result = types.findIf([](const String& type) {
+        return MIMETypeRegistry::isSupportedImageMIMEType(type);
+    });
+    return result == notFound ? FileContentState::NoFileOrImageData : FileContentState::MayContainFilePaths;
+}
+
+void Pasteboard::writeMarkup(const String&)
+{
+    notImplemented();
+}
+
+void Pasteboard::writeCustomData(const Vector<PasteboardCustomData>& data)
+{
+    m_changeCount = platformStrategies()->pasteboardStrategy()->writeCustomData(data, m_name, context());
+}
+
+void Pasteboard::write(const Color&)
+{
+    notImplemented();
+}
+
+int64_t Pasteboard::changeCount() const
+{
+    return platformStrategies()->pasteboardStrategy()->changeCount(m_name);
+}
+
+=======
+void Pasteboard::read(PasteboardWebContentReader& reader, WebContentReadingPolicy policy, std::optional<size_t>)
+{
+    reader.setContentOrigin(readOrigin());
+
+    auto types = platformStrategies()->pasteboardStrategy()->types(m_name);
+    if (types.contains("text/html"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/html"_s);
+        if (!text.isNull() && reader.readHTML(text))
+            return;
+    }
+
+    if (policy == WebContentReadingPolicy::OnlyRichTextTypes)
+        return;
+
+    static const ASCIILiteral imageTypes[] = { "image/png"_s, "image/jpeg"_s, "image/gif"_s, "image/bmp"_s, "image/vnd.microsoft.icon"_s, "image/x-icon"_s };
+    for (const auto& imageType : imageTypes) {
+        if (types.contains(imageType)) {
+            auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, imageType);
+            if (!buffer->isEmpty() && reader.readImage(buffer.releaseNonNull(), imageType))
+                return;
+        }
+    }
+
+    if (types.contains("text/uri-list"_s)) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        if (reader.readFilePaths(filePaths))
+            return;
+    }
+
+    if (types.contains("text/plain"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/plain"_s);
+        if (!text.isNull() && reader.readPlainText(text))
+            return;
+    }
+
+    if (types.contains("text/plain;charset=utf-8"_s)) {
+        auto text = platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, "text/plain;charset=utf-8"_s);
+        if (!text.isNull() && reader.readPlainText(text))
+            return;
+    }
+}
+
+void Pasteboard::read(PasteboardFileReader& reader, std::optional<size_t> index)
+{
+    if (!index) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        for (const auto& filePath : filePaths)
+            reader.readFilename(filePath);
+        return;
+    }
+
+    if (reader.shouldReadBuffer("image/png"_s)) {
+        if (auto buffer = readBuffer(index, "image/png"_s))
+            reader.readBuffer({ }, { }, buffer.releaseNonNull());
+    }
+}
+
+bool Pasteboard::hasData()
+{
+    return !platformStrategies()->pasteboardStrategy()->types(m_name).isEmpty();
+}
+
+Vector<String> Pasteboard::typesSafeForBindings(const String& origin)
+{
+    if (m_selectionData) {
+        ListHashSet<String> types;
+        if (auto& buffer = m_selectionData->customData()) {
+            auto customData = PasteboardCustomData::fromSharedBuffer(*buffer);
+            if (customData.origin() == origin) {
+                for (auto& type : customData.orderedTypes())
+                    types.add(type);
+            }
+        }
+
+        if (m_selectionData->hasText())
+            types.add("text/plain"_s);
+        if (m_selectionData->hasMarkup())
+            types.add("text/html"_s);
+        if (m_selectionData->hasURIList())
+            types.add("text/uri-list"_s);
+
+        return copyToVector(types);
+    }
+
+    return platformStrategies()->pasteboardStrategy()->typesSafeForDOMToReadAndWrite(m_name, origin, context());
+}
+
+Vector<String> Pasteboard::typesForLegacyUnsafeBindings()
+{
+    return platformStrategies()->pasteboardStrategy()->types(m_name);
+}
+
+String Pasteboard::readOrigin()
+{
+    if (m_selectionData) {
+        if (auto& buffer = m_selectionData->customData())
+            return PasteboardCustomData::fromSharedBuffer(*buffer).origin();
+
+        return { };
+    }
+
+    // FIXME: cache custom data?
+    if (auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, PasteboardCustomData::wpeType()))
+        return PasteboardCustomData::fromSharedBuffer(*buffer).origin();
+
+    return { };
+}
+
+String Pasteboard::readString(const String& type)
+{
+    if (m_selectionData) {
+        if (type == "text/plain"_s)
+            return m_selectionData->text();;
+        if (type == "text/html"_s)
+            return m_selectionData->markup();
+        if (type == "Files"_s || type == "text/uri-list"_s)
+            return m_selectionData->uriList();
+        return { };
+    }
+
+    return platformStrategies()->pasteboardStrategy()->readTextFromClipboard(m_name, type);
+}
+
+String Pasteboard::readStringInCustomData(const String& type)
+{
+    if (m_selectionData) {
+        if (auto& buffer = m_selectionData->customData())
+            return PasteboardCustomData::fromSharedBuffer(*buffer).readStringInCustomData(type);
+
+        return { };
+    }
+    // FIXME: cache custom data?
+    if (auto buffer = platformStrategies()->pasteboardStrategy()->readBufferFromClipboard(m_name, PasteboardCustomData::wpeType()))
+        return PasteboardCustomData::fromSharedBuffer(*buffer).readStringInCustomData(type);
+
+    return { };
+}
+
+Pasteboard::FileContentState Pasteboard::fileContentState()
+{
+    auto types = platformStrategies()->pasteboardStrategy()->types(m_name);
+    if (types.contains("text/uri-list"_s)) {
+        auto filePaths = platformStrategies()->pasteboardStrategy()->readFilePathsFromClipboard(m_name);
+        if (!filePaths.isEmpty())
+            return FileContentState::MayContainFilePaths;
+    }
+
+    auto result = types.findIf([](const String& type) {
+        return MIMETypeRegistry::isSupportedImageMIMEType(type);
+    });
+    return result == notFound ? FileContentState::NoFileOrImageData : FileContentState::MayContainFilePaths;
+}
+
+void Pasteboard::writeMarkup(const String&)
+{
+    notImplemented();
+}
+
+void Pasteboard::writeCustomData(const Vector<PasteboardCustomData>& data)
+{
+    if (m_selectionData) {
+        if (!data.isEmpty()) {
+            const auto& customData = data[0];
+            customData.forEachPlatformString([this] (auto& type, auto& string) {
+                    writeString(type, string);
+                    });
+            if (customData.hasSameOriginCustomData() || !customData.origin().isEmpty())
+                m_selectionData->setCustomData(customData.createSharedBuffer());
+        }
+        return;
+    }
+    m_changeCount = platformStrategies()->pasteboardStrategy()->writeCustomData(data, m_name, context());
+}
+
+void Pasteboard::write(const Color&)
+{
+    notImplemented();
+}
+
+int64_t Pasteboard::changeCount() const
+{
+    return platformStrategies()->pasteboardStrategy()->changeCount(m_name);
+}
+
+#if ENABLE(DRAG_SUPPORT)
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context, SelectionData&& selectionData)
+    : m_context(WTFMove(context))
+    , m_selectionData(WTFMove(selectionData))
+{
+}
+
+Pasteboard::Pasteboard(std::unique_ptr<PasteboardContext>&& context, SelectionData& selectionData)
+    : m_context(WTFMove(context))
+    , m_selectionData(selectionData)
+{
+}
+
+std::unique_ptr<Pasteboard> Pasteboard::createForDragAndDrop(std::unique_ptr<PasteboardContext>&& context)
+{
+    return makeUnique<Pasteboard>(WTFMove(context), SelectionData());
+}
+
+std::unique_ptr<Pasteboard> Pasteboard::create(const DragData& dragData)
+{
+    RELEASE_ASSERT(dragData.platformData());
+    return makeUnique<Pasteboard>(dragData.createPasteboardContext(), *dragData.platformData());
+}
+
+void Pasteboard::setDragImage(DragImage, const IntPoint&)
+{
+}
+#endif
+
+>>>>>>> f438ef464efb (chore(webkit): bootstrap build #2199)
 } // namespace WebCore
 
 #endif // PLATFORM(WPE)
