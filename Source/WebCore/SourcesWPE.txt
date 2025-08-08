@@ -105,11 +105,7 @@ platform/xdg/MIMETypeRegistryXdg.cpp
 
 platform/xr/openxr/PlatformXROpenXR.cpp
 
-// Playwright: begin.
-platform/wpe/DragDataWPE.cpp
-
 JSSpeechSynthesisErrorCode.cpp
 JSSpeechSynthesisErrorEvent.cpp
 JSSpeechSynthesisErrorEventInit.cpp
 JSSpeechSynthesisEventInit.cpp
-// Playwright: end.
