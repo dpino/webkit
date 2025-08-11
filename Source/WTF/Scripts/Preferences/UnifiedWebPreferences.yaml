@@ -8010,7 +8010,6 @@ UseDamagingInformationForCompositing:
     WebCore:
       default: false
 
-# Playwright: force-disable on Windows.
 UseGPUProcessForCanvasRenderingEnabled:
   type: bool
   status: stable
@@ -8023,7 +8022,7 @@ UseGPUProcessForCanvasRenderingEnabled:
   defaultValue:
     WebKit:
       "ENABLE(GPU_PROCESS_BY_DEFAULT)": true
-      "USE(GRAPHICS_LAYER_WC)": false
+      "USE(GRAPHICS_LAYER_WC)": true
       default: false
 
 UseGPUProcessForDOMRenderingEnabled:
