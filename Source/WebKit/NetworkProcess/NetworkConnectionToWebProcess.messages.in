@@ -80,7 +80,15 @@ messages -> NetworkConnectionToWebProcess WantsDispatchMessage {
 
     ClearPageSpecificData(WebCore::PageIdentifier pageID);
 
+<<<<<<< HEAD
     [EnabledBy=StorageAccessAPIEnabled] RemoveStorageAccessForFrame(WebCore::FrameIdentifier frameID, WebCore::PageIdentifier pageID);
+||||||| parent of 3e41c46b1a9e (chore(webkit): bootstrap build #2201)
+    RemoveStorageAccessForFrame(WebCore::FrameIdentifier frameID, WebCore::PageIdentifier pageID);
+=======
+    SetCookieFromResponse(URL firstParty, struct WebCore::SameSiteInfo sameSiteInfo, URL url, String setCookieValue);
+
+    RemoveStorageAccessForFrame(WebCore::FrameIdentifier frameID, WebCore::PageIdentifier pageID);
+>>>>>>> 3e41c46b1a9e (chore(webkit): bootstrap build #2201)
     LogUserInteraction(WebCore::RegistrableDomain domain)
     ResourceLoadStatisticsUpdated(Vector<WebCore::ResourceLoadStatistics> statistics) -> ()
     [EnabledBy=StorageAccessAPIEnabled] HasStorageAccess(WebCore::RegistrableDomain subFrameDomain, WebCore::RegistrableDomain topFrameDomain, WebCore::FrameIdentifier frameID, WebCore::PageIdentifier pageID) -> (bool hasStorageAccess)
