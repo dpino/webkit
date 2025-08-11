@@ -299,7 +299,6 @@ void PointerEvent::receivedTarget()
         predictedEvent->setTarget(this->target());
 }
 
-<<<<<<< HEAD
 bool PointerEvent::fractionalCoordinatesAllowedForType(const AtomString& type)
 {
     return !(type == eventNames().auxclickEvent
@@ -335,8 +334,6 @@ double PointerEvent::offsetY()
     return adjustedCoordinateForType(offsetLocation().y());
 }
 
-||||||| parent of a647ce92ba4a (chore(webkit): bootstrap build #2201)
-=======
 #if ENABLE(TOUCH_EVENTS) && !PLATFORM(IOS_FAMILY) && !PLATFORM(WPE)
 
 static const AtomString& pointerEventType(PlatformTouchPoint::State state)
@@ -392,5 +389,4 @@ PointerEvent::PointerEvent(const AtomString& type, const PlatformTouchEvent& eve
 
 #endif // ENABLE(TOUCH_EVENTS) && !PLATFORM(IOS_FAMILY)
 
->>>>>>> a647ce92ba4a (chore(webkit): bootstrap build #2201)
 } // namespace WebCore
