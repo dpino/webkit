@@ -309,7 +309,7 @@ void WebPageInspectorInputAgent::dispatchTouchEvent(const String& type, std::opt
 {
     float rotationAngle = 0.0;
     float force = 1.0;
-    const WebCore::IntSize radius(1, 1);
+    const WebCore::DoubleSize radius(1, 1);
 
     uint8_t unsignedModifiers = modifiers ? static_cast<uint8_t>(*modifiers) : 0;
     OptionSet<WebEventModifier> eventModifiers;
