@@ -4224,7 +4224,7 @@ void WebPageProxy::processNextQueuedMouseEvent()
         process->startResponsivenessTimer();
     }
 
-    m_lastMousePositionForDrag = event->position();
+    m_lastMousePositionForDrag = roundedIntPoint(event->position());
     if (!m_dragSelectionData) {
         std::optional<Vector<SandboxExtension::Handle>> sandboxExtensions;
 
@@ -4248,9 +4248,9 @@ void WebPageProxy::processNextQueuedMouseEvent()
         internals().coalescedMouseEvents.clear();
     } else {
 #if PLATFORM(WIN) || PLATFORM(COCOA)
-        DragData dragData(*m_dragSelectionData, event->position(), event->globalPosition(), m_dragSourceOperationMask);
+        DragData dragData(*m_dragSelectionData, roundedIntPoint(event->position()), roundedIntPoint(event->globalPosition()), m_dragSourceOperationMask);
 #else
-        DragData dragData(&*m_dragSelectionData, event->position(), event->globalPosition(), m_dragSourceOperationMask);
+        DragData dragData(&*m_dragSelectionData, roundedIntPoint(event->position()), roundedIntPoint(event->globalPosition()), m_dragSourceOperationMask);
 #endif
         if (eventType == WebEventType::MouseMove) {
             dragUpdated(dragData);
@@ -4261,7 +4261,7 @@ void WebPageProxy::processNextQueuedMouseEvent()
                 performDragOperation(dragData, ""_s, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload));
             }
             m_dragSelectionData = std::nullopt;
-            dragEnded(event->position(), event->globalPosition(), m_dragSourceOperationMask);
+            dragEnded(roundedIntPoint(event->position()), roundedIntPoint(event->globalPosition()), m_dragSourceOperationMask);
         }
         didReceiveEventIPC(process->connection(), eventType, true, std::nullopt);
     }

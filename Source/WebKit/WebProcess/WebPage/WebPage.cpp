@@ -3994,8 +3994,8 @@ void WebPage::fakeTouchTap(const WebCore::IntPoint& position, uint8_t modifiers,
     float radiusY = 1.0;
     float rotationAngle = 0.0;
     float force = 1.0;
-    const WebCore::IntSize radius(radiusX,radiusY);
-    const WebCore::IntPoint screenPosition = position;
+    const WebCore::DoubleSize radius(radiusX,radiusY);
+    const WebCore::DoublePoint screenPosition = position;
     OptionSet<WebEventModifier> eventModifiers;
     eventModifiers = eventModifiers.fromRaw(modifiers);
 
