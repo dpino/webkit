@@ -1314,6 +1314,8 @@ String PlatformKeyboardEvent::singleCharacterString(unsigned val)
         return String("\x8"_s);
     case WPE_KEY_Tab:
         return String("\t"_s);
+    case WPE_KEY_Escape:
+        return String("\x1b"_s);
     default:
         break;
     }
