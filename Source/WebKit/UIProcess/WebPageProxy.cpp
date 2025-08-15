@@ -12328,13 +12328,9 @@ WebPageCreationParameters WebPageProxy::creationParameters(WebProcessProxy& proc
     parameters.canUseCredentialStorage = m_canUseCredentialStorage;
 
     parameters.httpsUpgradeEnabled = preferences->upgradeKnownHostsToHTTPSEnabled() ? m_configuration->httpsUpgradeEnabled() : false;
-<<<<<<< HEAD
     parameters.allowJSHandleInPageContentWorld = m_configuration->allowJSHandleInPageContentWorld();
-||||||| parent of 444aa3940663 (chore(webkit): bootstrap build #2202)
-=======
 
     parameters.shouldPauseInInspectorWhenShown = m_inspectorController->shouldPauseInInspectorWhenShown();
->>>>>>> 444aa3940663 (chore(webkit): bootstrap build #2202)
     
 #if ENABLE(APP_HIGHLIGHTS)
     parameters.appHighlightsVisible = appHighlightsVisibility() ? HighlightVisibility::Visible : HighlightVisibility::Hidden;
