@@ -27,20 +27,10 @@
 
 #pragma once
 
-<<<<<<< HEAD
 #include <WebCore/DOMPasteAccess.h>
 #include <WebCore/Frame.h>
+#include <WebCore/IntDegrees.h>
 #include <WebCore/ScrollbarMode.h>
-||||||| parent of 75efd3b33ce3 (chore(webkit): bootstrap build #2203)
-#include "DOMPasteAccess.h"
-#include "Frame.h"
-#include "ScrollbarMode.h"
-=======
-#include "DOMPasteAccess.h"
-#include "Frame.h"
-#include "IntDegrees.h"
-#include "ScrollbarMode.h"
->>>>>>> 75efd3b33ce3 (chore(webkit): bootstrap build #2203)
 #include <wtf/CheckedRef.h>
 #include <wtf/HashSet.h>
 #include <wtf/UniqueRef.h>
