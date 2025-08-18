@@ -31,22 +31,11 @@
 
 #pragma once
 
-<<<<<<< HEAD
-||||||| parent of d39a7328bbd8 (chore(webkit): bootstrap build #2203)
-#include "CachedResource.h"
-#include "InspectorWebAgentBase.h"
-#include "LayoutRect.h"
-=======
-#include "CachedResource.h"
-#include "FrameIdentifier.h"
-#include "InspectorWebAgentBase.h"
-#include "LayoutRect.h"
-#include "ProcessIdentifier.h"
->>>>>>> d39a7328bbd8 (chore(webkit): bootstrap build #2203)
 #include <JavaScriptCore/InspectorBackendDispatchers.h>
 #include <JavaScriptCore/InspectorFrontendDispatchers.h>
 #include <JavaScriptCore/InspectorProtocolObjects.h>
 #include <WebCore/CachedResource.h>
+#include <WebCore/FrameIdentifier.h>
 #include <WebCore/InspectorWebAgentBase.h>
 #include <WebCore/LayoutRect.h>
 #include <wtf/RobinHoodHashMap.h>
