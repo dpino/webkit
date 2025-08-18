@@ -448,7 +448,7 @@ void WebCookieJar::setOptInCookiePartitioningEnabled(bool enabled)
 }
 #endif
 
-void WebCookieJar::setCookieFromResponse(ResourceLoader& loader, const String& setCookieValue)
+void WebCookieJar::setCookieFromResponse(WebCore::ResourceLoader& loader, const String& setCookieValue)
 {
     const auto& request = loader.request();
     WebProcess::singleton().ensureNetworkProcessConnection().connection().send(Messages::NetworkConnectionToWebProcess::SetCookieFromResponse(request.firstPartyForCookies(), SameSiteInfo::create(request), request.url(), setCookieValue), 0);
