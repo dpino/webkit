@@ -31,18 +31,6 @@
 
 #pragma once
 
-<<<<<<< HEAD
-||||||| parent of c09b687bb7f6 (chore(webkit): bootstrap build #2203)
-#include "CachedResource.h"
-#include "InspectorWebAgentBase.h"
-#include "LayoutRect.h"
-=======
-#include "CachedResource.h"
-#include "FrameIdentifier.h"
-#include "InspectorWebAgentBase.h"
-#include "LayoutRect.h"
-#include "ProcessIdentifier.h"
->>>>>>> c09b687bb7f6 (chore(webkit): bootstrap build #2203)
 #include <JavaScriptCore/InspectorBackendDispatchers.h>
 #include <JavaScriptCore/InspectorFrontendDispatchers.h>
 #include <JavaScriptCore/InspectorProtocolObjects.h>
