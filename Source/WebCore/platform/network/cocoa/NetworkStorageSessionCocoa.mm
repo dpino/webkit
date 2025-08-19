@@ -587,7 +587,12 @@ void NetworkStorageSession::setCookiesFromResponse(const URL& firstParty, const 
         [cookies addObject:parsedCookies[0]];
     }
     NSURL *cookieURL = url.createNSURL().get();
-    setHTTPCookiesForURL(cookieStorage().get(), cookies, cookieURL, firstParty.createNSURL().get(), sameSiteInfo);
+#if ENABLE(OPT_IN_PARTITIONED_COOKIES) && defined(CFN_COOKIE_ACCEPTS_POLICY_PARTITION) && CFN_COOKIE_ACCEPTS_POLICY_PARTITION
+    String partitionKey = isOptInCookiePartitioningEnabled() ? cookiePartitionIdentifier(firstParty) : String { };
+#else
+    String partitionKey;
+#endif
+    setHTTPCookiesForURL(cookieStorage().get(), cookies, cookieURL, firstParty.createNSURL().get(), nsStringNilIfEmpty(partitionKey), sameSiteInfo, ThirdPartyCookieBlockingDecision::None);
 }
 
 static NSHTTPCookieAcceptPolicy httpCookieAcceptPolicy(CFHTTPCookieStorageRef cookieStorage)
