@@ -102,10 +102,14 @@ WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, const WebCore::Resou
     soup_session_websocket_connect_async(session, msg, nullptr, protocols.get(), RunLoopSourcePriority::AsyncIONetwork, m_cancellable.get(),
         [] (GObject* session, GAsyncResult* result, gpointer userData) {
             GUniqueOutPtr<GError> error;
+            auto* task = static_cast<WebSocketTask*>(userData);
+            if (!soup_websocket_client_verify_handshake(task->m_handshakeMessage.get(), nullptr, nullptr, &error.outPtr())) {
+                task->didFail(String::fromUTF8(error->message));
+                return;
+            }
             GRefPtr<SoupWebsocketConnection> connection = adoptGRef(soup_session_websocket_connect_finish(SOUP_SESSION(session), result, &error.outPtr()));
             if (g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 return;
-            auto* task = static_cast<WebSocketTask*>(userData);
             if (isConnectionError(error.get(), task->m_handshakeMessage.get())) {
                 task->m_delayErrorMessage = String::fromUTF8(error->message);
                 task->m_delayFailTimer.startOneShot(NetworkProcess::randomClosedPortDelay());
