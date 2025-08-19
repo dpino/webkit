@@ -374,8 +374,15 @@ bool Geolocation::shouldBlockGeolocationRequests()
 
     bool isSecure = SecurityOrigin::isSecure(document->url()) || document->isSecureContext();
     bool isLocalOrigin = securityOrigin()->isLocal();
+    bool isPotentiallyTrustworthy = securityOrigin()->isPotentiallyTrustworthy();
     if (document->canAccessResource(ScriptExecutionContext::ResourceType::Geolocation) != ScriptExecutionContext::HasResourceAccess::No) {
+<<<<<<< HEAD
         if (isLocalOrigin || isSecure)
+||||||| parent of c09b687bb7f6 (chore(webkit): bootstrap build #2203)
+        if (isLocalOrigin || (isSecure && !hasMixedContent))
+=======
+        if (isLocalOrigin || (isSecure && !hasMixedContent) || isPotentiallyTrustworthy)
+>>>>>>> c09b687bb7f6 (chore(webkit): bootstrap build #2203)
             return false;
     }
 

@@ -77,7 +77,15 @@ public:
 
     void clearCache() final;
 
+<<<<<<< HEAD
 #if ENABLE(OPT_IN_PARTITIONED_COOKIES)
+||||||| parent of c09b687bb7f6 (chore(webkit): bootstrap build #2203)
+#if HAVE(ALLOW_ONLY_PARTITIONED_COOKIES)
+=======
+    void setCookieFromResponse(WebCore::ResourceLoader&, const String& setCookieValue);
+
+#if HAVE(ALLOW_ONLY_PARTITIONED_COOKIES)
+>>>>>>> c09b687bb7f6 (chore(webkit): bootstrap build #2203)
     void setOptInCookiePartitioningEnabled(bool);
 #endif
 
