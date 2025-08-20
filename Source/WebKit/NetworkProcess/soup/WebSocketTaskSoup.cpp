@@ -59,6 +59,8 @@ static inline bool isConnectionError(GError* error, SoupMessage* message)
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(WebSocketTask);
 
+#include <stdio.h>
+
 WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, const WebCore::ResourceRequest& request, SoupSession* session, SoupMessage* msg, const String& protocol)
     : m_channel(channel)
     , m_request(request)
@@ -99,26 +101,44 @@ WebSocketTask::WebSocketTask(NetworkSocketChannel& channel, const WebCore::Resou
     }), this);
 #endif
 
+    /*
+    GUniqueOutPtr<GError> error;
+    if (m_handshakeMessage.get() && !soup_websocket_client_verify_handshake(m_handshakeMessage.get(), supportedExtensions, nullptr, &error.outPtr())) {
+        didFail(String::fromUTF8(error->message));
+        return;
+    }
+    */
+
     soup_session_websocket_connect_async(session, msg, nullptr, protocols.get(), RunLoopSourcePriority::AsyncIONetwork, m_cancellable.get(),
         [] (GObject* session, GAsyncResult* result, gpointer userData) {
+            // GPtrArray* supportedExtensions = g_ptr_array_new();
             GUniqueOutPtr<GError> error;
-            auto* task = static_cast<WebSocketTask*>(userData);
-            if (!soup_websocket_client_verify_handshake(task->m_handshakeMessage.get(), nullptr, nullptr, &error.outPtr())) {
-                task->didFail(String::fromUTF8(error->message));
-                return;
-            }
             GRefPtr<SoupWebsocketConnection> connection = adoptGRef(soup_session_websocket_connect_finish(SOUP_SESSION(session), result, &error.outPtr()));
+
+            /*
+            */
+
             if (g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 return;
+            auto* task = static_cast<WebSocketTask*>(userData);
             if (isConnectionError(error.get(), task->m_handshakeMessage.get())) {
                 task->m_delayErrorMessage = String::fromUTF8(error->message);
                 task->m_delayFailTimer.startOneShot(NetworkProcess::randomClosedPortDelay());
                 return;
             }
-            if (connection)
+            if (connection) {
+                GUniqueOutPtr<GError> error;
+                GPtrArray *supported_extensions;
+                supported_extensions = soup_session_get_supported_websocket_extensions_for_message (SOUP_SESSION(session), task->m_handshakeMessage.get());
+                if (!soup_websocket_client_verify_handshake(m_handshakeMessage.get(), supportedExtensions, nullptr, &error.outPtr())) {
+                    fprintf(stderr, "### Error: soup_websocket_client_verify_handshake: %s\n", error->message);
+                    didFail(String::fromUTF8(error->message));
+                    return;
+                }
                 task->didConnect(WTFMove(connection));
-            else
+            } else {
                 task->didFail(String::fromUTF8(error->message));
+            }
         }, this);
 
     g_signal_connect(msg, "starting", G_CALLBACK(+[](SoupMessage* msg, WebSocketTask* task) {
@@ -171,6 +191,23 @@ void WebSocketTask::didConnect(GRefPtr<SoupWebsocketConnection>&& connection)
     static const uint64_t maxPayloadLength = UINT64_C(0x7FFFFFFFFFFFFFFF);
     soup_websocket_connection_set_max_incoming_payload_size(m_connection.get(), maxPayloadLength);
 #endif
+
+    /*
+    GPtrArray* supportedExtensions = g_ptr_array_new();
+    GList* extensions = soup_websocket_connection_get_extensions(m_connection.get());
+    for (auto* it = extensions; it; it = g_list_next(it)) {
+        auto* extension = SOUP_WEBSOCKET_EXTENSION(it->data);
+        g_ptr_array_add(supportedExtensions, (gpointer) SOUP_WEBSOCKET_EXTENSION_GET_CLASS(extension)->name);
+    }
+    */
+    String extensions = acceptedExtensions();
+    fprintf(stderr, "### extensions: %s\n", extensions.utf8().data());
+
+
+    /*
+    GPtrArray* supportedExtensions = g_ptr_array_new();
+    g_ptr_array_add(supportedExtensions, (gpointer) "permessage-deflate");
+    */
 
     g_signal_connect_swapped(m_connection.get(), "message", reinterpret_cast<GCallback>(didReceiveMessageCallback), this);
     g_signal_connect_swapped(m_connection.get(), "error", reinterpret_cast<GCallback>(didReceiveErrorCallback), this);
