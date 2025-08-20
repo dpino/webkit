@@ -321,6 +321,7 @@ static void permissionRequestDialogResponse(GtkWidget *dialog, gint response, Pe
     g_clear_pointer(&requestData, permissionRequestDataFree);
 }
 
+#if ENABLE_WEBXR
 static const gchar *webKitXRSessionModeToString(WebKitXRSessionMode mode)
 {
     switch (mode) {
@@ -335,6 +336,7 @@ static const gchar *webKitXRSessionModeToString(WebKitXRSessionMode mode)
     }
     return "unknown";
 }
+#endif
 
 static gboolean decidePermissionRequest(WebKitWebView *webView, WebKitPermissionRequest *request, BrowserTab *tab)
 {
@@ -413,6 +415,7 @@ static gboolean decidePermissionRequest(WebKitWebView *webView, WebKitPermission
         title = "Clipboard access request";
         text = g_strdup_printf("Do you want to allow \"%s\" to read the contents of the clipboard?", origin);
         g_free(origin);
+#if ENABLE_WEBXR
     } else if (WEBKIT_IS_XR_PERMISSION_REQUEST(request)) {
         title = "XR session request";
         WebKitXRPermissionRequest *xrRequest = WEBKIT_XR_PERMISSION_REQUEST(request);
@@ -421,6 +424,7 @@ static gboolean decidePermissionRequest(WebKitWebView *webView, WebKitPermission
         gchar *originStr = webkit_security_origin_to_string(origin);
         text = g_strdup_printf("Allow XR device access?\norigin=%s mode=%s", originStr, webKitXRSessionModeToString(mode));
         g_free(originStr);
+#endif
     } else {
         g_print("%s request not handled\n", G_OBJECT_TYPE_NAME(request));
         return FALSE;
