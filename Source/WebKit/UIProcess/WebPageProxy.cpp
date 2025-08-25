@@ -1025,17 +1025,13 @@ WebPageProxy::~WebPageProxy()
 #endif
 
     internals().updatePlayingMediaDidChangeTimer.stop();
-<<<<<<< HEAD
 
     ASSERT(webPageProxyMap().get(m_identifier) == this);
     webPageProxyMap().remove(m_identifier);
-||||||| parent of 60a767600224 (chore(webkit): bootstrap build #2205)
-=======
 
 #if PLATFORM(COCOA)
     releaseInspectorDragPasteboard();
 #endif
->>>>>>> 60a767600224 (chore(webkit): bootstrap build #2205)
 }
 
 Ref<WebPageProxy> WebPageProxy::Internals::protectedPage() const
@@ -2784,7 +2780,6 @@ void WebPageProxy::setControlledByAutomation(bool controlled)
     protectedWebsiteDataStore()->protectedNetworkProcess()->send(Messages::NetworkProcess::SetSessionIsControlledByAutomation(m_websiteDataStore->sessionID(), m_controlledByAutomation), 0);
 }
 
-<<<<<<< HEAD
 RefPtr<WebAutomationSession> WebPageProxy::activeAutomationSession() const
 {
     if (!m_controlledByAutomation)
@@ -2792,8 +2787,6 @@ RefPtr<WebAutomationSession> WebPageProxy::activeAutomationSession() const
     return m_configuration->processPool().automationSession();
 }
 
-||||||| parent of 60a767600224 (chore(webkit): bootstrap build #2205)
-=======
 void WebPageProxy::setAuthCredentialsForAutomation(std::optional<WebCore::Credential>&& credentials, std::optional<URL>&& origin)
 {
     m_credentialsForAutomation = WTFMove(credentials);
@@ -2851,7 +2844,6 @@ WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
 WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 }
 
->>>>>>> 60a767600224 (chore(webkit): bootstrap build #2205)
 void WebPageProxy::createInspectorTarget(IPC::Connection& connection, const String& targetId, Inspector::InspectorTargetType type)
 {
     MESSAGE_CHECK_BASE(!targetId.isEmpty(), connection);
