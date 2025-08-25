@@ -319,6 +319,7 @@ static bool wpeViewDRMCommitAtomic(WPEViewDRM* view, WPE::DRM::Buffer* buffer, s
     auto* mode = wpeScreenDRMGetMode(screen);
     auto fd = gbm_device_get_fd(wpe_display_drm_get_device(display));
     if (!crtc.modeIsCurrent(mode)) {
+        printf ("DBG: !crtc.modeIsCurrent(mode)\n");
         flags |= DRM_MODE_ATOMIC_ALLOW_MODESET;
 
         if (!view->priv->modeBlob) {
@@ -339,7 +340,8 @@ static bool wpeViewDRMCommitAtomic(WPEViewDRM* view, WPE::DRM::Buffer* buffer, s
             g_set_error_literal(error, WPE_VIEW_ERROR, WPE_VIEW_ERROR_RENDER_FAILED, "Failed to render buffer: failed to set DRM mode");
             return false;
         }
-    }
+    } else
+        printf ("DBG: crtc.modeIsCurrent(mode)\n");
 
     auto& plane = wpeDisplayDRMGetPrimaryPlane(display);
     if (!addPlaneProperties(request.get(), plane, buffer ? primaryPlaneProperties(plane, crtc.id(), mode, *buffer, damageID) : emptyPlaneProperties(plane))) {
@@ -354,6 +356,8 @@ static bool wpeViewDRMCommitAtomic(WPEViewDRM* view, WPE::DRM::Buffer* buffer, s
         g_set_error(error, WPE_VIEW_ERROR, WPE_VIEW_ERROR_RENDER_FAILED, "Failed to render buffer: failed to commit properties: %s", strerror(errno));
         return false;
     }
+
+    wpeScreenDRMDestroyDumbBufferIfNeeded(screen, fd);
 
     return true;
 }
@@ -380,6 +384,8 @@ static bool wpeViewDRMCommitLegacy(WPEViewDRM* view, const WPE::DRM::Buffer& buf
         g_set_error_literal(error, WPE_VIEW_ERROR, WPE_VIEW_ERROR_RENDER_FAILED, "Failed to render buffer: failed to request page flip");
         return false;
     }
+
+    wpeScreenDRMDestroyDumbBufferIfNeeded(screen, fd);
 
     return true;
 }
