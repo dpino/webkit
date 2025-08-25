@@ -518,6 +518,7 @@ static void wpeViewDRMScheduleCursorUpdate(WPEViewDRM* view)
     vblank.request.type = static_cast<drmVBlankSeqType>(DRM_VBLANK_RELATIVE | crtcBitmask);
     vblank.request.sequence = 0;
     vblank.request.signal = 0;
+    WTFLogAlways("### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     drmWaitVBlank(gbm_device_get_fd(wpe_display_drm_get_device(display)), &vblank);
 
     auto lastVBlank = Seconds::fromMicroseconds(vblank.reply.tval_sec * G_USEC_PER_SEC + vblank.reply.tval_usec);

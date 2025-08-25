@@ -108,6 +108,8 @@ static void wpeScreenSyncObserverDRMStart(WPEScreenSyncObserver* observer)
     priv->destroyThreadTimer.stop();
     if (!priv->thread) {
         priv->thread = Thread::create("WPEScreenSyncObserverDRM"_s, [observer] {
+            const unsigned maxNumTries = 6;
+            unsigned numTries = 0;
             auto* priv = WPE_SCREEN_SYNC_OBSERVER_DRM(observer)->priv;
             while (true) {
                 {
@@ -115,7 +117,7 @@ static void wpeScreenSyncObserverDRMStart(WPEScreenSyncObserver* observer)
                     priv->condition.wait(priv->lock, [priv]() -> bool {
                         return priv->state != State::Stop;
                     });
-                    if (priv->state == State::Invalid || priv->state == State::Failed)
+                    if ((priv->state == State::Invalid && numTries < maxNumTries) || priv->state == State::Failed)
                         return;
                 }
 
@@ -123,6 +125,7 @@ static void wpeScreenSyncObserverDRMStart(WPEScreenSyncObserver* observer)
                 vblank.request.type = static_cast<drmVBlankSeqType>(DRM_VBLANK_RELATIVE | priv->crtcBitmask);
                 vblank.request.sequence = 1;
                 vblank.request.signal = 0;
+                WTFLogAlways("### %s:%s:%d\n", __func__, __FILE__, __LINE__);
                 auto ret = drmWaitVBlank(priv->fd.value(), &vblank);
                 if (!ret || ret == -EPERM) {
                     if (ret == -EPERM) {
@@ -130,6 +133,7 @@ static void wpeScreenSyncObserverDRMStart(WPEScreenSyncObserver* observer)
                         // The display link should be stopped in those cases, but since it isn't, we can at
                         // least sleep for a while pretending the screen is on.
                         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                        numTries++;
                     }
 
                     bool isActive;
