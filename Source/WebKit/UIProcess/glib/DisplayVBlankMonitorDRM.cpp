@@ -233,6 +233,8 @@ std::unique_ptr<DisplayVBlankMonitor> DisplayVBlankMonitorDRM::create(PlatformDi
     vblank.request.type = static_cast<drmVBlankSeqType>(DRM_VBLANK_RELATIVE | crtcBitmask);
     vblank.request.sequence = 0;
     vblank.request.signal = 0;
+
+    WTFLogAlways("### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     auto ret = drmWaitVBlank(drmNodeWithCrtcInfo->drmNodeFd.value(), &vblank);
     if (ret) {
         RELEASE_LOG_FAULT(DisplayLink, "Could not create a vblank monitor for display %u: drmWaitVBlank failed: %s", displayID, safeStrerror(-ret).data());
@@ -255,6 +257,7 @@ bool DisplayVBlankMonitorDRM::waitForVBlank() const
     vblank.request.type = static_cast<drmVBlankSeqType>(DRM_VBLANK_RELATIVE | m_crtcBitmask);
     vblank.request.sequence = 1;
     vblank.request.signal = 0;
+    WTFLogAlways("### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     auto ret = drmWaitVBlank(m_fd.value(), &vblank);
     if (ret == -EPERM) {
         // This can happen when the screen is suspended and the web view hasn't noticed it.

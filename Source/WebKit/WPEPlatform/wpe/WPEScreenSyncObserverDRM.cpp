@@ -125,6 +125,7 @@ static void wpeScreenSyncObserverDRMStart(WPEScreenSyncObserver* observer)
                 vblank.request.type = static_cast<drmVBlankSeqType>(DRM_VBLANK_RELATIVE | priv->crtcBitmask);
                 vblank.request.sequence = 1;
                 vblank.request.signal = 0;
+                WTFLogAlways("### %s:%s:%d\n", __func__, __FILE__, __LINE__);
                 auto ret = drmWaitVBlank(priv->fd.value(), &vblank);
                 if (!ret || ret == -EPERM) {
                     if (ret == -EPERM) {
