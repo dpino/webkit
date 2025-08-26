@@ -28,6 +28,7 @@
 
 #include "WPEScreenDRMPrivate.h"
 #include <wtf/glib/WTFGType.h>
+#include <xf86drm.h>
 
 /**
  * WPEScreenDRM:
@@ -36,6 +37,11 @@
 struct _WPEScreenDRMPrivate {
     std::unique_ptr<WPE::DRM::Crtc> crtc;
     drmModeModeInfo mode;
+    GRefPtr<WPEScreenSyncObserver> syncObserver;
+    struct {
+        uint32_t bufferID;
+        uint32_t frameBufferID;
+    } dumb;
 };
 WEBKIT_DEFINE_FINAL_TYPE(WPEScreenDRM, wpe_screen_drm, WPE_TYPE_SCREEN, WPEScreen)
 
@@ -169,3 +175,52 @@ guint wpe_screen_drm_get_crtc_index(WPEScreenDRM* screen)
 
     return screen->priv->crtc->index();
 }
+
+void wpeScreenDRMCreateDumbBufferIfNeeded(WPEScreenDRM* screen, int fd, uint32_t connectorID)
+{
+    auto* priv = screen->priv;
+    if (priv->crtc->bufferID())
+        return;
+
+    // We need to ensure the CRTC has a buffer for the vblank monitor to work.
+    constexpr uint32_t bitsPerPixel = 32;
+    constexpr uint8_t depth = 24;
+    uint32_t handle, pitch;
+    uint64_t size;
+    auto ret = drmModeCreateDumbBuffer(fd, priv->mode.hdisplay, priv->mode.vdisplay, bitsPerPixel, 0, &handle, &pitch, &size);
+    if (ret) {
+        drmError(ret, "drmModeCreateDumbBuffer");
+        return;
+    }
+
+    uint32_t frameBufferID;
+    ret = drmModeAddFB(fd, priv->mode.hdisplay, priv->mode.vdisplay, depth, bitsPerPixel, pitch, handle, &frameBufferID);
+    if (ret) {
+        drmError(ret, "drmModeAddFB");
+        drmModeDestroyDumbBuffer(fd, handle);
+    }
+
+    ret = drmModeSetCrtc(fd, priv->crtc->id(), frameBufferID, 0, 0, &connectorID, 1, &priv->mode);
+    if (ret) {
+        drmError(ret, "drmModeSetCrtc");
+        drmModeRmFB(fd, frameBufferID);
+        drmModeDestroyDumbBuffer(fd, handle);
+        return;
+    }
+
+    priv->dumb.bufferID = handle;
+    priv->dumb.frameBufferID = frameBufferID;
+}
+
+void wpeScreenDRMDestroyDumbBufferIfNeeded(WPEScreenDRM* screen, int fd)
+{
+    auto* priv = screen->priv;
+    if (!priv->dumb.bufferID)
+        return;
+
+    drmModeRmFB(fd, priv->dumb.frameBufferID);
+    drmModeDestroyDumbBuffer(fd, priv->dumb.bufferID);
+    priv->dumb.bufferID = 0;
+    priv->dumb.frameBufferID = 0;
+}
+>>>>>>> 378c859a6e51 ([WPE] Launching MiniBrowser on DRM mode doesn't pick VSync clock)
