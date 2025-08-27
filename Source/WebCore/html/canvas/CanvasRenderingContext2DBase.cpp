@@ -2377,21 +2377,9 @@ void CanvasRenderingContext2DBase::didDraw(std::optional<FloatRect> rect, Option
     // FIXME: This does not apply the clip because we have no way of reading the clip out of the GraphicsContext.
     if (m_dirtyRect.contains(dirtyRect))
         canvasBase().didDraw(std::nullopt, shouldApplyPostProcessing);
-<<<<<<< HEAD
     else
 #endif
     {
-        // Inflate dirty rect to cover antialiasing on image buffers.
-        if (context->shouldAntialias())
-            dirtyRect.inflate(1);
-||||||| parent of 1904d7f14809 (Avoid inflating canvas 2d's dirty rects https://bugs.webkit.org/show_bug.cgi?id=290529)
-    else {
-        // Inflate dirty rect to cover antialiasing on image buffers.
-        if (context->shouldAntialias())
-            dirtyRect.inflate(1);
-=======
-    else {
->>>>>>> 1904d7f14809 (Avoid inflating canvas 2d's dirty rects https://bugs.webkit.org/show_bug.cgi?id=290529)
 #if USE(COORDINATED_GRAPHICS)
         // In COORDINATED_GRAPHICS graphics layer is tiled and tiling logic handles dirty rects
         // internally and thus no unification of rects is needed here because that causes
