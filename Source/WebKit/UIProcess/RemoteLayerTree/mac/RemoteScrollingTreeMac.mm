@@ -45,6 +45,7 @@
 #import <WebCore/WebCoreCALayerExtras.h>
 #import <pal/spi/cocoa/QuartzCoreSPI.h>
 #import <wtf/TZoneMallocInlines.h>
+#import <wtf/SetForScope.h>
 #import <wtf/text/TextStream.h>
 
 namespace WebKit {
