@@ -12409,16 +12409,10 @@ WebPageCreationParameters WebPageProxy::creationParameters(WebProcessProxy& proc
 
     parameters.httpsUpgradeEnabled = preferences->upgradeKnownHostsToHTTPSEnabled() ? m_configuration->httpsUpgradeEnabled() : false;
     parameters.allowJSHandleInPageContentWorld = m_configuration->allowJSHandleInPageContentWorld();
-<<<<<<< HEAD
     parameters.allowPostingLegacySynchronousMessages = m_configuration->allowPostingLegacySynchronousMessages();
-
-||||||| parent of 16dd654c3b16 (chore(webkit): bootstrap build #2206)
-    
-=======
 
     parameters.shouldPauseInInspectorWhenShown = m_inspectorController->shouldPauseInInspectorWhenShown();
     
->>>>>>> 16dd654c3b16 (chore(webkit): bootstrap build #2206)
 #if ENABLE(APP_HIGHLIGHTS)
     parameters.appHighlightsVisible = appHighlightsVisibility() ? HighlightVisibility::Visible : HighlightVisibility::Hidden;
 #endif
