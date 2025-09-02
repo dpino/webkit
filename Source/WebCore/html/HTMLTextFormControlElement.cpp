@@ -83,12 +83,14 @@ HTMLTextFormControlElement::HTMLTextFormControlElement(const QualifiedName& tagN
     : HTMLFormControlElement(tagName, document, form)
     , m_cachedSelectionDirection(document.frame() && document.frame()->editor().behavior().shouldConsiderSelectionAsDirectional() ? SelectionHasForwardDirection : SelectionHasNoDirection)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 }
 
 HTMLTextFormControlElement::~HTMLTextFormControlElement() = default;
 
 bool HTMLTextFormControlElement::childShouldCreateRenderer(const Node& child) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // FIXME: We shouldn't force the pseudo elements down into the shadow, but
     // this perserves the current behavior of WebKit.
     if (child.isPseudoElement())
@@ -98,6 +100,7 @@ bool HTMLTextFormControlElement::childShouldCreateRenderer(const Node& child) co
 
 Node::InsertedIntoAncestorResult HTMLTextFormControlElement::insertedIntoAncestor(InsertionType insertionType, ContainerNode& parentOfInsertedTree)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     InsertedIntoAncestorResult InsertedIntoAncestorResult = HTMLFormControlElement::insertedIntoAncestor(insertionType, parentOfInsertedTree);
     if (insertionType.connectedToDocument) {
         String initialValue = value();
@@ -108,6 +111,7 @@ Node::InsertedIntoAncestorResult HTMLTextFormControlElement::insertedIntoAncesto
 
 static String pointerTypeFromHitTestRequest(HitTestRequest request)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
 #if ENABLE(PENCIL_HOVER)
     if (request.penEvent())
         return WebCore::penPointerEventType();
@@ -121,6 +125,7 @@ static String pointerTypeFromHitTestRequest(HitTestRequest request)
 
 void HTMLTextFormControlElement::setHovered(bool over, Style::InvalidationScope invalidationScope, HitTestRequest request)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (over == hovered())
         return;
 
@@ -133,6 +138,7 @@ void HTMLTextFormControlElement::setHovered(bool over, Style::InvalidationScope 
 
 void HTMLTextFormControlElement::dispatchFocusEvent(RefPtr<Element>&& oldFocusedElement, const FocusOptions& options)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (supportsPlaceholder())
         updatePlaceholderVisibility();
     handleFocusEvent(oldFocusedElement.get(), options.direction);
@@ -141,6 +147,7 @@ void HTMLTextFormControlElement::dispatchFocusEvent(RefPtr<Element>&& oldFocused
 
 void HTMLTextFormControlElement::dispatchBlurEvent(RefPtr<Element>&& newFocusedElement)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (supportsPlaceholder())
         updatePlaceholderVisibility();
     // Match the order in Document::setFocusedElement.
@@ -150,6 +157,7 @@ void HTMLTextFormControlElement::dispatchBlurEvent(RefPtr<Element>&& newFocusedE
 
 void HTMLTextFormControlElement::didEditInnerTextValue(bool wasUserEdit)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!renderer() || !isTextField())
         return;
 
@@ -161,6 +169,7 @@ void HTMLTextFormControlElement::didEditInnerTextValue(bool wasUserEdit)
 
 void HTMLTextFormControlElement::forwardEvent(Event& event)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto& eventNames = WebCore::eventNames();
     if (event.type() == eventNames.blurEvent || event.type() == eventNames.focusEvent)
         return;
@@ -173,12 +182,14 @@ static bool isNotLineBreak(char16_t ch) { return ch != newlineCharacter && ch !=
 
 bool HTMLTextFormControlElement::isPlaceholderEmpty() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     const AtomString& attributeValue = attributeWithoutSynchronization(placeholderAttr);
     return attributeValue.string().find(isNotLineBreak) == notFound;
 }
 
 bool HTMLTextFormControlElement::placeholderShouldBeVisible() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // This function is used by the style resolver to match the :placeholder-shown pseudo class.
     // Since it is used for styling, it must not use any value depending on the style.
     return supportsPlaceholder() && isEmptyValue() && !isPlaceholderEmpty() && m_canShowPlaceholder && !(hovered() && m_pointerType == penPointerEventType());
@@ -186,6 +197,7 @@ bool HTMLTextFormControlElement::placeholderShouldBeVisible() const
 
 void HTMLTextFormControlElement::updatePlaceholderVisibility()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool newIsPlaceholderVisible = placeholderShouldBeVisible();
     if (m_isPlaceholderVisible == newIsPlaceholderVisible)
         return;
@@ -199,27 +211,32 @@ void HTMLTextFormControlElement::updatePlaceholderVisibility()
 
 void HTMLTextFormControlElement::setCanShowPlaceholder(bool canShowPlaceholder)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     m_canShowPlaceholder = canShowPlaceholder;
     updatePlaceholderVisibility();
 }
 
 void HTMLTextFormControlElement::setSelectionStart(unsigned start)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setSelectionRange(start, std::max(start, selectionEnd()), selectionDirection());
 }
 
 void HTMLTextFormControlElement::setSelectionEnd(unsigned end)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setSelectionRange(std::min(end, selectionStart()), end, selectionDirection());
 }
 
 void HTMLTextFormControlElement::setSelectionDirection(const String& direction)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     setSelectionRange(selectionStart(), selectionEnd(), direction);
 }
 
 void HTMLTextFormControlElement::select(SelectionRevealMode revealMode, const AXTextStateChangeIntent& intent)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     FocusOptions focusOptions { .preventScroll = true };
     focus(focusOptions);
     if (setSelectionRange(0, std::numeric_limits<unsigned>::max(), SelectionHasNoDirection, revealMode, intent))
@@ -228,6 +245,7 @@ void HTMLTextFormControlElement::select(SelectionRevealMode revealMode, const AX
 
 String HTMLTextFormControlElement::selectedText() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return String();
     return value()->substring(selectionStart(), selectionEnd() - selectionStart());
@@ -235,6 +253,7 @@ String HTMLTextFormControlElement::selectedText() const
 
 void HTMLTextFormControlElement::dispatchFormControlChangeEvent()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto value = this->value();
     if (m_textAsOfLastFormControlChangeEvent != value.get()) {
         setTextAsOfLastFormControlChangeEvent(String { value });
@@ -246,11 +265,13 @@ void HTMLTextFormControlElement::dispatchFormControlChangeEvent()
 
 ExceptionOr<void> HTMLTextFormControlElement::setRangeText(StringView replacement)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return setRangeText(replacement, selectionStart(), selectionEnd(), String());
 }
 
 ExceptionOr<void> HTMLTextFormControlElement::setRangeText(StringView replacement, unsigned start, unsigned end, const String& selectionMode)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (start > end)
         return Exception { ExceptionCode::IndexSizeError };
 
@@ -300,6 +321,7 @@ ExceptionOr<void> HTMLTextFormControlElement::setRangeText(StringView replacemen
 
 void HTMLTextFormControlElement::setSelectionRange(unsigned start, unsigned end, const String& directionString, const AXTextStateChangeIntent& intent, ForBindings forBindings)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     TextFieldSelectionDirection direction = SelectionHasNoDirection;
     if (directionString == "forward"_s)
         direction = SelectionHasForwardDirection;
@@ -312,6 +334,7 @@ void HTMLTextFormControlElement::setSelectionRange(unsigned start, unsigned end,
 
 bool HTMLTextFormControlElement::setSelectionRange(unsigned start, unsigned end, TextFieldSelectionDirection direction, SelectionRevealMode revealMode, const AXTextStateChangeIntent& intent, ForBindings forBindings)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return false;
 
@@ -395,6 +418,7 @@ bool HTMLTextFormControlElement::setSelectionRange(unsigned start, unsigned end,
 
 bool HTMLTextFormControlElement::cacheSelection(unsigned start, unsigned end, TextFieldSelectionDirection direction)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     bool didChange = m_cachedSelectionStart != start || m_cachedSelectionEnd != end || m_cachedSelectionDirection != direction;
     m_cachedSelectionStart = start;
     m_cachedSelectionEnd = end;
@@ -405,6 +429,7 @@ bool HTMLTextFormControlElement::cacheSelection(unsigned start, unsigned end, Te
 
 int HTMLTextFormControlElement::indexForVisiblePosition(const VisiblePosition& position) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto innerText = innerTextElement();
     if (!innerText || !innerText->contains(position.deepEquivalent().anchorNode()))
         return 0;
@@ -415,6 +440,7 @@ int HTMLTextFormControlElement::indexForVisiblePosition(const VisiblePosition& p
 
 VisiblePosition HTMLTextFormControlElement::visiblePositionForIndex(int index) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(innerTextElement());
     VisiblePosition position = positionForIndex(innerTextElement().get(), index);
     ASSERT(indexForVisiblePosition(position) == index);
@@ -423,6 +449,7 @@ VisiblePosition HTMLTextFormControlElement::visiblePositionForIndex(int index) c
 
 unsigned HTMLTextFormControlElement::selectionStart() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return 0;
     if (document().focusedElement() != this && hasCachedSelection())
@@ -433,6 +460,7 @@ unsigned HTMLTextFormControlElement::selectionStart() const
 
 unsigned HTMLTextFormControlElement::computeSelectionStart() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(isTextField());
     RefPtr frame { document().frame() };
     if (!frame)
@@ -443,6 +471,7 @@ unsigned HTMLTextFormControlElement::computeSelectionStart() const
 
 unsigned HTMLTextFormControlElement::selectionEnd() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return 0;
     if (document().focusedElement() != this && hasCachedSelection())
@@ -452,6 +481,7 @@ unsigned HTMLTextFormControlElement::selectionEnd() const
 
 unsigned HTMLTextFormControlElement::computeSelectionEnd() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(isTextField());
     RefPtr frame { document().frame() };
     if (!frame)
@@ -480,6 +510,7 @@ static const AtomString& directionString(TextFieldSelectionDirection direction)
 
 const AtomString& HTMLTextFormControlElement::selectionDirection() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return directionString(SelectionHasNoDirection);
     if (document().focusedElement() != this && hasCachedSelection())
@@ -490,6 +521,7 @@ const AtomString& HTMLTextFormControlElement::selectionDirection() const
 
 TextFieldSelectionDirection HTMLTextFormControlElement::computeSelectionDirection() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     ASSERT(isTextField());
     RefPtr frame { document().frame() };
     if (!frame)
@@ -501,6 +533,7 @@ TextFieldSelectionDirection HTMLTextFormControlElement::computeSelectionDirectio
 
 static void setContainerAndOffsetForRange(Node& node, unsigned offset, RefPtr<Node>& containerNode, unsigned& offsetInContainer)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (node.isTextNode()) {
         containerNode = node;
         offsetInContainer = offset;
@@ -512,6 +545,7 @@ static void setContainerAndOffsetForRange(Node& node, unsigned offset, RefPtr<No
 
 std::optional<SimpleRange> HTMLTextFormControlElement::selection() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!renderer() || !isTextField() || !hasCachedSelection())
         return std::nullopt;
 
@@ -557,12 +591,14 @@ std::optional<SimpleRange> HTMLTextFormControlElement::selection() const
 
 void HTMLTextFormControlElement::restoreCachedSelection(SelectionRevealMode revealMode, const AXTextStateChangeIntent& intent)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (setSelectionRange(m_cachedSelectionStart, m_cachedSelectionEnd, cachedSelectionDirection(), revealMode, intent))
         scheduleSelectEvent();
 }
 
 bool HTMLTextFormControlElement::selectionChanged(bool shouldFireSelectEvent)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return false;
 
@@ -582,6 +618,7 @@ bool HTMLTextFormControlElement::selectionChanged(bool shouldFireSelectEvent)
 
 void HTMLTextFormControlElement::scheduleSelectionChangeEvent()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (m_hasScheduledSelectionChangeEvent)
         return;
 
@@ -594,12 +631,14 @@ void HTMLTextFormControlElement::scheduleSelectionChangeEvent()
 
 void HTMLTextFormControlElement::scheduleSelectEvent()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     queueTaskToDispatchEvent(TaskSource::UserInteraction, Event::create(eventNames().selectEvent, Event::CanBubble::Yes, Event::IsCancelable::No));
     scheduleSelectionChangeEvent();
 }
 
 void HTMLTextFormControlElement::attributeChanged(const QualifiedName& name, const AtomString& oldValue, const AtomString& newValue, AttributeModificationReason attributeModificationReason)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (name == placeholderAttr) {
         updatePlaceholderText();
         updatePlaceholderVisibility();
@@ -609,6 +648,7 @@ void HTMLTextFormControlElement::attributeChanged(const QualifiedName& name, con
 
 void HTMLTextFormControlElement::effectiveSpellcheckAttributeChanged(bool isSpellcheckEnabled)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!hasCachedSelection())
         return;
 
@@ -625,29 +665,34 @@ void HTMLTextFormControlElement::effectiveSpellcheckAttributeChanged(bool isSpel
 
 void HTMLTextFormControlElement::disabledStateChanged()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     HTMLFormControlElement::disabledStateChanged();
     updateInnerTextElementEditability();
 }
 
 void HTMLTextFormControlElement::readOnlyStateChanged()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     HTMLFormControlElement::readOnlyStateChanged();
     updateInnerTextElementEditability();
 }
 
 bool HTMLTextFormControlElement::isInnerTextElementEditable() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     return isMutable();
 }
 
 void HTMLTextFormControlElement::updateInnerTextElementEditability()
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (auto innerText = innerTextElement())
         innerText->updateInnerTextElementEditability(isInnerTextElementEditable());
 }
 
 bool HTMLTextFormControlElement::lastChangeWasUserEdit() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (!isTextField())
         return false;
     return m_lastChangeWasUserEdit;
@@ -655,6 +700,7 @@ bool HTMLTextFormControlElement::lastChangeWasUserEdit() const
 
 static void stripTrailingNewline(StringBuilder& result)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // Remove one trailing newline; there's always one that's collapsed out by rendering.
     size_t size = result.length();
     if (size && result[size - 1] == newlineCharacter)
@@ -663,6 +709,7 @@ static void stripTrailingNewline(StringBuilder& result)
 
 static String innerTextValueFrom(TextControlInnerTextElement& innerText)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     StringBuilder result;
     for (RefPtr<Node> node = innerText.firstChild(); node; node = NodeTraversal::next(*node, &innerText)) {
         if (is<HTMLBRElement>(*node))
@@ -676,6 +723,7 @@ static String innerTextValueFrom(TextControlInnerTextElement& innerText)
 
 void HTMLTextFormControlElement::setInnerTextValue(String&& value)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     LayoutDisallowedScope layoutDisallowedScope(LayoutDisallowedScope::Reason::PerformanceOptimization);
     auto innerText = innerTextElementCreatingShadowSubtreeIfNeeded();
     if (!innerText)
@@ -689,6 +737,7 @@ void HTMLTextFormControlElement::setInnerTextValue(String&& value)
         if (textIsChanged && renderer()) {
 #if USE(ATSPI)
             if (auto* input = dynamicDowncast<HTMLInputElement>(*this); input && input->isPasswordField()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
                 // Get the rendered text instead to not expose actual value to accessibility.
                 RenderObject* renderer = this->renderer();
                 while (renderer && !is<RenderText>(renderer))
@@ -715,6 +764,7 @@ void HTMLTextFormControlElement::setInnerTextValue(String&& value)
 
 #if PLATFORM(COCOA) || USE(ATSPI)
         if (textIsChanged && renderer()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
             if (AXObjectCache* cache = document().existingAXObjectCache())
                 cache->deferTextReplacementNotificationForTextControl(*this, previousValue);
         }
@@ -726,12 +776,14 @@ void HTMLTextFormControlElement::setInnerTextValue(String&& value)
 
 String HTMLTextFormControlElement::innerTextValue() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto innerText = innerTextElement();
     return innerText ? innerTextValueFrom(*innerText) : emptyString();
 }
 
 static Position positionForIndex(TextControlInnerTextElement* innerText, unsigned index)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     unsigned remainingCharactersToMoveForward = index;
     RefPtr<Node> lastBrOrText = innerText;
     for (RefPtr<Node> node = innerText; node; node = NodeTraversal::next(*node, innerText)) {
@@ -752,6 +804,7 @@ static Position positionForIndex(TextControlInnerTextElement* innerText, unsigne
 
 unsigned HTMLTextFormControlElement::indexForPosition(const Position& passedPosition) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto innerText = innerTextElement();
     if (!innerText || !innerText->contains(passedPosition.anchorNode()) || passedPosition.isNull())
         return 0;
@@ -795,6 +848,7 @@ unsigned HTMLTextFormControlElement::indexForPosition(const Position& passedPosi
 
 String HTMLTextFormControlElement::valueWithHardLineBreaks() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // FIXME: It's not acceptable to ignore the HardWrap setting when there is no renderer.
     // While we have no evidence this has ever been a practical problem, it would be best to fix it some day.
     if (!isTextField())
@@ -872,6 +926,7 @@ HTMLTextFormControlElement* enclosingTextFormControl(const Position& position)
 
 String HTMLTextFormControlElement::directionForFormData() const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     auto direction = [this] {
         for (auto& element : lineageOfType<HTMLElement>(*this)) {
             auto& value = element.attributeWithoutSynchronization(dirAttr);
@@ -890,6 +945,7 @@ String HTMLTextFormControlElement::directionForFormData() const
 
 ExceptionOr<void> HTMLTextFormControlElement::setMaxLength(int maxLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (maxLength < 0 || (m_minLength >= 0 && maxLength < m_minLength))
         return Exception { ExceptionCode::IndexSizeError };
     setIntegralAttribute(maxlengthAttr, maxLength);
@@ -898,6 +954,7 @@ ExceptionOr<void> HTMLTextFormControlElement::setMaxLength(int maxLength)
 
 ExceptionOr<void> HTMLTextFormControlElement::setMinLength(int minLength)
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     if (minLength < 0 || (m_maxLength >= 0 && minLength > m_maxLength))
         return Exception { ExceptionCode::IndexSizeError };
     setIntegralAttribute(minlengthAttr, minLength);
@@ -906,6 +963,7 @@ ExceptionOr<void> HTMLTextFormControlElement::setMinLength(int minLength)
 
 void HTMLTextFormControlElement::adjustInnerTextStyle(const RenderStyle& parentStyle, RenderStyle& textBlockStyle) const
 {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
     // The inner block, if present, always has its direction set to LTR,
     // so we need to inherit the direction and unicode-bidi style from the element.
     textBlockStyle.setDirection(parentStyle.writingMode().computedTextDirection());
@@ -923,6 +981,7 @@ void HTMLTextFormControlElement::adjustInnerTextStyle(const RenderStyle& parentS
 
 #if PLATFORM(IOS_FAMILY)
     if (textBlockStyle.textSecurity() != TextSecurity::None && textBlockStyle.writingMode().isBidiRTL()) {
+	fprintf(stderr, "%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
         // Preserve the alignment but force the direction to LTR so that the last-typed, unmasked character
         // (which cannot have RTL directionality) will appear to the right of the masked characters. See <rdar://problem/7024375>.
         
