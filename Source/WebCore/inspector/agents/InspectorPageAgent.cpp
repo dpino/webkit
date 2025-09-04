@@ -32,6 +32,7 @@
 #include "config.h"
 #include "InspectorPageAgent.h"
 
+#include "AccessibilityObjectInlines.h"
 #include "AXCoreObject.h"
 #include "AXObjectCache.h"
 #include "BackForwardController.h"
