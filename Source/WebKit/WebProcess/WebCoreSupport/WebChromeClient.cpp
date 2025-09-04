@@ -535,7 +535,16 @@ void WebChromeClient::addMessageToConsole(MessageSource source, MessageLevel lev
     if (!page)
         return;
 
+<<<<<<< HEAD
 #if !PLATFORM(COCOA)
+||||||| parent of 77d3d2700f96 (chore(webkit): bootstrap build #2207)
+    // FIXME: Remove this after rdar://143399667 is fixed.
+=======
+    if (level == MessageLevel::Error)
+        page->send(Messages::WebPageProxy::LogToStderr(message));
+
+    // FIXME: Remove this after rdar://143399667 is fixed.
+>>>>>>> 77d3d2700f96 (chore(webkit): bootstrap build #2207)
     page->injectedBundleUIClient().willAddMessageToConsole(page.get(), source, level, message, lineNumber, columnNumber, sourceID);
 #endif
 
