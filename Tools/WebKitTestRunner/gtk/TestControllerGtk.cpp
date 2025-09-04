@@ -122,13 +122,34 @@ void TestController::setHidden(bool hidden)
         gtk_widget_map(GTK_WIDGET(m_mainWebView->platformView()));
 }
 
-void TestController::runModal(PlatformWebView*)
+void static toggleModal(GtkWindow* window)
 {
-    // FIXME: Need to implement this to test showModalDialog.
+    static bool modal = false;
+    static GtkWindow* lastWindow;
+
+    if (window) {
+        fprintf(stderr, "### Initialize lastWindow %s:%s:%d\n", __func__, __FILE__, __LINE__);
+        lastWindow = window;
+    }
+
+    modal = !modal;
+    fprintf(stderr, "### setModal: %s %s:%s:%d\n", modal ? "TRUE" : "FALSE",  __func__, __FILE__, __LINE__);
+    gtk_window_set_modal(lastWindow, modal);
+}
+
+void TestController::runModal(PlatformWebView* view)
+{
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
+    if (!view)
+        return;
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
+    toggleModal(GTK_WINDOW(view->platformWindow()));
 }
 
 void TestController::abortModal()
 {
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
+    toggleModal(nullptr);
 }
 
 const char* TestController::platformLibraryPathForTesting()
