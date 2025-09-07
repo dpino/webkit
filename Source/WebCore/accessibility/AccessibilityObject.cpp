@@ -3869,24 +3869,18 @@ AccessibilityObjectInclusion AccessibilityObject::defaultObjectInclusion() const
     if (role() == AccessibilityRole::ApplicationDialog)
         return AccessibilityObjectInclusion::IncludeObject;
 
-<<<<<<< HEAD
     if (isHiddenUntilFound) {
         // We don't want to ignore hidden-until-found containers because we
         // want AXSearchManager::findMatchingObjects to walk over them in order
         // to search within them for revealable text matching the search query string.
         return AccessibilityObjectInclusion::IncludeObject;
     }
-    return accessibilityPlatformIncludesObject();
-||||||| parent of d3e0baca73bb (chore(webkit): bootstrap build #2208)
-    return accessibilityPlatformIncludesObject();
-=======
     AccessibilityObjectInclusion platformBehavior = accessibilityPlatformIncludesObject();
     if (platformBehavior != AccessibilityObjectInclusion::DefaultBehavior) {
         if (auto* page = this->page())
             InspectorInstrumentation::maybeOverrideDefaultObjectInclusion(*page, platformBehavior);
     }
     return platformBehavior;
->>>>>>> d3e0baca73bb (chore(webkit): bootstrap build #2208)
 }
 
 bool AccessibilityObject::isWithinHiddenWebArea() const
