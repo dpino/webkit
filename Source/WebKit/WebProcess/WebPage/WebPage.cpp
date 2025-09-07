@@ -8171,17 +8171,13 @@ void WebPage::didCommitLoad(WebFrame* frame)
     m_needsFixedContainerEdgesUpdate = true;
 
     flushDeferredDidReceiveMouseEvent();
-<<<<<<< HEAD
 
     if (frame && frame->isMainFrame())
         m_networkResourceRequestIdentifiersForPageLoadTiming.clear();
-||||||| parent of d3e0baca73bb (chore(webkit): bootstrap build #2208)
-=======
 // Playwright begin
     if (frame->isMainFrame())
         send(Messages::WebPageProxy::ViewScaleFactorDidChange(viewScaleFactor()));
 // Playwright end
->>>>>>> d3e0baca73bb (chore(webkit): bootstrap build #2208)
 }
 
 void WebPage::didFinishDocumentLoad(WebFrame& frame)
