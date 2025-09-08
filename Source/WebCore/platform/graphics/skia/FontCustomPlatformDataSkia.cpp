@@ -133,11 +133,25 @@ bool FontCustomPlatformData::supportsFormat(const String& format)
         || equalLettersIgnoringASCIICase(format, "svg"_s);
 }
 
-bool FontCustomPlatformData::supportsTechnology(const FontTechnology&)
+bool FontCustomPlatformData::supportsTechnology(const FontTechnology& tech)
 {
-    // FIXME: define supported technologies for this platform (webkit.org/b/256310).
-    notImplemented();
-    return true;
+    switch (tech) {
+    case FontTechnology::ColorColrv0:
+    case FontTechnology::ColorSbix:
+    case FontTechnology::ColorSvg:
+    case FontTechnology::FeaturesAat:
+    case FontTechnology::FeaturesOpentype:
+    case FontTechnology::Palettes:
+#if ENABLE(VARIATION_FONTS)
+    case FontTechnology::Variations:
+#endif
+		return true;
+    case FontTechnology::ColorCbdt:
+    case FontTechnology::ColorColrv1:
+    case FontTechnology::FeaturesGraphite:
+    case FontTechnology::Incremental:
+    case FontTechnology::Invalid:
+		return false;
 }
 
 std::optional<Ref<FontCustomPlatformData>> FontCustomPlatformData::tryMakeFromSerializationData(FontCustomPlatformSerializedData&& data, bool)
