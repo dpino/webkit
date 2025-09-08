@@ -166,11 +166,12 @@ set(WPE_API_HEADER_TEMPLATES
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitAutomationSession.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitBackForwardList.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitBackForwardListItem.h.in
-    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitCredential.h.in
-    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitContextMenu.h.in
+    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitColorChooserRequest.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitContextMenuActions.h.in
+    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitContextMenu.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitContextMenuItem.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitCookieManager.h.in
+    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitCredential.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitDefines.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitDeviceInfoPermissionRequest.h.in
     ${WEBKIT_DIR}/UIProcess/API/glib/WebKitDownload.h.in

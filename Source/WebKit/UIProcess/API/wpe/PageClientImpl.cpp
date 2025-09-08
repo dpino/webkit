@@ -35,6 +35,7 @@
 #include "WPEWebViewLegacy.h"
 #include "WPEWebViewPlatform.h"
 #include "WebColorPicker.h"
+#include "WebColorPickerWPE.h"
 #include "WebContextMenuProxy.h"
 #include "WebContextMenuProxyWPE.h"
 #include "WebDataListSuggestionsDropdown.h"
@@ -305,9 +306,10 @@ Ref<WebContextMenuProxy> PageClientImpl::createContextMenuProxy(WebPageProxy& pa
 }
 #endif
 
-RefPtr<WebColorPicker> PageClientImpl::createColorPicker(WebPageProxy&, const WebCore::Color& intialColor, const WebCore::IntRect&, ColorControlSupportsAlpha supportsAlpha, Vector<WebCore::Color>&&)
+RefPtr<WebColorPicker> PageClientImpl::createColorPicker(WebPageProxy& page, const WebCore::Color& intialColor, const WebCore::IntRect& rect, ColorControlSupportsAlpha supportsAlpha, Vector<WebCore::Color>&&)
 {
-    return nullptr;
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
+    return WebColorPickerWPE::create(page, intialColor, rect);
 }
 
 RefPtr<WebDataListSuggestionsDropdown> PageClientImpl::createDataListSuggestionsDropdown(WebPageProxy&)

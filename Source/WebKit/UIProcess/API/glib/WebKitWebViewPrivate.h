@@ -100,9 +100,7 @@ void webkitWebViewSelectionDidChange(WebKitWebView*);
 WebKitWebsiteDataManager* webkitWebViewGetWebsiteDataManager(WebKitWebView*);
 void webkitWebViewPermissionStateQuery(WebKitWebView*, WebKitPermissionStateQuery*);
 
-#if PLATFORM(GTK)
 bool webkitWebViewEmitRunColorChooser(WebKitWebView*, WebKitColorChooserRequest*);
-#endif
 
 void webkitWebViewEmitThemeColorChanged(WebKitWebView*);
 

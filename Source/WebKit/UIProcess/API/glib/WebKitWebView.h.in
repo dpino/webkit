@@ -28,6 +28,7 @@
 
 #include <@API_INCLUDE_PREFIX@/WebKitAuthenticationRequest.h>
 #include <@API_INCLUDE_PREFIX@/WebKitBackForwardList.h>
+#include <@API_INCLUDE_PREFIX@/WebKitColorChooserRequest.h>
 #include <@API_INCLUDE_PREFIX@/WebKitContextMenu.h>
 #include <@API_INCLUDE_PREFIX@/WebKitDefines.h>
 #include <@API_INCLUDE_PREFIX@/WebKitEditorState.h>
@@ -361,9 +362,9 @@ struct _WebKitWebViewClass {
     gboolean   (* show_notification)           (WebKitWebView               *web_view,
                                                 WebKitNotification          *notification);
 
-#if PLATFORM(GTK)
     gboolean   (* run_color_chooser)           (WebKitWebView               *web_view,
                                                 WebKitColorChooserRequest   *request);
+#if PLATFORM(GTK)
     gboolean   (* show_option_menu)            (WebKitWebView               *web_view,
                                                 WebKitOptionMenu            *menu,
 #if !USE(GTK4)

@@ -199,6 +199,8 @@ UIProcess/API/soup/HTTPCookieStoreSoup.cpp
 UIProcess/API/wpe/InputMethodFilterWPE.cpp @no-unify
 UIProcess/API/wpe/PageClientImpl.cpp @no-unify
 UIProcess/API/wpe/WebKitColor.cpp @no-unify
+UIProcess/API/wpe/WebKitColorChooser.cpp @no-unify
+UIProcess/API/wpe/WebKitColorChooserRequest.cpp @no-unify
 UIProcess/API/wpe/WebKitInputMethodContextWPE.cpp @no-unify
 UIProcess/API/wpe/WebKitInputMethodContextImplWPE.cpp @no-unify
 UIProcess/API/wpe/WebKitPopupMenu.cpp @no-unify
@@ -267,6 +269,7 @@ UIProcess/wpe/DisplayVBlankMonitorWPE.cpp
 UIProcess/wpe/ScreenManagerWPE.cpp
 UIProcess/wpe/SystemSettingsManagerProxyWPE.cpp
 UIProcess/wpe/WPEUtilities.cpp
+UIProcess/wpe/WebColorPickerWPE.cpp
 UIProcess/wpe/WebPageProxyWPE.cpp
 UIProcess/wpe/WebPasteboardProxyWPE.cpp
 UIProcess/wpe/WebPreferencesWPE.cpp

@@ -188,9 +188,8 @@ enum {
 
     SHOW_NOTIFICATION,
 
-#if PLATFORM(GTK)
     RUN_COLOR_CHOOSER,
-#endif
+
     SHOW_OPTION_MENU,
 
     USER_MESSAGE_RECEIVED,
@@ -2494,7 +2493,6 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
         G_TYPE_BOOLEAN, 1,
         WEBKIT_TYPE_NOTIFICATION);
 
-#if PLATFORM(GTK)
      /**
       * WebKitWebView::run-color-chooser:
       * @web_view: the #WebKitWebView on which the signal is emitted
@@ -2528,7 +2526,6 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
         g_cclosure_marshal_generic,
         G_TYPE_BOOLEAN, 1,
         WEBKIT_TYPE_COLOR_CHOOSER_REQUEST);
-#endif // PLATFORM(GTK)
 
     // This signal is different for WPE and GTK, so it's declared in
     // WebKitWebView[Gtk,WPE].cpp to ensure we don't break the introspection.

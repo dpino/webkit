@@ -29,8 +29,17 @@
 #ifndef WebKitColorChooserRequest_h
 #define WebKitColorChooserRequest_h
 
+#include <glib-object.h>
+#include <@API_INCLUDE_PREFIX@/WebKitDefines.h>
+
+#if PLATFORM(GTK)
 #include <gtk/gtk.h>
-#include <webkit/WebKitDefines.h>
+#endif
+
+#if PLATFORM(WPE)
+#include "wpe/WebKitColor.h"
+#include "wpe/WebKitRectangle.h"
+#endif
 
 G_BEGIN_DECLS
 
@@ -49,6 +58,7 @@ struct _WebKitColorChooserRequestClass {
 
 WEBKIT_DECLARE_FINAL_TYPE (WebKitColorChooserRequest, webkit_color_chooser_request, WEBKIT, COLOR_CHOOSER_REQUEST, GObject)
 
+#if PLATFORM(GTK)
 WEBKIT_API void
 webkit_color_chooser_request_get_rgba              (WebKitColorChooserRequest *request,
                                                     GdkRGBA                   *rgba);
@@ -60,6 +70,21 @@ webkit_color_chooser_request_set_rgba              (WebKitColorChooserRequest *r
 WEBKIT_API void
 webkit_color_chooser_request_get_element_rectangle (WebKitColorChooserRequest *request,
                                                     GdkRectangle              *rect);
+#endif
+
+#if PLATFORM(WPE)
+WEBKIT_API void
+webkit_color_chooser_request_get_rgba              (WebKitColorChooserRequest *request,
+                                                    WebKitColor               *rgba);
+
+WEBKIT_API void
+webkit_color_chooser_request_set_rgba              (WebKitColorChooserRequest *request,
+                                                    const WebKitColor         *rgba);
+
+WEBKIT_API void
+webkit_color_chooser_request_get_element_rectangle (WebKitColorChooserRequest *request,
+                                                    WebKitRectangle           *rect);
+#endif
 
 WEBKIT_API void
 webkit_color_chooser_request_finish                (WebKitColorChooserRequest *request);
