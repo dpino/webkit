@@ -202,9 +202,17 @@ function waitFor(condition)
 {
     return new Promise((resolve, reject) => {
         let interval = setInterval(() => {
-            if (condition()) {
+            try {
+                if (condition()) {
+                    clearInterval(interval);
+                    resolve(true);
+                } else {
+                    clearInterval(interval);
+                    resolve(false);
+                }
+            } catch (error) {
                 clearInterval(interval);
-                resolve();
+                reject(error);
             }
         }, 0);
     });
@@ -281,10 +289,17 @@ async function expectAsync(expression, expectedValue) {
         debug("WARN: The expression arg in expectAsync should be a string.");
 
     const evalExpression = `${expression} === ${expectedValue}`;
-    await waitFor(() => {
+    return await waitFor(() => {
         return eval(evalExpression);
+    }).then((res) => {
+        if (res) {
+            return `PASS: ${evalExpression}\n`;
+        } else {
+            return `FAIL: ${evalExpression}\n`;
+        }
+    }).catch((error) => {
+        return `FAIL: ${error}\n`;
     });
-    return `PASS: ${evalExpression}\n`;
 }
 
 async function expectAsyncExpression(expression, expectedValue) {
@@ -294,8 +309,15 @@ async function expectAsyncExpression(expression, expectedValue) {
     const evalExpression = `${expression} === ${expectedValue}`;
     await waitFor(() => {
         return eval(evalExpression);
+    }).then((res) => {
+        if (res) {
+            debug(`PASS ${evalExpression}`);
+        } else {
+            debug(`FAIL ${evalExpression}`);
+        }
+    }).catch((error) => {
+        debug(`FAIL ${error}`);
     });
-    debug(`PASS ${evalExpression}`);
 }
 
 async function waitForFocus(id) {
