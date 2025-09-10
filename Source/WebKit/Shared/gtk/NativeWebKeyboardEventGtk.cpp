@@ -51,13 +51,7 @@ NativeWebKeyboardEvent::NativeWebKeyboardEvent(const String& text, std::optional
 }
 
 NativeWebKeyboardEvent::NativeWebKeyboardEvent(WebEventType type, const String& text, const String& key, const String& code, const String& keyIdentifier, int windowsVirtualKeyCode, int nativeVirtualKeyCode, Vector<String>&& commands, bool isAutoRepeat, bool isKeypad, OptionSet<WebEventModifier> modifiers)
-<<<<<<< HEAD
-    : WebKeyboardEvent(WebEvent(type, modifiers, MonotonicTime::now()), text, key, code, keyIdentifier, windowsVirtualKeyCode, nativeVirtualKeyCode, false, std::nullopt, std::nullopt, WTFMove(commands), isAutoRepeat, isKeypad)
-||||||| parent of 5f0b3264ca5a (chore(webkit): bootstrap build #2209)
-    : WebKeyboardEvent(WebEvent(type, modifiers, WallTime::now()), text, key, code, keyIdentifier, windowsVirtualKeyCode, nativeVirtualKeyCode, false, std::nullopt, std::nullopt, WTFMove(commands), isAutoRepeat, isKeypad)
-=======
-    : WebKeyboardEvent(WebEvent(type, modifiers, WallTime::now()), text, key, code, keyIdentifier, windowsVirtualKeyCode, nativeVirtualKeyCode, false, std::nullopt, std::nullopt, WTFMove(commands), false, isKeypad)
->>>>>>> 5f0b3264ca5a (chore(webkit): bootstrap build #2209)
+    : WebKeyboardEvent(WebEvent(type, modifiers, MonotonicTime::now()), text, key, code, keyIdentifier, windowsVirtualKeyCode, nativeVirtualKeyCode, false, std::nullopt, std::nullopt, WTFMove(commands), false, isKeypad)
 {
 }
 
