@@ -37,8 +37,7 @@ angle::Result BufferNULL::setDataWithUsageFlags(const gl::Context *context,
                                                 size_t size,
                                                 gl::BufferUsage usage,
                                                 GLbitfield flags,
-                                                gl::BufferStorage bufferStorage,
-                                                BufferFeedback *feedback)
+                                                gl::BufferStorage bufferStorage)
 {
     ANGLE_CHECK_GL_ALLOC(GetImplAs<ContextNULL>(context),
                          mAllocationTracker->updateMemoryAllocation(mData.size(), size));
@@ -55,8 +54,7 @@ angle::Result BufferNULL::setData(const gl::Context *context,
                                   gl::BufferBinding target,
                                   const void *data,
                                   size_t size,
-                                  gl::BufferUsage usage,
-                                  BufferFeedback *feedback)
+                                  gl::BufferUsage usage)
 {
     ANGLE_CHECK_GL_ALLOC(GetImplAs<ContextNULL>(context),
                          mAllocationTracker->updateMemoryAllocation(mData.size(), size));
@@ -73,8 +71,7 @@ angle::Result BufferNULL::setSubData(const gl::Context *context,
                                      gl::BufferBinding target,
                                      const void *data,
                                      size_t size,
-                                     size_t offset,
-                                     BufferFeedback *feedback)
+                                     size_t offset)
 {
     if (size > 0)
     {
@@ -87,8 +84,7 @@ angle::Result BufferNULL::copySubData(const gl::Context *context,
                                       BufferImpl *source,
                                       GLintptr sourceOffset,
                                       GLintptr destOffset,
-                                      GLsizeiptr size,
-                                      BufferFeedback *feedback)
+                                      GLsizeiptr size)
 {
     BufferNULL *sourceNULL = GetAs<BufferNULL>(source);
     if (size > 0)
@@ -98,10 +94,7 @@ angle::Result BufferNULL::copySubData(const gl::Context *context,
     return angle::Result::Continue;
 }
 
-angle::Result BufferNULL::map(const gl::Context *context,
-                              GLenum access,
-                              void **mapPtr,
-                              BufferFeedback *feedback)
+angle::Result BufferNULL::map(const gl::Context *context, GLenum access, void **mapPtr)
 {
     *mapPtr = mData.data();
     return angle::Result::Continue;
@@ -111,16 +104,13 @@ angle::Result BufferNULL::mapRange(const gl::Context *context,
                                    size_t offset,
                                    size_t length,
                                    GLbitfield access,
-                                   void **mapPtr,
-                                   BufferFeedback *feedback)
+                                   void **mapPtr)
 {
     *mapPtr = mData.data() + offset;
     return angle::Result::Continue;
 }
 
-angle::Result BufferNULL::unmap(const gl::Context *context,
-                                GLboolean *result,
-                                BufferFeedback *feedback)
+angle::Result BufferNULL::unmap(const gl::Context *context, GLboolean *result)
 {
     *result = GL_TRUE;
     return angle::Result::Continue;

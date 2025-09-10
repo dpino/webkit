@@ -47,7 +47,8 @@ function generate_Android_bp_file() {
             "target_cpu = \"$abi\""
 
             # Target ndk API 26 to make sure ANGLE can use the Vulkan backend on Android
-            "android_ndk_api_level = 26"
+            "android32_ndk_api_level = 26"
+            "android64_ndk_api_level = 26"
 
             # Disable all backends except Vulkan
             "angle_enable_vulkan = true"
@@ -74,10 +75,13 @@ function generate_Android_bp_file() {
             # Use system lib(std)c++, since the Chromium library breaks std::string
             "use_custom_libcxx = false"
 
-            # Test the system EGL loader
-            "angle_test_enable_system_egl = true"
-            "build_angle_end2end_tests_library = true"
+            # rapidJSON is used for ANGLE's frame capture (among other things), which is unnecessary for AOSP builds.
+            "angle_has_rapidjson = false"
+
+            # TODO(b/279980674): re-enable end2end tests
+            "build_angle_end2end_tests_aosp = true"
             "build_angle_trace_tests = false"
+            "angle_test_enable_system_egl = true"
         )
 
         if [[ "$1" == "--enableApiTrace" ]]; then
@@ -161,8 +165,6 @@ copy_to_aosp_paths=(
     "build"
     "third_party/abseil-cpp"
     "third_party/glslang/src"
-    "third_party/re2/src"
-    "third_party/rapidjson/src"
     "third_party/spirv-headers/src"
     "third_party/spirv-tools/src"
     "third_party/vulkan-headers/src"

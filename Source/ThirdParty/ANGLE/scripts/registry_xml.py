@@ -41,6 +41,7 @@ xml_inputs = sorted(khronos_xml_inputs + angle_xml_inputs)
 # We document those extensions in gl_angle_ext.xml instead of the canonical gl.xml.
 
 angle_toggleable_extensions = [
+    "GL_ANGLE_texture_rectangle",
 ]
 
 angle_requestable_extensions = [
@@ -73,13 +74,13 @@ angle_requestable_extensions = [
     "GL_ANGLE_texture_compression_dxt5",
     "GL_ANGLE_texture_external_update",
     "GL_ANGLE_texture_multisample",
-    "GL_ANGLE_texture_rectangle",
     "GL_ANGLE_variable_rasterization_rate_metal",
     "GL_ANGLE_vulkan_image",
     "GL_ANGLE_yuv_internal_format",
     "GL_CHROMIUM_color_buffer_float_rgb",
     "GL_CHROMIUM_color_buffer_float_rgba",
     "GL_CHROMIUM_lose_context",
+    "GL_CHROMIUM_sync_query",
     "GL_WEBKIT_explicit_resolve_target",
 ]
 
@@ -109,7 +110,6 @@ gles_requestable_extensions = [
     "GL_EXT_draw_buffers",
     "GL_EXT_draw_buffers_indexed",
     "GL_EXT_draw_elements_base_vertex",
-    "GL_EXT_draw_instanced",
     "GL_EXT_EGL_image_array",
     "GL_EXT_EGL_image_external_wrap_modes",
     "GL_EXT_EGL_image_storage",
@@ -117,22 +117,17 @@ gles_requestable_extensions = [
     "GL_EXT_external_buffer",
     "GL_EXT_float_blend",
     "GL_EXT_frag_depth",
-    "GL_EXT_fragment_shading_rate",
-    "GL_EXT_fragment_shading_rate_attachment",
-    "GL_EXT_fragment_shading_rate_primitive",
     "GL_EXT_geometry_shader",
     "GL_EXT_gpu_shader5",
     "GL_EXT_instanced_arrays",
     "GL_EXT_map_buffer_range",
     "GL_EXT_memory_object",
     "GL_EXT_memory_object_fd",
-    "GL_EXT_multi_draw_arrays",
     "GL_EXT_multi_draw_indirect",
     "GL_EXT_multisampled_render_to_texture",
     "GL_EXT_multisampled_render_to_texture2",
     "GL_EXT_occlusion_query_boolean",
     "GL_EXT_polygon_offset_clamp",
-    "GL_EXT_primitive_bounding_box",
     "GL_EXT_protected_textures",
     "GL_EXT_pvrtc_sRGB",
     "GL_EXT_read_format_bgra",
@@ -218,7 +213,6 @@ gles_requestable_extensions = [
     "GL_OES_get_program_binary",
     "GL_OES_gpu_shader5",
     "GL_OES_mapbuffer",
-    "GL_OES_primitive_bounding_box",
     "GL_OES_required_internalformat",
     "GL_OES_rgb8_rgba8",
     "GL_OES_sample_shading",
@@ -282,6 +276,7 @@ gles_es_only_extensions = [
     "GL_EXT_debug_marker",
     "GL_EXT_discard_framebuffer",
     "GL_EXT_multisample_compatibility",
+    "GL_EXT_primitive_bounding_box",
     "GL_EXT_robustness",
     "GL_EXT_sRGB_write_control",
     "GL_EXT_texture_format_sRGB_override",
@@ -297,6 +292,7 @@ gles_es_only_extensions = [
     "GL_OES_depth_texture",
     "GL_OES_EGL_sync",
     "GL_OES_packed_depth_stencil",
+    "GL_OES_primitive_bounding_box",
     "GL_OES_surfaceless_context",
 ]
 
@@ -318,8 +314,6 @@ gles1_extensions = [
 gles_skipped_commands = [
     # GL_EXT_EGL_image_storage
     "glEGLImageTargetTextureStorageEXT",
-    # GL_EXT_external_buffer
-    "glNamedBufferStorageExternalEXT",
     # GL_EXT_memory_object
     "glTextureStorageMem2DEXT",
     "glTextureStorageMem2DMultisampleEXT",
@@ -331,8 +325,6 @@ gles_skipped_commands = [
     "glTextureStorage1DEXT",
     "glTextureStorage2DEXT",
     "glTextureStorage3DEXT",
-    # GL_OVR_multiview
-    "glNamedFramebufferTextureMultiviewOVR",
 ]
 
 def check_sorted(name, l):

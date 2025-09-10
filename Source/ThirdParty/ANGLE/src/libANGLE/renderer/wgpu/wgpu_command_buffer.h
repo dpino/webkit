@@ -10,7 +10,7 @@
 #include "common/debug.h"
 #include "libANGLE/renderer/wgpu/wgpu_utils.h"
 
-#include <webgpu/webgpu.h>
+#include <dawn/webgpu_cpp.h>
 #include <unordered_set>
 
 namespace rx
@@ -126,7 +126,7 @@ struct SetBindGroupCommand
     uint32_t pad0;
     union
     {
-        WGPUBindGroup bindGroup;
+        const wgpu::BindGroup *bindGroup;
         uint64_t pad1;  // Pad to 64 bits on 32-bit systems
     };
 };
@@ -143,10 +143,10 @@ struct SetIndexBufferCommand
 {
     union
     {
-        WGPUBuffer buffer;
+        const wgpu::Buffer *buffer;
         uint64_t pad0;  // Pad to 64 bits on 32-bit systems
     };
-    WGPUIndexFormat format;
+    wgpu::IndexFormat format;
     uint32_t pad1;
     uint64_t offset;
     uint64_t size;
@@ -161,7 +161,7 @@ struct SetPipelineCommand
 {
     union
     {
-        WGPURenderPipeline pipeline;
+        const wgpu::RenderPipeline *pipeline;
         uint64_t padding;  // Pad to 64 bits on 32-bit systems
     };
 };
@@ -185,7 +185,7 @@ struct SetVertexBufferCommand
     uint32_t pad0;
     union
     {
-        WGPUBuffer buffer;
+        const wgpu::Buffer *buffer;
         uint64_t pad1;  // Pad to 64 bits on 32-bit systems
     };
     uint64_t offset;
@@ -242,25 +242,25 @@ class CommandBuffer
                      uint32_t firstIndex,
                      int32_t baseVertex,
                      uint32_t firstInstance);
-    void setBindGroup(uint32_t groupIndex, BindGroupHandle bindGroup);
+    void setBindGroup(uint32_t groupIndex, wgpu::BindGroup bindGroup);
     void setBlendConstant(float r, float g, float b, float a);
-    void setPipeline(RenderPipelineHandle pipeline);
+    void setPipeline(wgpu::RenderPipeline pipeline);
     void setScissorRect(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
     void setViewport(float x, float y, float width, float height, float minDepth, float maxDepth);
-    void setIndexBuffer(BufferHandle buffer,
-                        WGPUIndexFormat format,
+    void setIndexBuffer(wgpu::Buffer buffer,
+                        wgpu::IndexFormat format,
                         uint64_t offset,
                         uint64_t size);
-    void setVertexBuffer(uint32_t slot, BufferHandle buffer, uint64_t offset, uint64_t size);
+    void setVertexBuffer(uint32_t slot, wgpu::Buffer buffer, uint64_t offset, uint64_t size);
 
     void clear();
 
-    bool hasCommands() const { return mState.commandCount > 0; }
-    bool hasSetScissorCommand() const { return mState.hasSetScissorCommand; }
-    bool hasSetViewportCommand() const { return mState.hasSetViewportCommand; }
-    bool hasSetBlendConstantCommand() const { return mState.hasSetBlendConstantCommand; }
+    bool hasCommands() const { return mCommandCount > 0; }
+    bool hasSetScissorCommand() const { return mHasSetScissorCommand; }
+    bool hasSetViewportCommand() const { return mHasSetViewportCommand; }
+    bool hasSetBlendConstantCommand() const { return mHasSetBlendConstantCommand; }
 
-    void recordCommands(const DawnProcTable *wgpu, RenderPassEncoderHandle encoder);
+    void recordCommands(wgpu::RenderPassEncoder encoder);
 
   private:
     struct CommandBlock
@@ -295,32 +295,24 @@ class CommandBuffer
     static_assert(kCommandBlockStructSize == kCommandBlockSize, "Size mismatch");
 
     std::vector<std::unique_ptr<CommandBlock>> mCommandBlocks;
+    size_t mCurrentCommandBlock = 0;
 
-    // State for the current commands held in mCommandBlocks. In a structure so that it can be
-    // easily reset by calling the constructor.
-    struct PerSubmissionData
-    {
-        size_t currentCommandBlock = 0;
+    size_t mCommandCount = 0;
+    bool mHasSetScissorCommand  = false;
+    bool mHasSetViewportCommand = false;
+    bool mHasSetBlendConstantCommand = false;
 
-        size_t commandCount             = 0;
-        bool hasSetScissorCommand       = false;
-        bool hasSetViewportCommand      = false;
-        bool hasSetBlendConstantCommand = false;
-
-        // std::unordered_set required because it does not move elements and stored command
-        // reference addresses in the set
-        std::unordered_set<RenderPipelineHandle> referencedRenderPipelines;
-        std::unordered_set<BufferHandle> referencedBuffers;
-        std::unordered_set<BindGroupHandle> referencedBindGroups;
-    };
-    PerSubmissionData mState;
+    // std::unordered_set required because it does not move elements and stored command reference
+    // addresses in the set
+    std::unordered_set<wgpu::RenderPipeline> mReferencedRenderPipelines;
+    std::unordered_set<wgpu::Buffer> mReferencedBuffers;
+    std::unordered_set<wgpu::BindGroup> mReferencedBindGroups;
 
     void nextCommandBlock();
 
     void ensureCommandSpace(size_t space)
     {
-        if (mCommandBlocks.empty() ||
-            mCommandBlocks[mState.currentCommandBlock]->mRemainingSize < space)
+        if (mCommandBlocks.empty() || mCommandBlocks[mCurrentCommandBlock]->mRemainingSize < space)
         {
             nextCommandBlock();
         }
@@ -331,7 +323,7 @@ class CommandBuffer
     {
         constexpr size_t allocationSize = sizeof(CommandID) + sizeof(CommandType);
         ensureCommandSpace(allocationSize);
-        CommandBlock *commandBlock = mCommandBlocks[mState.currentCommandBlock].get();
+        CommandBlock *commandBlock = mCommandBlocks[mCurrentCommandBlock].get();
 
         uint8_t *idAndCommandStorage =
             commandBlock->getDataAtCurrentPositionAndReserveSpace<uint8_t>(allocationSize);
@@ -342,7 +334,7 @@ class CommandBuffer
         CommandType *commandStruct =
             reinterpret_cast<CommandType *>(idAndCommandStorage + sizeof(CommandID));
 
-        mState.commandCount++;
+        mCommandCount++;
 
         return commandStruct;
     }

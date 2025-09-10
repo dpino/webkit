@@ -153,8 +153,6 @@ enum class GLESEnum
     ShaderParameterName,
     ShaderType,
     ShadingModel,
-    ShadingRate,
-    ShadingRateCombinerOp,
     ShadingRateQCOM,
     SizedInternalFormat,
     StencilFunction,

@@ -38,7 +38,6 @@
 #include "compiler/translator/tree_ops/spirv/ReswizzleYUVOps.h"
 #include "compiler/translator/tree_ops/spirv/RewriteInterpolateAtOffset.h"
 #include "compiler/translator/tree_ops/spirv/RewriteR32fImages.h"
-#include "compiler/translator/tree_ops/spirv/RewriteSamplerExternalTexelFetch.h"
 #include "compiler/translator/tree_util/BuiltIn.h"
 #include "compiler/translator/tree_util/DriverUniform.h"
 #include "compiler/translator/tree_util/FindFunction.h"
@@ -963,16 +962,6 @@ bool TranslatorSPIRV::translateImpl(TIntermBlock *root,
         }
     }
 
-    if (IsExtensionEnabled(getExtensionBehavior(), TExtension::EXT_YUV_target) ||
-        IsExtensionEnabled(getExtensionBehavior(), TExtension::OES_EGL_image_external) ||
-        IsExtensionEnabled(getExtensionBehavior(), TExtension::OES_EGL_image_external_essl3))
-    {
-        if (!RewriteSamplerExternalTexelFetch(this, root, &getSymbolTable()))
-        {
-            return false;
-        }
-    }
-
     switch (packedShaderType)
     {
         case gl::ShaderType::Fragment:
@@ -1359,16 +1348,7 @@ void TranslatorSPIRV::assignSpirvIds(TIntermBlock *root)
         std::vector<ShaderVariable> *fields = nullptr;
         if (type.isInterfaceBlock())
         {
-            if (qualifier == EvqPerVertexIn)
-            {
-                assignSpirvId(uniqueId, vk::spirv::kIdInputPerVertexBlock);
-            }
-            else if (qualifier == EvqPerVertexOut)
-            {
-                assignSpirvId(uniqueId, vk::spirv::kIdOutputPerVertexBlock);
-                assignSpirvId(symbol->uniqueId(), vk::spirv::kIdOutputPerVertexVar);
-            }
-            else if (IsVaryingIn(qualifier))
+            if (IsVaryingIn(qualifier))
             {
                 ShaderVariable *varying =
                     FindIOBlockShaderVariable(&mInputVaryings, type.getInterfaceBlock()->name());

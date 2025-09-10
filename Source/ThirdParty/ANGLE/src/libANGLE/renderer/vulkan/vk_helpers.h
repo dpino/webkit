@@ -1184,10 +1184,8 @@ class BufferHelper : public ReadWriteResource
 
     void initializeBarrierTracker(ErrorContext *context);
 
-    bool isLastAccessShaderWriteOnly() const
-    {
-        return mCurrentReadAccess == 0 && (mCurrentWriteAccess & VK_ACCESS_SHADER_WRITE_BIT) != 0;
-    }
+    // Returns the current VkAccessFlags bits
+    VkAccessFlags getCurrentWriteAccess() const { return mCurrentWriteAccess; }
 
   private:
     // Only called by DynamicBuffer.
@@ -2347,8 +2345,7 @@ class ImageHelper final : public Resource, public angle::Subject
                                               uint32_t levelCount,
                                               uint32_t baseArrayLayer,
                                               uint32_t layerCount,
-                                              VkImageUsageFlags imageUsageFlags,
-                                              GLenum astcDecodePrecision) const;
+                                              VkImageUsageFlags imageUsageFlags) const;
     angle::Result initLayerImageViewWithYuvModeOverride(ErrorContext *context,
                                                         gl::TextureType textureType,
                                                         VkImageAspectFlags aspectMask,
@@ -2359,8 +2356,7 @@ class ImageHelper final : public Resource, public angle::Subject
                                                         uint32_t baseArrayLayer,
                                                         uint32_t layerCount,
                                                         gl::YuvSamplingMode yuvSamplingMode,
-                                                        VkImageUsageFlags imageUsageFlags,
-                                                        GLenum astcDecodePrecision) const;
+                                                        VkImageUsageFlags imageUsageFlags) const;
     angle::Result initReinterpretedLayerImageView(ErrorContext *context,
                                                   gl::TextureType textureType,
                                                   VkImageAspectFlags aspectMask,
@@ -2371,8 +2367,7 @@ class ImageHelper final : public Resource, public angle::Subject
                                                   uint32_t baseArrayLayer,
                                                   uint32_t layerCount,
                                                   VkImageUsageFlags imageUsageFlags,
-                                                  angle::FormatID imageViewFormat,
-                                                  GLenum astcDecodePrecision) const;
+                                                  angle::FormatID imageViewFormat) const;
     // Create a 2D[Array] for staging purposes.  Used by:
     //
     // - TextureVk::copySubImageImplWithDraw
@@ -2433,7 +2428,7 @@ class ImageHelper final : public Resource, public angle::Subject
         OnlyQuerySuccess,
         RequireMultisampling
     };
-    static bool FormatSupportsUsage(const Renderer *renderer,
+    static bool FormatSupportsUsage(Renderer *renderer,
                                     VkFormat format,
                                     VkImageType imageType,
                                     VkImageTiling tilingMode,
@@ -3334,8 +3329,7 @@ class ImageHelper final : public Resource, public angle::Subject
                                          uint32_t layerCount,
                                          VkFormat imageFormat,
                                          VkImageUsageFlags usageFlags,
-                                         gl::YuvSamplingMode yuvSamplingMode,
-                                         GLenum astcDecodePrecision) const;
+                                         gl::YuvSamplingMode yuvSamplingMode) const;
 
     angle::Result readPixelsImpl(ContextVk *contextVk,
                                  const gl::Rectangle &area,
@@ -3628,8 +3622,7 @@ class ImageViewHelper final : angle::NonCopyable
                                 uint32_t baseLayer,
                                 uint32_t layerCount,
                                 bool requiresSRGBViews,
-                                VkImageUsageFlags imageUsageFlags,
-                                GLenum astcDecodePrecision);
+                                VkImageUsageFlags imageUsageFlags);
 
     // Creates a storage view with all layers of the level.
     angle::Result getLevelStorageImageView(ErrorContext *context,
@@ -3852,8 +3845,7 @@ class ImageViewHelper final : angle::NonCopyable
                                     uint32_t levelCount,
                                     uint32_t baseLayer,
                                     uint32_t layerCount,
-                                    VkImageUsageFlags imageUsageFlags,
-                                    GLenum astcDecodePrecision);
+                                    VkImageUsageFlags imageUsageFlags);
 
     // Create linear and srgb read views
     angle::Result initLinearAndSrgbReadViewsImpl(ContextVk *contextVk,
@@ -3865,8 +3857,7 @@ class ImageViewHelper final : angle::NonCopyable
                                                  uint32_t levelCount,
                                                  uint32_t baseLayer,
                                                  uint32_t layerCount,
-                                                 VkImageUsageFlags imageUsageFlags,
-                                                 GLenum astcDecodePrecision);
+                                                 VkImageUsageFlags imageUsageFlags);
 
     void updateColorspace(const ImageHelper &image) const;
 

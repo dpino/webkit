@@ -125,11 +125,7 @@ class FramebufferVk : public FramebufferImpl
                                      vk::RenderPassCommandBuffer **commandBufferOut,
                                      bool *renderPassDescChangedOut);
 
-    GLint getSamples() const
-    {
-        ASSERT(mRasterizationSamples >= 0);
-        return mRasterizationSamples;
-    }
+    GLint getSamples() const;
 
     const vk::RenderPassDesc &getRenderPassDesc() const { return mRenderPassDesc; }
 
@@ -140,7 +136,6 @@ class FramebufferVk : public FramebufferImpl
     bool hasDeferredStencilClear() const { return mDeferredClears.testStencil(); }
     angle::Result flushDepthStencilDeferredClear(ContextVk *contextVk,
                                                  VkImageAspectFlagBits aspect);
-    void restageDeferredClearsAfterNoopDraw(ContextVk *contextVk);
 
     void switchToColorFramebufferFetchMode(ContextVk *contextVk, bool hasColorFramebufferFetch);
 
@@ -315,7 +310,6 @@ class FramebufferVk : public FramebufferImpl
     angle::Result updateFoveationState(ContextVk *contextVk,
                                        const gl::FoveationState &newFoveationState,
                                        const gl::Extents &foveatedAttachmentSize);
-    GLint getSamplesImpl() const;
 
     void insertCache(ContextVk *contextVk,
                      const vk::FramebufferDesc &desc,
@@ -361,9 +355,6 @@ class FramebufferVk : public FramebufferImpl
 
     // Serial of the render pass this framebuffer has opened, if any.
     QueueSerial mLastRenderPassQueueSerial;
-
-    // Cached value of rasterization samples
-    GLint mRasterizationSamples;
 };
 }  // namespace rx
 

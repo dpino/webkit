@@ -15,9 +15,6 @@
 
 namespace gl
 {
-
-void RecordVersionErrorES20(const Context *context, angle::EntryPoint entryPoint);
-
 ANGLE_INLINE bool ValidateDrawArrays(const Context *context,
                                      angle::EntryPoint entryPoint,
                                      PrimitiveMode mode,
@@ -41,12 +38,6 @@ ANGLE_INLINE bool ValidateUniform1fv(const Context *context,
                                      GLsizei count,
                                      const GLfloat *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_FLOAT, location, count);
 }
 
@@ -73,12 +64,6 @@ ANGLE_INLINE bool ValidateUniform2fv(const Context *context,
                                      GLsizei count,
                                      const GLfloat *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_FLOAT_VEC2, location, count);
 }
 
@@ -97,12 +82,6 @@ ANGLE_INLINE bool ValidateUniform2iv(const Context *context,
                                      GLsizei count,
                                      const GLint *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_INT_VEC2, location, count);
 }
 
@@ -122,12 +101,6 @@ ANGLE_INLINE bool ValidateUniform3fv(const Context *context,
                                      GLsizei count,
                                      const GLfloat *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_FLOAT_VEC3, location, count);
 }
 
@@ -147,12 +120,6 @@ ANGLE_INLINE bool ValidateUniform3iv(const Context *context,
                                      GLsizei count,
                                      const GLint *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_INT_VEC3, location, count);
 }
 
@@ -173,12 +140,6 @@ ANGLE_INLINE bool ValidateUniform4fv(const Context *context,
                                      GLsizei count,
                                      const GLfloat *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_FLOAT_VEC4, location, count);
 }
 
@@ -199,12 +160,6 @@ ANGLE_INLINE bool ValidateUniform4iv(const Context *context,
                                      GLsizei count,
                                      const GLint *v)
 {
-    if (!ValidateUniformValuePointer(context, entryPoint, v))
-    {
-        // Error already generated.
-        return false;
-    }
-
     return ValidateUniform(context, entryPoint, GL_INT_VEC4, location, count);
 }
 
@@ -454,7 +409,7 @@ ANGLE_INLINE bool ValidateGetVertexAttribfv(const Context *context,
                                             GLenum pname,
                                             const GLfloat *params)
 {
-    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, false);
+    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, false, false);
 }
 
 ANGLE_INLINE bool ValidateGetVertexAttribiv(const Context *context,
@@ -463,7 +418,7 @@ ANGLE_INLINE bool ValidateGetVertexAttribiv(const Context *context,
                                             GLenum pname,
                                             const GLint *params)
 {
-    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, false);
+    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, false, false);
 }
 
 ANGLE_INLINE bool ValidateGetVertexAttribPointerv(const Context *context,
@@ -472,7 +427,7 @@ ANGLE_INLINE bool ValidateGetVertexAttribPointerv(const Context *context,
                                                   GLenum pname,
                                                   void *const *pointer)
 {
-    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, true);
+    return ValidateGetVertexAttribBase(context, entryPoint, index, pname, nullptr, true, false);
 }
 
 ANGLE_INLINE bool ValidateReadPixels(const Context *context,
@@ -717,17 +672,6 @@ bool ValidateDebugMessageInsertBase(const Context *context,
                                     GLenum severity,
                                     GLsizei length,
                                     const GLchar *buf);
-
-bool ValidateGetDebugMessageLogBase(const Context *context,
-                                    angle::EntryPoint entryPoint,
-                                    GLuint count,
-                                    GLsizei bufSize,
-                                    const GLenum *sources,
-                                    const GLenum *types,
-                                    const GLuint *ids,
-                                    const GLenum *severities,
-                                    const GLsizei *lengths,
-                                    const GLchar *messageLog);
 
 // Validation of ObjectLabel
 bool ValidateObjectLabelBase(const Context *context,

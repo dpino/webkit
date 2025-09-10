@@ -60,7 +60,7 @@ ANGLE_INLINE void MarkShaderStorageUsage(const Context *context)
         Buffer *buffer = context->getState().getIndexedShaderStorageBuffer(index).get();
         if (buffer)
         {
-            buffer->onDataChanged(context);
+            buffer->onDataChanged();
         }
     }
 
@@ -205,7 +205,7 @@ ANGLE_INLINE void Context::bindBuffer(BufferBinding target, BufferID buffer)
     mState.setBufferBinding(this, target, bufferObject);
     mStateCache.onBufferBindingChange(this);
 
-    if (bufferObject && isWebGL())
+    if (bufferObject)
     {
         bufferObject->onBind(this, target);
     }
@@ -441,13 +441,9 @@ ANGLE_INLINE void Context::vertexAttribPointer(GLuint index,
                                                GLsizei stride,
                                                const void *ptr)
 {
-    bool vertexAttribDirty = false;
     mState.setVertexAttribPointer(this, index, mState.getTargetBuffer(BufferBinding::Array), size,
-                                  type, normalized != GL_FALSE, stride, ptr, &vertexAttribDirty);
-    if (vertexAttribDirty)
-    {
-        mStateCache.onVertexArrayStateChange(this);
-    }
+                                  type, normalized != GL_FALSE, stride, ptr);
+    mStateCache.onVertexArrayStateChange(this);
 }
 
 }  // namespace gl

@@ -2324,13 +2324,6 @@ CallCapture ParseCallCapture(const Token &nameToken,
                                                                                       strings);
         return CallCapture(EntryPoint::GLFramebufferResolveRenderbufferWEBKIT, std::move(params));
     }
-    if (strcmp(nameToken, "glFramebufferShadingRateEXT") == 0)
-    {
-        ParamBuffer params =
-            ParseParameters<std::remove_pointer<PFNGLFRAMEBUFFERSHADINGRATEEXTPROC>::type>(
-                paramTokens, strings);
-        return CallCapture(EntryPoint::GLFramebufferShadingRateEXT, std::move(params));
-    }
     if (strcmp(nameToken, "glFramebufferTexture") == 0)
     {
         ParamBuffer params =
@@ -2745,13 +2738,6 @@ CallCapture ParseCallCapture(const Token &nameToken,
             ParseParameters<std::remove_pointer<PFNGLGETFRAGDATALOCATIONPROC>::type>(paramTokens,
                                                                                      strings);
         return CallCapture(EntryPoint::GLGetFragDataLocation, std::move(params));
-    }
-    if (strcmp(nameToken, "glGetFragmentShadingRatesEXT") == 0)
-    {
-        ParamBuffer params =
-            ParseParameters<std::remove_pointer<PFNGLGETFRAGMENTSHADINGRATESEXTPROC>::type>(
-                paramTokens, strings);
-        return CallCapture(EntryPoint::GLGetFragmentShadingRatesEXT, std::move(params));
     }
     if (strcmp(nameToken, "glGetFramebufferAttachmentParameteriv") == 0)
     {
@@ -4262,13 +4248,6 @@ CallCapture ParseCallCapture(const Token &nameToken,
                                                                                       strings);
         return CallCapture(EntryPoint::GLMultiDrawArraysANGLE, std::move(params));
     }
-    if (strcmp(nameToken, "glMultiDrawArraysEXT") == 0)
-    {
-        ParamBuffer params =
-            ParseParameters<std::remove_pointer<PFNGLMULTIDRAWARRAYSEXTPROC>::type>(paramTokens,
-                                                                                    strings);
-        return CallCapture(EntryPoint::GLMultiDrawArraysEXT, std::move(params));
-    }
     if (strcmp(nameToken, "glMultiDrawArraysIndirectEXT") == 0)
     {
         ParamBuffer params =
@@ -4305,13 +4284,6 @@ CallCapture ParseCallCapture(const Token &nameToken,
                 paramTokens, strings);
         return CallCapture(EntryPoint::GLMultiDrawElementsBaseVertexEXT, std::move(params));
     }
-    if (strcmp(nameToken, "glMultiDrawElementsEXT") == 0)
-    {
-        ParamBuffer params =
-            ParseParameters<std::remove_pointer<PFNGLMULTIDRAWELEMENTSEXTPROC>::type>(paramTokens,
-                                                                                      strings);
-        return CallCapture(EntryPoint::GLMultiDrawElementsEXT, std::move(params));
-    }
     if (strcmp(nameToken, "glMultiDrawElementsIndirectEXT") == 0)
     {
         ParamBuffer params =
@@ -4345,6 +4317,13 @@ CallCapture ParseCallCapture(const Token &nameToken,
         ParamBuffer params = ParseParameters<std::remove_pointer<PFNGLMULTITEXCOORD4XPROC>::type>(
             paramTokens, strings);
         return CallCapture(EntryPoint::GLMultiTexCoord4x, std::move(params));
+    }
+    if (strcmp(nameToken, "glNamedBufferStorageExternalEXT") == 0)
+    {
+        ParamBuffer params =
+            ParseParameters<std::remove_pointer<PFNGLNAMEDBUFFERSTORAGEEXTERNALEXTPROC>::type>(
+                paramTokens, strings);
+        return CallCapture(EntryPoint::GLNamedBufferStorageExternalEXT, std::move(params));
     }
     if (strcmp(nameToken, "glNormal3f") == 0)
     {
@@ -5364,19 +5343,6 @@ CallCapture ParseCallCapture(const Token &nameToken,
         ParamBuffer params =
             ParseParameters<std::remove_pointer<PFNGLSHADERSOURCEPROC>::type>(paramTokens, strings);
         return CallCapture(EntryPoint::GLShaderSource, std::move(params));
-    }
-    if (strcmp(nameToken, "glShadingRateCombinerOpsEXT") == 0)
-    {
-        ParamBuffer params =
-            ParseParameters<std::remove_pointer<PFNGLSHADINGRATECOMBINEROPSEXTPROC>::type>(
-                paramTokens, strings);
-        return CallCapture(EntryPoint::GLShadingRateCombinerOpsEXT, std::move(params));
-    }
-    if (strcmp(nameToken, "glShadingRateEXT") == 0)
-    {
-        ParamBuffer params = ParseParameters<std::remove_pointer<PFNGLSHADINGRATEEXTPROC>::type>(
-            paramTokens, strings);
-        return CallCapture(EntryPoint::GLShadingRateEXT, std::move(params));
     }
     if (strcmp(nameToken, "glShadingRateQCOM") == 0)
     {

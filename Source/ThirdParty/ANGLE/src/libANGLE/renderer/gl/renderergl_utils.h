@@ -132,6 +132,7 @@ bool SupportsVertexArrayObjects(const FunctionsGL *functions);
 bool CanUseDefaultVertexArrayObject(const FunctionsGL *functions);
 bool CanUseClientSideArrays(const FunctionsGL *functions, GLuint vao);
 bool SupportsCompute(const FunctionsGL *functions);
+bool SupportsFenceSync(const FunctionsGL *functions);
 bool SupportsOcclusionQueries(const FunctionsGL *functions);
 bool SupportsNativeRendering(const FunctionsGL *functions,
                              gl::TextureType type,

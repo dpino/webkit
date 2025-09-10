@@ -111,7 +111,6 @@ void RecyclableFence::destroy(VkDevice device)
     {
         if (mRecycler != nullptr)
         {
-            mFence.reset(device);
             mRecycler->recycle(std::move(mFence));
         }
         else
@@ -137,6 +136,7 @@ void FenceRecycler::fetch(VkDevice device, Fence *fenceOut)
     if (!mRecycler.empty())
     {
         mRecycler.fetch(fenceOut);
+        fenceOut->reset(device);
     }
 }
 

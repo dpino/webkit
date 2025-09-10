@@ -33,6 +33,14 @@ class DedicatedCommandBlockAllocator
     DedicatedCommandBlockAllocator() = default;
     void resetAllocator();
 
+    static constexpr size_t kDefaultPoolAllocatorPageSize = 16 * 1024;
+    void init()
+    {
+        mAllocator.initialize(kDefaultPoolAllocatorPageSize, 1);
+        // Push a scope into the pool allocator so we can easily free and re-init on reset()
+        mAllocator.push();
+    }
+
     DedicatedCommandMemoryAllocator *getAllocator() { return &mAllocator; }
 
   private:
@@ -56,8 +64,8 @@ class DedicatedCommandBlockPool final
     using CommandHeaderIDType                  = uint16_t;
     // Make sure the size of command header ID type is less than total command header size.
     static_assert(sizeof(CommandHeaderIDType) < kCommandHeaderSize, "Check size of CommandHeader");
-    // PoolAllocator uses 32768 byte pools. To minimize waste using a 32768/24 = 1365.
-    // Also better perf than 1024 due to fewer block allocations.
+    // Pool Alloc uses 16kB pages w/ 16byte header = 16368bytes. To minimize waste
+    //  using a 16368/12 = 1364. Also better perf than 1024 due to fewer block allocations
     static constexpr size_t kBlockSize = 1360;
     // Make sure block size is 8-byte aligned to avoid ASAN errors.
     static_assert((kBlockSize % 8) == 0, "Check kBlockSize alignment");

@@ -49,7 +49,7 @@ EGLMakeCurrentPerfTest::EGLMakeCurrentPerfTest()
 {
     auto platform = GetParam().eglParameters;
 
-    std::vector<EGLAttrib> displayAttributes;
+    std::vector<EGLint> displayAttributes;
     displayAttributes.push_back(EGL_PLATFORM_ANGLE_TYPE_ANGLE);
     displayAttributes.push_back(platform.renderer);
     displayAttributes.push_back(EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE);
@@ -78,13 +78,13 @@ EGLMakeCurrentPerfTest::EGLMakeCurrentPerfTest()
         // Test harness warmup calls glFinish so we need GLES too.
         LoadUtilGLES(getProc);
 
-        if (!eglGetPlatformDisplay)
+        if (!eglGetPlatformDisplayEXT)
         {
             abortTest();
         }
         else
         {
-            mDisplay = eglGetPlatformDisplay(
+            mDisplay = eglGetPlatformDisplayEXT(
                 EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<void *>(mOSWindow->getNativeDisplay()),
                 &displayAttributes[0]);
         }

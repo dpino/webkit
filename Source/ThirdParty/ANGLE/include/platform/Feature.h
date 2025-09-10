@@ -37,7 +37,6 @@ enum class FeatureCategory
     VulkanAppWorkarounds,
     MetalFeatures,
     MetalWorkarounds,
-    WebGPUWorkarounds,
 };
 
 constexpr char kFeatureCategoryFrontendWorkarounds[]  = "Frontend workarounds";
@@ -50,7 +49,6 @@ constexpr char kFeatureCategoryVulkanWorkarounds[]    = "Vulkan workarounds";
 constexpr char kFeatureCategoryVulkanFeatures[]       = "Vulkan features";
 constexpr char kFeatureCategoryMetalFeatures[]        = "Metal features";
 constexpr char kFeatureCategoryMetalWorkarounds[]     = "Metal workarounds";
-constexpr char kFeatureCategoryWebGPUWorkarounds[]    = "WebGPU workarounds";
 constexpr char kFeatureCategoryUnknown[]              = "Unknown";
 
 inline const char *FeatureCategoryToString(const FeatureCategory &fc)
@@ -95,10 +93,6 @@ inline const char *FeatureCategoryToString(const FeatureCategory &fc)
 
         case FeatureCategory::MetalWorkarounds:
             return kFeatureCategoryMetalWorkarounds;
-            break;
-
-        case FeatureCategory::WebGPUWorkarounds:
-            return kFeatureCategoryWebGPUWorkarounds;
             break;
 
         default:

@@ -591,7 +591,7 @@ void SerializeContextState(JsonSerializer *json, const gl::State &state)
     }
     ASSERT(state.getVertexArray());
     json->addScalar("VertexArrayID", state.getVertexArray()->id().value);
-    json->addScalar("CurrentValuesTypeMask", state.getCurrentValuesTypeMask().bits());
+    json->addScalar("CurrentValuesTypeMask", state.getCurrentValuesTypeMask().to_ulong());
     json->addScalar("ActiveSampler", state.getActiveSampler());
     {
         GroupScope boundTexturesGroup(json, "BoundTextures");
@@ -603,14 +603,8 @@ void SerializeContextState(JsonSerializer *json, const gl::State &state)
             SerializeBindingPointerVector<gl::Texture>(json, textures);
         }
     }
-
-    std::vector<uint64_t> texturesIncompatibleWithSamplersVector;
-    for (size_t index = 0; index < gl::ActiveTextureMask::ArraySize(); index++)
-    {
-        auto value = state.getTexturesIncompatibleWithSamplers().bits(index);
-        texturesIncompatibleWithSamplersVector.push_back(value);
-    }
-    json->addVector("TexturesIncompatibleWithSamplers", texturesIncompatibleWithSamplersVector);
+    json->addScalar("TexturesIncompatibleWithSamplers",
+                    state.getTexturesIncompatibleWithSamplers().to_ulong());
 
     {
         GroupScope texturesCacheGroup(json, "ActiveTexturesCache");
@@ -687,11 +681,11 @@ void SerializeContextState(JsonSerializer *json, const gl::State &state)
     json->addScalar("ProgramBinaryCacheEnabled", state.isProgramBinaryCacheEnabled());
     json->addScalar("TextureRectangleEnabled", state.isTextureRectangleEnabled());
     json->addScalar("MaxShaderCompilerThreads", state.getMaxShaderCompilerThreads());
-    json->addScalar("EnabledClipDistances", state.getEnabledClipDistances().bits());
+    json->addScalar("EnabledClipDistances", state.getEnabledClipDistances().to_ulong());
     json->addScalar("BlendFuncConstantAlphaDrawBuffers",
-                    state.getBlendFuncConstantAlphaDrawBuffers().bits());
+                    state.getBlendFuncConstantAlphaDrawBuffers().to_ulong());
     json->addScalar("BlendFuncConstantColorDrawBuffers",
-                    state.getBlendFuncConstantColorDrawBuffers().bits());
+                    state.getBlendFuncConstantColorDrawBuffers().to_ulong());
     json->addScalar("SimultaneousConstantColorAndAlphaBlendFunc",
                     state.noSimultaneousConstantColorAndAlphaBlendFunc());
 }
@@ -1023,7 +1017,7 @@ void SerializeBufferVariablesVector(JsonSerializer *json,
 
         json->addScalar("Type", bufferVariable.pod.type);
         json->addScalar("Precision", bufferVariable.pod.precision);
-        json->addScalar("activeUseBits", bufferVariable.activeShaders().bits());
+        json->addScalar("activeUseBits", bufferVariable.activeShaders().to_ulong());
         for (const gl::ShaderType shaderType : gl::AllShaderTypes())
         {
             json->addScalar(
@@ -1359,7 +1353,7 @@ void SerializeVertexBindingsVector(JsonSerializer *json,
         json->addScalar("Divisor", vertexBinding.getDivisor());
         json->addScalar("Offset", vertexBinding.getOffset());
         json->addScalar("BufferID", vertexBinding.getBuffer().id().value);
-        json->addScalar("BoundAttributesMask", vertexBinding.getBoundAttributesMask().bits());
+        json->addScalar("BoundAttributesMask", vertexBinding.getBoundAttributesMask().to_ulong());
     }
 }
 
@@ -1377,13 +1371,14 @@ void SerializeVertexArrayState(JsonSerializer *json, const gl::VertexArrayState 
         json->addScalar("ElementArrayBufferID", 0);
     }
     SerializeVertexBindingsVector(json, vertexArrayState.getVertexBindings());
-    json->addScalar("EnabledAttributesMask", vertexArrayState.getEnabledAttributesMask().bits());
+    json->addScalar("EnabledAttributesMask",
+                    vertexArrayState.getEnabledAttributesMask().to_ulong());
     json->addScalar("VertexAttributesTypeMask",
-                    vertexArrayState.getVertexAttributesTypeMask().bits());
+                    vertexArrayState.getVertexAttributesTypeMask().to_ulong());
     json->addScalar("ClientMemoryAttribsMask",
-                    vertexArrayState.getClientMemoryAttribsMask().bits());
+                    vertexArrayState.getClientMemoryAttribsMask().to_ulong());
     json->addScalar("NullPointerClientMemoryAttribsMask",
-                    vertexArrayState.getNullPointerClientMemoryAttribsMask().bits());
+                    vertexArrayState.getNullPointerClientMemoryAttribsMask().to_ulong());
 }
 
 void SerializeVertexArray(JsonSerializer *json, gl::VertexArray *vertexArray)

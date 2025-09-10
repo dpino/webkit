@@ -197,8 +197,6 @@ angle::Result VertexArrayWgpu::syncClientArrays(
     const void **adjustedIndicesPtr,
     uint32_t *indexCountOut)
 {
-    const DawnProcTable *wgpu = webgpu::GetProcs(context);
-
     *adjustedIndicesPtr = indices;
 
     gl::AttributesMask clientAttributesToSync =
@@ -217,7 +215,7 @@ angle::Result VertexArrayWgpu::syncClientArrays(
 
     gl::Buffer *elementArrayBuffer = mState.getElementArrayBuffer();
     ContextWgpu *contextWgpu       = webgpu::GetImpl(context);
-    webgpu::DeviceHandle device    = webgpu::GetDevice(context);
+    wgpu::Device device            = webgpu::GetDevice(context);
     GLsizei adjustedCount          = count;
     const uint8_t *srcIndexData    = static_cast<const uint8_t *>(indices);
     if (elementArrayBuffer)
@@ -232,7 +230,7 @@ angle::Result VertexArrayWgpu::syncClientArrays(
         if (!elementArrayBufferWgpu->getBuffer().isMappedForRead())
         {
             ANGLE_TRY(elementArrayBufferWgpu->getBuffer().mapImmediate(
-                contextWgpu, WGPUMapMode_Read, sourceOffset, mapReadSize));
+                contextWgpu, wgpu::MapMode::Read, sourceOffset, mapReadSize));
         }
         srcIndexData =
             elementArrayBufferWgpu->getBuffer().getMapReadPointer(sourceOffset, mapReadSize);
@@ -296,8 +294,8 @@ angle::Result VertexArrayWgpu::syncClientArrays(
     {
         ASSERT(stagingBufferSize > 0);
         ASSERT(stagingBufferSize % webgpu::kBufferSizeAlignment == 0);
-        ANGLE_TRY(stagingBuffer.initBuffer(wgpu, device, stagingBufferSize,
-                                           WGPUBufferUsage_CopySrc | WGPUBufferUsage_MapWrite,
+        ANGLE_TRY(stagingBuffer.initBuffer(device, stagingBufferSize,
+                                           wgpu::BufferUsage::CopySrc | wgpu::BufferUsage::MapWrite,
                                            webgpu::MapAtCreation::Yes));
         stagingData = stagingBuffer.getMapWritePointer(0, stagingBufferSize);
     }
@@ -323,7 +321,7 @@ angle::Result VertexArrayWgpu::syncClientArrays(
         size_t destIndexBufferSize =
             rx::roundUpPow2(destIndexDataSize.value(), webgpu::kBufferCopyToBufferAlignment);
         ANGLE_TRY(ensureBufferCreated(context, mStreamingIndexBuffer, destIndexBufferSize, 0,
-                                      WGPUBufferUsage_CopyDst | WGPUBufferUsage_Index,
+                                      wgpu::BufferUsage::CopyDst | wgpu::BufferUsage::Index,
                                       BufferType::IndexBuffer));
         // TODO(anglebug.com/401226623): Don't use the staging buffer when the adjustedCount for
         // primitive restarts is count + 1.
@@ -481,7 +479,7 @@ angle::Result VertexArrayWgpu::syncClientArrays(
 
         ANGLE_TRY(ensureBufferCreated(
             context, mStreamingArrayBuffers[attribIndex], destCopyOffset + copySize, attribIndex,
-            WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex, BufferType::ArrayBuffer));
+            wgpu::BufferUsage::CopyDst | wgpu::BufferUsage::Vertex, BufferType::ArrayBuffer));
 
         stagingUploads.push_back({currentStagingDataPosition, &stagingBuffer,
                                   &mStreamingArrayBuffers[attribIndex], destCopyOffset, copySize});
@@ -496,13 +494,12 @@ angle::Result VertexArrayWgpu::syncClientArrays(
     ANGLE_TRY(contextWgpu->flush(webgpu::RenderPassClosureReason::VertexArrayStreaming));
 
     contextWgpu->ensureCommandEncoderCreated();
-    webgpu::CommandEncoderHandle &commandEncoder = contextWgpu->getCurrentCommandEncoder();
+    wgpu::CommandEncoder &commandEncoder = contextWgpu->getCurrentCommandEncoder();
 
     for (const BufferCopy &copy : stagingUploads)
     {
-        wgpu->commandEncoderCopyBufferToBuffer(commandEncoder.get(), copy.src->getBuffer().get(),
-                                               copy.sourceOffset, copy.dest->getBuffer().get(),
-                                               copy.destOffset, copy.size);
+        commandEncoder.CopyBufferToBuffer(copy.src->getBuffer(), copy.sourceOffset,
+                                          copy.dest->getBuffer(), copy.destOffset, copy.size);
     }
 
     return angle::Result::Continue;
@@ -574,16 +571,14 @@ angle::Result VertexArrayWgpu::ensureBufferCreated(const gl::Context *context,
                                                    webgpu::BufferHelper &buffer,
                                                    size_t size,
                                                    size_t attribIndex,
-                                                   WGPUBufferUsage usage,
+                                                   wgpu::BufferUsage usage,
                                                    BufferType bufferType)
 {
     ContextWgpu *contextWgpu = webgpu::GetImpl(context);
-    const DawnProcTable *wgpu = webgpu::GetProcs(contextWgpu);
-    if (!buffer.valid() || buffer.requestedSize() < size ||
-        wgpu->bufferGetUsage(buffer.getBuffer().get()) != usage)
+    if (!buffer.valid() || buffer.requestedSize() < size || buffer.getBuffer().GetUsage() != usage)
     {
-        webgpu::DeviceHandle device = webgpu::GetDevice(context);
-        ANGLE_TRY(buffer.initBuffer(wgpu, device, size, usage, webgpu::MapAtCreation::No));
+        wgpu::Device device = webgpu::GetDevice(context);
+        ANGLE_TRY(buffer.initBuffer(device, size, usage, webgpu::MapAtCreation::No));
 
         if (bufferType == BufferType::IndexBuffer)
         {

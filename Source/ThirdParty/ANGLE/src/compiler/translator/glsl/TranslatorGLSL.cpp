@@ -14,6 +14,7 @@
 #include "compiler/translator/tree_ops/PreTransformTextureCubeGradDerivatives.h"
 #include "compiler/translator/tree_ops/RewriteTexelFetchOffset.h"
 #include "compiler/translator/tree_ops/glsl/apple/RewriteRowMajorMatrices.h"
+#include "compiler/translator/tree_ops/glsl/apple/RewriteUnaryMinusOperatorFloat.h"
 
 namespace sh
 {
@@ -28,6 +29,11 @@ void TranslatorGLSL::initBuiltInFunctionEmulator(BuiltInFunctionEmulator *emu,
     if (compileOptions.emulateAbsIntFunction)
     {
         InitBuiltInAbsFunctionEmulatorForGLSLWorkarounds(emu, getShaderType());
+    }
+
+    if (compileOptions.emulateIsnanFloatFunction)
+    {
+        InitBuiltInIsnanFunctionEmulatorForGLSLWorkarounds(emu, getShaderVersion());
     }
 
     if (compileOptions.emulateAtan2FloatFunction)
@@ -101,6 +107,14 @@ bool TranslatorGLSL::translate(TIntermBlock *root,
     if (compileOptions.rewriteTexelFetchOffsetToTexelFetch)
     {
         if (!sh::RewriteTexelFetchOffset(this, root, getSymbolTable(), getShaderVersion()))
+        {
+            return false;
+        }
+    }
+
+    if (compileOptions.rewriteFloatUnaryMinusOperator)
+    {
+        if (!sh::RewriteUnaryMinusOperatorFloat(this, root))
         {
             return false;
         }

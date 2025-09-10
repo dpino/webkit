@@ -6,9 +6,7 @@
 
 #include "GLSLANG/ShaderLang.h"
 #include "gtest/gtest.h"
-#if defined(ANGLE_HAS_RAPIDJSON)
-#    include "test_utils/runner/TestSuite.h"
-#endif
+#include "test_utils/runner/TestSuite.h"
 
 class CompilerTestEnvironment : public testing::Environment
 {
@@ -42,13 +40,8 @@ int main(int argc, char **argv)
             gVerbose = true;
         }
     }
-#if defined(ANGLE_HAS_RAPIDJSON)
+
     angle::TestSuite testSuite(&argc, argv);
     testing::AddGlobalTestEnvironment(new CompilerTestEnvironment());
     return testSuite.run();
-#else
-    testing::AddGlobalTestEnvironment(new CompilerTestEnvironment());
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-#endif  // defined(ANGLE_HAS_RAPIDJSON)
 }

@@ -232,52 +232,6 @@ void CaptureDrawElementsInstancedBaseVertexEXT_indices(const State &glState,
     UNIMPLEMENTED();
 }
 
-void CaptureMultiDrawArraysEXT_first(const State &glState,
-                                     bool isCallValid,
-                                     PrimitiveMode modePacked,
-                                     const GLint *first,
-                                     const GLsizei *count,
-                                     GLsizei primcount,
-                                     angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
-void CaptureMultiDrawArraysEXT_count(const State &glState,
-                                     bool isCallValid,
-                                     PrimitiveMode modePacked,
-                                     const GLint *first,
-                                     const GLsizei *count,
-                                     GLsizei primcount,
-                                     angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
-void CaptureMultiDrawElementsEXT_count(const State &glState,
-                                       bool isCallValid,
-                                       PrimitiveMode modePacked,
-                                       const GLsizei *count,
-                                       DrawElementsType typePacked,
-                                       const void *const *indices,
-                                       GLsizei primcount,
-                                       angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
-void CaptureMultiDrawElementsEXT_indices(const State &glState,
-                                         bool isCallValid,
-                                         PrimitiveMode modePacked,
-                                         const GLsizei *count,
-                                         DrawElementsType typePacked,
-                                         const void *const *indices,
-                                         GLsizei primcount,
-                                         angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
 void CaptureMultiDrawArraysIndirectEXT_indirect(const State &glState,
                                                 bool isCallValid,
                                                 PrimitiveMode modePacked,
@@ -1413,7 +1367,7 @@ void CaptureGetInteger64vRobustANGLE_length(const State &glState,
                                             GLint64 *data,
                                             ParamCapture *paramCapture)
 {
-    paramCapture->readBufferSizeBytes = sizeof(GLsizei);
+    UNIMPLEMENTED();
 }
 
 void CaptureGetInteger64vRobustANGLE_data(const State &glState,
@@ -1424,7 +1378,7 @@ void CaptureGetInteger64vRobustANGLE_data(const State &glState,
                                           GLint64 *data,
                                           ParamCapture *paramCapture)
 {
-    CaptureGetParameter(glState, pname, sizeof(GLint64), paramCapture);
+    UNIMPLEMENTED();
 }
 
 void CaptureGetInteger64i_vRobustANGLE_length(const State &glState,
@@ -2584,27 +2538,6 @@ void CaptureDrawElementsInstancedEXT_indices(const State &glState,
                                 paramCapture);
 }
 
-void CaptureGetFragmentShadingRatesEXT_count(const State &glState,
-                                             bool isCallValid,
-                                             GLsizei samples,
-                                             GLsizei maxCount,
-                                             GLsizei *count,
-                                             GLenum *shadingRates,
-                                             angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-void CaptureGetFragmentShadingRatesEXT_shadingRates(const State &glState,
-                                                    bool isCallValid,
-                                                    GLsizei samples,
-                                                    GLsizei maxCount,
-                                                    GLsizei *count,
-                                                    GLenum *shadingRates,
-                                                    angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
 void CaptureCreateMemoryObjectsEXT_memoryObjectsPacked(const State &glState,
                                                        bool isCallValid,
                                                        GLsizei n,
@@ -2941,7 +2874,7 @@ void CaptureTexParameterIuivEXT_params(const State &glState,
                                        const GLuint *params,
                                        angle::ParamCapture *paramCapture)
 {
-    CaptureTexParameterIuiv_params(glState, isCallValid, targetPacked, pname, params, paramCapture);
+    // Skipped
 }
 
 void CaptureDebugMessageCallbackKHR_userParam(const State &glState,
@@ -3833,7 +3766,7 @@ void CaptureCreateShaderProgramvEXT_strings(const State &glState,
                                             bool isCallValid,
                                             ShaderType typePacked,
                                             GLsizei count,
-                                            const GLchar *const *strings,
+                                            const GLchar **strings,
                                             angle::ParamCapture *paramCapture)
 {
     UNIMPLEMENTED();

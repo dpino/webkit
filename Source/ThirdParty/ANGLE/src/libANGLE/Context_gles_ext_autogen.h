@@ -139,19 +139,13 @@
     void multiDrawElementsBaseVertex(PrimitiveMode modePacked, const GLsizei *count,               \
                                      DrawElementsType typePacked, const void *const *indices,      \
                                      GLsizei drawcount, const GLint *basevertex);                  \
-    /* GL_EXT_draw_instanced */                                                                    \
     /* GL_EXT_external_buffer */                                                                   \
     void bufferStorageExternal(BufferBinding targetPacked, GLintptr offset, GLsizeiptr size,       \
                                GLeglClientBufferEXT clientBuffer, GLbitfield flags);               \
+    void namedBufferStorageExternal(GLuint buffer, GLintptr offset, GLsizeiptr size,               \
+                                    GLeglClientBufferEXT clientBuffer, GLbitfield flags);          \
     /* GL_EXT_float_blend */                                                                       \
     /* GL_EXT_frag_depth */                                                                        \
-    /* GL_EXT_fragment_shading_rate */                                                             \
-    void framebufferShadingRate(GLenum target, GLenum attachment, GLuint texture, GLint baseLayer, \
-                                GLsizei numLayers, GLsizei texelWidth, GLsizei texelHeight);       \
-    void getFragmentShadingRates(GLsizei samples, GLsizei maxCount, GLsizei *count,                \
-                                 GLenum *shadingRates);                                            \
-    /* GL_EXT_fragment_shading_rate_attachment */                                                  \
-    /* GL_EXT_fragment_shading_rate_primitive */                                                   \
     /* GL_EXT_geometry_shader */                                                                   \
     /* GL_EXT_gpu_shader5 */                                                                       \
     /* GL_EXT_instanced_arrays */                                                                  \
@@ -185,7 +179,6 @@
     /* GL_EXT_memory_object_fd */                                                                  \
     void importMemoryFd(MemoryObjectID memoryPacked, GLuint64 size, HandleType handleTypePacked,   \
                         GLint fd);                                                                 \
-    /* GL_EXT_multi_draw_arrays */                                                                 \
     /* GL_EXT_multi_draw_indirect */                                                               \
     void multiDrawArraysIndirect(PrimitiveMode modePacked, const void *indirect,                   \
                                  GLsizei drawcount, GLsizei stride);                               \
@@ -616,10 +609,6 @@
                                   GLsizei *length, GLint64 *params);                               \
     void getQueryObjectui64vRobust(QueryID idPacked, GLenum pname, GLsizei bufSize,                \
                                    GLsizei *length, GLuint64 *params);                             \
-    void getFramebufferPixelLocalStorageParameterfvRobust(                                         \
-        GLint plane, GLenum pname, GLsizei bufSize, GLsizei *length, GLfloat *params);             \
-    void getFramebufferPixelLocalStorageParameterivRobust(                                         \
-        GLint plane, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *params);               \
     /* GL_ANGLE_robust_fragment_shader_output */                                                   \
     /* GL_ANGLE_robust_resource_initialization */                                                  \
     /* GL_ANGLE_semaphore_fuchsia */                                                               \
@@ -640,6 +629,10 @@
     void framebufferPixelLocalStorageRestore();                                                    \
     void getFramebufferPixelLocalStorageParameterfv(GLint plane, GLenum pname, GLfloat *params);   \
     void getFramebufferPixelLocalStorageParameteriv(GLint plane, GLenum pname, GLint *params);     \
+    void getFramebufferPixelLocalStorageParameterfvRobust(                                         \
+        GLint plane, GLenum pname, GLsizei bufSize, GLsizei *length, GLfloat *params);             \
+    void getFramebufferPixelLocalStorageParameterivRobust(                                         \
+        GLint plane, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *params);               \
     /* GL_ANGLE_shader_pixel_local_storage_coherent */                                             \
     /* GL_ANGLE_stencil_texturing */                                                               \
     /* GL_ANGLE_texture_compression_dxt3 */                                                        \
@@ -652,7 +645,7 @@
     /* GL_ANGLE_texture_multisample */                                                             \
     /* GL_ANGLE_texture_rectangle */                                                               \
     /* GL_ANGLE_variable_rasterization_rate_metal */                                               \
-    void bindMetalRasterizationRateMap(GLuint framebuffer, GLMTLRasterizationRateMapANGLE map);    \
+    void bindMetalRasterizationRateMap(GLuint renderbuffer, GLMTLRasterizationRateMapANGLE map);   \
     /* GL_ANGLE_vulkan_image */                                                                    \
     void acquireTextures(GLuint numTextures, const TextureID *texturesPacked,                      \
                          const GLenum *layouts);                                                   \
@@ -680,6 +673,7 @@
     /* GL_CHROMIUM_framebuffer_mixed_samples */                                                    \
     /* GL_CHROMIUM_lose_context */                                                                 \
     void loseContext(GraphicsResetStatus currentPacked, GraphicsResetStatus otherPacked);          \
+    /* GL_CHROMIUM_sync_query */                                                                   \
     /* GL_WEBKIT_explicit_resolve_target */                                                        \
     void framebufferResolveRenderbufferWEBKIT(GLenum target, GLenum attachment,                    \
                                               GLenum renderbuffertarget,                           \

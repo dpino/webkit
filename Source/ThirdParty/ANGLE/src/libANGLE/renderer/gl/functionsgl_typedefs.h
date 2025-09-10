@@ -1745,21 +1745,13 @@ typedef void(INTERNAL_GL_APIENTRY *PFNGLGETINTERNALFORMATSAMPLEIVNVPROC)(GLenum 
                                                                          GLsizei bufSize,
                                                                          GLint *params);
 
-// GL_OVR_multiview
+// GL_OVR_multiview2
 typedef void(INTERNAL_GL_APIENTRY *PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC)(GLenum target,
                                                                             GLenum attachment,
                                                                             GLuint texture,
                                                                             GLint level,
                                                                             GLint baseViewIndex,
                                                                             GLsizei numViews);
-typedef void(INTERNAL_GL_APIENTRY *PFNGLNAMEDFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC)(
-    GLuint framebuffer,
-    GLenum attachment,
-    GLuint texture,
-    GLint level,
-    GLint baseViewIndex,
-    GLsizei numViews);
-
 // EXT_debug_marker
 typedef void(INTERNAL_GL_APIENTRY *PFNGLINSERTEVENTMARKEREXTPROC)(GLsizei length,
                                                                   const GLchar *marker);

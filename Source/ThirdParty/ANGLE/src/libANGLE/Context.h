@@ -119,9 +119,6 @@ class ErrorSet : angle::NonCopyable
     GLenum getGraphicsResetStatus(rx::ContextImpl *contextImpl);
     GLenum getResetStrategy() const { return mResetStrategy; }
     GLenum getErrorForCapture() const;
-#if defined(ANGLE_ENABLE_ASSERTS)
-    uint32_t getPushedErrorCount() const { return mPushedErrors; }
-#endif
 
   private:
     void setContextLost();
@@ -150,9 +147,6 @@ class ErrorSet : angle::NonCopyable
     // The following are atomic and lockless as they are very frequently accessed.
     std::atomic_int mSkipValidation;
     std::atomic_int mContextLost;
-#if defined(ANGLE_ENABLE_ASSERTS)
-    std::atomic_uint32_t mPushedErrors;  // must be unsigned to handle overflows
-#endif
     std::atomic_int mHasAnyErrors;
 };
 
@@ -588,8 +582,6 @@ class Context final : public egl::LabeledObject, angle::NonCopyable, public angl
     bool isVertexArrayGenerated(VertexArrayID vertexArray) const;
     bool isTransformFeedbackGenerated(TransformFeedbackID transformFeedback) const;
 
-    bool isZeroTextureBound(TextureType textureType) const;
-
     bool isExternal() const { return mState.isExternal(); }
 
     void getBooleanvImpl(GLenum pname, GLboolean *params) const;
@@ -717,12 +709,6 @@ class Context final : public egl::LabeledObject, angle::NonCopyable, public angl
     Shader *getShaderResolveCompile(ShaderProgramID handle) const;
     Shader *getShaderNoResolveCompile(ShaderProgramID handle) const;
 
-    bool nameStartsWithReservedPrefix(const GLchar *name) const
-    {
-        return (strncmp(name, "gl_", 3) == 0) ||
-               (isWebGL() && (strncmp(name, "webgl_", 6) == 0 || strncmp(name, "_webgl_", 7) == 0));
-    }
-
     ANGLE_INLINE bool isTextureGenerated(TextureID texture) const
     {
         return mState.mTextureManager->isHandleGenerated(texture);
@@ -791,9 +777,6 @@ class Context final : public egl::LabeledObject, angle::NonCopyable, public angl
         return mTransformFeedbackMap;
     }
     GLenum getErrorForCapture() const { return mErrors.getErrorForCapture(); }
-#if defined(ANGLE_ENABLE_ASSERTS)
-    uint32_t getPushedErrorCount() const { return mErrors.getPushedErrorCount(); }
-#endif
 
     void onPreSwap();
 
@@ -865,18 +848,6 @@ class Context final : public egl::LabeledObject, angle::NonCopyable, public angl
 
     // Only used by vulkan backend.
     void onSwapChainImageChanged() const { mDefaultFramebuffer->onSwapChainImageChanged(); }
-    void onBufferChanged(const angle::SubjectMessage message,
-                         VertexArrayBufferBindingMask vertexArrayBufferBindingMask) const
-    {
-        // Notify current vertex array of the buffer changed. Note that other vertex arrays of this
-        // context or other context requires rebind which will check buffer changes
-        // at that time.
-        if (vertexArrayBufferBindingMask.any())
-        {
-            ASSERT(mState.mVertexArray != nullptr);
-            mState.mVertexArray->onBufferChanged(this, message, vertexArrayBufferBindingMask);
-        }
-    }
 
   private:
     void initializeDefaultResources();
@@ -1015,7 +986,6 @@ class Context final : public egl::LabeledObject, angle::NonCopyable, public angl
     state::DirtyObjects mComputeDirtyObjects;
     state::DirtyBits mCopyImageDirtyBits;
     state::DirtyObjects mCopyImageDirtyObjects;
-    state::DirtyObjects mTilingDirtyObjects;
 
     // Binding to container objects that use dependent state updates.
     angle::ObserverBinding mVertexArrayObserverBinding;

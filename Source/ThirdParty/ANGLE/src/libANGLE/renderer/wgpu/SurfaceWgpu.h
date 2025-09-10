@@ -15,7 +15,7 @@
 #include "libANGLE/renderer/wgpu/RenderTargetWgpu.h"
 #include "libANGLE/renderer/wgpu/wgpu_helpers.h"
 
-#include <webgpu/webgpu.h>
+#include <dawn/webgpu_cpp.h>
 
 namespace rx
 {
@@ -32,20 +32,17 @@ class SurfaceWgpu : public SurfaceImpl
         webgpu::ImageHelper texture;
         RenderTargetWgpu renderTarget;
     };
-    angle::Result createDepthStencilAttachment(const egl::Display *display,
-                                               uint32_t width,
+    angle::Result createDepthStencilAttachment(uint32_t width,
                                                uint32_t height,
                                                const webgpu::Format &webgpuFormat,
-                                               webgpu::DeviceHandle device,
+                                               wgpu::Device &device,
                                                AttachmentImage *outDepthStencilAttachment);
 };
 
 class OffscreenSurfaceWgpu : public SurfaceWgpu
 {
   public:
-    OffscreenSurfaceWgpu(const egl::SurfaceState &surfaceState,
-                         EGLenum clientBufferType,
-                         EGLClientBuffer clientBuffer);
+    OffscreenSurfaceWgpu(const egl::SurfaceState &surfaceState);
     ~OffscreenSurfaceWgpu() override;
 
     egl::Error initialize(const egl::Display *display) override;
@@ -82,9 +79,6 @@ class OffscreenSurfaceWgpu : public SurfaceWgpu
 
     EGLint mWidth;
     EGLint mHeight;
-
-    EGLenum mClientBufferType     = EGL_NONE;
-    EGLClientBuffer mClientBuffer = nullptr;
 
     AttachmentImage mColorAttachment;
     AttachmentImage mDepthStencilAttachment;
@@ -138,16 +132,16 @@ class WindowSurfaceWgpu : public SurfaceWgpu
     angle::Result updateCurrentTexture(const egl::Display *display);
 
     virtual angle::Result createWgpuSurface(const egl::Display *display,
-                                            webgpu::SurfaceHandle *outSurface) = 0;
+                                            wgpu::Surface *outSurface) = 0;
     virtual angle::Result getCurrentWindowSize(const egl::Display *display,
                                                gl::Extents *outSize)   = 0;
 
     EGLNativeWindowType mNativeWindow;
-    webgpu::SurfaceHandle mSurface;
+    wgpu::Surface mSurface;
 
     const webgpu::Format *mSurfaceTextureFormat = nullptr;
-    WGPUTextureUsage mSurfaceTextureUsage;
-    WGPUPresentMode mPresentMode;
+    wgpu::TextureUsage mSurfaceTextureUsage;
+    wgpu::PresentMode mPresentMode;
 
     const webgpu::Format *mDepthStencilFormat = nullptr;
 

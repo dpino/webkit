@@ -20,13 +20,14 @@ class ImmutableStringBuilderTest : public testing::Test
   protected:
     void SetUp() override
     {
+        allocator.push();
         SetGlobalPoolAllocator(&allocator);
     }
 
     void TearDown() override
     {
         SetGlobalPoolAllocator(nullptr);
-        allocator.reset();
+        allocator.pop();
     }
 
     angle::PoolAllocator allocator;

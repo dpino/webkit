@@ -31,9 +31,9 @@ class EGLX11VisualHintTest : public ANGLETest<>
   public:
     void testSetUp() override { mDisplay = XOpenDisplay(nullptr); }
 
-    std::vector<EGLAttrib> getDisplayAttributes(int visualId) const
+    std::vector<EGLint> getDisplayAttributes(int visualId) const
     {
-        std::vector<EGLAttrib> attribs;
+        std::vector<EGLint> attribs;
 
         attribs.push_back(EGL_PLATFORM_ANGLE_TYPE_ANGLE);
         attribs.push_back(GetParam().getRenderer());
@@ -78,8 +78,9 @@ TEST_P(EGLX11VisualHintTest, InvalidVisualID)
     static const int gInvalidVisualId = -1;
     auto attributes                   = getDisplayAttributes(gInvalidVisualId);
 
-    EGLDisplay display = eglGetPlatformDisplay(
-        GetEglPlatform(), reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY), attributes.data());
+    EGLDisplay display = eglGetPlatformDisplayEXT(
+        EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY),
+        attributes.data());
     ASSERT_TRUE(display != EGL_NO_DISPLAY);
 
     ASSERT_TRUE(EGL_FALSE == eglInitialize(display, nullptr, nullptr));
@@ -103,8 +104,9 @@ TEST_P(EGLX11VisualHintTest, ValidVisualIDAndClear)
     int visualId = windowAttributes.visual->visualid;
 
     auto attributes    = getDisplayAttributes(visualId);
-    EGLDisplay display = eglGetPlatformDisplay(
-        GetEglPlatform(), reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY), attributes.data());
+    EGLDisplay display = eglGetPlatformDisplayEXT(
+        EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY),
+        attributes.data());
     ASSERT_NE(EGL_NO_DISPLAY, display);
 
     ASSERT_TRUE(EGL_TRUE == eglInitialize(display, nullptr, nullptr));
@@ -180,8 +182,9 @@ TEST_P(EGLX11VisualHintTest, InvalidWindowVisualID)
     }
 
     auto attributes    = getDisplayAttributes(visualId);
-    EGLDisplay display = eglGetPlatformDisplay(
-        GetEglPlatform(), reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY), attributes.data());
+    EGLDisplay display = eglGetPlatformDisplayEXT(
+        EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<_XDisplay *>(EGL_DEFAULT_DISPLAY),
+        attributes.data());
     ASSERT_NE(EGL_NO_DISPLAY, display);
 
     ASSERT_TRUE(EGL_TRUE == eglInitialize(display, nullptr, nullptr));

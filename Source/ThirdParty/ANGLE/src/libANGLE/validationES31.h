@@ -56,7 +56,7 @@ bool ValidateCreateShaderProgramvBase(const Context *context,
                                       angle::EntryPoint entryPoint,
                                       ShaderType typePacked,
                                       GLsizei count,
-                                      const GLchar *const *strings);
+                                      const GLchar **strings);
 bool ValidateDeleteProgramPipelinesBase(const Context *context,
                                         angle::EntryPoint entryPoint,
                                         GLsizei n,
@@ -79,6 +79,11 @@ bool ValidateGetProgramPipelineivBase(const Context *context,
 bool ValidateIsProgramPipelineBase(const Context *context,
                                    angle::EntryPoint entryPoint,
                                    ProgramPipelineID pipelinePacked);
+bool ValidateProgramParameteriBase(const Context *context,
+                                   angle::EntryPoint entryPoint,
+                                   ShaderProgramID programPacked,
+                                   GLenum pname,
+                                   GLint value);
 bool ValidateProgramUniform1fBase(const Context *context,
                                   angle::EntryPoint entryPoint,
                                   ShaderProgramID programPacked,
