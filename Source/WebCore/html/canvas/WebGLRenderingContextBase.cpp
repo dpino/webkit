@@ -889,8 +889,18 @@ void WebGLRenderingContextBase::didUpdateCanvasSizeProperties(bool)
     if (newSize == m_defaultFramebuffer->size())
         return;
 
+<<<<<<< HEAD
     m_readDrawingBuffer = nullptr;
     m_readDisplayBuffer = nullptr;
+||||||| parent of e1676e6e9faa ([PATCH] Improve WebGL performance using Damage)
+    // We don't have to mark the canvas as dirty, since the newly created image buffer will also start off
+    // clear (and this matches what reshape will do).
+=======
+    m_damage = std::nullopt;
+
+    // We don't have to mark the canvas as dirty, since the newly created image buffer will also start off
+    // clear (and this matches what reshape will do).
+>>>>>>> e1676e6e9faa ([PATCH] Improve WebGL performance using Damage)
     m_defaultFramebuffer->reshape(newSize);
     updateMemoryCost();
 
@@ -1585,8 +1595,10 @@ void WebGLRenderingContextBase::disable(GCGLenum cap)
 {
     if (isContextLost() || !validateCapability("disable"_s, cap))
         return;
-    if (cap == GraphicsContextGL::SCISSOR_TEST)
+    if (cap == GraphicsContextGL::SCISSOR_TEST) {
         m_scissorEnabled = false;
+        m_damage = std::nullopt;
+    }
     if (cap == GraphicsContextGL::RASTERIZER_DISCARD)
         m_rasterizerDiscardEnabled = false;
     graphicsContextGL()->disable(cap);
@@ -3100,6 +3112,9 @@ void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, G
     if (!validateSize("scissor"_s, width, height))
         return;
     graphicsContextGL()->scissor(x, y, width, height);
+    m_latestScissor = { x, y, width, height };
+    if (m_scissorEnabled && m_damage)
+        m_damage->add(*m_latestScissor);
 }
 
 void WebGLRenderingContextBase::shaderSource(WebGLShader& shader, const String& string)
@@ -5658,6 +5673,11 @@ void WebGLRenderingContextBase::prepareForDisplay()
         return;
 
     clearIfComposited(CallerTypeOther);
+    if (m_damage) {
+        m_context->setDamage(WTF::move(*m_damage));
+        m_damage = std::nullopt;
+    }
+    clearAccumulatedDirtyRect();
     graphicsContextGL()->prepareForDisplay();
     m_defaultFramebuffer->markAllUnpreservedBuffersDirty();
 
@@ -5680,6 +5700,7 @@ bool WebGLRenderingContextBase::isOpaque() const
     return !m_attributes.alpha;
 }
 
+<<<<<<< HEAD
 void WebGLRenderingContextBase::updateMemoryCost() const
 {
     // Computes only a rough ballpark figure to drive garbage collection.
@@ -5699,6 +5720,18 @@ void WebGLRenderingContextBase::updateMemoryCost() const
     CanvasRenderingContext::updateMemoryCost(newMemoryCost);
 }
 
+||||||| parent of e1676e6e9faa ([PATCH] Improve WebGL performance using Damage)
+=======
+void WebGLRenderingContextBase::clearAccumulatedDirtyRect()
+{
+    if (m_scissorEnabled && m_latestScissor) {
+        m_damage = std::make_optional<Damage>(clampedCanvasSize(), Damage::Mode::Rectangles, 5);
+        m_damage->add(*m_latestScissor);
+    } else
+        m_damage = std::nullopt;
+}
+
+>>>>>>> e1676e6e9faa ([PATCH] Improve WebGL performance using Damage)
 WebCoreOpaqueRoot root(WebGLRenderingContextBase* context)
 {
     return WebCoreOpaqueRoot { context };
