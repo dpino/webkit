@@ -48,8 +48,6 @@ angle::Result ProgramExecutableWgpu::updateUniformsAndGetBindGroup(
 {
     if (mDefaultUniformBlocksDirty.any())
     {
-        const DawnProcTable *wgpu = webgpu::GetProcs(contextWgpu);
-
         // TODO(anglebug.com/376553328): this creates an entire new buffer every time a single
         // uniform changes, and the old ones are just garbage collected. This should be optimized.
         webgpu::BufferHelper defaultUniformBuffer;
@@ -65,7 +63,7 @@ angle::Result ProgramExecutableWgpu::updateUniformsAndGetBindGroup(
             return angle::Result::Stop;
         }
 
-        ANGLE_TRY(defaultUniformBuffer.initBuffer(wgpu, contextWgpu->getDevice(), requiredSpace,
+        ANGLE_TRY(defaultUniformBuffer.initBuffer(contextWgpu->getDevice(), requiredSpace,
                                                   WGPUBufferUsage_Uniform | WGPUBufferUsage_CopyDst,
                                                   webgpu::MapAtCreation::Yes));
 
@@ -108,7 +106,7 @@ angle::Result ProgramExecutableWgpu::updateUniformsAndGetBindGroup(
         bindGroupDesc.entryCount = bindings.size();
         bindGroupDesc.entries    = bindings.data();
         mDefaultBindGroup        = webgpu::BindGroupHandle::Acquire(
-            wgpu, wgpu->deviceCreateBindGroup(contextWgpu->getDevice().get(), &bindGroupDesc));
+            wgpuDeviceCreateBindGroup(contextWgpu->getDevice().get(), &bindGroupDesc));
     }
 
     ASSERT(mDefaultBindGroup);
@@ -123,8 +121,6 @@ angle::Result ProgramExecutableWgpu::getSamplerAndTextureBindGroup(
 {
     if (mSamplerBindingsDirty)
     {
-        const DawnProcTable *wgpu = webgpu::GetProcs(contextWgpu);
-
         const gl::ActiveTexturesCache &completeTextures =
             contextWgpu->getState().getActiveTexturesCache();
 
@@ -179,7 +175,7 @@ angle::Result ProgramExecutableWgpu::getSamplerAndTextureBindGroup(
                 // TODO(anglebug.com/389145696): potentially cache sampler.
                 WGPUSamplerDescriptor sampleDesc  = gl_wgpu::GetWgpuSamplerDesc(samplerState);
                 webgpu::SamplerHandle wgpuSampler = webgpu::SamplerHandle::Acquire(
-                    wgpu, wgpu->deviceCreateSampler(contextWgpu->getDevice().get(), &sampleDesc));
+                    wgpuDeviceCreateSampler(contextWgpu->getDevice().get(), &sampleDesc));
                 samplers.push_back(wgpuSampler);
 
                 WGPUBindGroupEntry samplerBindGroupEntry = WGPU_BIND_GROUP_ENTRY_INIT;
@@ -211,7 +207,7 @@ angle::Result ProgramExecutableWgpu::getSamplerAndTextureBindGroup(
         bindGroupDesc.entryCount      = bindings.size();
         bindGroupDesc.entries         = bindings.data();
         mSamplersAndTexturesBindGroup = webgpu::BindGroupHandle::Acquire(
-            wgpu, wgpu->deviceCreateBindGroup(contextWgpu->getDevice().get(), &bindGroupDesc));
+            wgpuDeviceCreateBindGroup(contextWgpu->getDevice().get(), &bindGroupDesc));
 
         mSamplerBindingsDirty = false;
     }
@@ -484,9 +480,6 @@ void ProgramExecutableWgpu::genBindingLayoutIfNecessary(ContextWgpu *context)
     {
         return;
     }
-
-    const DawnProcTable *wgpu = webgpu::GetProcs(context);
-
     // TODO(anglebug.com/42267100): for now, only create a wgpu::PipelineLayout with the default
     // uniform block, driver uniform block, and textures/samplers. Will need to be extended for
     // UBOs. Also, possibly provide this layout as a compilation hint to createShaderModule().
@@ -523,8 +516,7 @@ void ProgramExecutableWgpu::genBindingLayoutIfNecessary(ContextWgpu *context)
     defaultBindGroupLayoutDesc.entryCount = defaultBindGroupLayoutEntries.size();
     defaultBindGroupLayoutDesc.entries    = defaultBindGroupLayoutEntries.data();
     mDefaultBindGroupLayout               = webgpu::BindGroupLayoutHandle::Acquire(
-        wgpu,
-        wgpu->deviceCreateBindGroupLayout(context->getDevice().get(), &defaultBindGroupLayoutDesc));
+        wgpuDeviceCreateBindGroupLayout(context->getDevice().get(), &defaultBindGroupLayoutDesc));
 
     // Add the textures/samplers to the second bind group.
     std::vector<WGPUBindGroupLayoutEntry> samplersAndTexturesBindGroupLayoutEntries;
@@ -578,9 +570,9 @@ void ProgramExecutableWgpu::genBindingLayoutIfNecessary(ContextWgpu *context)
         samplersAndTexturesBindGroupLayoutEntries.size();
     texturesAndSamplersBindGroupLayoutDesc.entries =
         samplersAndTexturesBindGroupLayoutEntries.data();
-    mSamplersAndTexturesBindGroupLayout = webgpu::BindGroupLayoutHandle::Acquire(
-        wgpu, wgpu->deviceCreateBindGroupLayout(context->getDevice().get(),
-                                                &texturesAndSamplersBindGroupLayoutDesc));
+    mSamplersAndTexturesBindGroupLayout =
+        webgpu::BindGroupLayoutHandle::Acquire(wgpuDeviceCreateBindGroupLayout(
+            context->getDevice().get(), &texturesAndSamplersBindGroupLayoutDesc));
 
     // Driver uniforms bind groups are handled by ContextWgpu.
 
@@ -600,7 +592,7 @@ void ProgramExecutableWgpu::genBindingLayoutIfNecessary(ContextWgpu *context)
     layoutDesc.bindGroupLayoutCount = groupLayouts.size();
     layoutDesc.bindGroupLayouts     = groupLayouts.data();
     mPipelineLayout                         = webgpu::PipelineLayoutHandle::Acquire(
-        wgpu, wgpu->deviceCreatePipelineLayout(context->getDevice().get(), &layoutDesc));
+        wgpuDeviceCreatePipelineLayout(context->getDevice().get(), &layoutDesc));
 }
 
 }  // namespace rx

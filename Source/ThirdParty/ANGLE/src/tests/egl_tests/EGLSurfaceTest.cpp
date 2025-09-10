@@ -129,7 +129,7 @@ class EGLSurfaceTest : public ANGLETest<>
         displayAttributes.push_back(deviceType);
         displayAttributes.push_back(EGL_NONE);
 
-        mDisplay = eglGetPlatformDisplay(GetEglPlatform(),
+        mDisplay = eglGetPlatformDisplay(EGL_PLATFORM_ANGLE_ANGLE,
                                          reinterpret_cast<void *>(mOSWindow->getNativeDisplay()),
                                          displayAttributes.data());
         ASSERT_TRUE(mDisplay != EGL_NO_DISPLAY);
@@ -417,7 +417,7 @@ class EGLSingleBufferTest : public ANGLETest<>
     void testSetUp() override
     {
         EGLAttrib dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, GetParam().getRenderer(), EGL_NONE};
-        mDisplay              = eglGetPlatformDisplay(GetEglPlatform(),
+        mDisplay              = eglGetPlatformDisplay(EGL_PLATFORM_ANGLE_ANGLE,
                                                       reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
         ASSERT_TRUE(mDisplay != EGL_NO_DISPLAY);
         ASSERT_EGL_TRUE(eglInitialize(mDisplay, nullptr, nullptr));
@@ -2006,6 +2006,54 @@ TEST_P(EGLSingleBufferTest, OnCreateWindowSurface)
     ANGLE_SKIP_TEST_IF(skipped);
 }
 
+// As of EGL 1.5, eglQueryContext(EGL_RENDER_BUFFER) returning EGL_SINGLE_BUFFER requires the EGL
+// extension EGL_KHR_mutable_render_buffer. Otherwise, something is likely going wrong in ANGLE and
+// EGL_SINGLE_BUFFER is being returned erroneously.
+TEST_P(EGLSingleBufferTest, VerifyMutableRenderBufferKHR)
+{
+    EGLConfig config = EGL_NO_CONFIG_KHR;
+    ANGLE_SKIP_TEST_IF(!chooseConfig(&config, false));
+
+    EGLContext context = EGL_NO_CONTEXT;
+    EXPECT_EGL_TRUE(createContext(config, &context));
+    ASSERT_EGL_SUCCESS() << "eglCreateContext failed.";
+
+    EGLSurface surface = EGL_NO_SURFACE;
+    OSWindow *osWindow = OSWindow::New();
+    osWindow->initialize("EGLSingleBufferTest", kWidth, kHeight);
+    EXPECT_EGL_TRUE(
+        createWindowSurface(config, osWindow->getNativeWindow(), &surface, EGL_SINGLE_BUFFER));
+    ASSERT_EGL_SUCCESS() << "eglCreateWindowSurface failed.";
+
+    EXPECT_EGL_TRUE(eglMakeCurrent(mDisplay, surface, surface, context));
+    ASSERT_EGL_SUCCESS() << "eglMakeCurrent failed.";
+
+    bool skipped = false;
+    EGLint actualRenderbuffer;
+    EXPECT_EGL_TRUE(eglQueryContext(mDisplay, context, EGL_RENDER_BUFFER, &actualRenderbuffer));
+    if (actualRenderbuffer == EGL_SINGLE_BUFFER)
+    {
+        EXPECT_TRUE(IsEGLDisplayExtensionEnabled(mDisplay, "EGL_KHR_mutable_render_buffer"));
+    }
+    else
+    {
+        std::cout << "SKIP test, no EGL_SINGLE_BUFFER support." << std::endl;
+        skipped = true;
+    }
+
+    EXPECT_EGL_TRUE(eglMakeCurrent(mDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, context));
+    ASSERT_EGL_SUCCESS() << "eglMakeCurrent - uncurrent failed.";
+
+    eglDestroySurface(mDisplay, surface);
+    surface = EGL_NO_SURFACE;
+    osWindow->destroy();
+    OSWindow::Delete(&osWindow);
+
+    eglDestroyContext(mDisplay, context);
+    context = EGL_NO_CONTEXT;
+    ANGLE_SKIP_TEST_IF(skipped);
+}
+
 TEST_P(EGLSingleBufferTest, OnSetSurfaceAttrib)
 {
     ANGLE_SKIP_TEST_IF(!IsEGLDisplayExtensionEnabled(mDisplay, "EGL_KHR_mutable_render_buffer"));
@@ -2485,7 +2533,7 @@ TEST_P(EGLSingleBufferTest, AcquireImageFromSwapImpl)
         drawQuad(greenProgram, essl1_shaders::PositionAttrib(), 0.5f);
         glFlush();
 
-        // Prepare auxiliary framebuffer.
+        // Prepare auxilary framebuffer.
         GLRenderbuffer renderBuffer;
         GLFramebuffer framebuffer;
         glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
@@ -2495,7 +2543,7 @@ TEST_P(EGLSingleBufferTest, AcquireImageFromSwapImpl)
                                   renderBuffer);
         EXPECT_GL_NO_ERROR();
 
-        // Draw into the auxiliary framebuffer just to generate commands into the command buffers.
+        // Draw into the auxilary framebuffer just to generate commands into the command buffers.
         // Otherwise below flush will be ignored.
         drawQuad(greenProgram, essl1_shaders::PositionAttrib(), 0.5f);
 
@@ -3719,74 +3767,6 @@ TEST_P(EGLSurfaceTest, MSAAResolveWithEGLConfig8880)
     // Tests renderpass resolve during swap.
     eglSwapBuffers(mDisplay, mWindowSurface);
     ASSERT_EGL_SUCCESS();
-}
-
-// Regression test for a bug in the Vulkan backend where a staged clear was not applied if
-// glGetMultisamplefv is called.
-TEST_P(EGLSurfaceTest, GetMultisamplefvAfterClear)
-{
-    initializeDisplay();
-
-    // Initialize an RGBA8 window surface with 4x MSAA
-    constexpr EGLint kSurfaceAttributes[] = {EGL_RED_SIZE,
-                                             8,
-                                             EGL_GREEN_SIZE,
-                                             8,
-                                             EGL_BLUE_SIZE,
-                                             8,
-                                             EGL_ALPHA_SIZE,
-                                             8,
-                                             EGL_SAMPLE_BUFFERS,
-                                             1,
-                                             EGL_SAMPLES,
-                                             4,
-                                             EGL_SURFACE_TYPE,
-                                             EGL_WINDOW_BIT,
-                                             EGL_NONE};
-
-    EGLint configCount      = 0;
-    EGLConfig surfaceConfig = nullptr;
-    ANGLE_SKIP_TEST_IF(
-        !eglChooseConfig(mDisplay, kSurfaceAttributes, &surfaceConfig, 1, &configCount));
-    ANGLE_SKIP_TEST_IF(configCount == 0);
-    ASSERT_NE(surfaceConfig, nullptr);
-
-    initializeSurface(surfaceConfig);
-    initializeMainContext();
-    ASSERT_EGL_SUCCESS();
-    ASSERT_NE(mWindowSurface, EGL_NO_SURFACE);
-
-    eglMakeCurrent(mDisplay, mWindowSurface, mWindowSurface, mContext);
-    ASSERT_EGL_SUCCESS();
-
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_ANGLE_texture_multisample"));
-
-    // Clear operation will be staged (Vulkan backend).
-    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Calling this API will perform draw framebuffer sync which will flush staged clear.
-    // If there is no bug, clear will not be deferred during the flush.
-    GLfloat samplePosition[2];
-    glGetMultisamplefvANGLE(GL_SAMPLE_POSITION, 0, samplePosition);
-    ASSERT_GL_NO_ERROR();
-
-    // Prepare auxiliary framebuffer.
-    GLFramebuffer framebuffer;
-    GLRenderbuffer renderBuffer;
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, 50, 50);
-    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER,
-                              renderBuffer);
-    EXPECT_GL_NO_ERROR();
-
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Check default framebuffer contains expected value.
-    // In case of a bug, previously deferred clear will not be applied.
-    EXPECT_PIXEL_COLOR_EQ(0, 0, GLColor::green);
 }
 
 int EGLSurfaceTest::drawSizeCheckRect(EGLSurface surface,

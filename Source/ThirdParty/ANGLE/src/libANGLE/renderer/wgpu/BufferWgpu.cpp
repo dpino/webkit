@@ -72,7 +72,6 @@ angle::Result BufferWgpu::setData(const gl::Context *context,
                                   BufferFeedback *feedback)
 {
     ContextWgpu *contextWgpu = webgpu::GetImpl(context);
-    const DawnProcTable *wgpu   = webgpu::GetProcs(contextWgpu);
     webgpu::DeviceHandle device = webgpu::GetDevice(context);
 
     bool hasData = data && size > 0;
@@ -83,8 +82,7 @@ angle::Result BufferWgpu::setData(const gl::Context *context,
         (hasData && !mBuffer.canMapForWrite()))
     {
         // Allocate a new buffer
-        ANGLE_TRY(mBuffer.initBuffer(wgpu, device, size,
-                                     GetDefaultWGPUBufferUsageForBinding(target),
+        ANGLE_TRY(mBuffer.initBuffer(device, size, GetDefaultWGPUBufferUsageForBinding(target),
                                      webgpu::MapAtCreation::Yes));
     }
 
@@ -126,11 +124,10 @@ angle::Result BufferWgpu::setSubData(const gl::Context *context,
     }
     else
     {
-        const DawnProcTable *wgpu = webgpu::GetProcs(context);
         // TODO: Upload into a staging buffer and copy to the destination buffer so that the copy
         // happens at the right point in time for command buffer recording.
         webgpu::QueueHandle queue = contextWgpu->getQueue();
-        wgpu->queueWriteBuffer(queue.get(), mBuffer.getBuffer().get(), offset, data, size);
+        wgpuQueueWriteBuffer(queue.get(), mBuffer.getBuffer().get(), offset, data, size);
     }
 
     return angle::Result::Continue;

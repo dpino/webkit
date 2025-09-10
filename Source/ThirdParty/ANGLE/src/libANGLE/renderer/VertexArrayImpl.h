@@ -31,11 +31,7 @@ class ContextImpl;
 class VertexArrayImpl : angle::NonCopyable
 {
   public:
-    VertexArrayImpl(const gl::VertexArrayState &state) : mState(state)
-    {
-        // ElementBuffer always observe the buffer content change.
-        mContentsObserverBindingsMask.set(gl::kElementArrayBufferIndex);
-    }
+    VertexArrayImpl(const gl::VertexArrayState &state) : mState(state) {}
 
     // It's up to the implementation to reset the attrib and binding dirty bits.
     // This is faster than the front-end having to clear all the bits after they have been scanned.
@@ -49,19 +45,16 @@ class VertexArrayImpl : angle::NonCopyable
 
     const gl::VertexArrayState &getState() const { return mState; }
 
-    gl::VertexArrayBufferBindingMask getContentObserversBindingMask() const
+    void setContentsObservers(gl::VertexArrayBufferContentsObservers *observers)
     {
-        return mContentsObserverBindingsMask;
+        mContentsObservers = observers;
     }
 
     virtual angle::Result onLabelUpdate(const gl::Context *context);
 
   protected:
     const gl::VertexArrayState &mState;
-    // Tracks back end's needs for buffer content change at each binding index. If the bit is set,
-    // current context's VertexArray will be notified when a related buffer data has changed along
-    // with this bit mask.
-    gl::VertexArrayBufferBindingMask mContentsObserverBindingsMask;
+    gl::VertexArrayBufferContentsObservers *mContentsObservers = nullptr;
 };
 
 inline angle::Result VertexArrayImpl::syncState(const gl::Context *context,

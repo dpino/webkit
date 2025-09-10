@@ -802,29 +802,41 @@ bool IsValidESSLString(const char *str, size_t len)
     return true;
 }
 
-bool ValidateWebGLName(const Context *context, angle::EntryPoint entryPoint, const char *name)
+bool ValidateWebGLNamePrefix(const Context *context,
+                             angle::EntryPoint entryPoint,
+                             const GLchar *name)
 {
     ASSERT(context->isWebGL());
-    const bool isWebGL1 = context->getClientVersion() < ES_3_0;
 
-    // WebGL imposes a limit on the lengths of uniform and attribute locations.
-    const size_t maxLength = isWebGL1 ? 256 : 1024;
-    const size_t length    = strlen(name);
-
-    // Do not validate uniform name length because Chromium may pass longer
-    // strings than allowed in WebGL during its internal operations.
-    if (entryPoint != angle::EntryPoint::GLBindUniformLocationCHROMIUM &&
-        entryPoint != angle::EntryPoint::GLGetUniformLocation && length > maxLength)
+    // WebGL 1.0 [Section 6.16] GLSL Constructs
+    // Identifiers starting with "webgl_" and "_webgl_" are reserved for use by WebGL.
+    if (strncmp(name, "webgl_", 6) == 0 || strncmp(name, "_webgl_", 7) == 0)
     {
-        ANGLE_VALIDATION_ERRORF(GL_INVALID_VALUE, kWebGLNameLengthLimitExceeded,
-                                static_cast<int>(maxLength));
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kWebglBindAttribLocationReservedPrefix);
         return false;
     }
 
-    // WebGL disallows strings containing invalid ESSL characters.
-    if (!IsValidESSLString(name, length))
+    return true;
+}
+
+bool ValidateWebGLNameLength(const Context *context, angle::EntryPoint entryPoint, size_t length)
+{
+    ASSERT(context->isWebGL());
+
+    if (context->isWebGL1() && length > 256)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kInvalidNameCharacters);
+        // WebGL 1.0 [Section 6.21] Maxmimum Uniform and Attribute Location Lengths
+        // WebGL imposes a limit of 256 characters on the lengths of uniform and attribute
+        // locations.
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kWebglNameLengthLimitExceeded);
+
+        return false;
+    }
+    else if (length > 1024)
+    {
+        // WebGL 2.0 [Section 4.3.2] WebGL 2.0 imposes a limit of 1024 characters on the lengths of
+        // uniform and attribute locations.
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kWebgl2NameLengthLimitExceeded);
         return false;
     }
 
@@ -3207,21 +3219,17 @@ bool ValidateBindUniformLocationCHROMIUM(const Context *context,
         return false;
     }
 
-    if (name == nullptr)
+    // The WebGL spec (section 6.20) disallows strings containing invalid ESSL characters for
+    // shader-related entry points
+    if (context->isWebGL() && !IsValidESSLString(name, strlen(name)))
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kUniformNameNull);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kInvalidNameCharacters);
         return false;
     }
 
-    if (context->nameStartsWithReservedPrefix(name))
+    if (strncmp(name, "gl_", 3) == 0)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kNameStartsWithReservedPrefix);
-        return false;
-    }
-
-    if (context->isWebGL() && !ValidateWebGLName(context, entryPoint, name))
-    {
-        // Error already generated.
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kNameBeginsWithGL);
         return false;
     }
 
@@ -3659,24 +3667,10 @@ bool ValidateBufferData(const Context *context,
         return false;
     }
 
-    // Do some additional WebGL-specific validation
-    if (ANGLE_UNLIKELY(context->isWebGL()))
+    if (buffer->hasWebGLXFBBindingConflict(context->isWebGL()))
     {
-        if (buffer->hasWebGLXFBBindingConflict(true))
-        {
-            ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
-            return false;
-        }
-
-        const TransformFeedback *transformFeedbackObject =
-            context->getState().getCurrentTransformFeedback();
-        if (transformFeedbackObject && transformFeedbackObject->isActive() &&
-            !transformFeedbackObject->isPaused() &&
-            transformFeedbackObject->isBufferBound(buffer->id()))
-        {
-            ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
-            return false;
-        }
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
+        return false;
     }
 
     if (buffer->isImmutable())
@@ -3731,24 +3725,10 @@ bool ValidateBufferSubData(const Context *context,
         return false;
     }
 
-    // Do some additional WebGL-specific validation
-    if (ANGLE_UNLIKELY(context->isWebGL()))
+    if (buffer->hasWebGLXFBBindingConflict(context->isWebGL()))
     {
-        if (buffer->hasWebGLXFBBindingConflict(true))
-        {
-            ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
-            return false;
-        }
-
-        const TransformFeedback *transformFeedbackObject =
-            context->getState().getCurrentTransformFeedback();
-        if (transformFeedbackObject && transformFeedbackObject->isActive() &&
-            !transformFeedbackObject->isPaused() &&
-            transformFeedbackObject->isBufferBound(buffer->id()))
-        {
-            ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
-            return false;
-        }
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kBufferBoundForTransformFeedback);
+        return false;
     }
 
     if (buffer->isImmutable() &&
@@ -3865,20 +3845,33 @@ bool ValidateBindAttribLocation(const Context *context,
 
     if (name == nullptr)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kAttributeNameNull);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kAttributeLocationNull);
         return false;
     }
 
-    if (context->nameStartsWithReservedPrefix(name))
+    if (strncmp(name, "gl_", 3) == 0)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kNameStartsWithReservedPrefix);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kNameBeginsWithGL);
         return false;
     }
 
-    if (context->isWebGL() && !ValidateWebGLName(context, entryPoint, name))
+    if (context->isWebGL())
     {
-        // Error already generated.
-        return false;
+        const size_t length = strlen(name);
+
+        if (!IsValidESSLString(name, length))
+        {
+            // The WebGL spec (section 6.20) disallows strings containing invalid ESSL characters
+            // for shader-related entry points
+            ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kInvalidNameCharacters);
+            return false;
+        }
+
+        if (!ValidateWebGLNameLength(context, entryPoint, length) ||
+            !ValidateWebGLNamePrefix(context, entryPoint, name))
+        {
+            return false;
+        }
     }
 
     Program *programObject = GetValidProgram(context, entryPoint, program);
@@ -4531,14 +4524,32 @@ bool ValidateGetAttribLocation(const Context *context,
 {
     if (name == nullptr)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kAttributeNameNull);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kAttributeLocationNull);
         return false;
     }
 
-    if (context->isWebGL() && !ValidateWebGLName(context, entryPoint, name))
+    if (strncmp(name, "gl_", 3) == 0)
     {
-        // Error already generated.
         return false;
+    }
+
+    if (context->isWebGL())
+    {
+        const size_t length = strlen(name);
+
+        if (!IsValidESSLString(name, length))
+        {
+            // The WebGL spec (section 6.20) disallows strings containing invalid ESSL characters
+            // for shader-related entry points
+            ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kInvalidNameCharacters);
+            return false;
+        }
+
+        if (!ValidateWebGLNameLength(context, entryPoint, length) ||
+            strncmp(name, "webgl_", 6) == 0 || strncmp(name, "_webgl_", 7) == 0)
+        {
+            return false;
+        }
     }
 
     Program *programObject = GetValidProgram(context, entryPoint, program);
@@ -4733,13 +4744,20 @@ bool ValidateGetUniformLocation(const Context *context,
 {
     if (name == nullptr)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kUniformNameNull);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kUniformLocationNull);
         return false;
     }
 
-    if (context->isWebGL() && !ValidateWebGLName(context, entryPoint, name))
+    if (strstr(name, "gl_") == name)
     {
-        // Error already generated.
+        return false;
+    }
+
+    // The WebGL spec (section 6.20) disallows strings containing invalid ESSL characters for
+    // shader-related entry points
+    if (context->isWebGL() && !IsValidESSLString(name, strlen(name)))
+    {
+        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kInvalidNameCharacters);
         return false;
     }
 
@@ -5915,7 +5933,6 @@ bool ValidateMaxShaderCompilerThreadsKHR(const Context *context,
 
 bool ValidateBindMetalRasterizationRateMapANGLE(const Context *context,
                                                 angle::EntryPoint entryPoint,
-                                                GLuint framebuffer,
                                                 GLMTLRasterizationRateMapANGLE map)
 {
     if (!context->getExtensions().variableRasterizationRateMetalANGLE)
@@ -5933,11 +5950,6 @@ bool ValidateMultiDrawArraysANGLE(const Context *context,
                                   const GLsizei *counts,
                                   GLsizei drawcount)
 {
-    if (drawcount < 0)
-    {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kNegativeDrawcount);
-        return false;
-    }
     for (GLsizei drawID = 0; drawID < drawcount; ++drawID)
     {
         if (!ValidateDrawArrays(context, entryPoint, mode, firsts[drawID], counts[drawID]))
@@ -5956,11 +5968,6 @@ bool ValidateMultiDrawElementsANGLE(const Context *context,
                                     const GLvoid *const *indices,
                                     GLsizei drawcount)
 {
-    if (drawcount < 0)
-    {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_VALUE, kNegativeDrawcount);
-        return false;
-    }
     for (GLsizei drawID = 0; drawID < drawcount; ++drawID)
     {
         if (!ValidateDrawElements(context, entryPoint, mode, counts[drawID], type, indices[drawID]))

@@ -804,12 +804,6 @@ EXPORTS
 
     ; GL_EXT_float_blend
 
-    ; GL_EXT_fragment_shading_rate
-    glFramebufferShadingRateEXT
-    glGetFragmentShadingRatesEXT
-    glShadingRateCombinerOpsEXT
-    glShadingRateEXT
-
     ; GL_EXT_geometry_shader
     glFramebufferTextureEXT
 
@@ -1076,8 +1070,6 @@ EXPORTS
 
     ; GL_NV_framebuffer_blit
     glBlitFramebufferNV
-
-    ; GL_NV_pack_subimage
 
     ; GL_NV_pixel_buffer_object
 

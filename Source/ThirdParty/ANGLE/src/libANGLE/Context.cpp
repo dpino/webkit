@@ -157,7 +157,7 @@ constexpr state::ExtendedDirtyBits kDrawInvalidateExtendedDirtyBits{};
 
 constexpr state::DirtyBits kTilingDirtyBits{state::DIRTY_BIT_DRAW_FRAMEBUFFER_BINDING};
 constexpr state::ExtendedDirtyBits kTilingExtendedDirtyBits{};
-constexpr state::DirtyObjects kTilingDirtyObjectsBase{state::DIRTY_OBJECT_DRAW_FRAMEBUFFER};
+constexpr state::DirtyObjects kTilingDirtyObjects{state::DIRTY_OBJECT_DRAW_FRAMEBUFFER};
 
 constexpr bool kEnableAEPRequirementLogging = false;
 
@@ -201,11 +201,6 @@ angle::Result GetQueryObjectParameter(const Context *context, Query *query, GLen
                 break;
             case GL_QUERY_RESULT_AVAILABLE_EXT:
                 *params = GL_FALSE;
-                if (context->isContextLost())
-                {
-                    context->contextLostErrorOnBlockingCall(angle::EntryPoint::GLGetQueryObjectuiv);
-                    *params = GL_TRUE;
-                }
                 break;
             default:
                 UNREACHABLE();
@@ -905,7 +900,6 @@ void Context::initializeDefaultResources()
     mComputeDirtyObjects |= kComputeDirtyObjectsBase;
     mCopyImageDirtyBits |= kCopyImageDirtyBitsBase;
     mCopyImageDirtyObjects |= kCopyImageDirtyObjectsBase;
-    mTilingDirtyObjects |= kTilingDirtyObjectsBase;
 
     mOverlay.init();
 }
@@ -1693,6 +1687,7 @@ void Context::getQueryiv(QueryType target, GLenum pname, GLint *params)
             {
                 case QueryType::AnySamples:
                 case QueryType::AnySamplesConservative:
+                case QueryType::CommandsCompleted:
                     params[0] = 1;
                     break;
                 case QueryType::PrimitivesGenerated:
@@ -3222,12 +3217,6 @@ bool Context::isTransformFeedbackGenerated(TransformFeedbackID transformFeedback
     return mTransformFeedbackMap.contains(transformFeedback);
 }
 
-bool Context::isZeroTextureBound(TextureType textureType) const
-{
-    Texture *texture = mState.getTargetTexture(textureType);
-    return mZeroTextures[textureType].get() == texture;
-}
-
 void Context::detachTexture(TextureID texture)
 {
     // The State cannot unbind image observers itself, they are owned by the Context
@@ -3999,6 +3988,12 @@ Extensions Context::generateSupportedExtensions() const
         supportedExtensions.baseVertexBaseInstanceANGLE = false;
     }
 
+    if (limitations.baseInstanceEmulated &&
+        !frontendFeatures.alwaysEnableEmulatedMultidrawExtensions.enabled)
+    {
+        supportedExtensions.baseInstanceEXT = false;
+    }
+
     // Enable the no error extension if the context was created with the flag.
     supportedExtensions.noErrorKHR = skipValidation();
 
@@ -4057,17 +4052,6 @@ Extensions Context::generateSupportedExtensions() const
         // GL_KHR_texture_compression_astc_ldr and GL_KHR_texture_compression_astc_hdr
         ASSERT(supportedExtensions.textureCompressionAstcLdrKHR);
         ASSERT(supportedExtensions.textureCompressionAstcHdrKHR);
-    }
-
-    if (supportedExtensions.textureCompressionAstcDecodeModeEXT ||
-        supportedExtensions.textureCompressionAstcDecodeModeRgb9e5EXT)
-    {
-        // GL_KHR_texture_compression_astc_hdr,
-        // GL_KHR_texture_compression_astc_ldr,
-        // or GL_OES_texture_compression_astc is required.
-        ASSERT(supportedExtensions.textureCompressionAstcOES ||
-               supportedExtensions.textureCompressionAstcLdrKHR ||
-               supportedExtensions.textureCompressionAstcHdrKHR);
     }
 
     // GL_KHR_protected_textures
@@ -4671,7 +4655,6 @@ void Context::updateCaps()
         mDrawDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
         mDrawDirtyObjects.set(state::DIRTY_OBJECT_TEXTURES_INIT);
         mDrawDirtyObjects.set(state::DIRTY_OBJECT_IMAGES_INIT);
-        mClearDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
         mBlitDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
         mBlitDirtyObjects.set(state::DIRTY_OBJECT_READ_ATTACHMENTS);
         mComputeDirtyObjects.set(state::DIRTY_OBJECT_TEXTURES_INIT);
@@ -4679,7 +4662,6 @@ void Context::updateCaps()
         mReadPixelsDirtyObjects.set(state::DIRTY_OBJECT_READ_ATTACHMENTS);
         mCopyImageDirtyBits.set(state::DIRTY_BIT_READ_FRAMEBUFFER_BINDING);
         mCopyImageDirtyObjects.set(state::DIRTY_OBJECT_READ_ATTACHMENTS);
-        mTilingDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
     }
 
     // We need to validate buffer bounds if we are in a WebGL or robust access context and the
@@ -4751,7 +4733,7 @@ angle::Result Context::prepareForInvalidate(GLenum target)
     {
         effectiveTarget = GL_DRAW_FRAMEBUFFER;
     }
-    ANGLE_TRY(mState.syncDirtyObject(this, effectiveTarget, Command::Invalidate));
+    ANGLE_TRY(mState.syncDirtyObject(this, effectiveTarget));
     const state::DirtyBits dirtyBits                 = effectiveTarget == GL_READ_FRAMEBUFFER
                                                            ? kReadInvalidateDirtyBits
                                                            : kDrawInvalidateDirtyBits;
@@ -4941,11 +4923,8 @@ void Context::clearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat *valu
 
     Framebuffer *framebufferObject          = mState.getDrawFramebuffer();
     const FramebufferAttachment *attachment = nullptr;
-    GLfloat clampedDepth;
     if (buffer == GL_DEPTH)
     {
-        clampedDepth = clamp01(values[0]);
-        values       = &clampedDepth;
         attachment = framebufferObject->getDepthAttachment();
     }
     else if (buffer == GL_COLOR &&
@@ -5033,8 +5012,7 @@ void Context::clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLin
     }
 
     ANGLE_CONTEXT_TRY(prepareForClearBuffer(buffer, drawbuffer));
-    ANGLE_CONTEXT_TRY(
-        framebufferObject->clearBufferfi(this, buffer, drawbuffer, clamp01(depth), stencil));
+    ANGLE_CONTEXT_TRY(framebufferObject->clearBufferfi(this, buffer, drawbuffer, depth, stencil));
 }
 
 void Context::readPixels(GLint x,
@@ -6298,25 +6276,6 @@ void Context::bufferStorageExternal(BufferBinding target,
     ANGLE_CONTEXT_TRY(buffer->bufferStorageExternal(this, target, size, clientBuffer, flags));
 }
 
-void Context::getFragmentShadingRates(GLsizei samples,
-                                      GLsizei maxCount,
-                                      GLsizei *count,
-                                      GLenum *shadingRates)
-{
-    return;
-}
-
-void Context::framebufferShadingRate(GLenum target,
-                                     GLenum attachment,
-                                     GLuint texture,
-                                     GLint baseLayer,
-                                     GLsizei numLayers,
-                                     GLsizei texelWidth,
-                                     GLsizei texelHeight)
-{
-    return;
-}
-
 void Context::bufferData(BufferBinding target, GLsizeiptr size, const void *data, BufferUsage usage)
 {
     Buffer *buffer = mState.getTargetBuffer(target);
@@ -6391,6 +6350,7 @@ void Context::bindBufferRange(BufferBinding target,
     if (target == BufferBinding::Uniform)
     {
         mUniformBufferObserverBindings[index].bind(object);
+        mState.onUniformBufferStateChange(index);
         mStateCache.onUniformBufferStateChange(this);
     }
     else if (target == BufferBinding::AtomicCounter)
@@ -6487,7 +6447,7 @@ void Context::getMultisamplefv(GLenum pname, GLuint index, GLfloat *val)
 {
     // According to spec 3.1 Table 20.49: Framebuffer Dependent Values,
     // the sample position should be queried by DRAW_FRAMEBUFFER.
-    ANGLE_CONTEXT_TRY(mState.syncDirtyObject(this, GL_DRAW_FRAMEBUFFER, Command::GetMultisample));
+    ANGLE_CONTEXT_TRY(mState.syncDirtyObject(this, GL_DRAW_FRAMEBUFFER));
     const Framebuffer *framebuffer = mState.getDrawFramebuffer();
 
     switch (pname)
@@ -7100,11 +7060,6 @@ void Context::getAttachedShaders(ShaderProgramID program,
 
 GLint Context::getAttribLocation(ShaderProgramID program, const GLchar *name)
 {
-    if (ANGLE_UNLIKELY(nameStartsWithReservedPrefix(name)))
-    {
-        return -1;
-    }
-
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     return programObject->getExecutable().getAttributeLocation(name);
@@ -7393,11 +7348,6 @@ void Context::getUniformivRobust(ShaderProgramID program,
 
 GLint Context::getUniformLocation(ShaderProgramID program, const GLchar *name)
 {
-    if (ANGLE_UNLIKELY(nameStartsWithReservedPrefix(name)))
-    {
-        return -1;
-    }
-
     Program *programObject = getProgramResolveLink(program);
     ASSERT(programObject);
     return programObject->getExecutable().getUniformLocation(name).value;
@@ -9342,7 +9292,7 @@ void Context::onSubjectStateChange(angle::SubjectIndex index, angle::SubjectMess
             }
             else if (index < kUniformBufferMaxSubjectIndex)
             {
-                mState.onUniformBufferStateChange(index - kUniformBuffer0SubjectIndex, message);
+                mState.onUniformBufferStateChange(index - kUniformBuffer0SubjectIndex);
                 mStateCache.onUniformBufferStateChange(this);
             }
             else if (index < kAtomicCounterBufferMaxSubjectIndex)
@@ -9822,7 +9772,7 @@ void Context::endTiling(GLbitfield preserveMask)
 
 void Context::startTiling(GLuint x, GLuint y, GLuint width, GLuint height, GLbitfield preserveMask)
 {
-    ANGLE_CONTEXT_TRY(syncDirtyObjects(mTilingDirtyObjects, Command::Other));
+    ANGLE_CONTEXT_TRY(syncDirtyObjects(kTilingDirtyObjects, Command::Other));
     ANGLE_CONTEXT_TRY(syncDirtyBits(kTilingDirtyBits, kTilingExtendedDirtyBits, Command::Other));
     ANGLE_CONTEXT_TRY(
         mImplementation->startTiling(this, Rectangle(x, y, width, height), preserveMask));
@@ -9888,12 +9838,10 @@ void Context::blobCacheCallbacks(GLSETBLOBPROCANGLE set,
     mState.getBlobCacheCallbacks() = {set, get, userParam};
 }
 
-void Context::bindMetalRasterizationRateMap(GLuint renderbufferHandle,
-                                            GLMTLRasterizationRateMapANGLE map)
+void Context::bindMetalRasterizationRateMap(GLuint renderbufferHandle, GLMTLRasterizationRateMapANGLE map)
 {
     Renderbuffer *renderbuffer = getRenderbuffer({renderbufferHandle});
-    rx::RenderbufferImpl *renderbufferImpl =
-        renderbuffer ? renderbuffer->getImplementation() : nullptr;
+    rx::RenderbufferImpl *renderbufferImpl = renderbuffer ? renderbuffer->getImplementation() : nullptr;
     ANGLE_CONTEXT_TRY(mImplementation->bindMetalRasterizationRateMap(this, renderbufferImpl, map));
     getMutablePrivateState()->setVariableRasterizationRateMap(map);
 }
@@ -9949,9 +9897,6 @@ ErrorSet::ErrorSet(Debug *debug,
       mResetStatus(GraphicsResetStatus::NoError),
       mSkipValidation(GetNoError(attribs)),
       mContextLost(0),
-#if defined(ANGLE_ENABLE_ASSERTS)
-      mPushedErrors(0),
-#endif
       mHasAnyErrors(0)
 {}
 
@@ -10030,9 +9975,6 @@ void ErrorSet::pushError(GLenum errorCode)
     {
         std::lock_guard<std::mutex> lock(mMutex);
         mErrors.insert(errorCode);
-#if defined(ANGLE_ENABLE_ASSERTS)
-        mPushedErrors++;
-#endif
         mHasAnyErrors = 1;
     }
 }

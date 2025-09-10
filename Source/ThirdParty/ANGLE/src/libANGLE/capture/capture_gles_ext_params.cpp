@@ -2584,27 +2584,6 @@ void CaptureDrawElementsInstancedEXT_indices(const State &glState,
                                 paramCapture);
 }
 
-void CaptureGetFragmentShadingRatesEXT_count(const State &glState,
-                                             bool isCallValid,
-                                             GLsizei samples,
-                                             GLsizei maxCount,
-                                             GLsizei *count,
-                                             GLenum *shadingRates,
-                                             angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-void CaptureGetFragmentShadingRatesEXT_shadingRates(const State &glState,
-                                                    bool isCallValid,
-                                                    GLsizei samples,
-                                                    GLsizei maxCount,
-                                                    GLsizei *count,
-                                                    GLenum *shadingRates,
-                                                    angle::ParamCapture *paramCapture)
-{
-    UNIMPLEMENTED();
-}
-
 void CaptureCreateMemoryObjectsEXT_memoryObjectsPacked(const State &glState,
                                                        bool isCallValid,
                                                        GLsizei n,
@@ -2941,7 +2920,7 @@ void CaptureTexParameterIuivEXT_params(const State &glState,
                                        const GLuint *params,
                                        angle::ParamCapture *paramCapture)
 {
-    CaptureTexParameterIuiv_params(glState, isCallValid, targetPacked, pname, params, paramCapture);
+    // Skipped
 }
 
 void CaptureDebugMessageCallbackKHR_userParam(const State &glState,
@@ -3833,7 +3812,7 @@ void CaptureCreateShaderProgramvEXT_strings(const State &glState,
                                             bool isCallValid,
                                             ShaderType typePacked,
                                             GLsizei count,
-                                            const GLchar *const *strings,
+                                            const GLchar **strings,
                                             angle::ParamCapture *paramCapture)
 {
     UNIMPLEMENTED();

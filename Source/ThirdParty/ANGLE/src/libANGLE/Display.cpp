@@ -423,13 +423,8 @@ rx::DisplayImpl *CreateDisplayFromAttribs(EGLAttrib displayType,
             break;
 
 #    elif defined(ANGLE_PLATFORM_LINUX)
-#        if defined(ANGLE_USE_GBM) || defined(ANGLE_USE_WAYLAND)
+#        if defined(ANGLE_USE_GBM)
             if (platformType == 0)
-            {
-                impl = new rx::DisplayEGL(state);
-                break;
-            }
-            if (platformType == EGL_PLATFORM_GBM_KHR)
             {
                 impl = new rx::DisplayEGL(state);
                 break;
@@ -474,13 +469,8 @@ rx::DisplayImpl *CreateDisplayFromAttribs(EGLAttrib displayType,
 #    if defined(ANGLE_PLATFORM_WINDOWS)
             impl = new rx::DisplayWGL(state);
 #    elif defined(ANGLE_PLATFORM_LINUX)
-#        if defined(ANGLE_USE_GBM) || defined(ANGLE_USE_WAYLAND)
+#        if defined(ANGLE_USE_GBM)
             if (platformType == 0)
-            {
-                impl = new rx::DisplayEGL(state);
-                break;
-            }
-            if (platformType == EGL_PLATFORM_GBM_KHR)
             {
                 impl = new rx::DisplayEGL(state);
                 break;
@@ -2138,7 +2128,7 @@ static ClientExtensions GenerateClientExtensions()
     extensions.platformDevice   = true;
 #endif
 
-#if defined(ANGLE_USE_GBM) || defined(ANGLE_USE_WAYLAND)
+#if defined(ANGLE_USE_GBM)
     extensions.platformGbmKHR = true;
 #endif
 
@@ -2299,7 +2289,7 @@ Error Display::validateImageClientBuffer(const gl::Context *context,
     return mImplementation->validateImageClientBuffer(context, target, clientBuffer, attribs);
 }
 
-Error Display::validatePixmap(const Config *config,
+Error Display::valdiatePixmap(const Config *config,
                               EGLNativePixmapType pixmap,
                               const AttributeMap &attributes) const
 {

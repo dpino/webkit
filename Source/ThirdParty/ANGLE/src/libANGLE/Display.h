@@ -217,7 +217,7 @@ class Display final : public LabeledObject,
                                     EGLenum target,
                                     EGLClientBuffer clientBuffer,
                                     const egl::AttributeMap &attribs) const;
-    Error validatePixmap(const Config *config,
+    Error valdiatePixmap(const Config *config,
                          EGLNativePixmapType pixmap,
                          const AttributeMap &attributes) const;
 

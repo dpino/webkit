@@ -1175,9 +1175,6 @@ bool CollectVariablesTraverser::visitDeclaration(Visit, TIntermDeclaration *node
                 case EvqUniform:
                     mUniforms->push_back(recordUniform(variable));
                     break;
-                case EvqPerVertexIn:
-                case EvqPerVertexOut:
-                    break;
                 default:
                     if (IsVaryingIn(qualifier))
                     {

@@ -11,6 +11,7 @@
 
 #include "test_utils/angle_test_configs.h"
 #include "test_utils/gl_raii.h"
+#include "util/gles_loader_autogen.h"
 #include "util/shader_utils.h"
 
 namespace angle

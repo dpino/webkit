@@ -1359,16 +1359,7 @@ void TranslatorSPIRV::assignSpirvIds(TIntermBlock *root)
         std::vector<ShaderVariable> *fields = nullptr;
         if (type.isInterfaceBlock())
         {
-            if (qualifier == EvqPerVertexIn)
-            {
-                assignSpirvId(uniqueId, vk::spirv::kIdInputPerVertexBlock);
-            }
-            else if (qualifier == EvqPerVertexOut)
-            {
-                assignSpirvId(uniqueId, vk::spirv::kIdOutputPerVertexBlock);
-                assignSpirvId(symbol->uniqueId(), vk::spirv::kIdOutputPerVertexVar);
-            }
-            else if (IsVaryingIn(qualifier))
+            if (IsVaryingIn(qualifier))
             {
                 ShaderVariable *varying =
                     FindIOBlockShaderVariable(&mInputVaryings, type.getInterfaceBlock()->name());

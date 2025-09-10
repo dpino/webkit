@@ -75,7 +75,6 @@ enum class ReadResult
     GotData,
 };
 
-#if !defined(ANGLE_PLATFORM_APPLETV)
 ReadResult ReadFromFile(int fd, std::string *out)
 {
     constexpr size_t kBufSize = 2048;
@@ -322,7 +321,6 @@ class PosixProcess : public Process
     int mExitCode = 0;
     pid_t mPID    = -1;
 };
-#endif
 }  // anonymous namespace
 
 void Sleep(unsigned int milliseconds)
@@ -356,9 +354,7 @@ void WriteDebugMessage(const char *format, ...)
 {
     va_list vararg;
     va_start(vararg, format);
-ANGLE_DISABLE_NONLITERAL_FORMAT_WARNING
     vfprintf(stderr, format, vararg);
-ANGLE_REENABLE_NONLITERAL_FORMAT_WARNING
     va_end(vararg);
 }
 
@@ -404,11 +400,7 @@ bool DeleteSystemFile(const char *path)
 
 Process *LaunchProcess(const std::vector<const char *> &args, ProcessOutputCapture captureOutput)
 {
-#if !defined(ANGLE_PLATFORM_APPLETV)
     return new PosixProcess(args, captureOutput);
-#else
-    return nullptr;
-#endif
 }
 
 int NumberOfProcessors()

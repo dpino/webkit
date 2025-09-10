@@ -6,7 +6,6 @@
 
 #include <sstream>
 #include <string>
-#include "common/string_utils.h"
 #include "test_utils/ANGLETest.h"
 #include "test_utils/gl_raii.h"
 
@@ -8558,6 +8557,7 @@ TEST_P(PixelLocalStorageCompilerTest, BlendEquationAdvanced_illegal_with_PLS)
     layout(binding=0, rgba8i) uniform lowp ipixelLocalANGLE pls;)";
     EXPECT_TRUE(log.compileFragmentShader(kRequireBlendAdvanced));
 
+    bool before = true;
     for (const char *layoutQualifier : {
              "blend_support_multiply",
              "blend_support_screen",
@@ -8577,33 +8577,43 @@ TEST_P(PixelLocalStorageCompilerTest, BlendEquationAdvanced_illegal_with_PLS)
              "blend_support_all_equations",
          })
     {
-        std::string shaderBefore = R"(#version 300 es
-#extension GL_ANGLE_shader_pixel_local_storage : require
-#extension GL_KHR_blend_equation_advanced : require
-layout(%s) out;
-void main()
-{}
-layout(binding=0, rgba8i) uniform lowp ipixelLocalANGLE pls;)";
-        ReplaceSubstring(&shaderBefore, "%s", layoutQualifier);
+        constexpr char kRequireBlendAdvancedBeforePLS[] = R"(#version 300 es
+        #extension GL_ANGLE_shader_pixel_local_storage : require
+        #extension GL_KHR_blend_equation_advanced : require
+        layout(%s) out;
+        void main()
+        {}
+        layout(binding=0, rgba8i) uniform lowp ipixelLocalANGLE pls;)";
 
-        EXPECT_FALSE(log.compileFragmentShader(shaderBefore.c_str()));
-        EXPECT_TRUE(
-            log.has("ERROR: 0:4: 'layout' : illegal advanced blend equation when pixel local "
-                    "storage is declared"));
+        constexpr char kRequireBlendAdvancedAfterPLS[] = R"(#version 300 es
+        #extension GL_ANGLE_shader_pixel_local_storage : require
+        #extension GL_KHR_blend_equation_advanced : require
+        layout(binding=0, rgba8i) uniform lowp ipixelLocalANGLE pls;
+        layout(%s) out;
+        void main()
+        {})";
 
-        std::string shaderAfter = R"(#version 300 es
-#extension GL_ANGLE_shader_pixel_local_storage : require
-#extension GL_KHR_blend_equation_advanced : require
-layout(binding=0, rgba8i) uniform lowp ipixelLocalANGLE pls;
-layout(%s) out;
-void main()
-{})";
-        ReplaceSubstring(&shaderAfter, "%s", layoutQualifier);
+        const char *formatStr =
+            before ? kRequireBlendAdvancedBeforePLS : kRequireBlendAdvancedAfterPLS;
+        size_t buffSize =
+            snprintf(nullptr, 0, formatStr, layoutQualifier) + 1;  // Extra space for '\0'
+        std::unique_ptr<char[]> shader(new char[buffSize]);
+        std::snprintf(shader.get(), buffSize, formatStr, layoutQualifier);
+        EXPECT_FALSE(log.compileFragmentShader(shader.get()));
+        if (before)
+        {
+            EXPECT_TRUE(
+                log.has("ERROR: 0:4: 'layout' : illegal advanced blend equation when pixel local "
+                        "storage is declared"));
+        }
+        else
+        {
+            EXPECT_TRUE(
+                log.has("ERROR: 0:5: 'layout' : illegal advanced blend equation when pixel local "
+                        "storage is declared"));
+        }
 
-        EXPECT_FALSE(log.compileFragmentShader(shaderAfter.c_str()));
-        EXPECT_TRUE(
-            log.has("ERROR: 0:5: 'layout' : illegal advanced blend equation when pixel local "
-                    "storage is declared"));
+        before = !before;
     }
 }
 

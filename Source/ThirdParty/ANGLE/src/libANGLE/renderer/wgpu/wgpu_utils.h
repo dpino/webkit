@@ -7,7 +7,6 @@
 #ifndef LIBANGLE_RENDERER_WGPU_WGPU_UTILS_H_
 #define LIBANGLE_RENDERER_WGPU_WGPU_UTILS_H_
 
-#include <dawn/dawn_proc_table.h>
 #include <stdint.h>
 #include <webgpu/webgpu.h>
 #include <climits>
@@ -28,9 +27,9 @@
         }                                                                                    \
     } while (0)
 
-#define ANGLE_WGPU_BEGIN_DEBUG_ERROR_SCOPE(context)                            \
-    ::rx::webgpu::DebugErrorScope(context->getProcs(), context->getInstance(), \
-                                  context->getDevice(), WGPUErrorFilter_Validation)
+#define ANGLE_WGPU_BEGIN_DEBUG_ERROR_SCOPE(context)                             \
+    ::rx::webgpu::DebugErrorScope(context->getInstance(), context->getDevice(), \
+                                  WGPUErrorFilter_Validation)
 #define ANGLE_WGPU_END_DEBUG_ERROR_SCOPE(context, scope) \
     ANGLE_TRY(scope.PopScope(context, __FILE__, ANGLE_FUNCTION, __LINE__))
 
@@ -49,7 +48,6 @@
     PROC(Query)                  \
     PROC(Program)                \
     PROC(ProgramExecutable)      \
-    PROC(Renderbuffer)           \
     PROC(Sampler)                \
     PROC(Texture)                \
     PROC(TransformFeedback)      \
@@ -57,55 +55,37 @@
 
 #define ANGLE_EGL_OBJECTS_X(PROC) \
     PROC(Display)                 \
-    PROC(ExternalImageSibling)    \
     PROC(Image)                   \
     PROC(Surface)                 \
     PROC(Sync)
 
-#define ANGLE_WGPU_OBJECTS_X(PROC)                 \
-    PROC(Adapter, adapter)                         \
-    PROC(BindGroup, bindGroup)                     \
-    PROC(BindGroupLayout, bindGroupLayout)         \
-    PROC(Buffer, buffer)                           \
-    PROC(CommandBuffer, commandBuffer)             \
-    PROC(CommandEncoder, commandEncoder)           \
-    PROC(ComputePassEncoder, computePassEncoder)   \
-    PROC(ComputePipeline, computePipeline)         \
-    PROC(Device, device)                           \
-    PROC(ExternalTexture, externalTexture)         \
-    PROC(Instance, instance)                       \
-    PROC(PipelineLayout, pipelineLayout)           \
-    PROC(QuerySet, querySet)                       \
-    PROC(Queue, queue)                             \
-    PROC(RenderBundle, renderBundle)               \
-    PROC(RenderBundleEncoder, renderBundleEncoder) \
-    PROC(RenderPassEncoder, renderPassEncoder)     \
-    PROC(RenderPipeline, renderPipeline)           \
-    PROC(Sampler, sampler)                         \
-    PROC(ShaderModule, shaderModule)               \
-    PROC(SharedBufferMemory, sharedBufferMemory)   \
-    PROC(SharedFence, sharedFence)                 \
-    PROC(SharedTextureMemory, sharedTextureMemory) \
-    PROC(Surface, surface)                         \
-    PROC(Texture, texture)                         \
-    PROC(TextureView, textureView)
-
-namespace gl
-{
-#define ANGLE_PRE_DECLARE_GL_OBJECT(OBJ) class OBJ;
-ANGLE_GL_OBJECTS_X(ANGLE_PRE_DECLARE_GL_OBJECT)
-}  // namespace gl
-
-namespace egl
-{
-#define ANGLE_PRE_DECLARE_EGL_OBJECT(OBJ) class OBJ;
-ANGLE_EGL_OBJECTS_X(ANGLE_PRE_DECLARE_EGL_OBJECT)
-}  // namespace egl
-
-namespace angle
-{
-struct FeaturesWgpu;
-}
+#define ANGLE_WGPU_OBJECTS_X(PROC) \
+    PROC(Adapter)                  \
+    PROC(BindGroup)                \
+    PROC(BindGroupLayout)          \
+    PROC(Buffer)                   \
+    PROC(CommandBuffer)            \
+    PROC(CommandEncoder)           \
+    PROC(ComputePassEncoder)       \
+    PROC(ComputePipeline)          \
+    PROC(Device)                   \
+    PROC(ExternalTexture)          \
+    PROC(Instance)                 \
+    PROC(PipelineLayout)           \
+    PROC(QuerySet)                 \
+    PROC(Queue)                    \
+    PROC(RenderBundle)             \
+    PROC(RenderBundleEncoder)      \
+    PROC(RenderPassEncoder)        \
+    PROC(RenderPipeline)           \
+    PROC(Sampler)                  \
+    PROC(ShaderModule)             \
+    PROC(SharedBufferMemory)       \
+    PROC(SharedFence)              \
+    PROC(SharedTextureMemory)      \
+    PROC(Surface)                  \
+    PROC(Texture)                  \
+    PROC(TextureView)
 
 namespace rx
 {
@@ -120,23 +100,22 @@ ANGLE_EGL_OBJECTS_X(ANGLE_PRE_DECLARE_WGPU_OBJECT)
 
 namespace webgpu
 {
-#define ANGLE_DECLARE_WGPU_HANDLE_REF_FUNCS(OBJ, obj)                           \
-    inline void AddRefWGPUCHandle(const DawnProcTable *wgpu, WGPU##OBJ handle)  \
-    {                                                                           \
-        if (handle)                                                             \
-        {                                                                       \
-            ASSERT(wgpu != nullptr);                                            \
-            wgpu->obj##AddRef(handle);                                          \
-        }                                                                       \
-    }                                                                           \
-                                                                                \
-    inline void ReleaseWGPUCHandle(const DawnProcTable *wgpu, WGPU##OBJ handle) \
-    {                                                                           \
-        if (handle)                                                             \
-        {                                                                       \
-            ASSERT(wgpu != nullptr);                                            \
-            wgpu->obj##Release(handle);                                         \
-        }                                                                       \
+
+#define ANGLE_DECLARE_WGPU_HANDLE_REF_FUNCS(OBJ)     \
+    inline void AddRefWGPUCHandle(WGPU##OBJ handle)  \
+    {                                                \
+        if (handle)                                  \
+        {                                            \
+            wgpu##OBJ##AddRef(handle);               \
+        }                                            \
+    }                                                \
+                                                     \
+    inline void ReleaseWGPUCHandle(WGPU##OBJ handle) \
+    {                                                \
+        if (handle)                                  \
+        {                                            \
+            wgpu##OBJ##Release(handle);              \
+        }                                            \
     }
 
 ANGLE_WGPU_OBJECTS_X(ANGLE_DECLARE_WGPU_HANDLE_REF_FUNCS)
@@ -149,43 +128,37 @@ class WrapperBase
     using ObjectType = CType;
 
     WrapperBase() = default;
-    WrapperBase(const WrapperBase<CType> &other)
-        : mProcTable(other.mProcTable), mHandle(other.mHandle)
+    WrapperBase(const WrapperBase<CType> &other) : mHandle(other.mHandle)
     {
-        AddRefWGPUCHandle(mProcTable, mHandle);
+        AddRefWGPUCHandle(mHandle);
     }
 
-    ~WrapperBase() { ReleaseWGPUCHandle(mProcTable, mHandle); }
+    ~WrapperBase() { ReleaseWGPUCHandle(mHandle); }
 
     WrapperBase<CType> &operator=(const WrapperBase<CType> &other)
     {
         if (&other != this)
         {
-            ReleaseWGPUCHandle(mProcTable, mHandle);
-            mProcTable = other.mProcTable;
-            mHandle    = other.mHandle;
-            AddRefWGPUCHandle(mProcTable, mHandle);
+            ReleaseWGPUCHandle(mHandle);
+            mHandle = other.mHandle;
+            AddRefWGPUCHandle(mHandle);
         }
         return *this;
     }
 
     WrapperBase(WrapperBase<CType> &&other)
     {
-        mProcTable       = other.mProcTable;
-        mHandle          = other.mHandle;
-        other.mProcTable = nullptr;
-        other.mHandle    = nullptr;
+        mHandle       = other.mHandle;
+        other.mHandle = nullptr;
     }
 
     WrapperBase &operator=(WrapperBase<CType> &&other)
     {
         if (&other != this)
         {
-            ReleaseWGPUCHandle(mProcTable, mHandle);
-            mProcTable       = other.mProcTable;
-            mHandle          = other.mHandle;
-            other.mProcTable = nullptr;
-            other.mHandle    = nullptr;
+            ReleaseWGPUCHandle(mHandle);
+            mHandle       = other.mHandle;
+            other.mHandle = nullptr;
         }
         return *this;
     }
@@ -194,9 +167,8 @@ class WrapperBase
 
     WrapperBase &operator=(std::nullptr_t)
     {
-        ReleaseWGPUCHandle(mProcTable, mHandle);
-        mProcTable = nullptr;
-        mHandle    = nullptr;
+        ReleaseWGPUCHandle(mHandle);
+        mHandle = nullptr;
         return *this;
     }
 
@@ -212,11 +184,10 @@ class WrapperBase
 
     const CType &get() const { return mHandle; }
 
-    static WrapperBase<CType> Acquire(const DawnProcTable *procTable, CType handle)
+    static WrapperBase<CType> Acquire(CType handle)
     {
         WrapperBase<CType> result;
-        result.mHandle    = handle;
-        result.mProcTable = procTable;
+        result.mHandle = handle;
         return result;
     }
 
@@ -227,11 +198,10 @@ class WrapperBase
     }
 
   private:
-    const DawnProcTable *mProcTable = nullptr;
-    CType mHandle                   = nullptr;
+    CType mHandle = nullptr;
 };
 
-#define ANGLE_DECLARE_WGPU_OBJECT_WRAPPER(OBJ, obj) using OBJ##Handle = WrapperBase<WGPU##OBJ>;
+#define ANGLE_DECLARE_WGPU_OBJECT_WRAPPER(OBJ) using OBJ##Handle = WrapperBase<WGPU##OBJ>;
 
 ANGLE_WGPU_OBJECTS_X(ANGLE_DECLARE_WGPU_OBJECT_WRAPPER)
 #undef ANGLE_DECLARE_WGPU_OBJECT_WRAPPER
@@ -273,8 +243,7 @@ using LevelIndex = gl::LevelIndexWrapper<uint32_t>;
 class ErrorScope : public angle::NonCopyable
 {
   public:
-    ErrorScope(const DawnProcTable *procTable,
-               webgpu::InstanceHandle instance,
+    ErrorScope(webgpu::InstanceHandle instance,
                webgpu::DeviceHandle device,
                WGPUErrorFilter errorType);
     ~ErrorScope();
@@ -285,7 +254,6 @@ class ErrorScope : public angle::NonCopyable
                            unsigned int line);
 
   private:
-    const DawnProcTable *mProcTable = nullptr;
     webgpu::InstanceHandle mInstance;
     webgpu::DeviceHandle mDevice;
     bool mActive = false;
@@ -294,8 +262,7 @@ class ErrorScope : public angle::NonCopyable
 class NoOpErrorScope : public angle::NonCopyable
 {
   public:
-    NoOpErrorScope(const DawnProcTable *procTable,
-                   webgpu::InstanceHandle instance,
+    NoOpErrorScope(webgpu::InstanceHandle instance,
                    webgpu::DeviceHandle device,
                    WGPUErrorFilter errorType)
     {}
@@ -428,8 +395,7 @@ struct PackedRenderPassDescriptor
 bool operator==(const PackedRenderPassDescriptor &a, const PackedRenderPassDescriptor &b);
 bool operator!=(const PackedRenderPassDescriptor &a, const PackedRenderPassDescriptor &b);
 
-RenderPassEncoderHandle CreateRenderPass(const DawnProcTable *wgpu,
-                                         webgpu::CommandEncoderHandle commandEncoder,
+RenderPassEncoderHandle CreateRenderPass(webgpu::CommandEncoderHandle commandEncoder,
                                          const webgpu::PackedRenderPassDescriptor &desc);
 
 void GenerateCaps(const WGPULimits &limitWgpu,
@@ -442,10 +408,6 @@ void GenerateCaps(const WGPULimits &limitWgpu,
                   gl::Version *maxSupportedESVersion);
 
 DisplayWgpu *GetDisplay(const gl::Context *context);
-const DawnProcTable *GetProcs(const gl::Context *context);
-const DawnProcTable *GetProcs(const ContextWgpu *context);
-const angle::FeaturesWgpu &GetFeatures(const gl::Context *context);
-const angle::FeaturesWgpu &GetFeatures(const ContextWgpu *context);
 webgpu::DeviceHandle GetDevice(const gl::Context *context);
 webgpu::InstanceHandle GetInstance(const gl::Context *context);
 PackedRenderPassColorAttachment CreateNewClearColorAttachment(const gl::ColorF &clearValue,

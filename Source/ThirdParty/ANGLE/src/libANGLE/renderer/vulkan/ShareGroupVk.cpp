@@ -176,7 +176,6 @@ void ShareGroupVk::onDestroy(const egl::Display *display)
 
     mMetaDescriptorPools[DescriptorSetIndex::UniformsAndXfb].destroy(mRenderer);
     mMetaDescriptorPools[DescriptorSetIndex::Texture].destroy(mRenderer);
-    mMetaDescriptorPools[DescriptorSetIndex::UniformBuffers].destroy(mRenderer);
     mMetaDescriptorPools[DescriptorSetIndex::ShaderResource].destroy(mRenderer);
 
     mFramebufferCache.destroy(mRenderer);

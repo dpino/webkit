@@ -271,7 +271,30 @@ template <>
 void State::setGenericBufferBinding<BufferBinding::ElementArray>(const Context *context,
                                                                  Buffer *buffer)
 {
-    mVertexArray->bindElementBuffer(context, buffer);
+    Buffer *oldBuffer = mVertexArray->mState.mElementArrayBuffer.get();
+    if (oldBuffer)
+    {
+        oldBuffer->removeObserver(&mVertexArray->mState.mElementArrayBuffer);
+        oldBuffer->removeContentsObserver(mVertexArray, kElementArrayBufferIndex);
+        if (context->isWebGL())
+        {
+            oldBuffer->onNonTFBindingChanged(-1);
+        }
+        oldBuffer->release(context);
+    }
+    mVertexArray->mState.mElementArrayBuffer.assign(buffer);
+    if (buffer)
+    {
+        buffer->addObserver(&mVertexArray->mState.mElementArrayBuffer);
+        buffer->addContentsObserver(mVertexArray, kElementArrayBufferIndex);
+        if (context->isWebGL())
+        {
+            buffer->onNonTFBindingChanged(1);
+        }
+        buffer->addRef();
+    }
+    mVertexArray->mDirtyBits.set(VertexArray::DIRTY_BIT_ELEMENT_ARRAY_BUFFER);
+    mVertexArray->mIndexRangeInlineCache = {};
     mDirtyObjects.set(state::DIRTY_OBJECT_VERTEX_ARRAY);
 }
 
@@ -1111,11 +1134,6 @@ void PrivateState::setShadingRate(GLenum rate)
     mExtendedDirtyBits.set(state::EXTENDED_DIRTY_BIT_SHADING_RATE);
 }
 
-void PrivateState::setShadingRateCombinerOps(GLenum combinerOp0, GLenum combinerOp1)
-{
-    return;
-}
-
 void PrivateState::setPackAlignment(GLint alignment)
 {
     mPack.alignment = alignment;
@@ -1211,10 +1229,7 @@ void PrivateState::setFramebufferSRGB(bool sRGB)
         mFramebufferSRGB = sRGB;
         mDirtyBits.set(state::DIRTY_BIT_FRAMEBUFFER_SRGB_WRITE_CONTROL_MODE);
         mDirtyObjects.set(state::DIRTY_OBJECT_DRAW_FRAMEBUFFER);
-        if (isRobustResourceInitEnabled())
-        {
-            mDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
-        }
+        mDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
     }
 }
 
@@ -2919,7 +2934,6 @@ void State::setDrawFramebufferBinding(Framebuffer *framebuffer)
         if (isRobustResourceInitEnabled() && mDrawFramebuffer->hasResourceThatNeedsInit())
         {
             mDirtyObjects.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
-            mDirtyObjects.set(state::DIRTY_OBJECT_DRAW_FRAMEBUFFER);
         }
     }
 }
@@ -3222,28 +3236,13 @@ angle::Result State::setIndexedBufferBinding(const Context *context,
             setBufferBinding(context, target, buffer);
             break;
         case BufferBinding::Uniform:
-        {
             mBoundUniformBuffersMask.set(index, buffer != nullptr);
-            BufferDirtyTypeBitMask dirtyTypeMask = {};
-            if (mUniformBuffers[index].get() != buffer)
-            {
-                dirtyTypeMask.set();
-            }
-            else
-            {
-                dirtyTypeMask.set(BufferDirtyType::Offset,
-                                  buffer && mUniformBuffers[index].getOffset() != offset);
-                dirtyTypeMask.set(BufferDirtyType::Size,
-                                  buffer && mUniformBuffers[index].getSize() != size);
-            }
-            mUniformBufferBlocksDirtyTypeMask |= dirtyTypeMask;
             if (UpdateIndexedBufferBinding(context, &mUniformBuffers[index], buffer, target, offset,
                                            size))
             {
-                onUniformBufferStateChange(index, angle::SubjectMessage::SubjectChanged);
+                onUniformBufferStateChange(index);
             }
-        }
-        break;
+            break;
         case BufferBinding::AtomicCounter:
             mBoundAtomicCounterBuffersMask.set(index, buffer != nullptr);
             if (UpdateIndexedBufferBinding(context, &mAtomicCounterBuffers[index], buffer, target,
@@ -3979,7 +3978,7 @@ angle::Result State::syncProgramPipelineObject(const Context *context, Command c
     return angle::Result::Continue;
 }
 
-angle::Result State::syncDirtyObject(const Context *context, GLenum target, Command command)
+angle::Result State::syncDirtyObject(const Context *context, GLenum target)
 {
     state::DirtyObjects localSet;
 
@@ -3987,24 +3986,16 @@ angle::Result State::syncDirtyObject(const Context *context, GLenum target, Comm
     {
         case GL_READ_FRAMEBUFFER:
             localSet.set(state::DIRTY_OBJECT_READ_FRAMEBUFFER);
-            if (mDirtyObjects.test(state::DIRTY_OBJECT_READ_ATTACHMENTS))
-            {
-                localSet.set(state::DIRTY_OBJECT_READ_ATTACHMENTS);
-            }
             break;
         case GL_DRAW_FRAMEBUFFER:
             localSet.set(state::DIRTY_OBJECT_DRAW_FRAMEBUFFER);
-            if (mDirtyObjects.test(state::DIRTY_OBJECT_DRAW_ATTACHMENTS))
-            {
-                localSet.set(state::DIRTY_OBJECT_DRAW_ATTACHMENTS);
-            }
             break;
         default:
             UNREACHABLE();
             break;
     }
 
-    return syncDirtyObjects(context, localSet, command);
+    return syncDirtyObjects(context, localSet, Command::Other);
 }
 
 void State::setObjectDirty(GLenum target)
@@ -4112,10 +4103,9 @@ angle::Result State::onExecutableChange(const Context *context)
         }
     }
 
-    // Set all active blocks dirty on executable change
-    mDirtyUniformBlocks = mExecutable->getActiveUniformBufferBlocks();
-    // Set all types dirty on executable change
-    mUniformBufferBlocksDirtyTypeMask.set();
+    // Mark uniform blocks as _not_ dirty. When an executable changes, the backends should already
+    // reprocess all uniform blocks.  These dirty bits only track what's made dirty afterwards.
+    mDirtyUniformBlocks.reset();
 
     return angle::Result::Continue;
 }
@@ -4217,27 +4207,14 @@ void State::onImageStateChange(const Context *context, size_t unit)
     }
 }
 
-void State::onUniformBufferStateChange(size_t uniformBufferIndex, angle::SubjectMessage message)
+void State::onUniformBufferStateChange(size_t uniformBufferIndex)
 {
     if (mExecutable)
     {
         // When a buffer at a given binding changes, set all blocks mapped to it dirty.
         mDirtyUniformBlocks |=
             mExecutable->getUniformBufferBlocksMappedToBinding(uniformBufferIndex);
-
-        if (message == angle::SubjectMessage::InternalMemoryAllocationChanged)
-        {
-            mUniformBufferBlocksDirtyTypeMask.set(BufferDirtyType::Binding);
-        }
-        else
-        {
-            ASSERT(message == angle::SubjectMessage::SubjectChanged ||   // buffer state change
-                   message == angle::SubjectMessage::SubjectMapped ||    // buffer map
-                   message == angle::SubjectMessage::SubjectUnmapped ||  // buffer unmap
-                   message == angle::SubjectMessage::BindingChanged);    // XFB state change
-        }
     }
-
     // This could be represented by a different dirty bit. Using the same one keeps it simple.
     mDirtyBits.set(state::DIRTY_BIT_UNIFORM_BUFFER_BINDINGS);
 }

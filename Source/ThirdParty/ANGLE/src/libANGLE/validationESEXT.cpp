@@ -1092,6 +1092,12 @@ bool ValidateGetInteger64vEXT(const Context *context,
                               GLenum pname,
                               const GLint64 *data)
 {
+    if (!context->getExtensions().disjointTimerQueryEXT)
+    {
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kExtensionNotEnabled);
+        return false;
+    }
+
     GLenum nativeType      = GL_NONE;
     unsigned int numParams = 0;
     if (!ValidateStateQuery(context, entryPoint, pname, &nativeType, &numParams))
@@ -2792,47 +2798,6 @@ bool ValidateBufferStorageExternalEXT(const Context *context,
     return true;
 }
 
-// GL_EXT_fragment_shading_rate
-bool ValidateFramebufferShadingRateEXT(const Context *context,
-                                       angle::EntryPoint entryPoint,
-                                       GLenum target,
-                                       GLenum attachment,
-                                       GLuint texture,
-                                       GLint baseLayer,
-                                       GLsizei numLayers,
-                                       GLsizei texelWidth,
-                                       GLsizei texelHeight)
-{
-    return false;
-}
-
-bool ValidateGetFragmentShadingRatesEXT(const Context *context,
-                                        angle::EntryPoint entryPoint,
-                                        GLsizei samples,
-                                        GLsizei maxCount,
-                                        const GLsizei *count,
-                                        const GLenum *shadingRates)
-{
-    return false;
-}
-
-bool ValidateShadingRateEXT(const PrivateState &state,
-                            ErrorSet *errors,
-                            angle::EntryPoint entryPoint,
-                            GLenum rate)
-{
-    return false;
-}
-
-bool ValidateShadingRateCombinerOpsEXT(const PrivateState &state,
-                                       ErrorSet *errors,
-                                       angle::EntryPoint entryPoint,
-                                       GLenum combinerOp0,
-                                       GLenum combinerOp1)
-{
-    return false;
-}
-
 // GL_ANGLE_polygon_mode
 bool ValidatePolygonModeANGLE(const PrivateState &state,
                               ErrorSet *errors,
@@ -2955,7 +2920,7 @@ bool ValidateCreateShaderProgramvEXT(const Context *context,
                                      angle::EntryPoint entryPoint,
                                      ShaderType typePacked,
                                      GLsizei count,
-                                     const GLchar *const *strings)
+                                     const GLchar **strings)
 {
     return ValidateCreateShaderProgramvBase(context, entryPoint, typePacked, count, strings);
 }

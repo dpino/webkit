@@ -163,7 +163,7 @@ std::string EGLConfigName(EGLDisplay display, EGLConfig config)
 
 const std::array<EGLint, 3> kContextAttribs = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
 
-class EGLContextCompatibilityTest : public ANGLETestBase
+class EGLContextCompatibilityTest : public ANGLETestBase, public testing::Test
 {
   public:
     EGLContextCompatibilityTest(EGLint renderer)
@@ -173,11 +173,10 @@ class EGLContextCompatibilityTest : public ANGLETestBase
     void SetUp() final
     {
         ANGLETestBase::ANGLETestSetUp();
-#if !defined(EGL_EGL_PROTOTYPES) || !EGL_EGL_PROTOTYPES
         ASSERT_TRUE(eglGetPlatformDisplay != nullptr);
-#endif
+
         EGLAttrib dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, mRenderer, EGL_NONE};
-        mDisplay              = eglGetPlatformDisplay(GetEglPlatform(),
+        mDisplay              = eglGetPlatformDisplay(EGL_PLATFORM_ANGLE_ANGLE,
                                                       reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
         ASSERT_TRUE(mDisplay != EGL_NO_DISPLAY);
 
@@ -489,15 +488,13 @@ void RegisterContextCompatibilityTests()
         EGL_PLATFORM_ANGLE_TYPE_VULKAN_ANGLE,
     }};
 
-    LoadEntryPointsWithUtilLoader(kDefaultGLESDriver);
+    LoadEntryPointsWithUtilLoader(angle::GLESDriverType::AngleEGL);
 
-#if !defined(EGL_EGL_PROTOTYPES) || !EGL_EGL_PROTOTYPES
     if (eglGetPlatformDisplay == nullptr)
     {
         std::cerr << "EGLContextCompatibilityTest: missing eglGetPlatformDisplay\n";
         return;
     }
-#endif
 
     for (EGLint renderer : renderers)
     {
@@ -507,7 +504,7 @@ void RegisterContextCompatibilityTests()
 
         EGLAttrib dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, renderer, EGL_NONE};
         EGLDisplay display    = eglGetPlatformDisplay(
-            GetEglPlatform(), reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
+            EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
         if (display == EGL_NO_DISPLAY)
         {
             std::cerr << "EGLContextCompatibilityTest: eglGetPlatformDisplay error\n";

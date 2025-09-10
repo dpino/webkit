@@ -20,6 +20,11 @@ void InitBuiltInAbsFunctionEmulatorForGLSLWorkarounds(BuiltInFunctionEmulator *e
                                                       sh::GLenum shaderType);
 
 //
+// This works around isnan() bug in Intel Mac drivers
+//
+void InitBuiltInIsnanFunctionEmulatorForGLSLWorkarounds(BuiltInFunctionEmulator *emu,
+                                                        int targetGLSLVersion);
+//
 // This works around atan(y, x) bug in NVIDIA drivers.
 //
 void InitBuiltInAtanFunctionEmulatorForGLSLWorkarounds(BuiltInFunctionEmulator *emu);

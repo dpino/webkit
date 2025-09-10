@@ -197,8 +197,6 @@ angle::Result VertexArrayWgpu::syncClientArrays(
     const void **adjustedIndicesPtr,
     uint32_t *indexCountOut)
 {
-    const DawnProcTable *wgpu = webgpu::GetProcs(context);
-
     *adjustedIndicesPtr = indices;
 
     gl::AttributesMask clientAttributesToSync =
@@ -296,7 +294,7 @@ angle::Result VertexArrayWgpu::syncClientArrays(
     {
         ASSERT(stagingBufferSize > 0);
         ASSERT(stagingBufferSize % webgpu::kBufferSizeAlignment == 0);
-        ANGLE_TRY(stagingBuffer.initBuffer(wgpu, device, stagingBufferSize,
+        ANGLE_TRY(stagingBuffer.initBuffer(device, stagingBufferSize,
                                            WGPUBufferUsage_CopySrc | WGPUBufferUsage_MapWrite,
                                            webgpu::MapAtCreation::Yes));
         stagingData = stagingBuffer.getMapWritePointer(0, stagingBufferSize);
@@ -500,9 +498,9 @@ angle::Result VertexArrayWgpu::syncClientArrays(
 
     for (const BufferCopy &copy : stagingUploads)
     {
-        wgpu->commandEncoderCopyBufferToBuffer(commandEncoder.get(), copy.src->getBuffer().get(),
-                                               copy.sourceOffset, copy.dest->getBuffer().get(),
-                                               copy.destOffset, copy.size);
+        wgpuCommandEncoderCopyBufferToBuffer(commandEncoder.get(), copy.src->getBuffer().get(),
+                                             copy.sourceOffset, copy.dest->getBuffer().get(),
+                                             copy.destOffset, copy.size);
     }
 
     return angle::Result::Continue;
@@ -578,12 +576,11 @@ angle::Result VertexArrayWgpu::ensureBufferCreated(const gl::Context *context,
                                                    BufferType bufferType)
 {
     ContextWgpu *contextWgpu = webgpu::GetImpl(context);
-    const DawnProcTable *wgpu = webgpu::GetProcs(contextWgpu);
     if (!buffer.valid() || buffer.requestedSize() < size ||
-        wgpu->bufferGetUsage(buffer.getBuffer().get()) != usage)
+        wgpuBufferGetUsage(buffer.getBuffer().get()) != usage)
     {
         webgpu::DeviceHandle device = webgpu::GetDevice(context);
-        ANGLE_TRY(buffer.initBuffer(wgpu, device, size, usage, webgpu::MapAtCreation::No));
+        ANGLE_TRY(buffer.initBuffer(device, size, usage, webgpu::MapAtCreation::No));
 
         if (bufferType == BufferType::IndexBuffer)
         {
