@@ -23,23 +23,24 @@ namespace
 {
 // Based on a buffer binding target, compute the default wgpu usage flags. More can be added if the
 // buffer is used in new ways.
-WGPUBufferUsage GetDefaultWGPUBufferUsageForBinding(gl::BufferBinding binding)
+wgpu::BufferUsage GetDefaultWGPUBufferUsageForBinding(gl::BufferBinding binding)
 {
     switch (binding)
     {
         case gl::BufferBinding::Array:
         case gl::BufferBinding::ElementArray:
-            return WGPUBufferUsage_Vertex | WGPUBufferUsage_Index | WGPUBufferUsage_CopySrc |
-                   WGPUBufferUsage_CopyDst;
+            return wgpu::BufferUsage::Vertex | wgpu::BufferUsage::Index |
+                   wgpu::BufferUsage::CopySrc | wgpu::BufferUsage::CopyDst;
 
         case gl::BufferBinding::Uniform:
-            return WGPUBufferUsage_Uniform | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst;
+            return wgpu::BufferUsage::Uniform | wgpu::BufferUsage::CopySrc |
+                   wgpu::BufferUsage::CopyDst;
 
         case gl::BufferBinding::PixelPack:
-            return WGPUBufferUsage_MapRead | WGPUBufferUsage_CopyDst;
+            return wgpu::BufferUsage::MapRead | wgpu::BufferUsage::CopyDst;
 
         case gl::BufferBinding::PixelUnpack:
-            return WGPUBufferUsage_MapWrite | WGPUBufferUsage_CopySrc;
+            return wgpu::BufferUsage::MapWrite | wgpu::BufferUsage::CopySrc;
 
         case gl::BufferBinding::CopyRead:
         case gl::BufferBinding::CopyWrite:
@@ -50,11 +51,11 @@ WGPUBufferUsage GetDefaultWGPUBufferUsageForBinding(gl::BufferBinding binding)
         case gl::BufferBinding::DrawIndirect:
         case gl::BufferBinding::AtomicCounter:
             UNIMPLEMENTED();
-            return WGPUBufferUsage_None;
+            return wgpu::BufferUsage::None;
 
         default:
             UNREACHABLE();
-            return WGPUBufferUsage_None;
+            return wgpu::BufferUsage::None;
     }
 }
 
@@ -68,12 +69,10 @@ angle::Result BufferWgpu::setData(const gl::Context *context,
                                   gl::BufferBinding target,
                                   const void *data,
                                   size_t size,
-                                  gl::BufferUsage usage,
-                                  BufferFeedback *feedback)
+                                  gl::BufferUsage usage)
 {
     ContextWgpu *contextWgpu = webgpu::GetImpl(context);
-    const DawnProcTable *wgpu   = webgpu::GetProcs(contextWgpu);
-    webgpu::DeviceHandle device = webgpu::GetDevice(context);
+    wgpu::Device device      = webgpu::GetDevice(context);
 
     bool hasData = data && size > 0;
 
@@ -83,8 +82,7 @@ angle::Result BufferWgpu::setData(const gl::Context *context,
         (hasData && !mBuffer.canMapForWrite()))
     {
         // Allocate a new buffer
-        ANGLE_TRY(mBuffer.initBuffer(wgpu, device, size,
-                                     GetDefaultWGPUBufferUsageForBinding(target),
+        ANGLE_TRY(mBuffer.initBuffer(device, size, GetDefaultWGPUBufferUsageForBinding(target),
                                      webgpu::MapAtCreation::Yes));
     }
 
@@ -94,7 +92,7 @@ angle::Result BufferWgpu::setData(const gl::Context *context,
 
         if (!mBuffer.getMappedState().has_value())
         {
-            ANGLE_TRY(mBuffer.mapImmediate(contextWgpu, WGPUMapMode_Write, 0, size));
+            ANGLE_TRY(mBuffer.mapImmediate(contextWgpu, wgpu::MapMode::Write, 0, size));
         }
 
         uint8_t *mappedData = mBuffer.getMapWritePointer(0, size);
@@ -108,17 +106,17 @@ angle::Result BufferWgpu::setSubData(const gl::Context *context,
                                      gl::BufferBinding target,
                                      const void *data,
                                      size_t size,
-                                     size_t offset,
-                                     BufferFeedback *feedback)
+                                     size_t offset)
 {
     ContextWgpu *contextWgpu = webgpu::GetImpl(context);
+    wgpu::Device device      = webgpu::GetDevice(context);
 
     ASSERT(mBuffer.valid());
     if (mBuffer.canMapForWrite())
     {
         if (!mBuffer.getMappedState().has_value())
         {
-            ANGLE_TRY(mBuffer.mapImmediate(contextWgpu, WGPUMapMode_Write, offset, size));
+            ANGLE_TRY(mBuffer.mapImmediate(contextWgpu, wgpu::MapMode::Write, offset, size));
         }
 
         uint8_t *mappedData = mBuffer.getMapWritePointer(offset, size);
@@ -126,11 +124,10 @@ angle::Result BufferWgpu::setSubData(const gl::Context *context,
     }
     else
     {
-        const DawnProcTable *wgpu = webgpu::GetProcs(context);
         // TODO: Upload into a staging buffer and copy to the destination buffer so that the copy
         // happens at the right point in time for command buffer recording.
-        webgpu::QueueHandle queue = contextWgpu->getQueue();
-        wgpu->queueWriteBuffer(queue.get(), mBuffer.getBuffer().get(), offset, data, size);
+        wgpu::Queue &queue = contextWgpu->getQueue();
+        queue.WriteBuffer(mBuffer.getBuffer(), offset, data, size);
     }
 
     return angle::Result::Continue;
@@ -140,16 +137,12 @@ angle::Result BufferWgpu::copySubData(const gl::Context *context,
                                       BufferImpl *source,
                                       GLintptr sourceOffset,
                                       GLintptr destOffset,
-                                      GLsizeiptr size,
-                                      BufferFeedback *feedback)
+                                      GLsizeiptr size)
 {
     return angle::Result::Continue;
 }
 
-angle::Result BufferWgpu::map(const gl::Context *context,
-                              GLenum access,
-                              void **mapPtr,
-                              BufferFeedback *feedback)
+angle::Result BufferWgpu::map(const gl::Context *context, GLenum access, void **mapPtr)
 {
     return angle::Result::Continue;
 }
@@ -158,15 +151,12 @@ angle::Result BufferWgpu::mapRange(const gl::Context *context,
                                    size_t offset,
                                    size_t length,
                                    GLbitfield access,
-                                   void **mapPtr,
-                                   BufferFeedback *feedback)
+                                   void **mapPtr)
 {
     return angle::Result::Continue;
 }
 
-angle::Result BufferWgpu::unmap(const gl::Context *context,
-                                GLboolean *result,
-                                BufferFeedback *feedback)
+angle::Result BufferWgpu::unmap(const gl::Context *context, GLboolean *result)
 {
     *result = GL_TRUE;
     return angle::Result::Continue;

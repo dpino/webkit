@@ -15,6 +15,30 @@ using namespace sh;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+const TVariable &sh::CreateStructTypeVariable(TSymbolTable &symbolTable,
+                                              const TStructure &structure)
+{
+    TType *type    = new TType(&structure, true);
+    TVariable *var = new TVariable(&symbolTable, ImmutableString(""), type, SymbolType::Empty);
+    return *var;
+}
+
+const TVariable &sh::CreateInstanceVariable(TSymbolTable &symbolTable,
+                                            const TStructure &structure,
+                                            const Name &name,
+                                            TQualifier qualifier,
+                                            const angle::Span<const unsigned int> *arraySizes)
+{
+    TType *type = new TType(&structure, false);
+    type->setQualifier(qualifier);
+    if (arraySizes)
+    {
+        type->makeArrays(*arraySizes);
+    }
+    TVariable *var = new TVariable(&symbolTable, name.rawName(), type, name.symbolType());
+    return *var;
+}
+
 static void AcquireFunctionExtras(TFunction &dest, const TFunction &src)
 {
     if (src.isDefined())
@@ -170,6 +194,44 @@ void sh::SetArg(TIntermAggregate &call, size_t index, TIntermTyped &arg)
 {
     ASSERT(index < call.getChildCount());
     (*call.getSequence())[index] = &arg;
+}
+
+TIntermBinary &sh::AccessField(const TVariable &structInstanceVar, const Name &name)
+{
+    return AccessField(*new TIntermSymbol(&structInstanceVar), name);
+}
+
+TIntermBinary &sh::AccessField(TIntermTyped &object, const Name &name)
+{
+    const TStructure *structure = object.getType().getStruct();
+    ASSERT(structure);
+    const TFieldList &fieldList = structure->fields();
+    for (int i = 0; i < static_cast<int>(fieldList.size()); ++i)
+    {
+        TField *current = fieldList[i];
+        if (Name(*current) == name)
+        {
+            return AccessFieldByIndex(object, i);
+        }
+    }
+    UNREACHABLE();
+    return AccessFieldByIndex(object, -1);
+}
+
+TIntermBinary &sh::AccessFieldByIndex(TIntermTyped &object, int index)
+{
+#if defined(ANGLE_ENABLE_ASSERTS)
+    const TType &type = object.getType();
+    ASSERT(!type.isArray());
+    const TStructure *structure = type.getStruct();
+    ASSERT(structure);
+    ASSERT(0 <= index);
+    ASSERT(static_cast<size_t>(index) < structure->fields().size());
+#endif
+
+    return *new TIntermBinary(
+        TOperator::EOpIndexDirectStruct, &object,
+        new TIntermConstantUnion(new TConstantUnion(index), *new TType(TBasicType::EbtInt)));
 }
 
 TIntermBinary &sh::AccessIndex(TIntermTyped &indexableNode, int index)
@@ -331,7 +393,9 @@ bool sh::HasArrayField(const TStructure &structure)
     return false;
 }
 
-TIntermTyped &sh::CoerceSimple(TBasicType toBasicType, TIntermTyped &fromNode)
+TIntermTyped &sh::CoerceSimple(TBasicType toBasicType,
+                               TIntermTyped &fromNode,
+                               bool needsExplicitBoolCast)
 {
     const TType &fromType = fromNode.getType();
 
@@ -343,6 +407,33 @@ TIntermTyped &sh::CoerceSimple(TBasicType toBasicType, TIntermTyped &fromNode)
 
     if (toBasicType != fromBasicType)
     {
+        if (toBasicType == TBasicType::EbtBool && fromNode.isVector() && needsExplicitBoolCast)
+        {
+            switch (fromBasicType)
+            {
+                case TBasicType::EbtFloat:
+                case TBasicType::EbtInt:
+                case TBasicType::EbtUInt:
+                {
+                    TIntermSequence *argsSequence = new TIntermSequence();
+                    for (uint8_t i = 0; i < fromType.getNominalSize(); i++)
+                    {
+                        TIntermTyped &fromTypeSwizzle     = SubVector(fromNode, i, i + 1);
+                        TIntermAggregate *boolConstructor = TIntermAggregate::CreateConstructor(
+                            *new TType(toBasicType, 1, 1), new TIntermSequence{&fromTypeSwizzle});
+                        argsSequence->push_back(boolConstructor);
+                    }
+                    return *TIntermAggregate::CreateConstructor(
+                        *new TType(toBasicType, fromType.getNominalSize(),
+                                   fromType.getSecondarySize()),
+                        argsSequence);
+                }
+
+                default:
+                    break;  // No explicit conversion needed
+            }
+        }
+
         return *TIntermAggregate::CreateConstructor(
             *new TType(toBasicType, fromType.getNominalSize(), fromType.getSecondarySize()),
             new TIntermSequence{&fromNode});
@@ -350,7 +441,9 @@ TIntermTyped &sh::CoerceSimple(TBasicType toBasicType, TIntermTyped &fromNode)
     return fromNode;
 }
 
-TIntermTyped &sh::CoerceSimple(const TType &toType, TIntermTyped &fromNode)
+TIntermTyped &sh::CoerceSimple(const TType &toType,
+                               TIntermTyped &fromNode,
+                               bool needsExplicitBoolCast)
 {
     const TType &fromType = fromNode.getType();
 
@@ -366,6 +459,33 @@ TIntermTyped &sh::CoerceSimple(const TType &toType, TIntermTyped &fromNode)
 
     if (toBasicType != fromBasicType)
     {
+        if (toBasicType == TBasicType::EbtBool && fromNode.isVector() && needsExplicitBoolCast)
+        {
+            switch (fromBasicType)
+            {
+                case TBasicType::EbtFloat:
+                case TBasicType::EbtInt:
+                case TBasicType::EbtUInt:
+                {
+                    TIntermSequence *argsSequence = new TIntermSequence();
+                    for (uint8_t i = 0; i < fromType.getNominalSize(); i++)
+                    {
+                        TIntermTyped &fromTypeSwizzle     = SubVector(fromNode, i, i + 1);
+                        TIntermAggregate *boolConstructor = TIntermAggregate::CreateConstructor(
+                            *new TType(toBasicType, 1, 1), new TIntermSequence{&fromTypeSwizzle});
+                        argsSequence->push_back(boolConstructor);
+                    }
+                    return *TIntermAggregate::CreateConstructor(
+                        *new TType(toBasicType, fromType.getNominalSize(),
+                                   fromType.getSecondarySize()),
+                        new TIntermSequence{*argsSequence});
+                }
+
+                default:
+                    break;  // No explicit conversion needed
+            }
+        }
+
         return *TIntermAggregate::CreateConstructor(toType, new TIntermSequence{&fromNode});
     }
     return fromNode;

@@ -145,6 +145,11 @@ std::shared_ptr<ShaderTranslateTask> ShaderGL::compile(const gl::Context *contex
         options->initFragmentOutputVariables = true;
     }
 
+    if (features.doWhileGLSLCausesGPUHang.enabled)
+    {
+        options->rewriteDoWhileLoops = true;
+    }
+
     if (features.emulateAbsIntFunction.enabled)
     {
         options->emulateAbsIntFunction = true;
@@ -153,6 +158,11 @@ std::shared_ptr<ShaderTranslateTask> ShaderGL::compile(const gl::Context *contex
     if (features.addAndTrueToLoopCondition.enabled)
     {
         options->addAndTrueToLoopCondition = true;
+    }
+
+    if (features.emulateIsnanFloat.enabled)
+    {
+        options->emulateIsnanFloatFunction = true;
     }
 
     if (features.emulateAtan2Float.enabled)
@@ -168,6 +178,11 @@ std::shared_ptr<ShaderTranslateTask> ShaderGL::compile(const gl::Context *contex
     if (features.removeInvariantAndCentroidForESSL3.enabled)
     {
         options->removeInvariantAndCentroidForESSL3 = true;
+    }
+
+    if (features.rewriteFloatUnaryMinusOperator.enabled)
+    {
+        options->rewriteFloatUnaryMinusOperator = true;
     }
 
     if (!features.dontInitializeUninitializedLocals.enabled)

@@ -1986,10 +1986,7 @@ angle::Result Renderer11::drawArraysIndirect(const gl::Context *context, const v
     uintptr_t offset = reinterpret_cast<uintptr_t>(indirect);
 
     ID3D11Buffer *buffer = nullptr;
-    BufferFeedback feedback;
-    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer, &feedback));
-    drawIndirectBuffer->applyImplFeedback(context, feedback);
-
+    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer));
     mDeviceContext->DrawInstancedIndirect(buffer, static_cast<unsigned int>(offset));
     return angle::Result::Continue;
 }
@@ -2012,9 +2009,7 @@ angle::Result Renderer11::drawElementsIndirect(const gl::Context *context, const
     uintptr_t offset  = reinterpret_cast<uintptr_t>(indirect);
 
     ID3D11Buffer *buffer = nullptr;
-    BufferFeedback feedback;
-    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer, &feedback));
-    drawIndirectBuffer->applyImplFeedback(context, feedback);
+    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer));
     mDeviceContext->DrawIndexedInstancedIndirect(buffer, static_cast<unsigned int>(offset));
     return angle::Result::Continue;
 }
@@ -4236,9 +4231,7 @@ angle::Result Renderer11::dispatchComputeIndirect(const gl::Context *context, GL
     ANGLE_TRY(mStateManager.updateStateForCompute(context, groups[0], groups[1], groups[2]));
 
     ID3D11Buffer *buffer = nullptr;
-    BufferFeedback feedback;
-    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer, &feedback));
-    dispatchIndirectBuffer->applyImplFeedback(context, feedback);
+    ANGLE_TRY(storage->getBuffer(context, BUFFER_USAGE_INDIRECT, &buffer));
 
     mDeviceContext->DispatchIndirect(buffer, static_cast<UINT>(indirect));
     return angle::Result::Continue;
@@ -4435,9 +4428,7 @@ angle::Result Renderer11::markTypedBufferUsage(const gl::Context *context)
         if (imageUnit.texture.get()->getType() == gl::TextureType::Buffer)
         {
             Buffer11 *buffer11 = GetImplAs<Buffer11>(imageUnit.texture.get()->getBuffer().get());
-            BufferFeedback feedback;
-            ANGLE_TRY(buffer11->markTypedBufferUsage(context, &feedback));
-            imageUnit.texture.get()->getBuffer().get()->applyImplFeedback(context, feedback);
+            ANGLE_TRY(buffer11->markTypedBufferUsage(context));
         }
     }
     return angle::Result::Continue;
@@ -4455,9 +4446,7 @@ angle::Result Renderer11::markRawBufferUsage(const gl::Context *context)
         if (shaderStorageBuffer.get() != nullptr)
         {
             Buffer11 *bufferStorage = GetImplAs<Buffer11>(shaderStorageBuffer.get());
-            BufferFeedback feedback;
-            ANGLE_TRY(bufferStorage->markRawBufferUsage(context, &feedback));
-            shaderStorageBuffer.get()->applyImplFeedback(context, feedback);
+            ANGLE_TRY(bufferStorage->markRawBufferUsage(context));
         }
     }
 
@@ -4471,9 +4460,7 @@ angle::Result Renderer11::markRawBufferUsage(const gl::Context *context)
         if (buffer.get() != nullptr)
         {
             Buffer11 *bufferStorage = GetImplAs<Buffer11>(buffer.get());
-            BufferFeedback feedback;
-            ANGLE_TRY(bufferStorage->markRawBufferUsage(context, &feedback));
-            buffer.get()->applyImplFeedback(context, feedback);
+            ANGLE_TRY(bufferStorage->markRawBufferUsage(context));
         }
     }
     return angle::Result::Continue;
@@ -4490,9 +4477,7 @@ angle::Result Renderer11::markTransformFeedbackUsage(const gl::Context *context)
         if (binding.get() != nullptr)
         {
             BufferD3D *bufferD3D = GetImplAs<BufferD3D>(binding.get());
-            BufferFeedback feedback;
-            ANGLE_TRY(bufferD3D->markTransformFeedbackUsage(context, &feedback));
-            binding.get()->applyImplFeedback(context, feedback);
+            ANGLE_TRY(bufferD3D->markTransformFeedbackUsage(context));
         }
     }
 

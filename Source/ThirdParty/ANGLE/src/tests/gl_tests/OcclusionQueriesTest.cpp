@@ -749,7 +749,8 @@ TEST_P(OcclusionQueriesTest, MultiContext)
 
     // Test skipped because the D3D backends cannot support simultaneous queries on multiple
     // contexts yet.
-    ANGLE_SKIP_TEST_IF(IsD3D());
+    ANGLE_SKIP_TEST_IF(GetParam() == ES2_D3D9() || GetParam() == ES2_D3D11() ||
+                       GetParam() == ES3_D3D11());
 
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -766,9 +767,9 @@ TEST_P(OcclusionQueriesTest, MultiContext)
 
     EGLint contextAttributes[] = {
         EGL_CONTEXT_MAJOR_VERSION_KHR,
-        getClientMajorVersion(),
+        GetParam().majorVersion,
         EGL_CONTEXT_MINOR_VERSION_KHR,
-        getClientMinorVersion(),
+        GetParam().minorVersion,
         EGL_NONE,
     };
 
@@ -998,10 +999,12 @@ TEST_P(OcclusionQueriesTest, WrongSkippedQuery)
     EXPECT_EQ(expectation, results[1]);
 }
 
-class OcclusionQueriesNoSurfaceTestES3 : public ANGLETest<>
+class OcclusionQueriesNoSurfaceTestES3 : public ANGLETestBase,
+                                         public ::testing::TestWithParam<angle::PlatformParameters>
 {
   protected:
-    OcclusionQueriesNoSurfaceTestES3() : mUnusedConfig(0), mUnusedDisplay(nullptr)
+    OcclusionQueriesNoSurfaceTestES3()
+        : ANGLETestBase(GetParam()), mUnusedConfig(0), mUnusedDisplay(nullptr)
     {
         setWindowWidth(kWidth);
         setWindowHeight(kHeight);
@@ -1014,6 +1017,9 @@ class OcclusionQueriesNoSurfaceTestES3 : public ANGLETest<>
 
     static constexpr int kWidth  = 300;
     static constexpr int kHeight = 300;
+
+    void SetUp() override { ANGLETestBase::ANGLETestSetUp(); }
+    void TearDown() override { ANGLETestBase::ANGLETestTearDown(); }
 
     void swapBuffers() override {}
 
@@ -1034,9 +1040,9 @@ TEST_P(OcclusionQueriesNoSurfaceTestES3, SwitchingContextsWithQuery)
 
     EGLint contextAttributes[] = {
         EGL_CONTEXT_MAJOR_VERSION_KHR,
-        getClientMajorVersion(),
+        GetParam().majorVersion,
         EGL_CONTEXT_MINOR_VERSION_KHR,
-        getClientMinorVersion(),
+        GetParam().minorVersion,
         EGL_ROBUST_RESOURCE_INITIALIZATION_ANGLE,
         EGL_TRUE,
         EGL_NONE,

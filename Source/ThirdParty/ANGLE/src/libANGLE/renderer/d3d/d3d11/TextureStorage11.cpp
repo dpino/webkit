@@ -4385,10 +4385,7 @@ angle::Result TextureStorage11_Buffer::initTexture(const gl::Context *context)
     {
         ID3D11Buffer *buffer = nullptr;
         Buffer11 *buffer11   = GetImplAs<Buffer11>(mBuffer.get());
-        BufferFeedback feedback;
-        ANGLE_TRY(buffer11->getBuffer(context, rx::BufferUsage::BUFFER_USAGE_TYPED_UAV, &buffer,
-                                      &feedback));
-        mBuffer.get()->applyImplFeedback(context, feedback);
+        ANGLE_TRY(buffer11->getBuffer(context, rx::BufferUsage::BUFFER_USAGE_TYPED_UAV, &buffer));
         mTexture.set(buffer, mFormatInfo);
         mTexture.get()->AddRef();
     }

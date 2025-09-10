@@ -74,13 +74,6 @@ bool IsD3D()
     return IsD3D9() || IsD3D11();
 }
 
-bool IsWebGPU()
-{
-    const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
-    std::string rendererString(renderer);
-    return (rendererString.find("WebGPU") != std::string::npos);
-}
-
 bool IsDebug()
 {
 #if !defined(NDEBUG)

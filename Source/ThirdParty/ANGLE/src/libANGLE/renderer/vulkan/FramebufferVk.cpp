@@ -421,7 +421,6 @@ FramebufferVk::FramebufferVk(vk::Renderer *renderer, const gl::FramebufferState 
 
     mIsCurrentFramebufferCached = !renderer->getFeatures().supportsImagelessFramebuffer.enabled;
     mIsYUVResolve               = false;
-    mRasterizationSamples       = -1;
 }
 
 FramebufferVk::~FramebufferVk() = default;
@@ -1008,8 +1007,6 @@ angle::Result FramebufferVk::readPixels(const gl::Context *context,
                                         gl::Buffer *packBuffer,
                                         void *pixels)
 {
-    ASSERT(mDeferredClears.empty());
-
     // Clip read area to framebuffer.
     const gl::Extents &fbSize = getState().getReadPixelsAttachment(format)->getSize();
     const gl::Rectangle fbRect(0, 0, fbSize.width, fbSize.height);
@@ -1021,6 +1018,9 @@ angle::Result FramebufferVk::readPixels(const gl::Context *context,
         // nothing to read
         return angle::Result::Continue;
     }
+
+    // Flush any deferred clears.
+    ANGLE_TRY(flushDeferredClears(contextVk));
 
     GLuint outputSkipBytes = 0;
     PackPixelsParams params;
@@ -2585,9 +2585,6 @@ angle::Result FramebufferVk::syncState(const gl::Context *context,
         }
     }
 
-    // Update cached value of samples
-    mRasterizationSamples = getSamplesImpl();
-
     // A shared attachment's colospace could have been modified in another context, update
     // colorspace of all attachments to reflect current context's colorspace.
     gl::SrgbWriteControlMode srgbWriteControlMode = mState.getWriteControlMode();
@@ -2611,80 +2608,49 @@ angle::Result FramebufferVk::syncState(const gl::Context *context,
         ANGLE_TRY(updateFoveationState(contextVk, *newFoveationState, foveatedAttachmentSize));
     }
 
-    // Note that deferring clears may result in a render area that completely covers the
-    // framebuffer, even if the operation that follows is scissored.
-    bool deferColorClears, deferDepthStencilClears;
+    // Defer clears for draw framebuffer ops.  Note that this will result in a render area that
+    // completely covers the framebuffer, even if the operation that follows is scissored.
+    //
+    // Additionally, defer clears for read framebuffer attachments that are not taking part in a
+    // blit operation.
+    const bool isBlitCommand = command >= gl::Command::Blit && command <= gl::Command::BlitAll;
 
-    switch (command)
+    bool deferColorClears        = binding == GL_DRAW_FRAMEBUFFER;
+    bool deferDepthStencilClears = binding == GL_DRAW_FRAMEBUFFER;
+    if (binding == GL_READ_FRAMEBUFFER && isBlitCommand)
     {
-        // These commands always expect deferred clears (to perform potential optimization).
-        case gl::Command::Clear:
-        case gl::Command::Draw:
-            ASSERT(binding == GL_DRAW_FRAMEBUFFER);
-            deferColorClears        = true;
+        uint32_t blitMask =
+            static_cast<uint32_t>(command) - static_cast<uint32_t>(gl::Command::Blit);
+        if ((blitMask & gl::CommandBlitBufferColor) == 0)
+        {
+            deferColorClears = true;
+        }
+        if ((blitMask & (gl::CommandBlitBufferDepth | gl::CommandBlitBufferStencil)) == 0)
+        {
             deferDepthStencilClears = true;
-            break;
-        // Defer clears only for draw framebuffer attachments for the invalidate operation.
-        case gl::Command::Invalidate:
-            ASSERT(binding == GL_DRAW_FRAMEBUFFER || binding == GL_READ_FRAMEBUFFER);
-            deferColorClears        = (binding == GL_DRAW_FRAMEBUFFER);
-            deferDepthStencilClears = (binding == GL_DRAW_FRAMEBUFFER);
-            break;
-        // These commands do not expect (handle) deferred clears.  There is no reason to defer
-        // clears for CopyImage and ReadPixels, as they need to read from the image right away.
-        // GetMultisample does not access attachments at all and clears are flushed for simplicity.
-        // Other enum may be used for different cases, where deferred clears may be handled or not.
-        // Clears are not deferred to avoid bugs.  If clears need to be deferred, operation must not
-        // use the Command::Other enumeration.
-        case gl::Command::CopyImage:
-        case gl::Command::ReadPixels:
-        case gl::Command::GetMultisample:
-        case gl::Command::Other:
-            // Binding for Command::Other reflects current code and may be updated as necessary.
-            ASSERT(((command == gl::Command::CopyImage || command == gl::Command::ReadPixels) &&
-                    binding == GL_READ_FRAMEBUFFER) ||
-                   (command == gl::Command::GetMultisample && binding == GL_DRAW_FRAMEBUFFER) ||
-                   (command == gl::Command::Other && binding == GL_FRAMEBUFFER));
-            deferColorClears        = false;
-            deferDepthStencilClears = false;
-            break;
-        // Defer clears for read framebuffer attachments that are not taking part in a blit
-        // operation in order to restage them and possibly use as clear op in a future render pass.
-        default:
-            ASSERT(command >= gl::Command::Blit && command <= gl::Command::BlitAll);
-            if (binding == GL_READ_FRAMEBUFFER)
-            {
-                const uint32_t blitMask =
-                    static_cast<uint32_t>(command) - static_cast<uint32_t>(gl::Command::Blit);
-                deferColorClears        = ((blitMask & gl::CommandBlitBufferColor) == 0);
-                deferDepthStencilClears = ((blitMask & gl::CommandBlitBufferDepthStencil) == 0);
-            }
-            else
-            {
-                ASSERT(binding == GL_DRAW_FRAMEBUFFER);
-                deferColorClears        = true;
-                deferDepthStencilClears = true;
-            }
-            break;
+        }
     }
 
-    // If we have deferred clears, a flushDeferredClears() or restageDeferredClears() call is
-    // missing somewhere.  ASSERT this to catch these bugs.
-    ASSERT(mDeferredClears.empty());
+    // If we are notified that any attachment is dirty, but we have deferred clears for them, a
+    // flushDeferredClears() call is missing somewhere.  ASSERT this to catch these bugs.
+    vk::ClearValuesArray previousDeferredClears = mDeferredClears;
 
     for (size_t colorIndexGL : dirtyColorAttachments)
     {
+        ASSERT(!previousDeferredClears.test(colorIndexGL));
         ANGLE_TRY(flushColorAttachmentUpdates(context, deferColorClears,
                                               static_cast<uint32_t>(colorIndexGL)));
     }
     if (dirtyDepthStencilAttachment)
     {
+        ASSERT(!previousDeferredClears.testDepth());
+        ASSERT(!previousDeferredClears.testStencil());
         ANGLE_TRY(flushDepthStencilAttachmentUpdates(context, deferDepthStencilClears));
     }
 
     // No-op redundant changes to prevent closing the RenderPass.
     if (mCurrentFramebufferDesc == priorFramebufferDesc &&
-        mCurrentFramebufferDesc.attachmentCount() > 0 && mRenderPassDesc.samples() == getSamples())
+        mCurrentFramebufferDesc.attachmentCount() > 0)
     {
         return angle::Result::Continue;
     }
@@ -3306,11 +3272,6 @@ void FramebufferVk::restageDeferredClearsForReadFramebuffer(ContextVk *contextVk
     restageDeferredClearsImpl(contextVk);
 }
 
-void FramebufferVk::restageDeferredClearsAfterNoopDraw(ContextVk *contextVk)
-{
-    restageDeferredClearsImpl(contextVk);
-}
-
 void FramebufferVk::restageDeferredClearsImpl(ContextVk *contextVk)
 {
     // Set the appropriate aspect and clear values for depth and stencil.
@@ -3723,21 +3684,20 @@ angle::Result FramebufferVk::startNewRenderPass(ContextVk *contextVk,
                 }
             }
 
-            if (unresolveDepth)
+            if (unresolveDepth || unresolveStencil)
             {
-                mRenderPassDesc.packDepthUnresolveAttachment();
+                if (unresolveDepth)
+                {
+                    mRenderPassDesc.packDepthUnresolveAttachment();
+                }
+                if (unresolveStencil)
+                {
+                    mRenderPassDesc.packStencilUnresolveAttachment();
+                }
             }
             else
             {
-                mRenderPassDesc.removeDepthUnresolveAttachment();
-            }
-            if (unresolveStencil)
-            {
-                mRenderPassDesc.packStencilUnresolveAttachment();
-            }
-            else
-            {
-                mRenderPassDesc.removeStencilUnresolveAttachment();
+                mRenderPassDesc.removeDepthStencilUnresolveAttachment();
             }
         }
 
@@ -3903,7 +3863,7 @@ gl::Rectangle FramebufferVk::getRotatedScissoredRenderArea(ContextVk *contextVk)
     return rotatedScissoredArea;
 }
 
-GLint FramebufferVk::getSamplesImpl() const
+GLint FramebufferVk::getSamples() const
 {
     const gl::FramebufferAttachment *lastAttachment = nullptr;
 

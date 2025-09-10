@@ -163,7 +163,7 @@ std::string EGLConfigName(EGLDisplay display, EGLConfig config)
 
 const std::array<EGLint, 3> kContextAttribs = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
 
-class EGLContextCompatibilityTest : public ANGLETestBase
+class EGLContextCompatibilityTest : public ANGLETestBase, public testing::Test
 {
   public:
     EGLContextCompatibilityTest(EGLint renderer)
@@ -173,12 +173,11 @@ class EGLContextCompatibilityTest : public ANGLETestBase
     void SetUp() final
     {
         ANGLETestBase::ANGLETestSetUp();
-#if !defined(EGL_EGL_PROTOTYPES) || !EGL_EGL_PROTOTYPES
-        ASSERT_TRUE(eglGetPlatformDisplay != nullptr);
-#endif
-        EGLAttrib dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, mRenderer, EGL_NONE};
-        mDisplay              = eglGetPlatformDisplay(GetEglPlatform(),
-                                                      reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
+        ASSERT_TRUE(eglGetPlatformDisplayEXT != nullptr);
+
+        EGLint dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, mRenderer, EGL_NONE};
+        mDisplay           = eglGetPlatformDisplayEXT(
+            EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
         ASSERT_TRUE(mDisplay != EGL_NO_DISPLAY);
 
         ASSERT_TRUE(eglInitialize(mDisplay, nullptr, nullptr) == EGL_TRUE);
@@ -489,15 +488,13 @@ void RegisterContextCompatibilityTests()
         EGL_PLATFORM_ANGLE_TYPE_VULKAN_ANGLE,
     }};
 
-    LoadEntryPointsWithUtilLoader(kDefaultGLESDriver);
+    LoadEntryPointsWithUtilLoader(angle::GLESDriverType::AngleEGL);
 
-#if !defined(EGL_EGL_PROTOTYPES) || !EGL_EGL_PROTOTYPES
-    if (eglGetPlatformDisplay == nullptr)
+    if (eglGetPlatformDisplayEXT == nullptr)
     {
-        std::cerr << "EGLContextCompatibilityTest: missing eglGetPlatformDisplay\n";
+        std::cerr << "EGLContextCompatibilityTest: missing eglGetPlatformDisplayEXT\n";
         return;
     }
-#endif
 
     for (EGLint renderer : renderers)
     {
@@ -505,12 +502,12 @@ void RegisterContextCompatibilityTests()
         if (!IsPlatformAvailable(params))
             continue;
 
-        EGLAttrib dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, renderer, EGL_NONE};
-        EGLDisplay display    = eglGetPlatformDisplay(
-            GetEglPlatform(), reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
+        EGLint dispattrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE, renderer, EGL_NONE};
+        EGLDisplay display = eglGetPlatformDisplayEXT(
+            EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), dispattrs);
         if (display == EGL_NO_DISPLAY)
         {
-            std::cerr << "EGLContextCompatibilityTest: eglGetPlatformDisplay error\n";
+            std::cerr << "EGLContextCompatibilityTest: eglGetPlatformDisplayEXT error\n";
             return;
         }
 

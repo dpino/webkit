@@ -673,7 +673,7 @@ angle::Result VertexArrayVk::convertVertexBufferCPU(ContextVk *contextVk,
     }
 
     uint8_t *src = nullptr;
-    ANGLE_TRY(srcBuffer->mapForReadAccessOnly(contextVk, reinterpret_cast<void **>(&src)));
+    ANGLE_TRY(srcBuffer->mapImpl(contextVk, GL_MAP_READ_BIT, reinterpret_cast<void **>(&src)));
     uint32_t srcStride      = conversion->getCacheKey().stride;
 
     if (conversion->isEntireBufferDirty())
@@ -717,7 +717,7 @@ angle::Result VertexArrayVk::convertVertexBufferCPU(ContextVk *contextVk,
     }
 
     conversion->clearDirty();
-    ANGLE_TRY(srcBuffer->unmapReadAccessOnly(contextVk));
+    ANGLE_TRY(srcBuffer->unmapImpl(contextVk));
 
     return angle::Result::Continue;
 }
@@ -755,23 +755,18 @@ angle::Result VertexArrayVk::syncState(const gl::Context *context,
                 // internal storage and take action if buffer storage has changed while not
                 // observing.
                 if (contextVk->getFeatures().compressVertexData.enabled ||
-                    mContentsObserverBindingsMask.any())
+                    mContentsObservers->any())
                 {
                     // We may have lost buffer content change when it became non-current. In that
                     // case we always assume buffer has changed. If compressVertexData.enabled is
                     // true, it also depends on buffer usage which may have changed.
-                    uint64_t bits = mState.getBufferBindingMask().bits();
-                    bits <<= gl::VertexArray::DIRTY_BIT_BINDING_0;
-                    iter.setLaterBits(gl::VertexArray::DirtyBits(bits));
+                    iter.setLaterBits(
+                        gl::VertexArray::DirtyBits(mState.getBufferBindingMask().to_ulong()
+                                                   << gl::VertexArray::DIRTY_BIT_BINDING_0));
                 }
                 else
                 {
-                    // Element buffer is not in bindings yet, has to handle separately.
-                    iter.setLaterBit(gl::VertexArray::DIRTY_BIT_ELEMENT_ARRAY_BUFFER);
-                    gl::VertexArrayBufferBindingMask bindingMask = mState.getBufferBindingMask();
-                    bindingMask.reset(gl::kElementArrayBufferIndex);
-
-                    for (size_t bindingIndex : bindingMask)
+                    for (size_t bindingIndex : mState.getBufferBindingMask())
                     {
                         const gl::Buffer *bufferGL    = bindings[bindingIndex].getBuffer().get();
                         vk::BufferSerial bufferSerial = vk::GetImpl(bufferGL)->getBufferSerial();
@@ -940,7 +935,7 @@ angle::Result VertexArrayVk::syncDirtyAttrib(ContextVk *contextVk,
 
         if (bufferGL)
         {
-            mContentsObserverBindingsMask.reset(attrib.bindingIndex);
+            mContentsObservers->disableForBuffer(bufferGL, static_cast<uint32_t>(attribIndex));
         }
 
         if (!isStreamingVertexAttrib && bufferGL->getSize() > 0)
@@ -973,7 +968,7 @@ angle::Result VertexArrayVk::syncDirtyAttrib(ContextVk *contextVk,
                 ASSERT(vertexFormat.getVertexInputAlignment(compressed) <=
                        vk::kVertexBufferAlignment);
 
-                mContentsObserverBindingsMask.set(attrib.bindingIndex);
+                mContentsObservers->enableForBuffer(bufferGL, static_cast<uint32_t>(attribIndex));
 
                 WarnOnVertexFormatConversion(contextVk, vertexFormat, compressed, true);
 
@@ -1302,7 +1297,7 @@ angle::Result VertexArrayVk::updateStreamedAttribs(const gl::Context *context,
                         // Map buffer to expand attribs for divisor emulation
                         BufferVk *bufferVk = vk::GetImpl(binding.getBuffer().get());
                         void *buffSrc      = nullptr;
-                        ANGLE_TRY(bufferVk->mapForReadAccessOnly(contextVk, &buffSrc));
+                        ANGLE_TRY(bufferVk->mapImpl(contextVk, GL_MAP_READ_BIT, &buffSrc));
                         src = reinterpret_cast<const uint8_t *>(buffSrc) + binding.getOffset();
 
                         uint32_t srcAttributeSize =
@@ -1315,7 +1310,7 @@ angle::Result VertexArrayVk::updateStreamedAttribs(const gl::Context *context,
                             stride, vertexFormat.getVertexLoadFunction(compressed), divisor,
                             numVertices));
 
-                        ANGLE_TRY(bufferVk->unmapReadAccessOnly(contextVk));
+                        ANGLE_TRY(bufferVk->unmapImpl(contextVk));
                     }
                     else if (contextVk->getExtensions().robustnessAny())
                     {

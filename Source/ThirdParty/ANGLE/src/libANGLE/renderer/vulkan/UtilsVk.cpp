@@ -3826,7 +3826,7 @@ angle::Result UtilsVk::copyImageToBuffer(ContextVk *contextVk,
     ANGLE_TRY(src->initReinterpretedLayerImageView(
         contextVk, textureType, src->getAspectFlags(), swizzle, &srcView.get(), params.srcMip, 1,
         textureType == gl::TextureType::_2D ? params.srcLayer : 0, 1, VK_IMAGE_USAGE_SAMPLED_BIT,
-        linearFormat, GL_NONE));
+        linearFormat));
 
     vk::CommandBufferAccess access;
     access.onImageComputeShaderRead(src->getAspectFlags(), src);
@@ -4060,7 +4060,7 @@ angle::Result UtilsVk::transCodeEtcToBc(ContextVk *contextVk,
         ANGLE_TRY(dstImage->initReinterpretedLayerImageView(
             contextVk, gl::TextureType::_2D, VK_IMAGE_ASPECT_COLOR_BIT, gl::SwizzleState(),
             &scopedImageView.get(), dstLevel, 1, copyRegion->imageSubresource.baseArrayLayer + i, 1,
-            VK_IMAGE_USAGE_STORAGE_BIT, GetCompactibleUINTFormat(intendedFormat), GL_NONE));
+            VK_IMAGE_USAGE_STORAGE_BIT, GetCompactibleUINTFormat(intendedFormat)));
         imageInfo.imageView = scopedImageView.get().getHandle();
 
         VkDescriptorSet descriptorSet;
@@ -4311,12 +4311,12 @@ angle::Result UtilsVk::generateMipmapWithDraw(ContextVk *contextVk,
             vk::ImageView srcImageView;
             ANGLE_TRY(image->initReinterpretedLayerImageView(
                 contextVk, textureType, image->getAspectFlags(), swizzle, &srcImageView, srcLevelVk,
-                1, currentLayer, 1, imageUsageFlags, actualFormatID, GL_NONE));
+                1, currentLayer, 1, imageUsageFlags, actualFormatID));
 
             vk::ImageView dstImageView;
             ANGLE_TRY(image->initReinterpretedLayerImageView(
                 contextVk, textureType, image->getAspectFlags(), swizzle, &dstImageView, dstLevelVk,
-                1, currentLayer, 1, imageUsageFlags, actualFormatID, GL_NONE));
+                1, currentLayer, 1, imageUsageFlags, actualFormatID));
 
             vk::RenderPassCommandBuffer *commandBuffer = nullptr;
             ANGLE_TRY(startRenderPass(contextVk, image, &dstImageView, renderPassDesc, renderArea,
@@ -4953,11 +4953,11 @@ angle::Result LineLoopHelper::getIndexBufferForElementArrayBuffer(ContextVk *con
         ANGLE_TRACE_EVENT0("gpu.angle", "LineLoopHelper::getIndexBufferForElementArrayBuffer");
 
         void *srcDataMapping = nullptr;
-        ANGLE_TRY(elementArrayBufferVk->mapForReadAccessOnly(contextVk, &srcDataMapping));
+        ANGLE_TRY(elementArrayBufferVk->mapImpl(contextVk, GL_MAP_READ_BIT, &srcDataMapping));
         ANGLE_TRY(streamIndices(contextVk, glIndexType, indexCount,
                                 static_cast<const uint8_t *>(srcDataMapping) + elementArrayOffset,
                                 bufferOut, indexCountOut));
-        ANGLE_TRY(elementArrayBufferVk->unmapReadAccessOnly(contextVk));
+        ANGLE_TRY(elementArrayBufferVk->unmapImpl(contextVk));
         return angle::Result::Continue;
     }
 

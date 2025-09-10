@@ -123,7 +123,6 @@ StateManagerGL::StateManagerGL(const FunctionsGL *functions,
       mSampleCoverageValue(1.0f),
       mSampleCoverageInvert(false),
       mSampleMaskEnabled(false),
-      mSampleCoverageEverChanged(false),
       mDepthTestEnabled(false),
       mDepthFunc(GL_LESS),
       mDepthMask(true),
@@ -169,7 +168,7 @@ StateManagerGL::StateManagerGL(const FunctionsGL *functions,
       mMultisamplingEnabled(true),
       mSampleAlphaToOneEnabled(false),
       mCoverageModulation(GL_NONE),
-      mIsMultiviewEnabled(extensions.multiviewOVR),
+      mIsMultiviewEnabled(extensions.multiviewOVR || extensions.multiview2OVR),
       mProvokingVertex(GL_LAST_VERTEX_CONVENTION),
       mMaxClipDistances(rendererCaps.maxClipDistances),
       mLogicOpEnabled(false),
@@ -1604,20 +1603,15 @@ void StateManagerGL::setSampleCoverageEnabled(bool enabled)
     }
 }
 
-void StateManagerGL::forceSetSampleCoverage(float value, bool invert)
-{
-    mSampleCoverageValue       = value;
-    mSampleCoverageInvert      = invert;
-    mSampleCoverageEverChanged = true;
-    mFunctions->sampleCoverage(mSampleCoverageValue, mSampleCoverageInvert);
-    mLocalDirtyBits.set(gl::state::DIRTY_BIT_SAMPLE_COVERAGE);
-}
-
 void StateManagerGL::setSampleCoverage(float value, bool invert)
 {
     if (mSampleCoverageValue != value || mSampleCoverageInvert != invert)
     {
-        forceSetSampleCoverage(value, invert);
+        mSampleCoverageValue  = value;
+        mSampleCoverageInvert = invert;
+        mFunctions->sampleCoverage(mSampleCoverageValue, mSampleCoverageInvert);
+
+        mLocalDirtyBits.set(gl::state::DIRTY_BIT_SAMPLE_COVERAGE);
     }
 }
 
@@ -2011,9 +2005,26 @@ void StateManagerGL::setClearDepth(float clearDepth)
 
 void StateManagerGL::setClearColor(const gl::ColorF &clearColor)
 {
-    if (mClearColor != clearColor)
+    gl::ColorF modifiedClearColor = clearColor;
+    if (mFeatures.clearToZeroOrOneBroken.enabled &&
+        (clearColor.red == 1.0f || clearColor.red == 0.0f) &&
+        (clearColor.green == 1.0f || clearColor.green == 0.0f) &&
+        (clearColor.blue == 1.0f || clearColor.blue == 0.0f) &&
+        (clearColor.alpha == 1.0f || clearColor.alpha == 0.0f))
     {
-        mClearColor = clearColor;
+        if (clearColor.alpha == 1.0f)
+        {
+            modifiedClearColor.alpha = 2.0f;
+        }
+        else
+        {
+            modifiedClearColor.alpha = -1.0f;
+        }
+    }
+
+    if (mClearColor != modifiedClearColor)
+    {
+        mClearColor = modifiedClearColor;
         mFunctions->clearColor(mClearColor.red, mClearColor.green, mClearColor.blue,
                                mClearColor.alpha);
 
@@ -2249,11 +2260,6 @@ angle::Result StateManagerGL::syncState(const gl::Context *context,
                 bindFramebuffer(
                     mHasSeparateFramebufferBindings ? GL_DRAW_FRAMEBUFFER : GL_FRAMEBUFFER,
                     framebufferGL->getFramebufferID());
-
-                if (mFeatures.resetSampleCoverageOnFBOChange.enabled && mSampleCoverageEverChanged)
-                {
-                    forceSetSampleCoverage(mSampleCoverageValue, mSampleCoverageInvert);
-                }
 
                 const gl::ProgramExecutable *executable = state.getProgramExecutable();
                 if (executable)
@@ -2511,7 +2517,6 @@ angle::Result StateManagerGL::syncState(const gl::Context *context,
                             break;
                         case gl::state::EXTENDED_DIRTY_BIT_BLEND_ADVANCED_COHERENT:
                             setBlendAdvancedCoherent(state.isBlendAdvancedCoherentEnabled());
-                            break;
                         case gl::state::EXTENDED_DIRTY_BIT_VARIABLE_RASTERIZATION_RATE:
                             // Unimplemented extensions.
                             break;

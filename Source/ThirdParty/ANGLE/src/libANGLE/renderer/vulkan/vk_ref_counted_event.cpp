@@ -102,14 +102,7 @@ void RefCountedEvent::releaseImpl(Renderer *renderer, RecyclerT *recycler)
     if (isLastReference)
     {
         ASSERT(recycler != nullptr);
-        if (renderer->getFeatures().recycleVkEvent.enabled)
-        {
-            recycler->recycle(std::move(*this));
-        }
-        else
-        {
-            destroy(renderer->getDevice());
-        }
+        recycler->recycle(std::move(*this));
         ASSERT(mHandle == nullptr);
     }
     else

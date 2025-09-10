@@ -119,9 +119,6 @@ class PixelLocalStoragePlane : angle::NonCopyable, public angle::ObserverInterfa
     angle::ObserverBinding mTextureObserver;
 };
 
-using PixelLocalStoragePlaneVector =
-    angle::FixedVector<PixelLocalStoragePlane, IMPLEMENTATION_MAX_PIXEL_LOCAL_STORAGE_PLANES>;
-
 // Manages a collection of PixelLocalStoragePlanes and applies them to ANGLE's GL state.
 //
 // The main magic of ANGLE_shader_pixel_local_storage happens inside shaders, so we just emulate the
@@ -146,7 +143,7 @@ class PixelLocalStorage
         return mPlanes[plane];
     }
 
-    const PixelLocalStoragePlaneVector &getPlanes() { return mPlanes; }
+    const PixelLocalStoragePlane *getPlanes() { return mPlanes.data(); }
 
     size_t interruptCount() const { return mInterruptCount; }
 
@@ -188,7 +185,8 @@ class PixelLocalStorage
     const ShPixelLocalStorageOptions mPLSOptions;
 
   private:
-    PixelLocalStoragePlaneVector mPlanes;
+    angle::FixedVector<PixelLocalStoragePlane, IMPLEMENTATION_MAX_PIXEL_LOCAL_STORAGE_PLANES>
+        mPlanes;
     size_t mInterruptCount           = 0;
     GLsizei mActivePlanesAtInterrupt = 0;
 };

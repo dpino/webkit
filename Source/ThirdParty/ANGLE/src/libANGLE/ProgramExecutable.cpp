@@ -744,8 +744,7 @@ ProgramExecutable::ProgramExecutable(rx::GLImplFactory *factory, InfoLog *infoLo
       mInfoLog(infoLog),
       mCachedBaseVertex(0),
       mCachedBaseInstance(0),
-      mIsPPO(false),
-      mBinaryRetrieveableHint(false)
+      mIsPPO(false)
 {
     memset(&mPod, 0, sizeof(mPod));
     reset();
@@ -830,9 +829,6 @@ void ProgramExecutable::reset()
     mActiveSamplerFormats.fill(SamplerFormat::InvalidEnum);
 
     mActiveImagesMask.reset();
-
-    mActiveUniformBufferBlocks.reset();
-    mActiveStorageBufferBlocks.reset();
 
     mUniformBlockIndexToBufferBinding = {};
 
@@ -2945,24 +2941,6 @@ void ProgramExecutable::remapUniformBlockBinding(UniformBlockIndex uniformBlockI
     // Set new binding
     mUniformBlockIndexToBufferBinding[uniformBlockIndex.value] = uniformBlockBinding;
     mUniformBufferBindingToUniformBlocks[uniformBlockBinding].set(uniformBlockIndex.value);
-}
-
-void ProgramExecutable::updateActiveUniformBufferBlocks()
-{
-    for (size_t blockIndex = 0; blockIndex < mUniformBlocks.size(); blockIndex++)
-    {
-        mActiveUniformBufferBlocks.set(blockIndex,
-                                       mUniformBlocks[blockIndex].activeShaderCount() > 0);
-    }
-}
-
-void ProgramExecutable::updateActiveStorageBufferBlocks()
-{
-    for (size_t blockIndex = 0; blockIndex < mShaderStorageBlocks.size(); blockIndex++)
-    {
-        mActiveStorageBufferBlocks.set(blockIndex,
-                                       mShaderStorageBlocks[blockIndex].activeShaderCount() > 0);
-    }
 }
 
 void ProgramExecutable::setUniformValuesFromBindingQualifiers()

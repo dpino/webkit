@@ -146,8 +146,7 @@ TextureState::TextureState(TextureType type)
       mCachedSamplerFormat(SamplerFormat::InvalidEnum),
       mCachedSamplerCompareMode(GL_NONE),
       mCachedSamplerFormatValid(false),
-      mCompressionFixedRate(GL_SURFACE_COMPRESSION_FIXED_RATE_NONE_EXT),
-      mAstcDecodePrecision(GL_RGBA16F)
+      mCompressionFixedRate(GL_SURFACE_COMPRESSION_FIXED_RATE_NONE_EXT)
 {}
 
 TextureState::~TextureState() {}
@@ -217,21 +216,6 @@ bool TextureState::setBaseLevel(GLuint baseLevel)
         return true;
     }
     return false;
-}
-
-bool TextureState::setASTCDecodePrecision(GLenum astcDecodePrecision)
-{
-    if (mAstcDecodePrecision != astcDecodePrecision)
-    {
-        mAstcDecodePrecision = astcDecodePrecision;
-        return true;
-    }
-    return false;
-}
-
-GLenum TextureState::getASTCDecodePrecision() const
-{
-    return mAstcDecodePrecision;
 }
 
 bool TextureState::setMaxLevel(GLuint maxLevel)
@@ -1047,19 +1031,6 @@ void Texture::setCompareMode(const Context *context, GLenum compareMode)
 GLenum Texture::getCompareMode() const
 {
     return mState.mSamplerState.getCompareMode();
-}
-
-void Texture::setASTCDecodePrecision(const Context *context, GLenum astcDecodePrecision)
-{
-    if (mState.setASTCDecodePrecision(astcDecodePrecision))
-    {
-        signalDirtyState(DIRTY_BIT_ASTC_DECODE_PRECISION);
-    }
-}
-
-GLenum Texture::getASTCDecodePrecision() const
-{
-    return mState.getASTCDecodePrecision();
 }
 
 void Texture::setCompareFunc(const Context *context, GLenum compareFunc)
@@ -1935,6 +1906,9 @@ GLint Texture::getFormatSupportedCompressionRates(const Context *context,
 
 angle::Result Texture::generateMipmap(Context *context)
 {
+    // Release from previous calls to eglBindTexImage, to avoid calling the Impl after
+    ANGLE_TRY(releaseTexImageInternal(context));
+
     // EGL_KHR_gl_image states that images are only orphaned when generating mipmaps if the texture
     // is not mip complete.
     egl::RefCountObjectReleaser<egl::Image> releaseImage;
@@ -1986,10 +1960,6 @@ angle::Result Texture::generateMipmap(Context *context)
     // to have faces of the same size and format so any faces can be picked.
     mState.setImageDescChain(baseLevel, maxLevel, baseImageInfo.size, baseImageInfo.format,
                              InitState::Initialized);
-
-    // Disconnect the texture from the surface
-    releaseTexImageInternalNoRedefinition(context);
-    mBoundSurface = nullptr;
 
     signalDirtyStorage(InitState::Initialized);
 
@@ -2124,7 +2094,7 @@ angle::Result Texture::releaseImageFromStream(const Context *context)
     return angle::Result::Continue;
 }
 
-void Texture::releaseTexImageInternalNoRedefinition(Context *context)
+angle::Result Texture::releaseTexImageInternal(Context *context)
 {
     if (mBoundSurface)
     {
@@ -2136,16 +2106,8 @@ void Texture::releaseTexImageInternalNoRedefinition(Context *context)
             context->handleError(GL_INVALID_OPERATION, "Error releasing tex image from texture",
                                  __FILE__, ANGLE_FUNCTION, __LINE__);
         }
-    }
-}
 
-angle::Result Texture::releaseTexImageInternal(Context *context)
-{
-    releaseTexImageInternalNoRedefinition(context);
-
-    // Then, call the same method as from the surface
-    if (mBoundSurface)
-    {
+        // Then, call the same method as from the surface
         ANGLE_TRY(releaseTexImageFromSurface(context));
     }
     return angle::Result::Continue;

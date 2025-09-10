@@ -186,8 +186,7 @@ FramebufferStatus CheckResolveTargetMatchesForCompleteness(
 
     if (checkAttachment.getSamples() != 0)
     {
-        return FramebufferStatus::Incomplete(
-            GL_FRAMEBUFFER_UNSUPPORTED,
+        return FramebufferStatus::Incomplete(GL_FRAMEBUFFER_UNSUPPORTED,
             "Framebuffer is incomplete: Resolve attachments have multiple samples.");
     }
 
@@ -348,10 +347,16 @@ angle::Result InitAttachment(const Context *context, FramebufferAttachment *atta
     return angle::Result::Continue;
 }
 
-bool ImageIndexOverlapsWithSampleTexture(const gl::ImageIndex &index,
-                                         const Texture *texture,
-                                         const Sampler *sampler)
+bool AttachmentOverlapsWithTexture(const FramebufferAttachment &attachment,
+                                   const Texture *texture,
+                                   const Sampler *sampler)
 {
+    if (!attachment.isTextureWithId(texture->id()))
+    {
+        return false;
+    }
+
+    const gl::ImageIndex &index      = attachment.getTextureImageIndex();
     GLuint attachmentLevel           = static_cast<GLuint>(index.getLevelIndex());
     GLuint textureEffectiveBaseLevel = texture->getTextureState().getEffectiveBaseLevel();
     GLuint textureMaxLevel           = textureEffectiveBaseLevel;
@@ -362,34 +367,6 @@ bool ImageIndexOverlapsWithSampleTexture(const gl::ImageIndex &index,
     }
 
     return attachmentLevel >= textureEffectiveBaseLevel && attachmentLevel <= textureMaxLevel;
-}
-
-bool AttachmentOverlapsWithTexture(const FramebufferAttachment &attachment,
-                                   const Texture *texture,
-                                   const Sampler *sampler)
-{
-    if (!attachment.isTextureWithId(texture->id()))
-    {
-        return false;
-    }
-
-    const gl::ImageIndex &index = attachment.getTextureImageIndex();
-    return ImageIndexOverlapsWithSampleTexture(index, texture, sampler);
-}
-
-bool PixelLocalStoragePlaneOverlapsWithTexture(const PixelLocalStoragePlane &plane,
-                                               const Texture *texture,
-                                               const Sampler *sampler)
-{
-    ASSERT(plane.isActive());
-
-    if (plane.getTextureID() != texture->id())
-    {
-        return false;
-    }
-
-    const gl::ImageIndex &index = plane.getTextureImageIndex();
-    return ImageIndexOverlapsWithSampleTexture(index, texture, sampler);
 }
 
 constexpr ComponentType GetAttachmentComponentType(GLenum componentType)
@@ -442,7 +419,7 @@ FramebufferState::FramebufferState(rx::UniqueSerial serial)
       mColorResolveAttachments(1),
 #endif
       mColorAttachmentsMask(0),
-      mDrawBufferStates(1, GL_NONE),
+      mDrawBufferStates(1, GL_BACK),
       mReadBufferState(GL_BACK),
       mDrawBufferTypeMask(),
       mDefaultWidth(0),
@@ -986,11 +963,6 @@ egl::Error Framebuffer::setSurfaces(const Context *context,
 
         // Ensure the backend has a chance to synchronize its content for a new backbuffer.
         mDirtyBits.set(DIRTY_BIT_COLOR_BUFFER_CONTENTS_0);
-        mState.mDrawBufferStates[0] = GL_BACK;
-    }
-    else
-    {
-        mState.mDrawBufferStates[0] = GL_NONE;
     }
 
     setReadSurface(context, readSurface);
@@ -1941,7 +1913,7 @@ angle::Result Framebuffer::readPixels(const Context *context,
 
     if (packBuffer)
     {
-        packBuffer->onDataChanged(context);
+        packBuffer->onDataChanged();
     }
 
     return angle::Result::Continue;
@@ -2529,8 +2501,6 @@ bool Framebuffer::formsRenderingFeedbackLoopWith(const Context *context) const
     const ActiveTextureMask &activeTextures    = executable->getActiveSamplersMask();
     const ActiveTextureTypeArray &textureTypes = executable->getActiveSamplerTypes();
 
-    PixelLocalStorage *pls = peekPixelLocalStorage();
-
     for (size_t textureIndex : activeTextures)
     {
         unsigned int uintIndex = static_cast<unsigned int>(textureIndex);
@@ -2556,19 +2526,6 @@ bool Framebuffer::formsRenderingFeedbackLoopWith(const Context *context) const
             if (AttachmentOverlapsWithTexture(mState.mStencilAttachment, texture, sampler))
             {
                 return true;
-            }
-
-            if (pls != nullptr)
-            {
-                ASSERT(glState.getPixelLocalStorageActivePlanes() > 0);
-                for (GLsizei i = 0; i < glState.getPixelLocalStorageActivePlanes(); ++i)
-                {
-                    if (PixelLocalStoragePlaneOverlapsWithTexture(pls->getPlane(i), texture,
-                                                                  sampler))
-                    {
-                        return true;
-                    }
-                }
             }
         }
     }

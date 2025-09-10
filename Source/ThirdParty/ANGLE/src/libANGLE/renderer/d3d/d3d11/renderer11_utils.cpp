@@ -1662,7 +1662,7 @@ void GenerateCaps(ID3D11Device *device,
     extensions->stencilTexturingANGLE       = (featureLevel >= D3D_FEATURE_LEVEL_10_1);
     extensions->multiviewOVR                = IsMultiviewSupported(featureLevel);
     extensions->multiview2OVR               = IsMultiviewSupported(featureLevel);
-    if (extensions->multiviewOVR)
+    if (extensions->multiviewOVR || extensions->multiview2OVR)
     {
         caps->maxViews = std::min(static_cast<GLuint>(GetMaximum2DTextureArraySize(featureLevel)),
                                   GetMaxViewportAndScissorRectanglesPerPipeline(featureLevel));
@@ -1680,6 +1680,7 @@ void GenerateCaps(ID3D11Device *device,
     extensions->unpackSubimageEXT                   = true;
     extensions->packSubimageNV                      = true;
     extensions->lossyEtcDecodeANGLE                 = true;
+    extensions->syncQueryCHROMIUM                   = GetEventQuerySupport(featureLevel);
     extensions->copyTextureCHROMIUM                 = true;
     extensions->copyCompressedTextureCHROMIUM       = true;
     extensions->textureStorageMultisample2dArrayOES = true;
@@ -1694,7 +1695,8 @@ void GenerateCaps(ID3D11Device *device,
         caps->maxInterpolationOffset          = +0.4375f;  // +0.5 - (2 ^ -4)
     }
     extensions->multiviewMultisampleANGLE =
-        (extensions->multiviewOVR && extensions->textureStorageMultisample2dArrayOES);
+        ((extensions->multiviewOVR || extensions->multiview2OVR) &&
+         extensions->textureStorageMultisample2dArrayOES);
     extensions->copyTexture3dANGLE      = true;
     extensions->textureBorderClampEXT   = true;
     extensions->textureBorderClampOES   = true;
@@ -2142,6 +2144,8 @@ D3D11_QUERY ConvertQueryType(gl::QueryType type)
         case gl::QueryType::Timestamp:
             // A disjoint query is also created for timestamp
             return D3D11_QUERY_TIMESTAMP_DISJOINT;
+        case gl::QueryType::CommandsCompleted:
+            return D3D11_QUERY_EVENT;
         default:
             UNREACHABLE();
             return D3D11_QUERY_EVENT;

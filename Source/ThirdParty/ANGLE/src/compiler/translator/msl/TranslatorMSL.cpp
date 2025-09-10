@@ -21,7 +21,6 @@
 #include "compiler/translator/tree_ops/InitializeVariables.h"
 #include "compiler/translator/tree_ops/MonomorphizeUnsupportedFunctions.h"
 #include "compiler/translator/tree_ops/PreTransformTextureCubeGradDerivatives.h"
-#include "compiler/translator/tree_ops/ReduceInterfaceBlocks.h"
 #include "compiler/translator/tree_ops/RemoveAtomicCounterBuiltins.h"
 #include "compiler/translator/tree_ops/RewriteArrayOfArrayOfOpaqueUniforms.h"
 #include "compiler/translator/tree_ops/RewriteAtomicCounters.h"
@@ -33,6 +32,7 @@
 #include "compiler/translator/tree_ops/msl/FixTypeConstructors.h"
 #include "compiler/translator/tree_ops/msl/HoistConstants.h"
 #include "compiler/translator/tree_ops/msl/IntroduceVertexIndexID.h"
+#include "compiler/translator/tree_ops/msl/ReduceInterfaceBlocks.h"
 #include "compiler/translator/tree_ops/msl/RewriteCaseDeclarations.h"
 #include "compiler/translator/tree_ops/msl/RewriteInterpolants.h"
 #include "compiler/translator/tree_ops/msl/RewriteOutArgs.h"
@@ -1395,7 +1395,8 @@ bool TranslatorMSL::translateImpl(TInfoSinkBase &sink,
         return false;
     }
 
-    if (!AddExplicitTypeCasts(*this, *root, symbolEnv))
+    const bool needsExplicitBoolCasts = compileOptions.addExplicitBoolCasts;
+    if (!AddExplicitTypeCasts(*this, *root, symbolEnv, needsExplicitBoolCasts))
     {
         return false;
     }
@@ -1405,8 +1406,7 @@ bool TranslatorMSL::translateImpl(TInfoSinkBase &sink,
         return false;
     }
 
-    if (!ReduceInterfaceBlocks(*this, *root,
-                               [&idGen]() { return idGen.createNewName().rawName(); }))
+    if (!ReduceInterfaceBlocks(*this, *root, idGen))
     {
         return false;
     }

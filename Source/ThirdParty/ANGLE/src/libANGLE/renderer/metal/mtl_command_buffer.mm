@@ -76,7 +76,7 @@ namespace
     PROC(UseResource)                                \
     PROC(MemoryBarrier)                              \
     PROC(MemoryBarrierWithResource)                  \
-    PROC(InsertDebugSignpost)                        \
+    PROC(InsertDebugsign)                            \
     PROC(PushDebugGroup)                             \
     PROC(PopDebugGroup)
 
@@ -402,8 +402,8 @@ inline void MemoryBarrierWithResourceCmd(id<MTLRenderCommandEncoder> encoder,
     [resource ANGLE_MTL_RELEASE];
 }
 
-inline void InsertDebugSignpostCmd(id<MTLRenderCommandEncoder> encoder,
-                                   IntermediateCommandStream *stream)
+inline void InsertDebugsignCmd(id<MTLRenderCommandEncoder> encoder,
+                               IntermediateCommandStream *stream)
 {
     NSString *label = stream->fetch<NSString *>();
     [encoder insertDebugSignpost:label];
@@ -650,10 +650,11 @@ void CommandQueue::onCommandBufferCompleted(id<MTLCommandBuffer> buf,
     MTLCommandBufferStatus status = buf.status;
     if (status != MTLCommandBufferStatusCompleted)
     {
+        NSError *error = buf.error;
         // MTLCommandBufferErrorNotPermitted is non-fatal, all other errors
         // result in device lost.
         // TODO(djg): Should this also check error.domain for MTLCommandBufferErrorDomain?
-        mIsDeviceLost = !error || error.code != MTLCommandBufferErrorNotPermitted;
+        mIsDeviceLost  = !error || error.code != MTLCommandBufferErrorNotPermitted;
         if (mIsDeviceLost)
         {
             return;
@@ -962,7 +963,7 @@ void CommandBuffer::restart()
     ASSERT(metalCmdBuffer);
 }
 
-void CommandBuffer::insertDebugSignpost(const std::string &marker)
+void CommandBuffer::insertDebugSign(const std::string &marker)
 {
     mtl::CommandEncoder *currentEncoder = getPendingCommandEncoder();
     if (currentEncoder)
@@ -970,12 +971,12 @@ void CommandBuffer::insertDebugSignpost(const std::string &marker)
         ANGLE_MTL_OBJC_SCOPE
         {
             NSString *label = cppLabelToObjC(marker);
-            currentEncoder->insertDebugSignpost(label);
+            currentEncoder->insertDebugSign(label);
         }
     }
     else
     {
-        mPendingDebugSignposts.push_back(marker);
+        mPendingDebugSigns.push_back(marker);
     }
 }
 
@@ -1056,15 +1057,15 @@ void CommandBuffer::setActiveCommandEncoder(CommandEncoder *encoder)
         mActiveBlitOrComputeEncoder = encoder;
     }
 
-    for (std::string &marker : mPendingDebugSignposts)
+    for (std::string &marker : mPendingDebugSigns)
     {
         ANGLE_MTL_OBJC_SCOPE
         {
             NSString *label = cppLabelToObjC(marker);
-            encoder->insertDebugSignpost(label);
+            encoder->insertDebugSign(label);
         }
     }
-    mPendingDebugSignposts.clear();
+    mPendingDebugSigns.clear();
 }
 
 void CommandBuffer::invalidateActiveCommandEncoder(CommandEncoder *encoder)
@@ -1246,12 +1247,12 @@ void CommandEncoder::popDebugGroup()
     [get() popDebugGroup];
 }
 
-void CommandEncoder::insertDebugSignpost(NSString *label)
+void CommandEncoder::insertDebugSign(NSString *label)
 {
-    insertDebugSignpostImpl(label);
+    insertDebugSignImpl(label);
 }
 
-void CommandEncoder::insertDebugSignpostImpl(NSString *label)
+void CommandEncoder::insertDebugSignImpl(NSString *label)
 {
     // Default implementation
     [get() insertDebugSignpost:label];
@@ -1851,8 +1852,7 @@ RenderCommandEncoder &RenderCommandEncoder::setViewport(const MTLViewport &viewp
     return *this;
 }
 
-RenderCommandEncoder &RenderCommandEncoder::setScissorRect(const MTLScissorRect &rect,
-                                                           id<MTLRasterizationRateMap> map)
+RenderCommandEncoder &RenderCommandEncoder::setScissorRect(const MTLScissorRect &rect, id<MTLRasterizationRateMap> map)
 {
     auto maxScissorRect =
         MTLCoordinate2DMake(mRenderPassMaxScissorRect.width, mRenderPassMaxScissorRect.height);
@@ -1861,9 +1861,7 @@ RenderCommandEncoder &RenderCommandEncoder::setScissorRect(const MTLScissorRect 
     {
         maxScissorRect = [map mapPhysicalToScreenCoordinates:maxScissorRect forLayer:0];
         if (!(rect.width * rect.height))
-        {
             return *this;
-        }
     }
 
     NSUInteger clampedWidth =
@@ -1894,8 +1892,8 @@ RenderCommandEncoder &RenderCommandEncoder::setScissorRect(const MTLScissorRect 
         clampedRect.x      = (NSUInteger)roundf(adjustedOrigin.x);
         clampedRect.y      = (NSUInteger)roundf(adjustedOrigin.y);
         MTLSize screenSize = [map screenSize];
-        clampedRect.width  = std::min(screenSize.width, static_cast<NSUInteger>(roundf(adjustedSize.x)));
-        clampedRect.height = std::min(screenSize.height, static_cast<NSUInteger>(roundf(adjustedSize.y)));
+        clampedRect.width  = std::min<NSUInteger>(screenSize.width, roundf(adjustedSize.x));
+        clampedRect.height = std::min<NSUInteger>(screenSize.height, roundf(adjustedSize.y));
     }
 
     mCommands.push(CmdType::SetScissorRect).push(clampedRect);
@@ -1989,7 +1987,7 @@ RenderCommandEncoder &RenderCommandEncoder::commonSetBuffer(gl::ShaderType shade
 }
 
 RenderCommandEncoder &RenderCommandEncoder::setBytes(gl::ShaderType shaderType,
-                                                     const void *bytes,
+                                                     const uint8_t *bytes,
                                                      size_t size,
                                                      uint32_t index)
 {
@@ -2004,7 +2002,7 @@ RenderCommandEncoder &RenderCommandEncoder::setBytes(gl::ShaderType shaderType,
 
     mCommands.push(static_cast<CmdType>(mSetBytesCmds[shaderType]))
         .push(size)
-        .push(reinterpret_cast<const uint8_t *>(bytes), size)
+        .push(bytes, size)
         .push(index);
 
     return *this;
@@ -2287,10 +2285,10 @@ RenderCommandEncoder &RenderCommandEncoder::memoryBarrierWithResource(const Buff
     return *this;
 }
 
-void RenderCommandEncoder::insertDebugSignpostImpl(NSString *label)
+void RenderCommandEncoder::insertDebugSignImpl(NSString *label)
 {
     // Defer the insertion until endEncoding()
-    mCommands.push(CmdType::InsertDebugSignpost).push([label ANGLE_MTL_RETAIN]);
+    mCommands.push(CmdType::InsertDebugsign).push([label ANGLE_MTL_RETAIN]);
 }
 
 void RenderCommandEncoder::pushDebugGroup(NSString *label)
@@ -2303,16 +2301,13 @@ void RenderCommandEncoder::popDebugGroup()
     mCommands.push(CmdType::PopDebugGroup);
 }
 
-id<MTLRasterizationRateMap> RenderCommandEncoder::rasterizationRateMapForPass(
-    id<MTLRasterizationRateMap> map,
-    id<MTLTexture> texture) const
+id<MTLRasterizationRateMap> RenderCommandEncoder::rasterizationRateMapForPass(id<MTLRasterizationRateMap> map,
+                                                                              id<MTLTexture> texture) const
 {
     if (!mCachedRenderPassDescObjC.get())
-    {
         return nil;
-    }
 
-    MTLSize size     = [map physicalSizeForLayer:0];
+    MTLSize size = [map physicalSizeForLayer:0];
     id<MTLTexture> t = mCachedRenderPassDescObjC.get().colorAttachments[0].texture;
     return t.width == size.width && t.height == size.height ? map : nil;
 }
@@ -2729,7 +2724,7 @@ ComputeCommandEncoder &ComputeCommandEncoder::setBufferForWrite(const BufferRef 
     return setBuffer(buffer, offset, index);
 }
 
-ComputeCommandEncoder &ComputeCommandEncoder::setBytes(const void *bytes,
+ComputeCommandEncoder &ComputeCommandEncoder::setBytes(const uint8_t *bytes,
                                                        size_t size,
                                                        uint32_t index)
 {

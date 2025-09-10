@@ -17,7 +17,9 @@
 namespace rx
 {
 
-DisplayVkLinux::DisplayVkLinux(const egl::DisplayState &state) : DisplayVk(state) {}
+DisplayVkLinux::DisplayVkLinux(const egl::DisplayState &state)
+    : DisplayVk(state), mDrmFormatsInitialized(false)
+{}
 
 DeviceImpl *DisplayVkLinux::createDevice()
 {
@@ -43,7 +45,7 @@ ExternalImageSiblingImpl *DisplayVkLinux::createExternalImageSibling(
 }
 
 // Returns the list of DRM modifiers that a VkFormat supports
-std::vector<VkDrmFormatModifierPropertiesEXT> DisplayVkLinux::getDrmModifiers(
+std::vector<VkDrmFormatModifierPropertiesEXT> DisplayVkLinux::GetDrmModifiers(
     const DisplayVk *displayVk,
     VkFormat vkFormat)
 {
@@ -72,7 +74,7 @@ std::vector<VkDrmFormatModifierPropertiesEXT> DisplayVkLinux::getDrmModifiers(
 }
 
 // Returns true if that VkFormat has at least on format modifier in its properties
-bool DisplayVkLinux::supportsDrmModifiers(VkPhysicalDevice device, VkFormat vkFormat)
+bool DisplayVkLinux::SupportsDrmModifiers(VkPhysicalDevice device, VkFormat vkFormat)
 {
     // Query list of drm format modifiers compatible with VkFormat.
     VkDrmFormatModifierPropertiesListEXT formatModifierPropertiesList = {};
@@ -90,7 +92,7 @@ bool DisplayVkLinux::supportsDrmModifiers(VkPhysicalDevice device, VkFormat vkFo
 }
 
 // Returns a list of VkFormats supporting at least one DRM format modifier
-std::vector<VkFormat> DisplayVkLinux::getVkFormatsWithDrmModifiers(const vk::Renderer *renderer)
+std::vector<VkFormat> DisplayVkLinux::GetVkFormatsWithDrmModifiers(const vk::Renderer *renderer)
 {
     std::vector<VkFormat> vkFormats;
     for (size_t formatIndex = 1; formatIndex < angle::kNumANGLEFormats; ++formatIndex)
@@ -100,7 +102,7 @@ std::vector<VkFormat> DisplayVkLinux::getVkFormatsWithDrmModifiers(const vk::Ren
             format.getActualImageVkFormat(renderer, rx::vk::ImageAccess::Renderable);
 
         if (vkFormat != VK_FORMAT_UNDEFINED &&
-            supportsDrmModifiers(renderer->getPhysicalDevice(), vkFormat))
+            SupportsDrmModifiers(renderer->getPhysicalDevice(), vkFormat))
         {
             vkFormats.push_back(vkFormat);
         }
@@ -110,37 +112,38 @@ std::vector<VkFormat> DisplayVkLinux::getVkFormatsWithDrmModifiers(const vk::Ren
 }
 
 // Returns a list of supported DRM formats
-std::unordered_set<EGLint> DisplayVkLinux::getDrmFormats(const vk::Renderer *renderer)
+std::vector<EGLint> DisplayVkLinux::GetDrmFormats(const vk::Renderer *renderer)
 {
     std::unordered_set<EGLint> drmFormatsSet;
-    for (VkFormat vkFormat : getVkFormatsWithDrmModifiers(renderer))
+    for (VkFormat vkFormat : GetVkFormatsWithDrmModifiers(renderer))
     {
         std::vector<EGLint> drmFormats = angle::VkFormatToDrmFourCCFormat(vkFormat);
-        drmFormatsSet.insert(drmFormats.begin(), drmFormats.end());
+        for (EGLint drmFormat : drmFormats)
+        {
+            drmFormatsSet.insert(drmFormat);
+        }
     }
-    // Ensure that default DRM_FORMAT_XRGB8888 is supported.
-    ASSERT(drmFormatsSet.count(DRM_FORMAT_XRGB8888) == 1);
 
-    return drmFormatsSet;
+    std::vector<EGLint> drmFormats;
+    std::copy(std::begin(drmFormatsSet), std::end(drmFormatsSet), std::back_inserter(drmFormats));
+
+    return drmFormats;
 }
 
-bool DisplayVkLinux::supportsDmaBufFormat(EGLint format)
+bool DisplayVkLinux::supportsDmaBufFormat(EGLint format) const
 {
-    if (mDrmFormats.empty())
-    {
-        mDrmFormats = getDrmFormats(getRenderer());
-    }
-
-    return (mDrmFormats.count(format) == 1);
+    return std::find(std::begin(mDrmFormats), std::end(mDrmFormats), format) !=
+           std::end(mDrmFormats);
 }
 
 egl::Error DisplayVkLinux::queryDmaBufFormats(EGLint maxFormats,
                                               EGLint *formats,
                                               EGLint *numFormats)
 {
-    if (mDrmFormats.empty())
+    if (!mDrmFormatsInitialized)
     {
-        mDrmFormats = getDrmFormats(getRenderer());
+        mDrmFormats            = GetDrmFormats(getRenderer());
+        mDrmFormatsInitialized = true;
     }
 
     EGLint formatsSize = static_cast<EGLint>(mDrmFormats.size());
@@ -149,7 +152,7 @@ egl::Error DisplayVkLinux::queryDmaBufFormats(EGLint maxFormats,
     {
         // Do not copy data beyond the limits of the vector
         maxFormats = std::min(maxFormats, formatsSize);
-        std::copy_n(mDrmFormats.begin(), maxFormats, formats);
+        std::memcpy(formats, mDrmFormats.data(), maxFormats * sizeof(EGLint));
     }
 
     return egl::NoError();
@@ -174,7 +177,7 @@ egl::Error DisplayVkLinux::queryDmaBufModifiers(EGLint drmFormat,
     {
         VkFormat vkFmt = vkFormats[i];
 
-        std::vector<VkDrmFormatModifierPropertiesEXT> vkDrmMods = getDrmModifiers(this, vkFmt);
+        std::vector<VkDrmFormatModifierPropertiesEXT> vkDrmMods = GetDrmModifiers(this, vkFmt);
 
         std::vector<EGLuint64KHR> drmMods(vkDrmMods.size());
         std::transform(std::begin(vkDrmMods), std::end(vkDrmMods), std::begin(drmMods),

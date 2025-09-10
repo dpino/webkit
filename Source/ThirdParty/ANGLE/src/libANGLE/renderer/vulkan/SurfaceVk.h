@@ -337,7 +337,6 @@ class WindowSurfaceVk : public SurfaceVk
     egl::Error getBufferAge(const gl::Context *context, EGLint *age) override;
 
     egl::Error setRenderBuffer(EGLint renderBuffer) override;
-    bool supportsSingleRenderBuffer() const override;
 
     bool isSharedPresentMode() const { return IsSharedPresentMode(mSwapchainPresentMode); }
 

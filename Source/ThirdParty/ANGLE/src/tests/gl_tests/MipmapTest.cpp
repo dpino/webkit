@@ -1543,16 +1543,7 @@ TEST_P(MipmapTestES3, MipmapsForTexture3DNonRenderableMoreMipLevelsInDepthNoCras
     glUniform1f(mTexture3DSliceUniformLocation, 0.);
     drawQuad(m3DProgram, "position", 0.5f);
     EXPECT_GL_NO_ERROR();
-    GLColor pixel;
-    glReadPixels(px, py, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel.data());
-    GLColor err(0, 0, 0, 1);
-    // Nearest or box filtering implementation.
-    if (!(pixel.ExpectNear(GLColor(0, 0, 0, 5), err) ||
-          pixel.ExpectNear(GLColor(0, 0, 0, 102), err) ||
-          pixel.ExpectNear(GLColor(0, 0, 0, 200), err)))
-    {
-        FAIL() << "Unexpected pixel color: " << pixel;
-    }
+    EXPECT_PIXEL_COLOR_NEAR(px, py, GLColor(0, 0, 0, 102), 1);
 }
 
 // Creates a mipmapped 3D texture with two layers, and calls ANGLE's GenerateMipmap.
@@ -2458,7 +2449,7 @@ ANGLE_INSTANTIATE_TEST(Mipmap3DBoxFilterTest,
 }  // namespace extraPlatforms
 
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(MipmapTestES3);
-ANGLE_INSTANTIATE_TEST_ES3_AND(MipmapTestES3, ES3_WEBGPU());
+ANGLE_INSTANTIATE_TEST_ES3(MipmapTestES3);
 
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(MipmapTestES31);
 ANGLE_INSTANTIATE_TEST_ES31(MipmapTestES31);

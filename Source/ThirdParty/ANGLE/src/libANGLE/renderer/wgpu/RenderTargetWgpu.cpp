@@ -27,10 +27,10 @@ RenderTargetWgpu::RenderTargetWgpu(RenderTargetWgpu &&other)
 {}
 
 void RenderTargetWgpu::set(webgpu::ImageHelper *image,
-                           const webgpu::TextureViewHandle &texture,
+                           const wgpu::TextureView &texture,
                            const webgpu::LevelIndex level,
                            uint32_t layer,
-                           WGPUTextureFormat format)
+                           const wgpu::TextureFormat &format)
 {
     mImage       = image;
     mTextureView = texture;

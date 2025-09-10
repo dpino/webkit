@@ -1374,17 +1374,11 @@ angle::Result WindowSurfaceVk::initializeImpl(DisplayVk *displayVk, bool *anyMat
                    VK_ERROR_INITIALIZATION_FAILED);
 
     // Single buffer, if supported
-    if (mState.attributes.getAsInt(EGL_RENDER_BUFFER, EGL_BACK_BUFFER) == EGL_SINGLE_BUFFER)
+    if ((mState.attributes.getAsInt(EGL_RENDER_BUFFER, EGL_BACK_BUFFER) == EGL_SINGLE_BUFFER) &&
+        supportsPresentMode(vk::PresentMode::SharedDemandRefreshKHR))
     {
-        if (supportsPresentMode(vk::PresentMode::SharedDemandRefreshKHR))
-        {
-            mSwapchainPresentMode = vk::PresentMode::SharedDemandRefreshKHR;
-            setDesiredSwapchainPresentMode(vk::PresentMode::SharedDemandRefreshKHR);
-        }
-        else
-        {
-            WARN() << "Shared presentation mode requested, but not supported";
-        }
+        mSwapchainPresentMode = vk::PresentMode::SharedDemandRefreshKHR;
+        setDesiredSwapchainPresentMode(vk::PresentMode::SharedDemandRefreshKHR);
     }
 
     mCompressionFlags    = VK_IMAGE_COMPRESSION_DISABLED_EXT;
@@ -3497,11 +3491,6 @@ egl::Error WindowSurfaceVk::setRenderBuffer(EGLint renderBuffer)
         setDesiredSwapInterval(mState.swapInterval);
     }
     return egl::NoError();
-}
-
-bool WindowSurfaceVk::supportsSingleRenderBuffer() const
-{
-    return supportsPresentMode(vk::PresentMode::SharedDemandRefreshKHR);
 }
 
 egl::Error WindowSurfaceVk::lockSurface(const egl::Display *display,

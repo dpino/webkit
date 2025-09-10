@@ -16,7 +16,6 @@
 #include "compiler/translator/msl/AstHelpers.h"
 #include "compiler/translator/msl/ModifyStruct.h"
 #include "compiler/translator/msl/TranslatorMSL.h"
-#include "compiler/translator/tree_util/IntermNode_util.h"
 
 using namespace sh;
 

@@ -774,11 +774,10 @@
     [
         "MaxShaderCompilerThreadsKHR"
     ],
-
-    "GL_OVR_multiview":
+    
+    "GL_OVR_multiview2":
     [
-        "FramebufferTextureMultiviewOVR",
-        "NamedFramebufferTextureMultiviewOVR"
+        "FramebufferTextureMultiviewOVR"
     ],
 
     "GL_EXT_memory_object":

@@ -120,7 +120,6 @@ CONTEXT_PRIVATE_LIST = [
     'glSampleMaski',
     'glScissor',
     'glShadingRate',
-    'glShadingRateCombinerOps',
     'glStencilFunc',
     'glStencilFuncSeparate',
     'glStencilMask',
@@ -1668,70 +1667,39 @@ def get_validation_expression(api, cmd_name, entry_point_name, internal_params, 
     expr = "Validate{name}({params})".format(
         name=name, params=", ".join(extra_params + [entry_point_name] + internal_params))
 
-    def get_camel_case(name_with_underscores):
-        words = name_with_underscores.split('_')
-        words = [words[2]] + [(word[0].upper() + word[1:]) for word in words[3:]] + [words[1]]
-        return ''.join(words)
+    # Validation expression for ES 2.0 and extension entry points
+    if "2_0" in sources or sources[0].startswith("GL_"):
+        return "bool isCallValid = (context->skipValidation() || {validation_expression});".format(
+            validation_expression=expr)
 
     condition = ""
     error_suffix = sources[0].replace("_", "")
-    if sorted(sources) == ["1_0", "2_0"]:
-        # Entry points existing in all context versions
-        condition = "true"
-    elif sorted(sources) == ["1_0", "3_2"]:
+    if sorted(sources) == ["1_0", "3_2"]:
         # glGetPointerv is a special case: defined in ES 1.0 and ES 3.2 only
         condition = "context->getClientVersion() < ES_2_0 || context->getClientVersion() >= ES_3_2"
         error_suffix = "1Or32"
     elif sources == ["1_0"]:
         condition = "context->getClientVersion() < ES_2_0"
-    elif len(sources) == 1 and sources[0] in ["2_0", "3_0", "3_1", "3_2"]:
-        condition = "context->getClientVersion() >= ES_{}".format(sources[0])
     else:
-        assert (sources[0].startswith("GL_"))
-        exts = map(lambda x: "context->getExtensions().{}".format(get_camel_case(x)), sources)
-        condition = " || ".join(sorted(list(exts)))
-        error_suffix = "EXT"
+        assert len(sources) == 1 and sources[0] in ["2_0", "3_0", "3_1", "3_2"]
+        condition = "context->getClientVersion() >= ES_{}".format(sources[0])
 
-    record_error = "else {{RecordVersionErrorES{}(context, {});}}".format(
-        error_suffix, entry_point_name) if condition != "true" else ""
+    record_error = "RecordVersionErrorES{}(context, {});".format(error_suffix, entry_point_name)
 
-    pre_validation = """#if defined(ANGLE_ENABLE_ASSERTS)
-    const uint32_t errorCount = context->getPushedErrorCount();
-#endif
-"""
-
-    # If a command holds a lock, assert that:
-    #  * passed validation generates no errors
-    #  * failed validation generates exactly one error
-    lock_assertion = "ASSERT(context->getPushedErrorCount() - errorCount == (isCallValid ? 0 : 1));"
-
-    # If a command does not hold a lock, assert that:
-    #  * failed validation updates the error counter
-    #
-    # Since the error counter is global, it may be incremented from
-    # other threads thus this assertion is weaker than the one above.
-    lockless_assertion = "ASSERT(isCallValid || context->getPushedErrorCount() != errorCount);"
-
-    has_lock = not is_context_private_state_command(api, cmd_name)
-    post_validation = """
-#if defined(ANGLE_ENABLE_ASSERTS)
-    {}
-#endif""".format(lock_assertion if has_lock else lockless_assertion)
-
+    # Validation logic with version check generated for ES 1.0 and ES 3.x entry points
     return """bool isCallValid = context->skipValidation();
 if (!isCallValid)
 {{
-    if (ANGLE_LIKELY({support_condition}))
+    if (ANGLE_LIKELY({version_condition}))
     {{
-        {pre_validation}isCallValid = {validation_expression};{post_validation}
+        isCallValid = {validation_expression};
     }}
-    {record_error}
+    else
+    {{
+        {record_error}
+    }}
 }}""".format(
-        support_condition=condition,
-        pre_validation=pre_validation,
-        validation_expression=expr,
-        post_validation=post_validation,
-        record_error=record_error)
+        version_condition=condition, validation_expression=expr, record_error=record_error)
 
 
 def entry_point_export(api):
@@ -1899,7 +1867,6 @@ def is_context_lost_acceptable_cmd(cmd_name):
         "glGetError",
         "glGetSync",
         "glGetQueryObjecti",
-        "glGetQueryObjectui",
         "glGetProgramiv",
         "glGetGraphicsResetStatus",
         "glGetShaderiv",
@@ -2565,8 +2532,6 @@ def get_decls(api,
         if is_context_private_state_command(api, cmd_name):
             continue
 
-        already_included.append(name_no_suffix)
-
         param_text = ["".join(param.itertext()) for param in command.findall('param')]
         proto_text = "".join(proto.itertext())
         decls.append(
@@ -3090,19 +3055,23 @@ def format_replay_params(api, command_name, param_text_list, packed_enums, resou
         capture_type = get_capture_param_type_name(param_type)
         union_name = get_param_type_union_name(capture_type)
         param_access = 'captures[%d].value.%s' % (i, union_name)
-        cmd_no_suffix = strip_suffix(api, command_name)
-        if cmd_no_suffix in packed_enums and param_name in packed_enums[cmd_no_suffix]:
-            packed_type = remove_id_suffix(packed_enums[cmd_no_suffix][param_name])
-            if packed_type == 'Sync':
-                param_access = 'gSyncMap2[captures[%d].value.GLuintVal]' % i
-            elif packed_type in resource_id_types:
-                param_access = 'g%sMap[%s]' % (packed_type, param_access)
-            elif packed_type == 'UniformLocation':
-                param_access = 'gUniformLocations[gCurrentProgram][%s]' % param_access
-            elif packed_type == 'egl::Image':
-                param_access = 'gEGLImageMap2[captures[%d].value.GLuintVal]' % i
-            elif packed_type == 'egl::Sync':
-                param_access = 'gEGLSyncMap[captures[%d].value.egl_SyncIDVal]' % i
+        # Workaround for https://github.com/KhronosGroup/OpenGL-Registry/issues/545
+        if command_name == 'glCreateShaderProgramvEXT' and i == 2:
+            param_access = 'const_cast<const char **>(%s)' % param_access
+        else:
+            cmd_no_suffix = strip_suffix(api, command_name)
+            if cmd_no_suffix in packed_enums and param_name in packed_enums[cmd_no_suffix]:
+                packed_type = remove_id_suffix(packed_enums[cmd_no_suffix][param_name])
+                if packed_type == 'Sync':
+                    param_access = 'gSyncMap2[captures[%d].value.GLuintVal]' % i
+                elif packed_type in resource_id_types:
+                    param_access = 'g%sMap[%s]' % (packed_type, param_access)
+                elif packed_type == 'UniformLocation':
+                    param_access = 'gUniformLocations[gCurrentProgram][%s]' % param_access
+                elif packed_type == 'egl::Image':
+                    param_access = 'gEGLImageMap2[captures[%d].value.GLuintVal]' % i
+                elif packed_type == 'egl::Sync':
+                    param_access = 'gEGLSyncMap[captures[%d].value.egl_SyncIDVal]' % i
         param_access_strs.append(param_access)
     return ', '.join(param_access_strs)
 
@@ -3705,6 +3674,7 @@ def main():
 
     for name in extension_commands:
         all_commands_with_suffix.append(name)
+        all_commands_no_suffix.append(strip_suffix(apis.GLES, name))
 
     # OpenCL
     clxml = registry_xml.RegistryXML('cl.xml')

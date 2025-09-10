@@ -134,24 +134,6 @@ ClipOrigin FromGLenum<ClipOrigin>(GLenum from);
 GLenum ToGLenum(ClipOrigin from);
 std::ostream &operator<<(std::ostream &os, ClipOrigin value);
 
-enum class CombinerOp : uint8_t
-{
-    Undefined = 0,
-    Keep      = 1,
-    Replace   = 2,
-    Min       = 3,
-    Max       = 4,
-    Mul       = 5,
-
-    InvalidEnum = 6,
-    EnumCount   = 6,
-};
-
-template <>
-CombinerOp FromGLenum<CombinerOp>(GLenum from);
-GLenum ToGLenum(CombinerOp from);
-std::ostream &operator<<(std::ostream &os, CombinerOp value);
-
 enum class CullFaceMode : uint8_t
 {
     Back         = 0,
@@ -401,13 +383,14 @@ enum class QueryType : uint8_t
 {
     AnySamples                         = 0,
     AnySamplesConservative             = 1,
-    PrimitivesGenerated                = 2,
-    TimeElapsed                        = 3,
-    Timestamp                          = 4,
-    TransformFeedbackPrimitivesWritten = 5,
+    CommandsCompleted                  = 2,
+    PrimitivesGenerated                = 3,
+    TimeElapsed                        = 4,
+    Timestamp                          = 5,
+    TransformFeedbackPrimitivesWritten = 6,
 
-    InvalidEnum = 6,
-    EnumCount   = 6,
+    InvalidEnum = 7,
+    EnumCount   = 7,
 };
 
 template <>
@@ -452,16 +435,13 @@ enum class ShadingRate : uint8_t
     Undefined = 0,
     _1x1      = 1,
     _1x2      = 2,
-    _1x4      = 3,
-    _2x1      = 4,
-    _2x2      = 5,
-    _2x4      = 6,
-    _4x1      = 7,
-    _4x2      = 8,
-    _4x4      = 9,
+    _2x1      = 3,
+    _2x2      = 4,
+    _4x2      = 5,
+    _4x4      = 6,
 
-    InvalidEnum = 10,
-    EnumCount   = 10,
+    InvalidEnum = 7,
+    EnumCount   = 7,
 };
 
 template <>

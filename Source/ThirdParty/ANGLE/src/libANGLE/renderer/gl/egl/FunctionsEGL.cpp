@@ -43,7 +43,6 @@ bool IsValidPlatformTypeForPlatformDisplayConnection(EGLAttrib platformType)
     switch (platformType)
     {
         case EGL_PLATFORM_SURFACELESS_MESA:
-        case EGL_PLATFORM_GBM_KHR:
             return true;
         default:
             break;
@@ -247,10 +246,7 @@ egl::Error FunctionsEGL::initialize(EGLAttrib platformType, EGLNativeDisplayType
     queryExtensions();
 
 #if defined(ANGLE_HAS_LIBDRM)
-    if (platformType != EGL_PLATFORM_GBM_KHR || !nativeDisplay)
-    {
-        mEGLDisplay = getPreferredDisplay(&majorVersion, &minorVersion);
-    }
+    mEGLDisplay = getPreferredDisplay(&majorVersion, &minorVersion);
 #endif  // defined(ANGLE_HAS_LIBDRM)
 
     if (mEGLDisplay == EGL_NO_DISPLAY)
@@ -423,12 +419,6 @@ EGLDisplay FunctionsEGL::getPlatformDisplay(EGLAttrib platformType,
         case EGL_PLATFORM_SURFACELESS_MESA:
             if (!hasExtension("EGL_MESA_platform_surfaceless"))
                 return EGL_NO_DISPLAY;
-            break;
-        case EGL_PLATFORM_GBM_KHR:
-            if (!hasExtension("EGL_KHR_platform_gbm") && !hasExtension("EGL_MESA_platform_gbm"))
-            {
-                return EGL_NO_DISPLAY;
-            }
             break;
         default:
             UNREACHABLE();

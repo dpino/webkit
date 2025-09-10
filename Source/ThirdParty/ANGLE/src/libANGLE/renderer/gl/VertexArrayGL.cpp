@@ -727,10 +727,9 @@ angle::Result VertexArrayGL::updateAttribPointer(const gl::Context *context, siz
         stateManager->bindBuffer(gl::BufferBinding::Array, bufferId);
         if (features.ensureNonEmptyBufferIsBoundForDraw.enabled && bufferGL->getBufferSize() == 0)
         {
-            BufferFeedback feedback;
             constexpr uint32_t data = 0;
             ANGLE_TRY(bufferGL->setData(context, gl::BufferBinding::Array, &data, sizeof(data),
-                                        gl::BufferUsage::StaticDraw, &feedback));
+                                        gl::BufferUsage::StaticDraw));
             ASSERT(bufferGL->getBufferSize() > 0);
         }
         ANGLE_TRY(callVertexAttribPointer(context, static_cast<GLuint>(attribIndex), attrib,
@@ -1022,9 +1021,9 @@ angle::Result VertexArrayGL::syncState(const gl::Context *context,
                 // internal storage and take action if buffer has changed while not observing.
                 // For now we just simply assume buffer storage has changed and always dirty all
                 // binding points.
-                uint64_t bits = mState.getBufferBindingMask().bits();
-                bits <<= gl::VertexArray::DIRTY_BIT_BINDING_0;
-                iter.setLaterBits(gl::VertexArray::DirtyBits(bits));
+                iter.setLaterBits(
+                    gl::VertexArray::DirtyBits(mState.getBufferBindingMask().to_ulong()
+                                               << gl::VertexArray::DIRTY_BIT_BINDING_0));
                 break;
             }
 

@@ -260,7 +260,7 @@ HGLRC WGLWindow::createContext(const ConfigParameters &configParams, HGLRC share
         return context;
     }
 
-    if (mConfigParams.webGLCompatibility || mConfigParams.robustResourceInit)
+    if (mConfigParams.webGLCompatibility.valid() || mConfigParams.robustResourceInit.valid())
     {
         std::cerr << "WGLWindow does not support the requested feature set." << std::endl;
         return context;

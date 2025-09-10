@@ -1012,33 +1012,6 @@ class TextureCubeTest : public TexCoordDrawTest
     GLint mTextureCubeFaceUniformLocation;
 };
 
-class TextureDefaultTextureTest : public TextureCubeTest
-{
-  protected:
-    TextureDefaultTextureTest() : TextureCubeTest() {}
-
-    const char *getFragmentShaderSource() override
-    {
-        return
-            R"(precision highp float;
-            uniform samplerCube texCube;
-            uniform sampler2D tex2D;
-            uniform sampler2D white;
-
-            void main()
-            {
-                vec4 whiteSamplerValue = texture2D(white, vec2(0));
-                vec4 noValue = textureCube(texCube, vec3(0));
-                vec4 noValue2 = texture2D(tex2D, vec2(0));
-                gl_FragColor = whiteSamplerValue + noValue*0.000001 + noValue2*0.000001;
-            })";
-    }
-
-    void testSetUp() override { setUpProgram(); }
-
-    void testTearDown() override { glDeleteProgram(mProgram); }
-};
-
 class TextureCubeTestES3 : public TextureCubeTest
 {
   protected:
@@ -2001,7 +1974,6 @@ void Texture2DDepthStencilTestES3::TestSampleWithDepthStencilMode(GLenum format,
             break;
         default:
             UNREACHABLE();
-            return;
     }
 
     // Set up a color texture.
@@ -2420,12 +2392,8 @@ TEST_P(TextureCubeTest, CubeMapBug2)
     EXPECT_GL_ERROR(GL_NO_ERROR);
 
     glUseProgram(cubeMapBug2Program);
-    GLint tex2DUniformLocation = glGetUniformLocation(cubeMapBug2Program, "tex2D");
-    ASSERT_NE(tex2DUniformLocation, -1);
-    GLint texCubeUniformLocation = glGetUniformLocation(cubeMapBug2Program, "texCube");
-    ASSERT_NE(texCubeUniformLocation, -1);
-    glUniform1i(tex2DUniformLocation, 3);
-    glUniform1i(texCubeUniformLocation, 0);
+    glUniform1i(mTexture2DUniformLocation, 3);
+    glUniform1i(mTextureCubeUniformLocation, 0);
     drawQuad(cubeMapBug2Program, "position", 0.5f);
     EXPECT_GL_NO_ERROR();
 }
@@ -5893,9 +5861,7 @@ TEST_P(Texture2DBaseMaxTestES3, Fuzz545ImmutableTexRenderFeedback)
                  _level_prime_max++)
             {  // `q` in GLES
                 if (_level_prime_max < 0)
-                {
                     continue;
-                }
                 if (_level_prime_max == (MIPS + 1))
                 {
                     _level_prime_max = 10000;  // This is the default, after all!
@@ -7570,75 +7536,6 @@ TEST_P(Texture3DTestES3, PixelUnpackParamsChangeTexImage)
     EXPECT_GL_NO_ERROR();
 }
 
-// Test that texture reload using unpack buffer and different type
-TEST_P(Texture3DTestES3, PixelUnpackReloadTexImage)
-{
-    constexpr GLsizei kTexWidth  = 2;
-    constexpr GLsizei kTexHeight = 2;
-    constexpr GLsizei kTexDepth  = 2;
-
-    float in_fp[kTexWidth * kTexHeight * kTexDepth * 3];
-    std::fill(in_fp, in_fp + kTexWidth * kTexHeight * kTexDepth * 3, 0.2f);
-
-    GLTexture tex;
-    glActiveTexture(GL_TEXTURE0);
-
-    glBindTexture(GL_TEXTURE_3D, tex);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_R11F_G11F_B10F, kTexWidth, kTexHeight, kTexDepth, 0, GL_RGB,
-                 GL_HALF_FLOAT, in_fp);
-    EXPECT_GL_NO_ERROR();
-
-    GLFramebuffer fbo;
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    GLRenderbuffer rbo;
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA32F, kTexWidth, kTexHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rbo);
-    EXPECT_GL_NO_ERROR();
-
-    // Flush memory
-    glUseProgram(mProgram);
-    glUniform1i(mTexture3DUniformLocation, 0);
-    drawQuad(mProgram, "position", (1 + 0.5f) / 2.0f);
-    EXPECT_GL_NO_ERROR();
-
-    // Use default unpacking parameters
-    GLBuffer buf;
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buf);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_IMAGES, 0);
-
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, sizeof(in_fp), in_fp, GL_DYNAMIC_DRAW);
-    EXPECT_GL_NO_ERROR();
-
-    // Change the data type of the pixel data to GL_FLOAT
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_R11F_G11F_B10F, kTexWidth, kTexHeight, kTexDepth, 0, GL_RGB,
-                 GL_FLOAT, nullptr);
-    EXPECT_GL_NO_ERROR();
-
-    glUseProgram(mProgram);
-    glUniform1i(mTexture3DUniformLocation, 0);
-    drawQuad(mProgram, "position", (1 + 0.5f) / 2.0f);
-    EXPECT_GL_NO_ERROR();
-
-    for (int i = 0; i < kTexWidth; i++)
-    {
-        for (int j = 0; j < kTexHeight; j++)
-        {
-            EXPECT_PIXEL_32F_NEAR(i, j, 0.199219f, 0.199219f, 0.199219f, 1.0f, 0.00001f);
-        }
-    }
-    EXPECT_GL_NO_ERROR();
-}
-
 // Test that 3D texture completeness is updated if texture max level changes.
 // GLES 3.0.4 section 3.8.13 Texture completeness
 TEST_P(Texture3DTestES3, Texture3DCompletenessChangesWithMaxLevel)
@@ -9089,180 +8986,6 @@ void main()
     }
 }
 
-// Test for ASTC decode mode queries
-TEST_P(Texture2DTestES3, ASTCDecodeModeQueries)
-{
-    GLint value = 0, result = 0, defaultValue = GL_RGBA16F;
-    if (IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode"))
-    {
-        // Set invalid ASTC decode mode
-        value = GL_RGBA32F;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-        EXPECT_GL_ERROR(GL_INVALID_ENUM);
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-        EXPECT_EQ(result, defaultValue);
-
-        // Set valid ASTC decode mode
-        value = GL_RGBA8;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-        EXPECT_GL_NO_ERROR();
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-        EXPECT_EQ(result, value);
-
-        value = GL_RGBA16F;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-        EXPECT_GL_NO_ERROR();
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-        EXPECT_EQ(result, value);
-
-        if (IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode_rgb9e5"))
-        {
-            value = GL_RGB9_E5;
-            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-            EXPECT_GL_NO_ERROR();
-            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-            EXPECT_EQ(result, value);
-        }
-        else
-        {
-            value = GL_RGB9_E5;
-            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-            EXPECT_GL_ERROR(GL_INVALID_ENUM);
-            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-            EXPECT_GL_ERROR(GL_NO_ERROR);
-            EXPECT_EQ(result, GL_RGBA16F);
-        }
-    }
-    else
-    {
-        value = GL_RGBA8;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-        EXPECT_GL_ERROR(GL_INVALID_ENUM);
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-        EXPECT_GL_ERROR(GL_INVALID_ENUM);
-
-        value = GL_RGBA16F;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &value);
-        EXPECT_GL_ERROR(GL_INVALID_ENUM);
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, &result);
-        EXPECT_GL_ERROR(GL_INVALID_ENUM);
-    }
-}
-
-// Test that rendering with ASTC texture formats with different decode modes on GL_TEXTURE_2D works.
-TEST_P(Texture2DTestES3, ASTCDecodeModeDrawTexture)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode"));
-
-    GLTexture tex;
-    constexpr uint32_t kWidth       = 4;
-    constexpr uint32_t kHeight      = 4;
-    std::vector<GLenum> decodemodes = {GL_RGBA16F, GL_RGBA8, GL_RGB9_E5};
-
-    ANGLE_GL_PROGRAM(program, getVertexShaderSource(), getFragmentShaderSource());
-    EXPECT_GL_NO_ERROR();
-
-    constexpr uint8_t block[16] = {0xFC, 0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                                   0x7F, 0x7F, 0x3F, 0x3F, 0xBF, 0xBF, 0xFF, 0xFF};
-    std::vector<uint8_t> texData(kWidth * kHeight);
-    memcpy(texData.data(), block, 16);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_ASTC_4x4_KHR, kWidth, kHeight, 0,
-                           kWidth * kHeight, texData.data());
-    EXPECT_GL_NO_ERROR();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    for (GLenum mode : decodemodes)
-    {
-        if (mode == GL_RGB9_E5 &&
-            !IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode_rgb9e5"))
-        {
-            std::cout << "GL_RGB9_E5 subtest skipped: "
-                         "GL_EXT_texture_compression_astc_decode_mode_rgb9e5 is not enabled.\n";
-            continue;
-        }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, mode);
-        EXPECT_GL_NO_ERROR();
-
-        drawQuad(program, "position", 0.0f);
-        EXPECT_GL_NO_ERROR();
-
-        EXPECT_PIXEL_COLOR_NEAR(0, 0, GLColor(127, 63, 191, 255), 1);
-        EXPECT_PIXEL_COLOR_NEAR(0, kHeight - 1, GLColor(127, 63, 191, 255), 1);
-        EXPECT_PIXEL_COLOR_NEAR(kWidth - 1, 0, GLColor(127, 63, 191, 255), 1);
-        EXPECT_PIXEL_COLOR_NEAR(kWidth - 1, kHeight - 1, GLColor(127, 63, 191, 255), 1);
-        ASSERT_GL_NO_ERROR();
-    }
-}
-
-// Test that the selected decode precision is actually used for texture decoding.
-TEST_P(Texture2DTestES3, ASTCDecodeModeSwitch)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode"));
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_KHR_texture_compression_astc_hdr"));
-
-    GLTexture tex, colorBuf;
-    constexpr uint32_t kWidth  = 4;
-    constexpr uint32_t kHeight = 4;
-
-    ANGLE_GL_PROGRAM(program, getVertexShaderSource(), getFragmentShaderSource());
-    EXPECT_GL_NO_ERROR();
-
-    constexpr uint8_t block[16] = {0xFC, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                                   0x00, 0xBC, 0x00, 0x40, 0x00, 0xC2, 0x00, 0x44};
-    std::vector<uint8_t> texData(kWidth * kHeight);
-    memcpy(texData.data(), block, 16);
-    // Load compressed texture data into tex.
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_ASTC_4x4_KHR, kWidth, kHeight, 0,
-                           kWidth * kHeight, texData.data());
-    EXPECT_GL_NO_ERROR();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Create an empty texture and bind it to the frame buffer.
-    glBindTexture(GL_TEXTURE_2D, colorBuf);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, kWidth, kHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    GLFramebuffer framebuffer;
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuf, 0);
-
-    glViewport(0, 0, kWidth, kHeight);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // The default value of the decode precision is RGBA16F.
-    glBindTexture(GL_TEXTURE_2D, tex);
-    drawQuad(program, "position", 0.0f);
-    EXPECT_GL_NO_ERROR();
-    EXPECT_PIXEL_RECT32F_EQ(0, 0, kWidth, kHeight, GLColor32F(-1.0f, 2.0f, -3.0f, 4.0f));
-
-    // Switch the decode precision to RGB9_E5 and verify the results.
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_texture_compression_astc_decode_mode_rgb9e5"));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, GL_RGB9_E5);
-    EXPECT_GL_NO_ERROR();
-    drawQuad(program, "position", 0.0f);
-    EXPECT_GL_NO_ERROR();
-    EXPECT_PIXEL_RECT32F_EQ(0, 0, kWidth, kHeight, GLColor32F(0.0f, 2.0f, 0.0f, 1.0f));
-
-    // Switch the decode precision back to RGBA16F and verify the results.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ASTC_DECODE_PRECISION_EXT, GL_RGBA16F);
-    EXPECT_GL_NO_ERROR();
-    drawQuad(program, "position", 0.0f);
-    EXPECT_GL_NO_ERROR();
-    EXPECT_PIXEL_RECT32F_EQ(0, 0, kWidth, kHeight, GLColor32F(-1.0f, 2.0f, -3.0f, 4.0f));
-}
-
 // Copied from Texture2DTest::TexStorage
 // Test that glTexSubImage2D works properly when glTexStorage2DEXT has initialized the image with a
 // default color.
@@ -10041,205 +9764,6 @@ TEST_P(TextureBorderClampTestES3, TextureBorderTypeMismatch)
     EXPECT_PIXEL_ALPHA_EQ(0, 0, 255);
 }
 
-class TextureBorderClampTestES31 : public TextureBorderClampTest
-{
-  protected:
-    TextureBorderClampTestES31() : TextureBorderClampTest() {}
-
-    void callTexParameterIuivAPI(const APIExtensionVersion usedExtension,
-                                 GLenum target,
-                                 GLenum pname,
-                                 const GLuint *params);
-    void testCustomBorderColorWithStencil(const APIExtensionVersion usedExtension);
-};
-
-void TextureBorderClampTestES31::callTexParameterIuivAPI(const APIExtensionVersion usedExtension,
-                                                         GLenum target,
-                                                         GLenum pname,
-                                                         const GLuint *params)
-{
-    ASSERT(usedExtension == APIExtensionVersion::OES || usedExtension == APIExtensionVersion::EXT ||
-           usedExtension == APIExtensionVersion::Core);
-    if (usedExtension == APIExtensionVersion::OES)
-    {
-        glTexParameterIuivOES(target, pname, params);
-    }
-    else if (usedExtension == APIExtensionVersion::EXT)
-    {
-        glTexParameterIuivEXT(target, pname, params);
-    }
-    else
-    {
-        glTexParameterIuiv(target, pname, params);
-    }
-}
-
-// Based on dEQP test:
-// dEQP-GLES31.functional.texture.border_clamp.unused_channels.depth24_stencil8_sample_stencil
-void TextureBorderClampTestES31::testCustomBorderColorWithStencil(
-    const APIExtensionVersion usedExtension)
-{
-    ASSERT(usedExtension == APIExtensionVersion::OES || usedExtension == APIExtensionVersion::EXT ||
-           usedExtension == APIExtensionVersion::Core);
-
-    int width  = getWindowWidth();
-    int height = getWindowHeight();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0, 0.0, 1.0, 1.0);
-    glClearDepthf(0.0);
-    glClearStencil(0xFF);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-    // Shaders
-    std::string vs;
-    std::string fs;
-
-    constexpr char kGLSLVersion31[] = R"(#version 310 es
-)";
-    constexpr char kGLSLVersion32[] = R"(#version 320 es
-)";
-    if (usedExtension == APIExtensionVersion::Core)
-    {
-        vs.append(kGLSLVersion32);
-        fs.append(kGLSLVersion32);
-    }
-    else
-    {
-        vs.append(kGLSLVersion31);
-        fs.append(kGLSLVersion31);
-    }
-
-    constexpr char kVSBody[] = R"(
-in highp vec2 a_position;
-in highp vec2 a_texCoord;
-out highp vec2 v_texCoord;
-
-void main (void)
-{
-    gl_Position = vec4(a_position, 0.0, 1.0);
-    v_texCoord = a_texCoord;
-})";
-    vs.append(kVSBody);
-
-    constexpr char kFSBody[] = R"(
-layout(location = 0) out mediump vec4 outColor;
-in highp vec2 v_texCoord;
-uniform highp usampler2D stencilSampler;
-
-void main (void)
-{
-    outColor = vec4(texture(stencilSampler, v_texCoord)) * vec4(1.0 / 255.0, 1.0, 1.0, 1.0);
-})";
-    fs.append(kFSBody);
-
-    ANGLE_GL_PROGRAM(program, vs.c_str(), fs.c_str());
-    EXPECT_GL_NO_ERROR();
-    glUseProgram(program);
-
-    // In case of using stencil for border clamp, the first component of the border color is used.
-    // If the texcoords are within the bounds, the texture's stencil value is used.
-    constexpr uint32_t kQuadStencil = 0xFF;
-    static_assert(kQuadStencil <= 0xFF);
-    std::vector<uint32_t> textureData(16 * 16, 0xFFFFFF00 | kQuadStencil);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mTexture2D);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 16, 16, 0, GL_DEPTH_STENCIL,
-                 GL_UNSIGNED_INT_24_8, textureData.data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_STENCIL_INDEX);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    constexpr GLuint kUsedComponentForBorder = 145;
-    constexpr GLuint kBorderData[4]          = {kUsedComponentForBorder, 100, 37, 111};
-    callTexParameterIuivAPI(usedExtension, GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, kBorderData);
-    EXPECT_GL_NO_ERROR();
-
-    // The vertex and index data are set to draw a quad at the center of the screen, with the color
-    // sampled from the texture's stencil value, surrounded by the border color.
-    constexpr float kVertexData[] = {
-        // Position
-        -1.0f,
-        -1.0f,
-        -1.0f,
-        1.0f,
-        1.0f,
-        -1.0f,
-        1.0f,
-        1.0f,
-        // TexCoord
-        -0.5,
-        -0.5,
-        -0.5,
-        1.5,
-        1.5,
-        -0.5,
-        1.5,
-        1.5,
-    };
-    constexpr uint16_t kIndices[] = {0, 1, 2, 2, 1, 3};
-
-    GLVertexArray vao;
-    glBindVertexArray(vao);
-
-    GLBuffer vertexBuffer;
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 64, kVertexData, GL_STATIC_DRAW);
-
-    GLBuffer indexBuffer;
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12, kIndices, GL_STATIC_DRAW);
-
-    GLint posLoc = glGetAttribLocation(program, "a_position");
-    glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void *>(0));
-    GLint texLoc = glGetAttribLocation(program, "a_texCoord");
-    glEnableVertexAttribArray(texLoc);
-    glVertexAttribPointer(texLoc, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void *>(32));
-
-    // Draw
-    glUniform1i(glGetUniformLocation(program, "stencilSampler"), 0);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
-
-    constexpr GLColor kExpectedBorderColor = GLColor(kUsedComponentForBorder, 0, 0, 255);
-    constexpr GLColor kExpectedQuadColor   = GLColor(kQuadStencil, 0, 0, 255);
-    EXPECT_PIXEL_RECT_EQ(0, 0, width / 4, height, kExpectedBorderColor);
-    EXPECT_PIXEL_RECT_EQ(3 * width / 4, 0, width / 4, height, kExpectedBorderColor);
-    EXPECT_PIXEL_RECT_EQ(0, 0, width, height / 4, kExpectedBorderColor);
-    EXPECT_PIXEL_RECT_EQ(0, 3 * height / 4, width, height / 4, kExpectedBorderColor);
-    EXPECT_PIXEL_RECT_EQ(width / 4, height / 4, width / 2, height / 2, kExpectedQuadColor);
-}
-
-// Tests texture border clamp in case of sampling from a texture with a stencil component.
-TEST_P(TextureBorderClampTestES31, CustomBorderColorWithStencilOES)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_OES_texture_border_clamp"));
-    testCustomBorderColorWithStencil(APIExtensionVersion::OES);
-}
-
-// Tests texture border clamp in case of sampling from a texture with a stencil component.
-TEST_P(TextureBorderClampTestES31, CustomBorderColorWithStencilEXT)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_texture_border_clamp"));
-    testCustomBorderColorWithStencil(APIExtensionVersion::EXT);
-}
-
-class TextureBorderClampTestES32 : public TextureBorderClampTestES31
-{
-  protected:
-    TextureBorderClampTestES32() : TextureBorderClampTestES31() {}
-};
-
-// Tests texture border clamp in case of sampling from a texture with a stencil component.
-TEST_P(TextureBorderClampTestES32, CustomBorderColorWithStencil)
-{
-    testCustomBorderColorWithStencil(APIExtensionVersion::Core);
-}
-
 class TextureBorderClampIntegerTestES3 : public Texture2DTest
 {
   protected:
@@ -10860,7 +10384,7 @@ class TextureLimitsTest : public ANGLETest<>
         initTextures(vertexTextureCount + fragmentTextureCount, 0);
 
         glUseProgram(mProgram);
-        RGBA8 expectedSum{};
+        RGBA8 expectedSum = {0};
         for (GLint texIndex = 0; texIndex < vertexTextureCount; ++texIndex)
         {
             std::stringstream uniformNameStr;
@@ -13006,47 +12530,6 @@ TEST_P(TextureCubeTestES3, IncompatibleLayerABThenCompatibleLayerAB)
         EXPECT_PIXEL_RECT_EQ(2, 2, w - 4, h - 4, expect);
         EXPECT_GL_NO_ERROR();
     }
-}
-
-// Test two samplers (one of type sampler2d and one of type samplerCube),
-// link program successfully, don't set the samplers to anything (ie, keep
-// default values as 0) and call function glValidateProgram on program id.
-TEST_P(TextureDefaultTextureTest, SampleFromDefaultTexture)
-{
-    constexpr uint32_t whiteTextureData[] = {0xFFFFFFFF};
-    GLTexture whiteTex;
-
-    glUseProgram(mProgram);
-    EXPECT_GL_NO_ERROR();
-
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, whiteTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, whiteTextureData);
-    GLint loc = glGetUniformLocation(mProgram, "white");
-    ASSERT_NE(-1, loc);
-    glUniform1i(loc, 7);
-    EXPECT_GL_NO_ERROR();
-
-    glActiveTexture(GL_TEXTURE0);
-    EXPECT_GL_NO_ERROR();
-
-    glValidateProgram(mProgram);
-    EXPECT_GL_NO_ERROR();
-
-    // Verify that the validate status is false
-    GLint validateStatus = 0;
-    glGetProgramiv(mProgram, GL_VALIDATE_STATUS, &validateStatus);
-    EXPECT_GL_FALSE(validateStatus);
-    EXPECT_GL_NO_ERROR();
-
-    // Check that the info log is non-empty
-    GLint programInfoLength = 0;
-    GLubyte errMessage[1000];
-    glGetProgramInfoLog(mProgram, 1000, &programInfoLength, (char *)errMessage);
-    EXPECT_GT(programInfoLength, 0);
-    EXPECT_GL_NO_ERROR();
-
-    drawQuad(mProgram, "position", 0.5f);
 }
 
 // Similar to IncompatibleLayerABThenCompatibleLayerAB, but with a single-level texture
@@ -16492,56 +15975,6 @@ class CopyImageTestES31 : public ANGLETest<>
     }
 };
 
-// Test validation of target
-TEST_P(CopyImageTestES31, InvalidTarget)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_copy_image"));
-
-    // INVALID_ENUM is generated
-    // if either srcTarget or dstTarget
-    //   - is not RENDERBUFFER or a valid non-proxy texture target
-    //   - is TEXTURE_BUFFER, or
-    //   - is one of the cubemap face selectors described in table 3.17,
-    // if the target does not match the type of the object.
-    GLenum invalidTargets[] = {
-        GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-        GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-        GL_TEXTURE_BUFFER_EXT,          GL_ARRAY_BUFFER,
-    };
-    GLTexture texSrc;
-    GLTexture texDest;
-    const uint32_t invalidTargetsSize = sizeof(invalidTargets) / sizeof((invalidTargets)[0]);
-    for (uint32_t i = 0; i < invalidTargetsSize; ++i)
-    {
-        for (uint32_t j = 0; j < invalidTargetsSize; ++j)
-        {
-            glCopyImageSubDataEXT(texSrc, invalidTargets[i], 0, 0, 0, 0, texDest, invalidTargets[j],
-                                  0, 0, 0, 0, 1, 1, 1);
-            EXPECT_GL_ERROR(GL_INVALID_ENUM);
-        }
-    }
-
-    // Target does not match the type of the object
-    glBindTexture(GL_TEXTURE_2D, texSrc);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-    glBindTexture(GL_TEXTURE_3D, texDest);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, 32, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-    glCopyImageSubDataEXT(texSrc, GL_TEXTURE_2D, 0, 0, 0, 0, texDest, GL_TEXTURE_2D, 0, 0, 0, 0, 0,
-                          0, 1);
-    EXPECT_GL_ERROR(GL_INVALID_ENUM);
-
-    glCopyImageSubDataEXT(texSrc, GL_TEXTURE_3D, 0, 0, 0, 0, texDest, GL_TEXTURE_3D, 0, 0, 0, 0, 0,
-                          0, 1);
-    EXPECT_GL_ERROR(GL_INVALID_ENUM);
-}
-
 // Test that copies between RGB formats doesn't affect the emulated alpha channel, if any.
 TEST_P(CopyImageTestES31, PreserveEmulatedAlpha)
 {
@@ -17026,146 +16459,6 @@ TEST_P(CopyImageTestES31, MultisampleRenderbufferCopyImageSubData)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     EXPECT_PIXEL_RECT_EQ(0, 0, kWidth, kHeight, GLColor::red);
-}
-
-// Test glCopyImageSubDataEXT with GL_EXT_texture_norm16
-void CopyImageCompressedWithNorm16(bool isCompressedToNorm16)
-{
-    struct CompressedFormatDesc
-    {
-        GLenum format;
-        GLsizei blockX;
-        GLsizei blockY;
-        GLsizei size;
-        std::string extension;
-    };
-
-    const CompressedFormatDesc possibleCompressedFormats[] = {
-        {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, 4, 4, 8, "GL_EXT_texture_compression_dxt1"},
-        {GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, 4, 4, 8, "GL_EXT_texture_compression_s3tc_srgb"},
-        {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 4, 4, 8, "GL_EXT_texture_compression_dxt1"},
-        {GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT, 4, 4, 8, "GL_EXT_texture_compression_s3tc_srgb"},
-        {GL_COMPRESSED_RED_RGTC1_EXT, 4, 4, 8, "GL_EXT_texture_compression_rgtc"},
-        {GL_COMPRESSED_SIGNED_RED_RGTC1_EXT, 4, 4, 8, "GL_EXT_texture_compression_rgtc"},
-        {GL_COMPRESSED_RGB8_ETC2, 4, 4, 8, ""},
-        {GL_COMPRESSED_SRGB8_ETC2, 4, 4, 8, ""},
-        {GL_COMPRESSED_R11_EAC, 4, 4, 8, ""},
-        {GL_COMPRESSED_SIGNED_R11_EAC, 4, 4, 8, ""},
-        {GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2, 4, 4, 8, ""},
-        {GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2, 4, 4, 8, ""}};
-    struct Norm16FormatDesc
-    {
-        GLint internalformat;
-        GLenum format;
-        GLenum type;
-    };
-    constexpr Norm16FormatDesc possibleNorm16Formats[] = {
-        {GL_RGBA16_EXT, GL_RGBA, GL_UNSIGNED_SHORT}, {GL_RGBA16_SNORM_EXT, GL_RGBA, GL_SHORT}};
-
-    for (CompressedFormatDesc compressedFormat : possibleCompressedFormats)
-    {
-        if (!compressedFormat.extension.empty() &&
-            !IsGLExtensionEnabled(compressedFormat.extension))
-        {
-            std::cout << "subtest skipped due to missing " << compressedFormat.extension << "."
-                      << std::endl;
-            continue;
-        }
-        for (Norm16FormatDesc norm16Format : possibleNorm16Formats)
-        {
-            // Compressed: each 4x4 block = 8 bytes
-            // 4x4 image => (4/4)*(4/4) = 1 blocks => 1 * 8 = 8 bytes
-            // Assume uncompressed target is just a raw memory buffer with same size
-            // To match the compressed size exactly, we simulate the destination as a 1x1 texture
-            // with RGBA16
-            const int norm16Width  = compressedFormat.blockX / 4;
-            const int norm16Height = compressedFormat.blockY / 4;
-            // RGBA16 = 4 channels * 2 bytes = 8 bytes per pixel
-            // 1x1 pixels = 8 bytes
-            const int norm16Size = norm16Width * norm16Height * 4 * sizeof(uint16_t);
-            // Expect exact match
-            ASSERT_EQ(compressedFormat.size, norm16Size);
-
-            // Create compressed texture with 0x0 (1 block = 4x4 pixels, 8 bytes)
-            std::vector<uint8_t> compressedInitColor(compressedFormat.size, 0x0);
-
-            // Create Compressed Texture
-            GLTexture compressedTex;
-            glBindTexture(GL_TEXTURE_2D, compressedTex);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glCompressedTexImage2D(GL_TEXTURE_2D, 0, compressedFormat.format,
-                                   compressedFormat.blockX, compressedFormat.blockY, 0,
-                                   compressedFormat.size, compressedInitColor.data());
-            ASSERT_GL_NO_ERROR();
-
-            // Create a texture with 0x33
-            std::vector<uint8_t> norm16InitColor(norm16Size, 0x33);
-
-            // Create Uncompressed Texture
-            GLTexture norm16Tex;
-            glBindTexture(GL_TEXTURE_2D, norm16Tex);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, norm16Format.internalformat, norm16Width, norm16Height,
-                         0, norm16Format.format, norm16Format.type, norm16InitColor.data());
-            ASSERT_GL_NO_ERROR();
-
-            if (isCompressedToNorm16)
-            {
-                // Copy from compressed to uncompressed
-                glCopyImageSubDataEXT(compressedTex, GL_TEXTURE_2D, 0, 0, 0, 0, norm16Tex,
-                                      GL_TEXTURE_2D, 0, 0, 0, 0, compressedFormat.blockX,
-                                      compressedFormat.blockY, 1);
-                ASSERT_GL_NO_ERROR();
-
-                // Read back destination texture memory
-                std::vector<uint8_t> readback(norm16Size);
-                glBindTexture(GL_TEXTURE_2D, norm16Tex);
-                glGetTexImageANGLE(GL_TEXTURE_2D, 0, norm16Format.format, norm16Format.type,
-                                   readback.data());
-                ASSERT_GL_NO_ERROR();
-
-                // Raw memory comparison
-                EXPECT_EQ(memcmp(readback.data(), compressedInitColor.data(), norm16Size), 0);
-            }
-            else
-            {
-                // Copy from uncompressed to compressed
-                glCopyImageSubDataEXT(norm16Tex, GL_TEXTURE_2D, 0, 0, 0, 0, compressedTex,
-                                      GL_TEXTURE_2D, 0, 0, 0, 0, norm16Width, norm16Height, 1);
-                ASSERT_GL_NO_ERROR();
-
-                // Read back destination texture memory
-                std::vector<uint8_t> readback(compressedFormat.size);
-                glBindTexture(GL_TEXTURE_2D, compressedTex);
-                glGetCompressedTexImageANGLE(GL_TEXTURE_2D, 0, readback.data());
-                ASSERT_GL_NO_ERROR();
-
-                // Raw memory comparison
-                EXPECT_EQ(memcmp(readback.data(), norm16InitColor.data(), compressedFormat.size),
-                          0);
-            }
-        }
-    }
-}
-
-// Test glCopyImageSubDataEXT from a compressed 2D texture to RGBA16_EXT/RGBA16_SNORM_EXT
-TEST_P(CopyImageTestES31, CompressedToNorm16)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_copy_image") ||
-                       !IsGLExtensionEnabled("GL_EXT_texture_norm16") ||
-                       !IsGLExtensionEnabled("GL_ANGLE_get_image"));
-    CopyImageCompressedWithNorm16(true);
-}
-
-// Test glCopyImageSubDataEXT from RGBA16_EXT/RGBA16_SNORM_EXT to compressed 2D texture
-TEST_P(CopyImageTestES31, Norm16ToCompressed)
-{
-    ANGLE_SKIP_TEST_IF(!IsGLExtensionEnabled("GL_EXT_copy_image") ||
-                       !IsGLExtensionEnabled("GL_EXT_texture_norm16") ||
-                       !IsGLExtensionEnabled("GL_ANGLE_get_image"));
-    CopyImageCompressedWithNorm16(false);
 }
 
 class TextureChangeStorageUploadTest : public ANGLETest<>
@@ -17909,11 +17202,6 @@ ANGLE_INSTANTIATE_TEST_ES2(TextureBorderClampTest);
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureBorderClampTestES3);
 ANGLE_INSTANTIATE_TEST_ES3(TextureBorderClampTestES3);
 
-GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureBorderClampTestES31);
-ANGLE_INSTANTIATE_TEST_ES31(TextureBorderClampTestES31);
-GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureBorderClampTestES32);
-ANGLE_INSTANTIATE_TEST_ES32(TextureBorderClampTestES32);
-
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureBorderClampIntegerTestES3);
 ANGLE_INSTANTIATE_TEST_ES3(TextureBorderClampIntegerTestES3);
 
@@ -17945,9 +17233,6 @@ ANGLE_INSTANTIATE_TEST_ES2(Texture2DFloatTestES2);
 
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureCubeTestES3);
 ANGLE_INSTANTIATE_TEST_ES3(TextureCubeTestES3);
-
-GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureDefaultTextureTest);
-ANGLE_INSTANTIATE_TEST_ES3(TextureDefaultTextureTest);
 
 GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(TextureCubeTestES32);
 ANGLE_INSTANTIATE_TEST_ES32(TextureCubeTestES32);

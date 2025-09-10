@@ -804,9 +804,7 @@ static void yy_symbol_value_print(FILE *yyo,
     YY_USE(yyoutput);
     YY_USE(context);
     if (!yyvaluep)
-    {
         return;
-    }
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
     YY_USE(yykind);
     YY_IGNORE_MAYBE_UNINITIALIZED_END
@@ -915,9 +913,7 @@ static void yydestruct(const char *yymsg,
     YY_USE(yyvaluep);
     YY_USE(context);
     if (!yymsg)
-    {
         yymsg = "Deleting";
-    }
     YY_SYMBOL_PRINT(yymsg, yykind, yyvaluep, yylocationp);
 
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
@@ -1031,30 +1027,22 @@ yysetstate:
 #    else /* defined YYSTACK_RELOCATE */
         /* Extend the stack our own way.  */
         if (YYMAXDEPTH <= yystacksize)
-        {
             YYNOMEM;
-        }
         yystacksize *= 2;
         if (YYMAXDEPTH < yystacksize)
-        {
             yystacksize = YYMAXDEPTH;
-        }
 
         {
             yy_state_t *yyss1    = yyss;
             union yyalloc *yyptr = YY_CAST(
                 union yyalloc *, YYSTACK_ALLOC(YY_CAST(YYSIZE_T, YYSTACK_BYTES(yystacksize))));
             if (!yyptr)
-            {
                 YYNOMEM;
-            }
             YYSTACK_RELOCATE(yyss_alloc, yyss);
             YYSTACK_RELOCATE(yyvs_alloc, yyvs);
 #        undef YYSTACK_RELOCATE
             if (yyss1 != yyssa)
-            {
                 YYSTACK_FREE(yyss1);
-            }
         }
 #    endif
 
@@ -1066,16 +1054,12 @@ yysetstate:
         YY_IGNORE_USELESS_CAST_END
 
         if (yyss + yystacksize - 1 <= yyssp)
-        {
             YYABORT;
-        }
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
     if (yystate == YYFINAL)
-    {
         YYACCEPT;
-    }
 
     goto yybackup;
 
@@ -1089,9 +1073,7 @@ yybackup:
     /* First try to decide what to do without reference to lookahead token.  */
     yyn = yypact[yystate];
     if (yypact_value_is_default(yyn))
-    {
         goto yydefault;
-    }
 
     /* Not known => get a lookahead token if don't already have one.  */
 
@@ -1128,16 +1110,12 @@ yybackup:
        detect an error, take that action.  */
     yyn += yytoken;
     if (yyn < 0 || YYLAST < yyn || yycheck[yyn] != yytoken)
-    {
         goto yydefault;
-    }
     yyn = yytable[yyn];
     if (yyn <= 0)
     {
         if (yytable_value_is_error(yyn))
-        {
             goto yyerrlab;
-        }
         yyn = -yyn;
         goto yyreduce;
     }
@@ -1145,9 +1123,7 @@ yybackup:
     /* Count tokens shifted since error; after three, turn off error
        status.  */
     if (yyerrstatus)
-    {
         yyerrstatus--;
-    }
 
     /* Shift the lookahead token.  */
     YY_SYMBOL_PRINT("Shifting", yytoken, &yylval, &yylloc);
@@ -1166,9 +1142,7 @@ yybackup:
 yydefault:
     yyn = yydefact[yystate];
     if (yyn == 0)
-    {
         goto yyerrlab;
-    }
     goto yyreduce;
 
 /*-----------------------------.
@@ -1543,9 +1517,7 @@ yyerrlab:
         {
             /* Return failure if at end of input.  */
             if (yychar == PPEOF)
-            {
                 YYABORT;
-            }
         }
         else
         {
@@ -1565,9 +1537,7 @@ yyerrorlab:
     /* Pacify compilers when the user code never invokes YYERROR and the
        label yyerrorlab therefore never appears in user code.  */
     if (0)
-    {
         YYERROR;
-    }
     ++yynerrs;
 
     /* Do not reclaim the symbols of the rule whose action triggered
@@ -1595,17 +1565,13 @@ yyerrlab1:
             {
                 yyn = yytable[yyn];
                 if (0 < yyn)
-                {
                     break;
-                }
             }
         }
 
         /* Pop the current state because it cannot handle the error token.  */
         if (yyssp == yyss)
-        {
             YYABORT;
-        }
 
         yydestruct("Error: popping", YY_ACCESSING_SYMBOL(yystate), yyvsp, context);
         YYPOPSTACK(1);
@@ -1667,9 +1633,7 @@ yyreturnlab:
     }
 #ifndef yyoverflow
     if (yyss != yyssa)
-    {
         YYSTACK_FREE(yyss);
-    }
 #endif
 
     return yyresult;

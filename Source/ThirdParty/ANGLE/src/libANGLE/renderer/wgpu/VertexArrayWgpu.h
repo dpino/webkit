@@ -76,7 +76,7 @@ class VertexArrayWgpu : public VertexArrayImpl
                                       webgpu::BufferHelper &buffer,
                                       size_t size,
                                       size_t attribIndex,
-                                      WGPUBufferUsage usage,
+                                      wgpu::BufferUsage usage,
                                       BufferType bufferType);
 
     IndexDataNeedsStreaming determineIndexDataNeedsStreaming(

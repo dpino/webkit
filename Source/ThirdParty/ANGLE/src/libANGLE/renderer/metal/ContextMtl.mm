@@ -125,6 +125,20 @@ bool IsTransformFeedbackOnly(const gl::State &glState)
     return glState.isTransformFeedbackActiveUnpaused() && glState.isRasterizerDiscardEnabled();
 }
 
+std::string ConvertMarkerToString(GLsizei length, const char *marker)
+{
+    std::string cppString;
+    if (length == 0)
+    {
+        cppString = marker;
+    }
+    else
+    {
+        cppString.assign(marker, length);
+    }
+    return cppString;
+}
+
 // This class constructs line loop's last segment buffer inside begin() method
 // and perform the draw of the line loop's last segment inside destructor
 class LineLoopLastSegmentHelper
@@ -872,8 +886,8 @@ angle::Result ContextMtl::drawElementsBaseVertex(const gl::Context *context,
                                                  const void *indices,
                                                  GLint baseVertex)
 {
-    ANGLE_TRY(resyncDrawFramebufferIfNeeded(context));
-    return drawElementsImpl(context, mode, count, type, indices, 0, baseVertex, 0);
+    UNIMPLEMENTED();
+    return angle::Result::Stop;
 }
 
 angle::Result ContextMtl::drawElementsInstanced(const gl::Context *context,
@@ -943,8 +957,9 @@ angle::Result ContextMtl::drawRangeElementsBaseVertex(const gl::Context *context
                                                       const void *indices,
                                                       GLint baseVertex)
 {
-    ANGLE_TRY(resyncDrawFramebufferIfNeeded(context));
-    return drawElementsImpl(context, mode, count, type, indices, 0, baseVertex, 0);
+    // NOTE(hqle): ES 3.2
+    UNIMPLEMENTED();
+    return angle::Result::Stop;
 }
 
 angle::Result ContextMtl::drawArraysIndirect(const gl::Context *context,
@@ -1071,13 +1086,12 @@ gl::GraphicsResetStatus ContextMtl::getResetStatus()
 // EXT_debug_marker
 angle::Result ContextMtl::insertEventMarker(GLsizei length, const char *marker)
 {
-    mCmdBuffer.insertDebugSignpost(std::string(marker, length));
     return checkCommandBufferError();
 }
 
 angle::Result ContextMtl::pushGroupMarker(GLsizei length, const char *marker)
 {
-    mCmdBuffer.pushDebugGroup(std::string(marker, length));
+    mCmdBuffer.pushDebugGroup(ConvertMarkerToString(length, marker));
     return checkCommandBufferError();
 }
 
@@ -1670,15 +1684,14 @@ angle::Result ContextMtl::bindMetalRasterizationRateMap(gl::Context *context,
         return angle::Result::Stop;
     }
 
-    if (auto *metalRenderbuffer = static_cast<RenderbufferMtl *>(renderbuffer))
+    if (auto *metalRenderbuffer = static_cast<RenderbufferMtl*>(renderbuffer))
     {
         FramebufferAttachmentRenderTarget *rtOut = nullptr;
         gl::ImageIndex index;
         GLenum binding = 0;
-        if (angle::Result::Continue ==
-            metalRenderbuffer->getAttachmentRenderTarget(context, binding, index, 1, &rtOut))
+        if (angle::Result::Continue == metalRenderbuffer->getAttachmentRenderTarget(context, binding, index, 1, &rtOut))
         {
-            if (auto *renderTargetMetal = static_cast<RenderTargetMtl *>(rtOut))
+            if (auto *renderTargetMetal = static_cast<RenderTargetMtl*>(rtOut))
             {
                 mtl::RenderPassAttachmentDesc desc;
                 renderTargetMetal->toRenderPassAttachmentDesc(&desc);
@@ -2424,12 +2437,6 @@ void ContextMtl::serverWaitEvent(id<MTLEvent> event, uint64_t value)
     mCmdBuffer.serverWaitEvent(event, value);
 }
 
-void ContextMtl::markResourceWrittenByCommandBuffer(const mtl::ResourceRef &resource)
-{
-    ensureCommandBufferReady();
-    mCmdBuffer.setWriteDependency(resource, /*isRenderCommand=*/false);
-}
-
 void ContextMtl::updateProgramExecutable(const gl::Context *context)
 {
     // Need to rebind textures
@@ -2663,14 +2670,10 @@ angle::Result ContextMtl::setupDrawImpl(const gl::Context *context,
                     mState.getBlendColor().blue, mState.getBlendColor().alpha);
                 break;
             case DIRTY_BIT_VIEWPORT:
-                mRenderEncoder.setViewport(
-                    mViewport, mRenderEncoder.rasterizationRateMapForPass(
-                                   mRasterizationRateMap, mRasterizationRateMapTexture));
+                mRenderEncoder.setViewport(mViewport, mRenderEncoder.rasterizationRateMapForPass(mRasterizationRateMap, mRasterizationRateMapTexture));
                 break;
             case DIRTY_BIT_SCISSOR:
-                mRenderEncoder.setScissorRect(
-                    mScissorRect, mRenderEncoder.rasterizationRateMapForPass(
-                                      mRasterizationRateMap, mRasterizationRateMapTexture));
+                mRenderEncoder.setScissorRect(mScissorRect, mRenderEncoder.rasterizationRateMapForPass(mRasterizationRateMap, mRasterizationRateMapTexture));
                 break;
             case DIRTY_BIT_DRAW_FRAMEBUFFER:
                 // Already handled.
@@ -2696,12 +2699,9 @@ angle::Result ContextMtl::setupDrawImpl(const gl::Context *context,
                 // Already handled.
                 break;
             case DIRTY_BIT_VARIABLE_RASTERIZATION_RATE:
-                if (getState().privateState().isVariableRasterizationRateEnabled() &&
-                    mRasterizationRateMap)
+                if (getState().privateState().isVariableRasterizationRateEnabled() && mRasterizationRateMap)
                 {
-                    mRenderEncoder.setRasterizationRateMap(
-                        mRenderEncoder.rasterizationRateMapForPass(mRasterizationRateMap,
-                                                                   mRasterizationRateMapTexture));
+                    mRenderEncoder.setRasterizationRateMap(mRenderEncoder.rasterizationRateMapForPass(mRasterizationRateMap, mRasterizationRateMapTexture));
                 }
                 break;
             default:

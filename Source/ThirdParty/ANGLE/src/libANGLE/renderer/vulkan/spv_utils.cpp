@@ -737,7 +737,7 @@ void AssignInputAttachmentBindings(const SpvSourceOptions &options,
 void AssignInterfaceBlockBindings(const SpvSourceOptions &options,
                                   const gl::ProgramExecutable &programExecutable,
                                   const std::vector<gl::InterfaceBlock> &blocks,
-                                  const DescriptorSetIndex descriptorSetIndex,
+
                                   SpvProgramInterfaceInfo *programInterfaceInfo,
                                   ShaderInterfaceVariableInfoMap *variableInfoMapOut)
 {
@@ -760,7 +760,7 @@ void AssignInterfaceBlockBindings(const SpvSourceOptions &options,
         }
 
         variableInfoMapOut->addResource(activeShaders, block.getIds(),
-                                        ToUnderlying(descriptorSetIndex),
+                                        ToUnderlying(DescriptorSetIndex::ShaderResource),
                                         programInterfaceInfo->currentShaderResourceBindingIndex++);
     }
 }
@@ -833,14 +833,12 @@ void AssignNonTextureBindings(const SpvSourceOptions &options,
                                   variableInfoMapOut);
 
     const std::vector<gl::InterfaceBlock> &uniformBlocks = programExecutable.getUniformBlocks();
-    AssignInterfaceBlockBindings(options, programExecutable, uniformBlocks,
-                                 DescriptorSetIndex::UniformBuffers, programInterfaceInfo,
+    AssignInterfaceBlockBindings(options, programExecutable, uniformBlocks, programInterfaceInfo,
                                  variableInfoMapOut);
 
     const std::vector<gl::InterfaceBlock> &storageBlocks =
         programExecutable.getShaderStorageBlocks();
-    AssignInterfaceBlockBindings(options, programExecutable, storageBlocks,
-                                 DescriptorSetIndex::ShaderResource, programInterfaceInfo,
+    AssignInterfaceBlockBindings(options, programExecutable, storageBlocks, programInterfaceInfo,
                                  variableInfoMapOut);
 
     AssignAtomicCounterBufferBindings(options, programExecutable, programInterfaceInfo,
@@ -1553,8 +1551,7 @@ void SpirvVaryingPrecisionFixer::visitVariable(const ShaderInterfaceVariableInfo
                                                spv::StorageClass storageClass,
                                                spirv::Blob *blobOut)
 {
-    if (info.useRelaxedPrecision != PrecisionAdjustmentEnum::kUnchanged &&
-        info.activeStages[shaderType] && !mFixedVaryingId[id].valid())
+    if (info.useRelaxedPrecision && info.activeStages[shaderType] && !mFixedVaryingId[id].valid())
     {
         mFixedVaryingId[id]     = SpirvTransformerBase::GetNewId(blobOut);
         mFixedVaryingTypeId[id] = typeId;
@@ -1568,7 +1565,7 @@ TransformationState SpirvVaryingPrecisionFixer::transformVariable(
     spv::StorageClass storageClass,
     spirv::Blob *blobOut)
 {
-    if (info.useRelaxedPrecision != PrecisionAdjustmentEnum::kUnchanged &&
+    if (info.useRelaxedPrecision &&
         (storageClass == spv::StorageClassOutput || storageClass == spv::StorageClassInput))
     {
         // Change existing OpVariable to use fixedVaryingId
@@ -1595,8 +1592,8 @@ void SpirvVaryingPrecisionFixer::writeInputPreamble(
     {
         const spirv::IdRef id(idIndex);
         const ShaderInterfaceVariableInfo *info = variableInfoById[id];
-        if (info && info->useRelaxedPrecision != PrecisionAdjustmentEnum::kUnchanged &&
-            info->activeStages[shaderType] && info->varyingIsInput)
+        if (info && info->useRelaxedPrecision && info->activeStages[shaderType] &&
+            info->varyingIsInput)
         {
             // This is an input varying, need to cast the mediump value that came from
             // the previous stage into a highp value that the code wants to work with.
@@ -1666,18 +1663,10 @@ void SpirvVaryingPrecisionFixer::writeOutputPrologue(
     {
         const spirv::IdRef id(idIndex);
         const ShaderInterfaceVariableInfo *info = variableInfoById[id];
-        if (info && info->useRelaxedPrecision != PrecisionAdjustmentEnum::kUnchanged &&
-            info->activeStages[shaderType] && info->varyingIsOutput)
+        if (info && info->useRelaxedPrecision && info->activeStages[shaderType] &&
+            info->varyingIsOutput)
         {
             ASSERT(mFixedVaryingTypeId[id].valid());
-            // b/42266751
-            // Make sure we are not trying to copy the entire tessellation control shader output
-            // array from the temp global variables to the corrected varyings.
-            // According to spec
-            // https://registry.khronos.org/OpenGL/extensions/EXT/EXT_tessellation_shader.txt,
-            // each tessellation control shader invocation may only write to per vertex output
-            // variables corresponding to its own output patch vertex.
-            ASSERT(shaderType != gl::ShaderType::TessControl);
 
             // Build OpLoad instruction to load the highp value into a temporary
             const spirv::IdRef tempVar(SpirvTransformerBase::GetNewId(blobOut));
@@ -4062,8 +4051,7 @@ TransformationState SpirvTransformer::transformDecorate(const uint32_t *instruct
         case spv::DecorationNoPerspective:
         case spv::DecorationCentroid:
         case spv::DecorationSample:
-            if (mOptions.useSpirvVaryingPrecisionFixer &&
-                info->useRelaxedPrecision != PrecisionAdjustmentEnum::kUnchanged)
+            if (mOptions.useSpirvVaryingPrecisionFixer && info->useRelaxedPrecision)
             {
                 // Change the id to replacement variable
                 spirv::WriteDecorate(mSpirvBlobOut, replacementId, decoration, decorationValues);
@@ -4105,10 +4093,9 @@ TransformationState SpirvTransformer::transformDecorate(const uint32_t *instruct
         return TransformationState::Transformed;
     }
 
-    // If we are lowering the precision of original variable, the replacement variable is reduced
-    // precision so add that decoration to fixedVaryingId.
-    if (mOptions.useSpirvVaryingPrecisionFixer &&
-        info->useRelaxedPrecision == PrecisionAdjustmentEnum::kLowerPrecision)
+    // If any, the replacement variable is always reduced precision so add that decoration to
+    // fixedVaryingId.
+    if (mOptions.useSpirvVaryingPrecisionFixer && info->useRelaxedPrecision)
     {
         mVaryingPrecisionFixer.addDecorate(replacementId, mSpirvBlobOut);
     }
@@ -4483,8 +4470,7 @@ TransformationState SpirvTransformer::transformAccessChain(const uint32_t *instr
 
     if (mOptions.useSpirvVaryingPrecisionFixer)
     {
-        if (info->activeStages[mOptions.shaderType] &&
-            info->useRelaxedPrecision == PrecisionAdjustmentEnum::kUnchanged)
+        if (info->activeStages[mOptions.shaderType] && !info->useRelaxedPrecision)
         {
             return TransformationState::Unchanged;
         }

@@ -25,7 +25,6 @@ bool IsNULL();
 bool IsVulkan();
 bool IsMetal();
 bool IsD3D();
-bool IsWebGPU();
 
 // Debug/Release
 bool IsDebug();

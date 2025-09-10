@@ -107,7 +107,7 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
             break;
         case angle::EntryPoint::GLBindMetalRasterizationRateMapANGLE:
             glBindMetalRasterizationRateMapANGLE(
-                captures[0].value.GLuintVal, captures[1].value.GLMTLRasterizationRateMapANGLEVal);
+                captures[0].value.GLMTLRasterizationRateMapANGLEVal);
             break;
         case angle::EntryPoint::GLBindProgramPipeline:
             glBindProgramPipeline(gProgramPipelineMap[captures[0].value.GLuintVal]);
@@ -578,8 +578,9 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
                                    captures[2].value.GLcharConstPointerPointerVal);
             break;
         case angle::EntryPoint::GLCreateShaderProgramvEXT:
-            glCreateShaderProgramvEXT(captures[0].value.GLenumVal, captures[1].value.GLsizeiVal,
-                                      captures[2].value.GLcharConstPointerPointerVal);
+            glCreateShaderProgramvEXT(
+                captures[0].value.GLenumVal, captures[1].value.GLsizeiVal,
+                const_cast<const char **>(captures[2].value.GLcharConstPointerPointerVal));
             break;
         case angle::EntryPoint::GLCullFace:
             glCullFace(captures[0].value.GLenumVal);
@@ -1064,12 +1065,6 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
                 captures[0].value.GLenumVal, captures[1].value.GLenumVal,
                 captures[2].value.GLenumVal, gRenderbufferMap[captures[3].value.GLuintVal]);
             break;
-        case angle::EntryPoint::GLFramebufferShadingRateEXT:
-            glFramebufferShadingRateEXT(captures[0].value.GLenumVal, captures[1].value.GLenumVal,
-                                        captures[2].value.GLuintVal, captures[3].value.GLintVal,
-                                        captures[4].value.GLsizeiVal, captures[5].value.GLsizeiVal,
-                                        captures[6].value.GLsizeiVal);
-            break;
         case angle::EntryPoint::GLFramebufferTexture:
             glFramebufferTexture(captures[0].value.GLenumVal, captures[1].value.GLenumVal,
                                  gTextureMap[captures[2].value.GLuintVal],
@@ -1344,11 +1339,6 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
         case angle::EntryPoint::GLGetFragDataLocation:
             glGetFragDataLocation(gShaderProgramMap[captures[0].value.GLuintVal],
                                   captures[1].value.GLcharConstPointerVal);
-            break;
-        case angle::EntryPoint::GLGetFragmentShadingRatesEXT:
-            glGetFragmentShadingRatesEXT(captures[0].value.GLsizeiVal, captures[1].value.GLsizeiVal,
-                                         captures[2].value.GLsizeiPointerVal,
-                                         captures[3].value.GLenumPointerVal);
             break;
         case angle::EntryPoint::GLGetFramebufferAttachmentParameteriv:
             glGetFramebufferAttachmentParameteriv(
@@ -2378,11 +2368,6 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
                 captures[0].value.GLenumVal, captures[1].value.GLintConstPointerVal,
                 captures[2].value.GLsizeiConstPointerVal, captures[3].value.GLsizeiVal);
             break;
-        case angle::EntryPoint::GLMultiDrawArraysEXT:
-            glMultiDrawArraysEXT(
-                captures[0].value.GLenumVal, captures[1].value.GLintConstPointerVal,
-                captures[2].value.GLsizeiConstPointerVal, captures[3].value.GLsizeiVal);
-            break;
         case angle::EntryPoint::GLMultiDrawArraysIndirectEXT:
             glMultiDrawArraysIndirectEXT(
                 captures[0].value.GLenumVal, captures[1].value.voidConstPointerVal,
@@ -2412,12 +2397,6 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
                 captures[2].value.GLenumVal, captures[3].value.voidConstPointerPointerVal,
                 captures[4].value.GLsizeiVal, captures[5].value.GLintConstPointerVal);
             break;
-        case angle::EntryPoint::GLMultiDrawElementsEXT:
-            glMultiDrawElementsEXT(
-                captures[0].value.GLenumVal, captures[1].value.GLsizeiConstPointerVal,
-                captures[2].value.GLenumVal, captures[3].value.voidConstPointerPointerVal,
-                captures[4].value.GLsizeiVal);
-            break;
         case angle::EntryPoint::GLMultiDrawElementsIndirectEXT:
             glMultiDrawElementsIndirectEXT(captures[0].value.GLenumVal, captures[1].value.GLenumVal,
                                            captures[2].value.voidConstPointerVal,
@@ -2446,6 +2425,12 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
             glMultiTexCoord4x(captures[0].value.GLenumVal, captures[1].value.GLfixedVal,
                               captures[2].value.GLfixedVal, captures[3].value.GLfixedVal,
                               captures[4].value.GLfixedVal);
+            break;
+        case angle::EntryPoint::GLNamedBufferStorageExternalEXT:
+            glNamedBufferStorageExternalEXT(
+                captures[0].value.GLuintVal, captures[1].value.GLintptrVal,
+                captures[2].value.GLsizeiptrVal, captures[3].value.GLeglClientBufferEXTVal,
+                captures[4].value.GLbitfieldVal);
             break;
         case angle::EntryPoint::GLNormal3f:
             glNormal3f(captures[0].value.GLfloatVal, captures[1].value.GLfloatVal,
@@ -3231,12 +3216,6 @@ void ReplayTraceFunctionCall(const CallCapture &call, const TraceFunctionMap &cu
                            captures[1].value.GLsizeiVal,
                            captures[2].value.GLcharConstPointerPointerVal,
                            captures[3].value.GLintConstPointerVal);
-            break;
-        case angle::EntryPoint::GLShadingRateCombinerOpsEXT:
-            glShadingRateCombinerOpsEXT(captures[0].value.GLenumVal, captures[1].value.GLenumVal);
-            break;
-        case angle::EntryPoint::GLShadingRateEXT:
-            glShadingRateEXT(captures[0].value.GLenumVal);
             break;
         case angle::EntryPoint::GLShadingRateQCOM:
             glShadingRateQCOM(captures[0].value.GLenumVal);

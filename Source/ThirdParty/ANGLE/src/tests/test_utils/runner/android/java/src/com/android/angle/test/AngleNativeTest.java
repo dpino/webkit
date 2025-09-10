@@ -28,7 +28,7 @@ public class AngleNativeTest
     private static final String TAG = "NativeTest";
 
     private String mCommandLineFilePath;
-    private final StringBuilder mCommandLineFlags = new StringBuilder();
+    private StringBuilder mCommandLineFlags = new StringBuilder();
     private TestStatusReporter mReporter;
     private String mStdoutFilePath;
 
@@ -36,8 +36,8 @@ public class AngleNativeTest
             implements Thread.UncaughtExceptionHandler
     {
 
-        private final TestStatusReporter mReporter;
-        private final Thread.UncaughtExceptionHandler mWrappedHandler;
+        private TestStatusReporter mReporter;
+        private Thread.UncaughtExceptionHandler mWrappedHandler;
 
         public ReportingUncaughtExceptionHandler(
                 TestStatusReporter reporter, Thread.UncaughtExceptionHandler wrappedHandler)

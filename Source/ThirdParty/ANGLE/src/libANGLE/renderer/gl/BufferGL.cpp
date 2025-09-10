@@ -84,8 +84,7 @@ angle::Result BufferGL::setData(const gl::Context *context,
                                 gl::BufferBinding target,
                                 const void *data,
                                 size_t size,
-                                gl::BufferUsage usage,
-                                BufferFeedback *feedback)
+                                gl::BufferUsage usage)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);
@@ -124,8 +123,7 @@ angle::Result BufferGL::setSubData(const gl::Context *context,
                                    gl::BufferBinding target,
                                    const void *data,
                                    size_t size,
-                                   size_t offset,
-                                   BufferFeedback *feedback)
+                                   size_t offset)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);
@@ -149,8 +147,7 @@ angle::Result BufferGL::copySubData(const gl::Context *context,
                                     BufferImpl *source,
                                     GLintptr sourceOffset,
                                     GLintptr destOffset,
-                                    GLsizeiptr size,
-                                    BufferFeedback *feedback)
+                                    GLsizeiptr size)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);
@@ -181,10 +178,7 @@ angle::Result BufferGL::copySubData(const gl::Context *context,
     return angle::Result::Continue;
 }
 
-angle::Result BufferGL::map(const gl::Context *context,
-                            GLenum access,
-                            void **mapPtr,
-                            BufferFeedback *feedback)
+angle::Result BufferGL::map(const gl::Context *context, GLenum access, void **mapPtr)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);
@@ -229,8 +223,7 @@ angle::Result BufferGL::mapRange(const gl::Context *context,
                                  size_t offset,
                                  size_t length,
                                  GLbitfield access,
-                                 void **mapPtr,
-                                 BufferFeedback *feedback)
+                                 void **mapPtr)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);
@@ -262,9 +255,7 @@ angle::Result BufferGL::mapRange(const gl::Context *context,
     return angle::Result::Continue;
 }
 
-angle::Result BufferGL::unmap(const gl::Context *context,
-                              GLboolean *result,
-                              BufferFeedback *feedback)
+angle::Result BufferGL::unmap(const gl::Context *context, GLboolean *result)
 {
     ContextGL *contextGL         = GetImplAs<ContextGL>(context);
     const FunctionsGL *functions = GetFunctionsGL(context);

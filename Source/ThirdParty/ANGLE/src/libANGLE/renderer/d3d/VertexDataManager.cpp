@@ -476,9 +476,7 @@ void VertexDataManager::PromoteDynamicAttribs(
             // Note: this multiplication can overflow. It should not be a security problem.
             BufferD3D *bufferD3D = GetImplAs<BufferD3D>(buffer);
             size_t typeSize      = ComputeVertexAttributeTypeSize(*dynamicAttrib.attribute);
-            BufferFeedback feedback;
-            bufferD3D->promoteStaticUsage(context, count * typeSize, &feedback);
-            buffer->applyImplFeedback(context, feedback);
+            bufferD3D->promoteStaticUsage(context, count * typeSize);
         }
     }
 }

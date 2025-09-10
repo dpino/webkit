@@ -289,10 +289,7 @@ angle::Result Framebuffer11::readPixelsImpl(const gl::Context *context,
                                     pack.reverseRowOrder, packBuffer,
                                     reinterpret_cast<ptrdiff_t>(pixels));
 
-        BufferFeedback feedback;
-        ANGLE_TRY(packBufferStorage->packPixels(context, *readAttachment, packParams, &feedback));
-        packBuffer->applyImplFeedback(context, feedback);
-        return angle::Result::Continue;
+        return packBufferStorage->packPixels(context, *readAttachment, packParams);
     }
 
     return mRenderer->readFromAttachment(context, *readAttachment, area, format, type,
