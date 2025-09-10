@@ -1693,6 +1693,8 @@ public:
     WEBCORE_EXPORT virtual RefPtr<Image> videoFrameToImage(VideoFrame&);
 #endif
 
+    virtual void setDamage(Damage&&) { }
+
     IntSize getInternalFramebufferSize() const { return IntSize(m_currentWidth, m_currentHeight); }
 
     struct PixelStoreParameters final {
