@@ -167,8 +167,6 @@ set(angle_translator_sources
     "src/compiler/translator/tree_ops/PruneNoOps.h"
     "src/compiler/translator/tree_ops/RecordConstantPrecision.cpp"
     "src/compiler/translator/tree_ops/RecordConstantPrecision.h"
-    "src/compiler/translator/tree_ops/ReduceInterfaceBlocks.cpp"
-    "src/compiler/translator/tree_ops/ReduceInterfaceBlocks.h"
     "src/compiler/translator/tree_ops/RemoveArrayLengthMethod.cpp"
     "src/compiler/translator/tree_ops/RemoveArrayLengthMethod.h"
     "src/compiler/translator/tree_ops/RemoveAtomicCounterBuiltins.cpp"
@@ -210,10 +208,6 @@ set(angle_translator_sources
     "src/compiler/translator/tree_ops/glsl/RegenerateStructNames.h"
     "src/compiler/translator/tree_ops/glsl/RewriteRepeatedAssignToSwizzled.h"
     "src/compiler/translator/tree_ops/glsl/UseInterfaceBlockFields.h"
-    "src/compiler/translator/tree_ops/glsl/apple/AddAndTrueToLoopCondition.h"
-    "src/compiler/translator/tree_ops/glsl/apple/RewriteRowMajorMatrices.h"
-    "src/compiler/translator/tree_ops/glsl/apple/UnfoldShortCircuitAST.h"
-    "src/compiler/translator/tree_ops/msl/EnsureLoopForwardProgress.h"
     "src/compiler/translator/tree_util/BuiltIn.h"
     "src/compiler/translator/tree_util/BuiltIn_autogen.h"
     "src/compiler/translator/tree_util/DriverUniform.cpp"
@@ -285,7 +279,9 @@ set(angle_translator_glsl_sources
 
 set(angle_translator_glsl_apple_sources
     "src/compiler/translator/tree_ops/glsl/apple/AddAndTrueToLoopCondition.cpp"
+    "src/compiler/translator/tree_ops/glsl/apple/RewriteDoWhile.cpp"
     "src/compiler/translator/tree_ops/glsl/apple/RewriteRowMajorMatrices.cpp"
+    "src/compiler/translator/tree_ops/glsl/apple/RewriteUnaryMinusOperatorFloat.cpp"
     "src/compiler/translator/tree_ops/glsl/apple/UnfoldShortCircuitAST.cpp"
 )
 
@@ -379,8 +375,6 @@ set(angle_translator_lib_spirv_sources
     "src/compiler/translator/tree_ops/spirv/RewriteInterpolateAtOffset.h"
     "src/compiler/translator/tree_ops/spirv/RewriteR32fImages.cpp"
     "src/compiler/translator/tree_ops/spirv/RewriteR32fImages.h"
-    "src/compiler/translator/tree_ops/spirv/RewriteSamplerExternalTexelFetch.cpp"
-    "src/compiler/translator/tree_ops/spirv/RewriteSamplerExternalTexelFetch.h"
 )
 
 set(angle_translator_essl_symbol_table_sources
@@ -429,7 +423,6 @@ set(angle_translator_lib_msl_sources
     "src/compiler/translator/tree_ops/msl/AddExplicitTypeCasts.h"
     "src/compiler/translator/tree_ops/msl/ConvertUnsupportedConstructorsToFunctionCalls.cpp"
     "src/compiler/translator/tree_ops/msl/ConvertUnsupportedConstructorsToFunctionCalls.h"
-    "src/compiler/translator/tree_ops/msl/EnsureLoopForwardProgress.cpp"
     "src/compiler/translator/tree_ops/msl/FixTypeConstructors.cpp"
     "src/compiler/translator/tree_ops/msl/FixTypeConstructors.h"
     "src/compiler/translator/tree_ops/msl/GuardFragDepthWrite.cpp"
@@ -438,6 +431,8 @@ set(angle_translator_lib_msl_sources
     "src/compiler/translator/tree_ops/msl/HoistConstants.h"
     "src/compiler/translator/tree_ops/msl/IntroduceVertexIndexID.cpp"
     "src/compiler/translator/tree_ops/msl/IntroduceVertexIndexID.h"
+    "src/compiler/translator/tree_ops/msl/ReduceInterfaceBlocks.cpp"
+    "src/compiler/translator/tree_ops/msl/ReduceInterfaceBlocks.h"
     "src/compiler/translator/tree_ops/msl/RewriteCaseDeclarations.cpp"
     "src/compiler/translator/tree_ops/msl/RewriteCaseDeclarations.h"
     "src/compiler/translator/tree_ops/msl/RewriteInterpolants.cpp"

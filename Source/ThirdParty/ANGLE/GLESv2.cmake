@@ -246,7 +246,6 @@ set(libangle_includes
     "include/platform/autogen/FeaturesGL_autogen.h"
     "include/platform/autogen/FeaturesMtl_autogen.h"
     "include/platform/autogen/FeaturesVk_autogen.h"
-    "include/platform/autogen/FeaturesWgpu_autogen.h"
     "include/platform/autogen/FrontendFeatures_autogen.h"
     "include/platform/PlatformMethods.h"
     "include/vulkan/vulkan_fuchsia_ext.h"
@@ -635,7 +634,7 @@ if(angle_enable_cl)
     )
 endif()
 
-set(libglesv2_entry_point_sources
+set(libglesv2_sources
     "src/libGLESv2/egl_context_lock_autogen.h"
     "src/libGLESv2/egl_context_lock_impl.h"
     "src/libGLESv2/egl_ext_stubs.cpp"
@@ -661,10 +660,9 @@ set(libglesv2_entry_point_sources
     "src/libGLESv2/entry_points_gles_ext_autogen.h"
     "src/libGLESv2/global_state.cpp"
     "src/libGLESv2/global_state.h"
+    "src/libGLESv2/libGLESv2_autogen.cpp"
     "src/libGLESv2/resource.h"
 )
-
-set(libglesv2_sources "src/libGLESv2/libGLESv2_autogen.cpp")
 
 set(libglesv2_cl_sources
     "src/libGLESv2/cl_dispatch_table.cpp"
