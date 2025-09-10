@@ -849,6 +849,17 @@ void GraphicsContextGLANGLE::prepareTexture()
         resolveMultisamplingIfNecessary();
 
     if (m_preserveDrawingBufferTexture) {
+        const IntRect fullRect{ 0, 0, m_currentWidth, m_currentHeight };
+        Damage::Rects rectsToCopy { };
+        if (m_damage && m_previousDamage) {
+            Damage& actualDamage = *m_previousDamage;
+            actualDamage.add(*m_damage);
+            rectsToCopy = actualDamage.rectsForPainting();
+        } else
+            rectsToCopy.append(fullRect);
+        m_previousDamage = WTF::move(m_damage);
+        m_damage = std::nullopt;
+
         // Blit m_preserveDrawingBufferTexture into m_texture.
         ScopedGLCapability scopedScissor(GL_SCISSOR_TEST, GL_FALSE);
         ScopedGLCapability scopedDither(GL_DITHER, GL_FALSE);
@@ -857,7 +868,8 @@ void GraphicsContextGLANGLE::prepareTexture()
             GLint texture2DBinding = 0;
             GL_GetIntegerv(GL_TEXTURE_BINDING_2D, &texture2DBinding);
             GL_BindTexture(GL_TEXTURE_2D, m_texture);
-            GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_currentWidth, m_currentHeight);
+            for (const auto& rectToCopy : rectsToCopy)
+                GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, rectToCopy.x(), rectToCopy.y(), rectToCopy.x(), rectToCopy.y(), rectToCopy.width(), rectToCopy.height());
             GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
         } else {
             GL_BindFramebuffer(GL_DRAW_FRAMEBUFFER_ANGLE, m_preserveDrawingBufferFBO);
@@ -868,6 +880,8 @@ void GraphicsContextGLANGLE::prepareTexture()
             GL_BindFramebuffer(GL_READ_FRAMEBUFFER_ANGLE, readFBO);
             GL_FramebufferTexture2D(GL_READ_FRAMEBUFFER_ANGLE, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_preserveDrawingBufferTexture, 0);
             GL_BlitFramebufferANGLE(0, 0, m_currentWidth, m_currentHeight, 0, 0, m_currentWidth, m_currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            for (const auto& rectToCopy : rectsToCopy)
+                GL_BlitFramebufferANGLE(rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
 
         if (m_isForWebGL2) {
@@ -977,6 +991,11 @@ void GraphicsContextGLANGLE::reshape(int width, int height)
 
     GL_Flush();
     didChangeMemoryCost();
+}
+
+void GraphicsContextGLANGLE::setDamage(Damage&& damage)
+{
+    m_damage = WTF::move(damage);
 }
 
 void GraphicsContextGLANGLE::activeTexture(GCGLenum texture)
