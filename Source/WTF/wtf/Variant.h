@@ -25,6 +25,14 @@
 
 #pragma once
 
+<<<<<<< HEAD
+||||||| parent of 5f0b3264ca5a (chore(webkit): bootstrap build #2209)
+#if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)
+
+=======
+#if PLATFORM(COCOA)
+
+>>>>>>> 5f0b3264ca5a (chore(webkit): bootstrap build #2209)
 // MPark.Variant
 //
 // Copyright Michael Park, 2015-2017

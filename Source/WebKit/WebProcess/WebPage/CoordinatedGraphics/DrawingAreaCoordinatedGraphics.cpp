@@ -39,7 +39,14 @@
 #include "WebPreferencesKeys.h"
 #include "WebProcess.h"
 #include <WebCore/GraphicsContext.h>
+<<<<<<< HEAD
 #include <WebCore/LocalFrameInlines.h>
+||||||| parent of 939c6ec545f1 (chore(webkit): bootstrap build #2209)
+#include <WebCore/LocalFrame.h>
+=======
+#include <WebCore/InspectorController.h>
+#include <WebCore/LocalFrame.h>
+>>>>>>> 939c6ec545f1 (chore(webkit): bootstrap build #2209)
 #include <WebCore/LocalFrameView.h>
 #include <WebCore/Page.h>
 #include <WebCore/PageOverlayController.h>
