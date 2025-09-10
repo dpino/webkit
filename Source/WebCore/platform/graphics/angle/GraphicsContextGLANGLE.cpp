@@ -635,6 +635,8 @@ std::optional<IntSize> GraphicsContextGLANGLE::readPixelsImpl(IntRect rect, GCGL
 
 void GraphicsContextGLANGLE::prepareTexture()
 {
+    m_previousDamage = WTF::move(m_damage);
+    m_damage = std::nullopt;
 }
 
 RefPtr<PixelBuffer> GraphicsContextGLANGLE::readRenderingResults()
@@ -691,6 +693,11 @@ void GraphicsContextGLANGLE::reshape(int width, int height)
         return;
     }
     didChangeMemoryCost();
+}
+
+void GraphicsContextGLANGLE::setDamage(Damage&& damage)
+{
+    m_damage = WTF::move(damage);
 }
 
 void GraphicsContextGLANGLE::activeTexture(GCGLenum texture)
@@ -2369,12 +2376,24 @@ void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
 {
     if (!makeContextCurrent())
         return;
+
+    const IntRect blitRect { srcX0, srcY0, srcX1 - srcX0, srcY1 - srcY0 };
+    const IntRect fullRect { 0, 0, m_currentWidth, m_currentHeight };
+    Damage::Rects rectsToCopy { };
+    if (blitRect == fullRect && m_damage && m_previousDamage) {
+        Damage& actualDamage = *m_previousDamage;
+        actualDamage.add(*m_damage);
+        rectsToCopy = actualDamage.rectsForPainting();
+    } else
+        rectsToCopy.append(blitRect);
+
     if (m_useBlitFallback) {
         GL_BindFramebuffer(GL_FRAMEBUFFER, m_state.boundReadFBO);
         GLint texture2DBinding = 0;
         GL_GetIntegerv(GL_TEXTURE_BINDING_2D, &texture2DBinding);
         GL_BindTexture(GL_TEXTURE_2D, m_texture);
-        GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, dstX0, dstY0, srcX0, srcY0, srcX1 - srcX0, srcY1 - srcY0);
+        for (const auto& rectToCopy : rectsToCopy)
+            GL_CopyTexSubImage2D(GL_TEXTURE_2D, 0, rectToCopy.x(), rectToCopy.y(), rectToCopy.x(), rectToCopy.y(), rectToCopy.width(), rectToCopy.height());
         GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
         GL_BindFramebuffer(GL_FRAMEBUFFER, m_state.boundDrawFBO);
         checkGPUStatus();
@@ -2386,6 +2405,10 @@ void GraphicsContextGLANGLE::blitFramebuffer(GCGLint srcX0, GCGLint srcY0, GCGLi
         GL_BlitFramebufferNV(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     else
         GL_BlitFramebufferANGLE(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    if (blitRect == fullRect && m_state.boundDrawFBO == m_fbo) {
+        for (const auto& rectToCopy : rectsToCopy)
+            GL_BlitFramebufferANGLE(rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    }
     checkGPUStatus();
 }
 
