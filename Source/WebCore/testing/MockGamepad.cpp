@@ -34,6 +34,9 @@ MockGamepad::MockGamepad(unsigned index, const String& gamepadID, const String& 
     : PlatformGamepad(index)
 {
     m_connectTime = m_lastUpdateTime = MonotonicTime::now();
+    m_name = { "Generic Gamepad (Mock)"_s };
+    m_productId = 0x05DF;
+    m_vendorId = 0x16C0;
     updateDetails(gamepadID, mapping, axisCount, buttonCount, supportsDualRumble, wasConnected);
 }
 

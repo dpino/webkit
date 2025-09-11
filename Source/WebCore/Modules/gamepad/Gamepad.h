@@ -28,6 +28,7 @@
 #if ENABLE(GAMEPAD)
 
 #include "GamepadHapticEffectType.h"
+#include <optional>
 #include <wtf/MonotonicTime.h>
 #include <wtf/RefCountedAndCanMakeWeakPtr.h>
 #include <wtf/Vector.h>
@@ -62,12 +63,19 @@ public:
     void updateFromPlatformGamepad(const PlatformGamepad&);
     void setConnected(bool connected) { m_connected = connected; }
 
+    std::optional<unsigned long> vendorId() const { return m_vendorId; }
+    std::optional<unsigned long> productId() const { return m_productId; }
+    const String& name() const { return m_name; }
+
     GamepadHapticActuator* vibrationActuator() { return m_vibrationActuator.get(); }
 
 private:
     Gamepad(Document*, const PlatformGamepad&);
     String m_id;
     unsigned m_index;
+    String m_name;
+    unsigned long m_vendorId;
+    unsigned long m_productId;
     bool m_connected;
     MonotonicTime m_timestamp;
     String m_mapping;

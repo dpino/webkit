@@ -70,6 +70,10 @@ public:
 
     virtual ASCIILiteral source() const { return "Unknown"_s; }
 
+    const String& name() const { return m_name; }
+    unsigned long productId() const { return m_productId; }
+    unsigned long vendorId() const { return m_vendorId; }
+
 protected:
     explicit PlatformGamepad(unsigned index)
         : m_index(index)
@@ -77,8 +81,11 @@ protected:
     }
 
     String m_id;
-    String m_mapping;
     unsigned m_index;
+    String m_name;
+    unsigned long m_productId;
+    unsigned long m_vendorId;
+    String m_mapping;
     MonotonicTime m_lastUpdateTime;
     MonotonicTime m_connectTime;
     GamepadHapticEffectTypeSet m_supportedEffectTypes;

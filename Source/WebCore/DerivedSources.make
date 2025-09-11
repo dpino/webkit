@@ -362,6 +362,7 @@ JS_BINDING_IDLS := \
 	$(WebCore)/Modules/filesystem/FileSystemWritableFileStream.idl \
     $(WebCore)/Modules/filesystem/StorageManager+FileSystem.idl \
     $(WebCore)/Modules/gamepad/Gamepad.idl \
+    $(WebCore)/Modules/gamepad/Gamepad+ID.idl \
     $(WebCore)/Modules/gamepad/GamepadButton.idl \
     $(WebCore)/Modules/gamepad/GamepadEffectParameters.idl \
     $(WebCore)/Modules/gamepad/GamepadEvent.idl \

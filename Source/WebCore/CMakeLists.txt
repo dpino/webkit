@@ -1795,6 +1795,7 @@ list(APPEND WebCore_IDL_INCLUDES
 
 list(APPEND WebCore_NON_SVG_IDL_FILES
     Modules/gamepad/Gamepad.idl
+    Modules/gamepad/Gamepad+ID.idl
     Modules/gamepad/GamepadButton.idl
     Modules/gamepad/GamepadEffectParameters.idl
     Modules/gamepad/GamepadEvent.idl

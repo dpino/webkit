@@ -130,6 +130,16 @@ static void onButtonReleaseEvent(ManetteDevice* device, ManetteEvent* event, Man
     gamepad->buttonPressedOrReleased(device, toStandardGamepadButton(button), false);
 }
 
+#ifdef MANETTE_CHECK_VERSION
+static unsigned long parseId(const char guid[32], uint8_t offset, uint8_t count)
+{
+    char id[8];
+
+    strncpy(id, guid + offset, count);
+    return atol(guid);
+}
+#endif
+
 ManetteGamepad::ManetteGamepad(ManetteDevice* device, unsigned index)
     : PlatformGamepad(index)
     , m_device(device)
@@ -140,6 +150,15 @@ ManetteGamepad::ManetteGamepad(ManetteDevice* device, unsigned index)
 
     m_id = String::fromUTF8(manette_device_get_name(m_device.get()));
     m_mapping = String::fromUTF8("standard");
+
+    m_name = String::fromUTF8(manette_device_get_name(m_device.get()));
+
+#ifdef MANETTE_CHECK_VERSION
+    const char* guid = manette_device_get_guid(m_device.get());
+    m_vendorId = parseId(guid, 8, 8);
+    m_productId = parseId(guid, 16, 8);
+    g_free(guid);
+#endif
 
     m_axisValues.resize(static_cast<size_t>(standardGamepadAxisCount));
     for (auto& value : m_axisValues)
