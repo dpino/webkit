@@ -88,7 +88,7 @@ public:
 #endif
 
 #if PLATFORM(GTK) || USE(LIBWPE) || PLATFORM(WIN)
-    NativeWebMouseEvent(WebEventType type, WebMouseEventButton button, unsigned short buttons, const WebCore::IntPoint& position, const WebCore::IntPoint& globalPosition, float deltaX, float deltaY, float deltaZ, int clickCount, OptionSet<WebEventModifier> modifiers, WallTime timestamp)
+    NativeWebMouseEvent(WebEventType type, WebMouseEventButton button, unsigned short buttons, const WebCore::IntPoint& position, const WebCore::IntPoint& globalPosition, float deltaX, float deltaY, float deltaZ, int clickCount, OptionSet<WebEventModifier> modifiers, MonotonicTime timestamp)
         : WebMouseEvent({type, modifiers, timestamp}, button, buttons, position, globalPosition, deltaX, deltaY, deltaZ, clickCount) { }
 #endif
 

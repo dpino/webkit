@@ -189,7 +189,7 @@ void WebPageInspectorInputAgent::dispatchKeyEvent(const String& type, std::optio
     bool eventIsSystemKey = false;
     if (isSystemKey)
         eventIsSystemKey = *isSystemKey;
-    WallTime timestamp = WallTime::now();
+    MonotonicTime timestamp = MonotonicTime::now();
 
     // cancel any active drag on Escape
     if (eventType == WebEventType::KeyDown && key == "Escape"_s && m_page.cancelDragIfNeeded()) {
@@ -281,7 +281,7 @@ void WebPageInspectorInputAgent::dispatchMouseEvent(const String& type, int x, i
     UNUSED_VARIABLE(eventClickCount);
     platformDispatchMouseEvent(type, x, y, WTFMove(modifiers), button, WTFMove(clickCount), eventButtons);
 #elif PLATFORM(GTK) || PLATFORM(WPE) || PLATFORM(WIN)
-    WallTime timestamp = WallTime::now();
+    MonotonicTime timestamp = MonotonicTime::now();
     NativeWebMouseEvent event(
         eventType,
         eventButton,
@@ -353,7 +353,7 @@ void WebPageInspectorInputAgent::dispatchTouchEvent(const String& type, std::opt
         touchPoints.append(WebPlatformTouchPoint(id, state, position, position, radius, rotationAngle, force));
     }
 
-    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, WallTime::now()}, WTFMove(touchPoints), {}, {});
+    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, MonotonicTime::now()}, WTFMove(touchPoints), {}, {});
     m_page.legacyMainFrameProcess().sendWithAsyncReply(Messages::WebPage::TouchEvent(touchEvent), [callback] (std::optional<WebEventType> eventType, bool) {
         if (!eventType) {
             callback->sendFailure("Failed to dispatch touch event."_s);
@@ -382,7 +382,7 @@ void WebPageInspectorInputAgent::dispatchWheelEvent(int x, int y, std::optional<
     x = clampToInteger(roundf(x * totalScale));
     y = clampToInteger(roundf(y * totalScale));
 
-    WallTime timestamp = WallTime::now();
+    MonotonicTime timestamp = MonotonicTime::now();
     WebCore::FloatSize delta = {-eventDeltaX, -eventDeltaY};
     WebCore::FloatSize wheelTicks = delta;
     wheelTicks.scale(1.0f / WebCore::Scrollbar::pixelsPerLineStep());

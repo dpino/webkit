@@ -102,7 +102,7 @@ void WebPageInspectorInputAgent::platformDispatchMouseEvent(const String& type, 
     m_page.handleMouseEvent(nativeEvent);
 }
 
-void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, const String& text, const String& unmodifiedText, const String& key, const String& code, const String& keyIdentifier, int windowsVirtualKeyCode, int nativeVirtualKeyCode, bool isAutoRepeat, bool isKeypad, bool isSystemKey, OptionSet<WebEventModifier> modifiers, Vector<String>& commands, WallTime timestamp)
+void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, const String& text, const String& unmodifiedText, const String& key, const String& code, const String& keyIdentifier, int windowsVirtualKeyCode, int nativeVirtualKeyCode, bool isAutoRepeat, bool isKeypad, bool isSystemKey, OptionSet<WebEventModifier> modifiers, Vector<String>& commands, MonotonicTime timestamp)
 {
     Vector<WebCore::KeypressCommand> macCommands;
     for (const String& command : commands) {
