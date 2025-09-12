@@ -210,11 +210,6 @@ set(angle_translator_sources
     "src/compiler/translator/tree_ops/glsl/RegenerateStructNames.h"
     "src/compiler/translator/tree_ops/glsl/RewriteRepeatedAssignToSwizzled.h"
     "src/compiler/translator/tree_ops/glsl/UseInterfaceBlockFields.h"
-    "src/compiler/translator/tree_ops/glsl/apple/AddAndTrueToLoopCondition.h"
-    "src/compiler/translator/tree_ops/glsl/apple/RewriteDoWhile.h"
-    "src/compiler/translator/tree_ops/glsl/apple/RewriteRowMajorMatrices.h"
-    "src/compiler/translator/tree_ops/glsl/apple/RewriteUnaryMinusOperatorFloat.h"
-    "src/compiler/translator/tree_ops/glsl/apple/UnfoldShortCircuitAST.h"
     "src/compiler/translator/tree_util/BuiltIn.h"
     "src/compiler/translator/tree_util/BuiltIn_autogen.h"
     "src/compiler/translator/tree_util/DriverUniform.cpp"
@@ -382,8 +377,6 @@ set(angle_translator_lib_spirv_sources
     "src/compiler/translator/tree_ops/spirv/RewriteInterpolateAtOffset.h"
     "src/compiler/translator/tree_ops/spirv/RewriteR32fImages.cpp"
     "src/compiler/translator/tree_ops/spirv/RewriteR32fImages.h"
-    "src/compiler/translator/tree_ops/spirv/RewriteSamplerExternalTexelFetch.cpp"
-    "src/compiler/translator/tree_ops/spirv/RewriteSamplerExternalTexelFetch.h"
 )
 
 set(angle_translator_essl_symbol_table_sources
