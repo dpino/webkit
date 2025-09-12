@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This script updates the copy of ANGLE in Source/ThirdParty/ANGLE
 # with the latest changes from upstream.
