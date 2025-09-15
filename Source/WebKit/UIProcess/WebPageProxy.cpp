@@ -480,16 +480,6 @@ static constexpr Seconds tryCloseTimeoutDelay = 50_ms;
 static constexpr Seconds audibleActivityClearDelay = 10_s;
 #endif
 
-<<<<<<< HEAD
-||||||| parent of 067098075949 (chore(webkit): bootstrap build #2210)
-DEFINE_DEBUG_ONLY_GLOBAL(WTF::RefCountedLeakCounter, webPageProxyCounter, ("WebPageProxy"));
-
-=======
-using namespace WebCore;
-
-DEFINE_DEBUG_ONLY_GLOBAL(WTF::RefCountedLeakCounter, webPageProxyCounter, ("WebPageProxy"));
-
->>>>>>> 067098075949 (chore(webkit): bootstrap build #2210)
 #if PLATFORM(COCOA)
 static WorkQueue& sharedFileQueueSingleton()
 {
