@@ -2431,9 +2431,11 @@ endif ()
 set(libsrtp_SOURCES
     Source/third_party/libsrtp/crypto/cipher/aes_gcm_ossl.c
     Source/third_party/libsrtp/crypto/cipher/aes_icm_ossl.c
+    Source/third_party/libsrtp/crypto/cipher/cipher_test_cases.c
     Source/third_party/libsrtp/crypto/cipher/cipher.c
     Source/third_party/libsrtp/crypto/cipher/null_cipher.c
     Source/third_party/libsrtp/crypto/hash/auth.c
+    Source/third_party/libsrtp/crypto/hash/auth_test_cases.c
     Source/third_party/libsrtp/crypto/hash/hmac_ossl.c
     Source/third_party/libsrtp/crypto/hash/null_auth.c
     Source/third_party/libsrtp/crypto/kernel/alloc.c
@@ -2441,10 +2443,8 @@ set(libsrtp_SOURCES
     Source/third_party/libsrtp/crypto/kernel/err.c
     Source/third_party/libsrtp/crypto/kernel/key.c
     Source/third_party/libsrtp/crypto/math/datatypes.c
-    Source/third_party/libsrtp/crypto/math/stat.c
     Source/third_party/libsrtp/crypto/replay/rdb.c
     Source/third_party/libsrtp/crypto/replay/rdbx.c
-    Source/third_party/libsrtp/srtp/ekt.c
     Source/third_party/libsrtp/srtp/srtp.c
 )
 
