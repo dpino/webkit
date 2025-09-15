@@ -1445,7 +1445,6 @@ list(APPEND webrtc_SOURCES
 
 # Boringssl.
 list(APPEND webrtc_SOURCES
-    Source/third_party/boringssl/err_data.cc
     Source/third_party/boringssl/src/crypto/aes/aes.cc
     Source/third_party/boringssl/src/crypto/asn1/a_bitstr.cc
     Source/third_party/boringssl/src/crypto/asn1/a_bool.cc
