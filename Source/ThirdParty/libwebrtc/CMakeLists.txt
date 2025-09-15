@@ -74,7 +74,6 @@ set(webrtc_SOURCES
     Source/third_party/abseil-cpp/absl/flags/usage_config.cc
     Source/third_party/abseil-cpp/absl/hash/internal/city.cc
     Source/third_party/abseil-cpp/absl/hash/internal/hash.cc
-    Source/third_party/abseil-cpp/absl/hash/internal/low_level_hash.cc
     Source/third_party/abseil-cpp/absl/hash/internal/print_hash_of.cc
     Source/third_party/abseil-cpp/absl/numeric/int128.cc
     Source/third_party/abseil-cpp/absl/profiling/internal/exponential_biased.cc
