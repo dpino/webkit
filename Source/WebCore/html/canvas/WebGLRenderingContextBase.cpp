@@ -681,7 +681,12 @@ void WebGLRenderingContextBase::markContextChangedAndNotifyCanvasObserver(WebGLR
 
     m_compositingResultsNeedUpdating = true;
     m_canvasBufferContents = std::nullopt;
-    markCanvasChanged();
+
+    Ref canvas = canvasBase();
+    if (m_damage) {
+        canvas->didDraw(m_latestScissor, ShouldApplyPostProcessingToDirtyRect::No);
+    } else
+        canvas->didDraw(FloatRect { { }, canvas->size() }, ShouldApplyPostProcessingToDirtyRect::No);
 }
 
 bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::CallerType caller, GCGLbitfield mask)
