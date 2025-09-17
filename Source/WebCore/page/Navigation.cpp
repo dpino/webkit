@@ -156,8 +156,12 @@ void Navigation::initializeForNewWindow(std::optional<NavigationNavigationType> 
             else {
                 auto previousEntry = m_entries[*previousNavigation->m_currentEntryIndex];
 
-                if (navigationType == NavigationNavigationType::Replace)
+                if (navigationType == NavigationNavigationType::Replace) {
+                    WTFLogAlways("### navigationType == NavigationNavigationType::Replace");
                     m_entries[*previousNavigation->m_currentEntryIndex] = NavigationHistoryEntry::create(*this, *currentItem);
+                } else {
+                    WTFLogAlways("### NOT navigationType == NavigationNavigationType::Replace");
+                }
 
                 m_currentEntryIndex = getEntryIndexOfHistoryItem(m_entries, *currentItem);
 
