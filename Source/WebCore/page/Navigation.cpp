@@ -67,6 +67,36 @@
 #include <wtf/Assertions.h>
 #include <wtf/TZoneMallocInlines.h>
 
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
+
+static void _log(const char* format, ...)
+{
+    const char* filename = "/tmp/webkit.log";
+    static FILE* fd;
+    char buffer[1024];
+    size_t len;
+    va_list args;
+
+    va_start(args, format);
+
+    len = vsnprintf(buffer, sizeof(buffer), format, args);
+    if (len < 0) {
+        va_end(args);
+        return;
+    }
+
+    if (!fd)
+        fd = fopen(filename, "w+");
+
+    buffer[len] = '\0';
+    fprintf(fd, "%s\n", buffer);
+    fclose(fd);
+
+    va_end(args);
+}
+
 namespace WebCore {
 
 WTF_MAKE_TZONE_OR_ISO_ALLOCATED_IMPL(Navigation);
@@ -158,15 +188,30 @@ void Navigation::initializeForNewWindow(std::optional<NavigationNavigationType> 
 
                 if (navigationType == NavigationNavigationType::Replace) {
                     WTFLogAlways("### navigationType == NavigationNavigationType::Replace");
+                    _log("### navigationType == NavigationNavigationType::Replace");
                     m_entries[*previousNavigation->m_currentEntryIndex] = NavigationHistoryEntry::create(*this, *currentItem);
+                    m_currentEntryIndex = *previousNavigation->m_currentEntryIndex;
                 } else {
                     WTFLogAlways("### NOT navigationType == NavigationNavigationType::Replace");
+                    m_currentEntryIndex = getEntryIndexOfHistoryItem(m_entries, *currentItem);
+                    /*
+                    _log("### NOT navigationType == NavigationNavigationType::Replace");
+                    RefPtr<NavigationHistoryEntry> temp = previousEntry;
+                    if (!temp.get()) {
+                        _log("### foo");
+                    }
+                    if (!currentEntry()) {
+                        _log("### bar");
+                    }
+                    */
+                    // _log("### previousEntry: %p", previousEntry.get());
+                    // _log("### currentEntry: %p", currentEntry());
                 }
 
-                m_currentEntryIndex = getEntryIndexOfHistoryItem(m_entries, *currentItem);
-
-                ASSERT(navigationType);
-                m_activation = NavigationActivation::create(*navigationType, *currentEntry(), WTFMove(previousEntry));
+                if (m_currentEntryIndex) {
+                    ASSERT(navigationType);
+                    m_activation = NavigationActivation::create(*navigationType, *currentEntry(), WTFMove(previousEntry));
+                }
 
                 return;
             }
