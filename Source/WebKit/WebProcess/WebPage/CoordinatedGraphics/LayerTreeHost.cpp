@@ -252,6 +252,11 @@ void LayerTreeHost::layerFlushTimerFired()
 {
     WTFBeginSignpost(this, LayerFlushTimerFired, "isWaitingForRenderer %i", m_isWaitingForRenderer);
 
+    if (m_isFlushingLayers) {
+        WTFEndSignpost(this, LayerFlushTimerFired);
+        return;
+    }
+
     if (m_isSuspended) {
         WTFEndSignpost(this, LayerFlushTimerFired);
         return;
