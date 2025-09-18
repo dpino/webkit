@@ -511,9 +511,12 @@ void FrameConsoleClient::screenshot(JSC::JSGlobalObject* lexicalGlobalObject, Re
     addMessage(makeUnique<Inspector::ConsoleMessage>(MessageSource::ConsoleAPI, MessageType::Image, MessageLevel::Log, dataURL, WTFMove(arguments), lexicalGlobalObject, 0, timestamp));
 }
 
-void PageConsoleClient::bindingCalled(JSC::JSGlobalObject* globalObject, const String& name, const String& arg)
+void FrameConsoleClient::bindingCalled(JSC::JSGlobalObject* globalObject, const String& name, const String& arg)
 {
-    InspectorInstrumentation::bindingCalled(m_page, globalObject, name, arg);
+    RefPtr frame = dynamicDowncast<LocalFrame>(m_frame.get());
+    if (!frame)
+        return;
+    InspectorInstrumentation::bindingCalled(*frame->page(), globalObject, name, arg);
 }
 
 } // namespace WebCore
