@@ -511,4 +511,23 @@ void FrameConsoleClient::screenshot(JSC::JSGlobalObject* lexicalGlobalObject, Re
     addMessage(makeUnique<Inspector::ConsoleMessage>(MessageSource::ConsoleAPI, MessageType::Image, MessageLevel::Log, dataURL, WTFMove(arguments), lexicalGlobalObject, 0, timestamp));
 }
 
+<<<<<<< HEAD:Source/WebCore/page/FrameConsoleClient.cpp
+||||||| parent of 7f9f7c73ef67 (chore(webkit): bootstrap build #2212):Source/WebCore/page/PageConsoleClient.cpp
+Ref<Page> PageConsoleClient::protectedPage() const
+{
+    return m_page.get();
+}
+
+=======
+Ref<Page> PageConsoleClient::protectedPage() const
+{
+    return m_page.get();
+}
+
+void PageConsoleClient::bindingCalled(JSC::JSGlobalObject* globalObject, const String& name, const String& arg)
+{
+    InspectorInstrumentation::bindingCalled(m_page, globalObject, name, arg);
+}
+
+>>>>>>> 7f9f7c73ef67 (chore(webkit): bootstrap build #2212):Source/WebCore/page/PageConsoleClient.cpp
 } // namespace WebCore
