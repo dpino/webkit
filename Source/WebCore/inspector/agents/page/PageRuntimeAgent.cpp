@@ -34,12 +34,8 @@
 
 #include "DOMWrapperWorld.h"
 #include "Document.h"
-<<<<<<< HEAD
 #include "FrameConsoleClient.h"
-||||||| parent of 7f9f7c73ef67 (chore(webkit): bootstrap build #2212)
-=======
 #include "FrameLoader.h"
->>>>>>> 7f9f7c73ef67 (chore(webkit): bootstrap build #2212)
 #include "InspectorPageAgent.h"
 #include "InstrumentingAgents.h"
 #include "JSDOMWindowCustom.h"
