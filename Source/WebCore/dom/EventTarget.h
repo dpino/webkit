@@ -35,7 +35,6 @@
 #include <WebCore/EventListenerOptions.h>
 #include <WebCore/PlatformExportMacros.h>
 #include <WebCore/ScriptWrappable.h>
-#include <bmalloc/TZoneHeap.h>
 #include <memory>
 #include <wtf/CanMakeWeakPtr.h>
 #include <wtf/CheckedPtr.h>
@@ -46,6 +45,11 @@
 #include <wtf/WeakPtr.h>
 #include <wtf/WeakPtrFactory.h>
 #include <wtf/WeakPtrImpl.h>
+
+#if !USE(SYSTEM_MALLOC)
+#include <bmalloc/TZoneHeap.h>
+#include <bmalloc/bmalloc.h>
+#endif
 
 namespace JSC {
 class JSValue;
