@@ -179,22 +179,12 @@ void WebProcess::platformInitializeWebProcess(WebProcessCreationParameters& para
 {
 #if USE(SKIA)
     const char* enableCPURendering = getenv("WEBKIT_SKIA_ENABLE_CPU_RENDERING");
-<<<<<<< HEAD
     IGNORE_CLANG_WARNINGS_BEGIN("unsafe-buffer-usage-in-libc-call")
-    if (enableCPURendering && strcmp(enableCPURendering, "0"))
-||||||| parent of 7058757c8aba ([Skia] Use CPU rendering by default)
-    if (enableCPURendering && strcmp(enableCPURendering, "0"))
-=======
     if (!enableCPURendering || strcmp(enableCPURendering, "0"))
->>>>>>> 7058757c8aba ([Skia] Use CPU rendering by default)
         ProcessCapabilities::setCanUseAcceleratedBuffers(false);
-<<<<<<< HEAD
-    IGNORE_CLANG_WARNINGS_END
-||||||| parent of 7058757c8aba ([Skia] Use CPU rendering by default)
-=======
     else
         ProcessCapabilities::setCanUseAcceleratedBuffers(true);
->>>>>>> 7058757c8aba ([Skia] Use CPU rendering by default)
+    IGNORE_CLANG_WARNINGS_END
 #endif
 
 #if ENABLE(MEDIA_STREAM)
