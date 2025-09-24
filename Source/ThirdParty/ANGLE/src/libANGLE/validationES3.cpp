@@ -1984,7 +1984,7 @@ bool ValidateCompressedTexImage3DRobustANGLE(const Context *context,
 {
     if ((context->getClientVersion() < ES_3_0) && !context->getExtensions().texture3DOES)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kEntryPointBaseUnsupported);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kES3Required);
         return false;
     }
 
@@ -2670,9 +2670,9 @@ bool ValidateTexImage3DRobustANGLE(const Context *context,
                                    GLsizei bufSize,
                                    const void *pixels)
 {
-    if ((context->getClientVersion() < ES_3_0) && !context->getExtensions().texture3DOES)
+    if (context->getClientVersion() < ES_3_0)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kEntryPointBaseUnsupported);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kES3Required);
         return false;
     }
 
@@ -2720,9 +2720,9 @@ bool ValidateTexSubImage3DRobustANGLE(const Context *context,
                                       GLsizei bufSize,
                                       const void *pixels)
 {
-    if ((context->getClientVersion() < ES_3_0) && !context->getExtensions().texture3DOES)
+    if (context->getClientVersion() < ES_3_0)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kEntryPointBaseUnsupported);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kES3Required);
         return false;
     }
 
@@ -2808,7 +2808,7 @@ bool ValidateCompressedTexSubImage3DRobustANGLE(const Context *context,
 {
     if ((context->getClientVersion() < ES_3_0) && !context->getExtensions().texture3DOES)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kEntryPointBaseUnsupported);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kES3Required);
         return false;
     }
 
@@ -3006,7 +3006,7 @@ bool ValidateGetBufferPointervRobustANGLE(const Context *context,
 
     if (context->getClientVersion() < ES_3_0 && !context->getExtensions().mapbufferOES)
     {
-        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kEntryPointBaseUnsupported);
+        ANGLE_VALIDATION_ERROR(GL_INVALID_OPERATION, kExtensionNotEnabled);
         return false;
     }
 
