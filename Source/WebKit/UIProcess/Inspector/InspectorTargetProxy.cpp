@@ -28,7 +28,7 @@
 
 #include "MessageSenderInlines.h"
 #include "ProvisionalPageProxy.h"
-#include "WebFrameProxy.h"
+#include "WebPageInspectorController.h"
 #include "WebPageInspectorTarget.h"
 #include "WebPageMessages.h"
 #include "WebPageProxy.h"
@@ -39,10 +39,163 @@ namespace WebKit {
 
 using namespace Inspector;
 
+<<<<<<< HEAD
 InspectorTargetProxy::InspectorTargetProxy(const String& targetId, Inspector::InspectorTargetType type)
     : m_identifier(targetId)
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+WTF_MAKE_TZONE_ALLOCATED_IMPL(InspectorTargetProxy);
+
+std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(WebPageProxy& page, const String& targetId, Inspector::InspectorTargetType type)
+{
+    return makeUnique<InspectorTargetProxy>(page, targetId, type);
+}
+
+std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(ProvisionalPageProxy& provisionalPage, const String& targetId, Inspector::InspectorTargetType type)
+{
+    RefPtr page = provisionalPage.page();
+    if (!page)
+        return nullptr;
+
+    auto target = InspectorTargetProxy::create(*page, targetId, type);
+    target->m_provisionalPage = provisionalPage;
+    return target;
+}
+
+InspectorTargetProxy::InspectorTargetProxy(WebPageProxy& page, const String& targetId, Inspector::InspectorTargetType type)
+    : m_page(page)
+    , m_identifier(targetId)
+=======
+WTF_MAKE_TZONE_ALLOCATED_IMPL(InspectorTargetProxy);
+
+std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(WebPageProxy& page, const String& targetId, Inspector::InspectorTargetType type)
+{
+    return makeUnique<InspectorTargetProxy>(page, targetId, type);
+}
+
+std::unique_ptr<InspectorTargetProxy> InspectorTargetProxy::create(ProvisionalPageProxy& provisionalPage, const String& targetId)
+{
+    RefPtr page = provisionalPage.page();
+    if (!page)
+        return nullptr;
+
+    auto target = InspectorTargetProxy::create(*page, targetId, Inspector::InspectorTargetType::Page);
+    target->m_provisionalPage = provisionalPage;
+    return target;
+}
+
+InspectorTargetProxy::InspectorTargetProxy(WebPageProxy& page, const String& targetId, Inspector::InspectorTargetType type)
+    : m_page(page)
+    , m_identifier(targetId)
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
     , m_type(type)
 {
 }
 
 }
+<<<<<<< HEAD
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+
+void InspectorTargetProxy::disconnect()
+{
+    if (isPaused())
+        resume();
+
+    if (RefPtr provisionalPage = m_provisionalPage.get()) {
+        provisionalPage->send(Messages::WebPage::DisconnectInspector(identifier()));
+        return;
+    }
+
+    Ref page = m_page.get();
+    if (page->hasRunningProcess())
+        page->protectedLegacyMainFrameProcess()->send(Messages::WebPage::DisconnectInspector(identifier()), page->webPageIDInMainFrameProcess());
+}
+
+void InspectorTargetProxy::sendMessageToTargetBackend(const String& message)
+{
+    if (RefPtr provisionalPage = m_provisionalPage.get()) {
+        provisionalPage->send(Messages::WebPage::SendMessageToTargetBackend(identifier(), message));
+        return;
+    }
+
+    Ref page = m_page.get();
+    if (page->hasRunningProcess())
+        page->protectedLegacyMainFrameProcess()->send(Messages::WebPage::SendMessageToTargetBackend(identifier(), message), page->webPageIDInMainFrameProcess());
+}
+
+void InspectorTargetProxy::didCommitProvisionalTarget()
+{
+    m_provisionalPage = nullptr;
+}
+
+bool InspectorTargetProxy::isProvisional() const
+{
+    return !!m_provisionalPage;
+}
+
+} // namespace WebKit
+=======
+
+void InspectorTargetProxy::disconnect()
+{
+    if (isPaused())
+        resume();
+
+    if (RefPtr provisionalPage = m_provisionalPage.get()) {
+        provisionalPage->send(Messages::WebPage::DisconnectInspector(identifier()));
+        return;
+    }
+
+    Ref page = m_page.get();
+    if (page->hasRunningProcess())
+        page->protectedLegacyMainFrameProcess()->send(Messages::WebPage::DisconnectInspector(identifier()), page->webPageIDInMainFrameProcess());
+}
+
+void InspectorTargetProxy::sendMessageToTargetBackend(const String& message)
+{
+    if (RefPtr provisionalPage = m_provisionalPage.get()) {
+        provisionalPage->send(Messages::WebPage::SendMessageToTargetBackend(identifier(), message));
+        return;
+    }
+
+    Ref page = m_page.get();
+    if (page->hasRunningProcess())
+        page->protectedLegacyMainFrameProcess()->send(Messages::WebPage::SendMessageToTargetBackend(identifier(), message), page->webPageIDInMainFrameProcess());
+}
+
+void InspectorTargetProxy::didCommitProvisionalTarget()
+{
+    m_provisionalPage = nullptr;
+}
+
+void InspectorTargetProxy::willResume()
+{
+    if (m_page->hasRunningProcess())
+        m_page->legacyMainFrameProcess().send(Messages::WebPage::ResumeInspectorIfPausedInNewWindow(), m_page->webPageIDInMainFrameProcess());
+}
+
+void InspectorTargetProxy::activate(String& error)
+{
+    if (m_type != Inspector::InspectorTargetType::Page)
+        return InspectorTarget::activate(error);
+
+    platformActivate(error);
+}
+
+void InspectorTargetProxy::close(String& error, bool runBeforeUnload)
+{
+    if (m_type != Inspector::InspectorTargetType::Page)
+        return InspectorTarget::close(error, runBeforeUnload);
+
+    if (runBeforeUnload)
+        m_page->tryClose();
+    else
+        m_page->closePage();
+}
+
+bool InspectorTargetProxy::isProvisional() const
+{
+    return !!m_provisionalPage;
+}
+
+} // namespace WebKit
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)

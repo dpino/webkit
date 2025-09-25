@@ -29,19 +29,74 @@
 
 namespace WebKit {
 
+<<<<<<< HEAD
 class InspectorTargetProxy : public Inspector::InspectorTarget {
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+class ProvisionalPageProxy;
+class WebPageProxy;
+
+// NOTE: This UIProcess side InspectorTarget doesn't care about the frontend channel, since
+// any target -> frontend messages will be routed to the WebPageProxy with a targetId.
+
+class InspectorTargetProxy final : public Inspector::InspectorTarget {
+    WTF_MAKE_TZONE_ALLOCATED(InspectorTargetProxy);
+    WTF_MAKE_NONCOPYABLE(InspectorTargetProxy);
+=======
+class ProvisionalPageProxy;
+class WebPageProxy;
+
+// NOTE: This UIProcess side InspectorTarget doesn't care about the frontend channel, since
+// any target -> frontend messages will be routed to the WebPageProxy with a targetId.
+
+class InspectorTargetProxy : public Inspector::InspectorTarget {
+    WTF_MAKE_TZONE_ALLOCATED(InspectorTargetProxy);
+    WTF_MAKE_NONCOPYABLE(InspectorTargetProxy);
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
 public:
+<<<<<<< HEAD
     virtual ~InspectorTargetProxy() = default;
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+    static std::unique_ptr<InspectorTargetProxy> create(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    static std::unique_ptr<InspectorTargetProxy> create(ProvisionalPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    InspectorTargetProxy(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    ~InspectorTargetProxy() = default;
+=======
+    static std::unique_ptr<InspectorTargetProxy> create(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    static std::unique_ptr<InspectorTargetProxy> create(ProvisionalPageProxy&, const String& targetId);
+    InspectorTargetProxy(WebPageProxy&, const String& targetId, Inspector::InspectorTargetType);
+    ~InspectorTargetProxy() = default;
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
 
     Inspector::InspectorTargetType type() const final { return m_type; }
     String identifier() const final { return m_identifier; }
 
     virtual void didCommitProvisionalTarget() = 0;
 
+<<<<<<< HEAD
 protected:
     InspectorTargetProxy(const String& targetId, Inspector::InspectorTargetType);
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+    void connect(Inspector::FrontendChannel::ConnectionType) override;
+    void disconnect() override;
+    void sendMessageToTargetBackend(const String&) override;
+=======
+    void connect(Inspector::FrontendChannel::ConnectionType) override;
+    void disconnect() override;
+    void sendMessageToTargetBackend(const String&) override;
+    void activate(String& error) override;
+    void close(String& error, bool runBeforeUnload) override;
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
 
 private:
+<<<<<<< HEAD
+||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
+    WeakRef<WebPageProxy> m_page;
+=======
+    void willResume() override;
+    void platformActivate(String& error) const;
+
+    WeakRef<WebPageProxy> m_page;
+>>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
     String m_identifier;
     Inspector::InspectorTargetType m_type;
 };
