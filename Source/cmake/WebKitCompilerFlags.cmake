@@ -122,14 +122,8 @@ macro(WEBKIT_ADD_TARGET_CXX_FLAGS _target)
 endmacro()
 
 
-<<<<<<< HEAD
-option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" ON)
-set(DEVELOPER_MODE_CXX_FLAGS)
-||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
-option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" ON)
-=======
 option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" OFF)
->>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
+set(DEVELOPER_MODE_CXX_FLAGS)
 if (DEVELOPER_MODE AND DEVELOPER_MODE_FATAL_WARNINGS)
     if (MSVC)
         set(FATAL_WARNINGS_FLAG /WX)

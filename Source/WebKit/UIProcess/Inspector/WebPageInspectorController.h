@@ -26,20 +26,12 @@
 #pragma once
 
 #include "InspectorTargetProxy.h"
-<<<<<<< HEAD
 #include "ProvisionalPageProxy.h"
-||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
-=======
 #include "ProcessTerminationReason.h"
->>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
 #include <JavaScriptCore/InspectorAgentRegistry.h>
 #include <JavaScriptCore/InspectorTargetAgent.h>
-<<<<<<< HEAD
 #include <WebCore/FrameIdentifier.h>
-||||||| parent of f79483e2fb86 (chore(webkit): bootstrap build #2213)
-=======
 #include <WebCore/NavigationIdentifier.h>
->>>>>>> f79483e2fb86 (chore(webkit): bootstrap build #2213)
 #include <WebCore/PageIdentifier.h>
 #include <wtf/CheckedRef.h>
 #include <wtf/Forward.h>
