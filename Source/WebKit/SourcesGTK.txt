@@ -276,9 +276,7 @@ UIProcess/gtk/ClipboardGtk4.cpp @no-unify
 UIProcess/gtk/Display.cpp @no-unify
 UIProcess/gtk/DisplayX11.cpp @no-unify
 UIProcess/gtk/DisplayWayland.cpp @no-unify
-UIProcess/gtk/WebDateTimePickerGtk.cpp
 UIProcess/gtk/HardwareAccelerationManager.cpp
-UIProcess/gtk/InspectorTargetProxyGtk.cpp
 UIProcess/gtk/KeyBindingTranslator.cpp
 UIProcess/gtk/PointerLockManager.cpp @no-unify
 UIProcess/gtk/PointerLockManagerWayland.cpp @no-unify
@@ -292,8 +290,10 @@ UIProcess/gtk/ViewGestureControllerGtk.cpp
 UIProcess/gtk/WebColorPickerGtk.cpp
 UIProcess/gtk/WebContextMenuProxyGtk.cpp
 UIProcess/gtk/WebDataListSuggestionsDropdownGtk.cpp
+UIProcess/gtk/WebDateTimePickerGtk.cpp
 UIProcess/gtk/WebPageInspectorEmulationAgentGtk.cpp
 UIProcess/gtk/WebPageInspectorInputAgentGtk.cpp
+UIProcess/gtk/WebPageInspectorTargetProxyGtk.cpp
 UIProcess/gtk/WebPageProxyGtk.cpp @no-unify
 UIProcess/gtk/WebPasteboardProxyGtk.cpp
 UIProcess/gtk/WebPopupMenuProxyGtk.cpp

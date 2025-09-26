@@ -55,7 +55,7 @@ list(APPEND WebKit_SOURCES
     UIProcess/win/AutomationClientWin.cpp
     UIProcess/win/AutomationSessionClientWin.cpp
 
-    UIProcess/win/InspectorTargetProxyWin.cpp
+    UIProcess/win/WebPageInspectorTargetProxyWin.cpp
     UIProcess/win/InspectorPlaywrightAgentClientWin.cpp
     UIProcess/win/PageClientImpl.cpp
     UIProcess/win/WebContextMenuProxyWin.cpp
