@@ -267,7 +267,6 @@ UIProcess/soup/WebProcessPoolSoup.cpp
 
 UIProcess/wpe/AcceleratedBackingStore.cpp
 UIProcess/wpe/DisplayVBlankMonitorWPE.cpp
-UIProcess/wpe/InspectorTargetProxyWPE.cpp
 UIProcess/wpe/ScreenManagerWPE.cpp
 UIProcess/wpe/SystemSettingsManagerProxyWPE.cpp
 UIProcess/wpe/WPEUtilities.cpp
@@ -276,6 +275,7 @@ UIProcess/wpe/WebDataListSuggestionsDropdownWPE.cpp
 UIProcess/wpe/WebDateTimePickerWPE.cpp
 UIProcess/wpe/WebPageInspectorEmulationAgentWPE.cpp
 UIProcess/wpe/WebPageInspectorInputAgentWPE.cpp
+UIProcess/wpe/WebPageInspectorTargetProxyWPE.cpp
 UIProcess/wpe/WebPageProxyWPE.cpp
 UIProcess/wpe/WebPasteboardProxyWPE.cpp
 UIProcess/wpe/WebPreferencesWPE.cpp

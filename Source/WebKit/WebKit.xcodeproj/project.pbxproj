@@ -2360,7 +2360,7 @@
 		D71A944C237239FB002C4D9E /* BrowserInspectorPipe.h in Headers */ = {isa = PBXBuildFile; fileRef = D71A944B237239FB002C4D9E /* BrowserInspectorPipe.h */; };
 		D76D6888238DBD81008D314B /* InspectorDialogAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = D76D6887238DBD80008D314B /* InspectorDialogAgent.h */; };
 		D79902B1236E9404005D6F7E /* WebPageInspectorEmulationAgentMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = D79902AE236E9404005D6F7E /* WebPageInspectorEmulationAgentMac.mm */; };
-		D79902B2236E9404005D6F7E /* InspectorTargetProxyMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = D79902AF236E9404005D6F7E /* InspectorTargetProxyMac.mm */; };
+		D79902B2236E9404005D6F7E /* WebPageInspectorTargetProxyMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = D79902AF236E9404005D6F7E /* WebPageInspectorTargetProxyMac.mm */; };
 		D79902B3236E9404005D6F7E /* WebPageInspectorInputAgentMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = D79902B0236E9404005D6F7E /* WebPageInspectorInputAgentMac.mm */; };
 		D7EB04E72372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = D7EB04E62372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm */; };
 		DF462E0F23F22F5500EFF35F /* WKHTTPCookieStorePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DF462E0E23F22F5300EFF35F /* WKHTTPCookieStorePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -8255,7 +8255,7 @@
 		D71A944B237239FB002C4D9E /* BrowserInspectorPipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserInspectorPipe.h; sourceTree = "<group>"; };
 		D76D6887238DBD80008D314B /* InspectorDialogAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InspectorDialogAgent.h; sourceTree = "<group>"; };
 		D79902AE236E9404005D6F7E /* WebPageInspectorEmulationAgentMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPageInspectorEmulationAgentMac.mm; sourceTree = "<group>"; };
-		D79902AF236E9404005D6F7E /* InspectorTargetProxyMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InspectorTargetProxyMac.mm; sourceTree = "<group>"; };
+		D79902AF236E9404005D6F7E /* WebPageInspectorTargetProxyMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPageInspectorTargetProxyMac.mm; sourceTree = "<group>"; };
 		D79902B0236E9404005D6F7E /* WebPageInspectorInputAgentMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPageInspectorInputAgentMac.mm; sourceTree = "<group>"; };
 		D7EB04E62372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InspectorPlaywrightAgentClientMac.mm; sourceTree = "<group>"; };
 		DF462E0E23F22F5300EFF35F /* WKHTTPCookieStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKHTTPCookieStorePrivate.h; sourceTree = "<group>"; };
@@ -15931,7 +15931,7 @@
 				7AFA6F682A9F57C50055322A /* DisplayLinkMac.cpp */,
 				D71A94302370E025002C4D9E /* InspectorPlaywrightAgentClientMac.h */,
 				D7EB04E62372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm */,
-				D79902AF236E9404005D6F7E /* InspectorTargetProxyMac.mm */,
+				D79902AF236E9404005D6F7E /* WebPageInspectorTargetProxyMac.mm */,
 				1AFDE65B1954E8D500C48FFA /* LegacySessionStateCoding.cpp */,
 				0FCB4E5818BBE3D9000FCFC9 /* PageClientImplMac.h */,
 				0FCB4E5918BBE3D9000FCFC9 /* PageClientImplMac.mm */,
@@ -20930,7 +20930,7 @@
 				2749F6442146561B008380BF /* InjectedBundleNodeHandle.cpp in Sources */,
 				2749F6452146561E008380BF /* InjectedBundleRangeHandle.cpp in Sources */,
 				D7EB04E72372A73B00F744CE /* InspectorPlaywrightAgentClientMac.mm in Sources */,
-				D79902B2236E9404005D6F7E /* InspectorTargetProxyMac.mm in Sources */,
+				D79902B2236E9404005D6F7E /* WebPageInspectorTargetProxyMac.mm in Sources */,
 				1CC94E532AC92F190045F269 /* JSWebExtensionAPIAction.mm in Sources */,
 				1C2B4D4B2A819D0D00C528A1 /* JSWebExtensionAPIAlarms.mm in Sources */,
 				1C8ECFEA2AFC7DCB007BAA62 /* JSWebExtensionAPICommands.mm in Sources */,
