@@ -78,62 +78,10 @@ String PlatformPasteboard::readString(size_t, const String& type) const
 
 void PlatformPasteboard::write(const PasteboardWebContent& content)
 {
-<<<<<<< HEAD
-    static constexpr auto plainText = "text/plain;charset=utf-8"_s;
-    static constexpr auto htmlText = "text/html"_s;
-
-    CString textString = content.text.utf8();
-    CString markupString = content.markup.utf8();
-
-    IGNORE_CLANG_WARNINGS_BEGIN("unsafe-buffer-usage-in-libc-call")
-    std::array<struct wpe_pasteboard_string_pair, 2> pairs = { {
-        { { nullptr, 0 }, { nullptr, 0 } },
-        { { nullptr, 0 }, { nullptr, 0 } },
-    } };
-    wpe_pasteboard_string_initialize(&pairs[0].type, plainText, strlen(plainText));
-    wpe_pasteboard_string_initialize(&pairs[0].string, textString.data(), textString.length());
-    wpe_pasteboard_string_initialize(&pairs[1].type, htmlText, strlen(htmlText));
-    wpe_pasteboard_string_initialize(&pairs[1].string, markupString.data(), markupString.length());
-    struct wpe_pasteboard_string_map map = { pairs.data(), pairs.size() };
-    IGNORE_CLANG_WARNINGS_END
-
-    wpe_pasteboard_write(m_pasteboard, &map);
-    m_changeCount++;
-
-    wpe_pasteboard_string_free(&pairs[0].type);
-    wpe_pasteboard_string_free(&pairs[0].string);
-    wpe_pasteboard_string_free(&pairs[1].type);
-    wpe_pasteboard_string_free(&pairs[1].string);
-||||||| parent of 956af7f55f35 (chore(webkit): bootstrap build #2214)
-    static constexpr auto plainText = "text/plain;charset=utf-8"_s;
-    static constexpr auto htmlText = "text/html"_s;
-
-    CString textString = content.text.utf8();
-    CString markupString = content.markup.utf8();
-
-    std::array<struct wpe_pasteboard_string_pair, 2> pairs = { {
-        { { nullptr, 0 }, { nullptr, 0 } },
-        { { nullptr, 0 }, { nullptr, 0 } },
-    } };
-    wpe_pasteboard_string_initialize(&pairs[0].type, plainText, strlen(plainText));
-    wpe_pasteboard_string_initialize(&pairs[0].string, textString.data(), textString.length());
-    wpe_pasteboard_string_initialize(&pairs[1].type, htmlText, strlen(htmlText));
-    wpe_pasteboard_string_initialize(&pairs[1].string, markupString.data(), markupString.length());
-    struct wpe_pasteboard_string_map map = { pairs.data(), pairs.size() };
-
-    wpe_pasteboard_write(m_pasteboard, &map);
-    m_changeCount++;
-
-    wpe_pasteboard_string_free(&pairs[0].type);
-    wpe_pasteboard_string_free(&pairs[0].string);
-    wpe_pasteboard_string_free(&pairs[1].type);
-    wpe_pasteboard_string_free(&pairs[1].string);
-=======
     String plainText = "text/plain;charset=utf-8"_s;
     String htmlText = "text/html;charset=utf-8"_s;
     sharedPasteboard().set(plainText, content.text);
     sharedPasteboard().set(htmlText, content.markup);
->>>>>>> 956af7f55f35 (chore(webkit): bootstrap build #2214)
 }
 
 void PlatformPasteboard::write(const String& type, const String& string)
