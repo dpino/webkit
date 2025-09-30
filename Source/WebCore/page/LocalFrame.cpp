@@ -1646,14 +1646,11 @@ RefPtr<SecurityOrigin> LocalFrame::frameDocumentSecurityOrigin() const
     return nullptr;
 }
 
-<<<<<<< HEAD
 Ref<FrameInspectorController> LocalFrame::protectedInspectorController()
 {
     return m_inspectorController.get();
 }
 
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-=======
 #if !PLATFORM(IOS_FAMILY)
 
 void LocalFrame::betterApproximateNode(const IntPoint& testPoint, const NodeQualifier& nodeQualifierFunction, Node*& best, Node* failedNode, IntPoint& bestPoint, IntRect& bestRect, const IntRect& testRect)
@@ -2012,7 +2009,6 @@ Node* LocalFrame::nodeRespondingToScrollWheelEvents(const FloatPoint& viewportLo
 
 #endif // !PLATFORM(IOS_FAMILY)
 
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 } // namespace WebCore
 
 #undef FRAME_RELEASE_LOG_ERROR

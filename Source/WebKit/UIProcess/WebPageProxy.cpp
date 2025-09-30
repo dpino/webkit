@@ -256,12 +256,8 @@
 #include <WebCore/PublicSuffixStore.h>
 #include <WebCore/Quirks.h>
 #include <WebCore/RealtimeMediaSourceCenter.h>
-<<<<<<< HEAD
 #include <WebCore/ReferrerPolicy.h>
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-=======
 #include <WebCore/RegistrableDomain.h>
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 #include <WebCore/RemoteUserInputEventData.h>
 #include <WebCore/RenderEmbeddedObject.h>
 #include <WebCore/ResourceLoadStatistics.h>

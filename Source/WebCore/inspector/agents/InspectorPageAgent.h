@@ -152,20 +152,7 @@ public:
     void loadEventFired(LocalFrame&);
     void frameNavigated(LocalFrame&);
     void frameDetached(LocalFrame&);
-<<<<<<< HEAD
     void loaderDetachedFromFrame(DocumentLoader&);
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-    void loaderDetachedFromFrame(DocumentLoader&);
-    void frameStartedLoading(LocalFrame&);
-    void frameStoppedLoading(LocalFrame&);
-    void frameScheduledNavigation(Frame&, Seconds delay);
-    void frameClearedScheduledNavigation(Frame&);
-=======
-    void frameStartedLoading(LocalFrame&);
-    void frameStoppedLoading(LocalFrame&);
-    void frameScheduledNavigation(Frame&, Seconds delay, bool targetIsCurrentFrame);
-    void frameClearedScheduledNavigation(Frame&);
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
     void accessibilitySettingsDidChange();
     void defaultUserPreferencesDidChange();
     void didNavigateWithinPage(LocalFrame&);

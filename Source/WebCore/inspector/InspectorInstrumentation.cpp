@@ -837,40 +837,6 @@ void InspectorInstrumentation::frameStoppedLoadingImpl(InstrumentingAgents& inst
         if (auto* pageDebuggerAgent = instrumentingAgents.enabledPageDebuggerAgent())
             pageDebuggerAgent->mainFrameStoppedLoading();
     }
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameStoppedLoading(frame);
-}
-
-void InspectorInstrumentation::frameScheduledNavigationImpl(InstrumentingAgents& instrumentingAgents, Frame& frame, Seconds delay)
-{
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameScheduledNavigation(frame, delay);
-}
-
-void InspectorInstrumentation::frameClearedScheduledNavigationImpl(InstrumentingAgents& instrumentingAgents, Frame& frame)
-{
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameClearedScheduledNavigation(frame);
-=======
-
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameStoppedLoading(frame);
-}
-
-void InspectorInstrumentation::frameScheduledNavigationImpl(InstrumentingAgents& instrumentingAgents, Frame& frame, Seconds delay, bool targetIsCurrentFrame)
-{
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameScheduledNavigation(frame, delay, targetIsCurrentFrame);
-}
-
-void InspectorInstrumentation::frameClearedScheduledNavigationImpl(InstrumentingAgents& instrumentingAgents, Frame& frame)
-{
-    if (auto* inspectorPageAgent = instrumentingAgents.enabledPageAgent())
-        inspectorPageAgent->frameClearedScheduledNavigation(frame);
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 }
 
 void InspectorInstrumentation::accessibilitySettingsDidChangeImpl(InstrumentingAgents& instrumentingAgents)

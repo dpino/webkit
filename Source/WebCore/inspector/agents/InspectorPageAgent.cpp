@@ -1103,60 +1103,11 @@ LocalFrame* InspectorPageAgent::assertFrame(Inspector::Protocol::ErrorString& er
     return frame;
 }
 
-<<<<<<< HEAD
 void InspectorPageAgent::loaderDetachedFromFrame(DocumentLoader& loader)
 {
     m_loaderToIdentifier.remove(&loader);
 }
 
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-void InspectorPageAgent::loaderDetachedFromFrame(DocumentLoader& loader)
-{
-    m_loaderToIdentifier.remove(&loader);
-}
-
-void InspectorPageAgent::frameStartedLoading(LocalFrame& frame)
-{
-    m_frontendDispatcher->frameStartedLoading(frameId(&frame));
-}
-
-void InspectorPageAgent::frameStoppedLoading(LocalFrame& frame)
-{
-    m_frontendDispatcher->frameStoppedLoading(frameId(&frame));
-}
-
-void InspectorPageAgent::frameScheduledNavigation(Frame& frame, Seconds delay)
-{
-    m_frontendDispatcher->frameScheduledNavigation(frameId(&frame), delay.value());
-}
-
-void InspectorPageAgent::frameClearedScheduledNavigation(Frame& frame)
-{
-    m_frontendDispatcher->frameClearedScheduledNavigation(frameId(&frame));
-}
-
-=======
-void InspectorPageAgent::frameStartedLoading(LocalFrame& frame)
-{
-    m_frontendDispatcher->frameStartedLoading(frameId(&frame));
-}
-
-void InspectorPageAgent::frameStoppedLoading(LocalFrame& frame)
-{
-    m_frontendDispatcher->frameStoppedLoading(frameId(&frame));
-}
-
-void InspectorPageAgent::frameScheduledNavigation(Frame& frame, Seconds delay, bool targetIsCurrentFrame)
-{
-    m_frontendDispatcher->frameScheduledNavigation(frameId(&frame), delay.value(), targetIsCurrentFrame);
-}
-
-void InspectorPageAgent::frameClearedScheduledNavigation(Frame& frame)
-{
-    m_frontendDispatcher->frameClearedScheduledNavigation(frameId(&frame));
-}
-
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 void InspectorPageAgent::accessibilitySettingsDidChange()
 {
     defaultUserPreferencesDidChange();

@@ -521,72 +521,6 @@
             ]
         },
         {
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-            "name": "frameStartedLoading",
-            "description": "Fired when frame has started loading.",
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has started loading." }
-            ]
-        },
-        {
-            "name": "frameStoppedLoading",
-            "description": "Fired when frame has stopped loading.",
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has stopped loading." }
-            ]
-        },
-        {
-            "name": "frameScheduledNavigation",
-            "description": "Fired when frame schedules a potential navigation.",
-            "targetTypes": ["page"],
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has scheduled a navigation." },
-                { "name": "delay", "type": "number", "description": "Delay (in seconds) until the navigation is scheduled to begin. The navigation is not guaranteed to start." }
-            ]
-        },
-        {
-            "name": "frameClearedScheduledNavigation",
-            "description": "Fired when frame no longer has a scheduled navigation.",
-            "targetTypes": ["page"],
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has cleared its scheduled navigation." }
-            ]
-        },
-        {
-=======
-            "name": "frameStartedLoading",
-            "description": "Fired when frame has started loading.",
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has started loading." }
-            ]
-        },
-        {
-            "name": "frameStoppedLoading",
-            "description": "Fired when frame has stopped loading.",
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has stopped loading." }
-            ]
-        },
-        {
-            "name": "frameScheduledNavigation",
-            "description": "Fired when frame schedules a potential navigation.",
-            "targetTypes": ["page"],
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has scheduled a navigation." },
-                { "name": "delay", "type": "number", "description": "Delay (in seconds) until the navigation is scheduled to begin. The navigation is not guaranteed to start." },
-                { "name": "targetIsCurrentFrame", "type": "boolean", "description": "Whether the naviation will happen in the same frame." }
-            ]
-        },
-        {
-            "name": "frameClearedScheduledNavigation",
-            "description": "Fired when frame no longer has a scheduled navigation.",
-            "targetTypes": ["page"],
-            "parameters": [
-                { "name": "frameId", "$ref": "Network.FrameId", "description": "Id of the frame that has cleared its scheduled navigation." }
-            ]
-        },
-        {
             "name": "navigatedWithinDocument",
             "description": "Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.",
             "parameters": [
@@ -603,7 +537,6 @@
             ]
         },
         {
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
             "name": "defaultUserPreferencesDidChange",
             "description": "Fired when the default value of a user preference changes at the system level.",
             "targetTypes": ["page"],

@@ -245,14 +245,6 @@ public:
     static void frameStartedLoading(LocalFrame&);
     static void frameStoppedLoading(LocalFrame&);
     static void didCompleteRenderingFrame(Frame&);
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-    static void frameScheduledNavigation(Frame&, Seconds delay);
-    static void frameClearedScheduledNavigation(Frame&);
-=======
-    static void frameScheduledNavigation(Frame&, Seconds delay, bool targetIsCurrentFrame);
-    static void frameClearedScheduledNavigation(Frame&);
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
     static void accessibilitySettingsDidChange(Page&);
     static void didNavigateWithinPage(LocalFrame&);
 #if ENABLE(DARK_MODE_CSS)
@@ -479,14 +471,6 @@ private:
     static void frameStartedLoadingImpl(InstrumentingAgents&, LocalFrame&);
     static void didCompleteRenderingFrameImpl(InstrumentingAgents&);
     static void frameStoppedLoadingImpl(InstrumentingAgents&, LocalFrame&);
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-    static void frameScheduledNavigationImpl(InstrumentingAgents&, Frame&, Seconds delay);
-    static void frameClearedScheduledNavigationImpl(InstrumentingAgents&, Frame&);
-=======
-    static void frameScheduledNavigationImpl(InstrumentingAgents&, Frame&, Seconds delay, bool targetIsCurrentFrame);
-    static void frameClearedScheduledNavigationImpl(InstrumentingAgents&, Frame&);
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
     static void accessibilitySettingsDidChangeImpl(InstrumentingAgents&);
     static void didNavigateWithinPageImpl(InstrumentingAgents&, LocalFrame&);
 #if ENABLE(DARK_MODE_CSS)
@@ -1361,38 +1345,6 @@ inline void InspectorInstrumentation::frameStoppedLoading(LocalFrame& frame)
         frameStoppedLoadingImpl(*agents, frame);
 }
 
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-inline void InspectorInstrumentation::frameScheduledNavigation(Frame& frame, Seconds delay)
-{
-    FAST_RETURN_IF_NO_FRONTENDS(void());
-    if (auto* agents = instrumentingAgents(frame))
-        frameScheduledNavigationImpl(*agents, frame, delay);
-}
-
-inline void InspectorInstrumentation::frameClearedScheduledNavigation(Frame& frame)
-{
-    FAST_RETURN_IF_NO_FRONTENDS(void());
-    if (auto* agents = instrumentingAgents(frame))
-        frameClearedScheduledNavigationImpl(*agents, frame);
-}
-
-=======
-inline void InspectorInstrumentation::frameScheduledNavigation(Frame& frame, Seconds delay, bool targetIsCurrentFrame)
-{
-    FAST_RETURN_IF_NO_FRONTENDS(void());
-    if (auto* agents = instrumentingAgents(frame))
-        frameScheduledNavigationImpl(*agents, frame, delay, targetIsCurrentFrame);
-}
-
-inline void InspectorInstrumentation::frameClearedScheduledNavigation(Frame& frame)
-{
-    FAST_RETURN_IF_NO_FRONTENDS(void());
-    if (auto* agents = instrumentingAgents(frame))
-        frameClearedScheduledNavigationImpl(*agents, frame);
-}
-
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 inline void InspectorInstrumentation::accessibilitySettingsDidChange(Page& page)
 {
     FAST_RETURN_IF_NO_FRONTENDS(void());

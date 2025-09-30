@@ -21020,10 +21020,6 @@
 				1C5ACFAB2A96F8D500C041C0 /* JSWebExtensionAPITabs.mm in Sources */,
 				1C15497F2926C073001B9E5B /* JSWebExtensionAPITest.mm in Sources */,
 				1C0F05BE2CFA5D2E007D1F62 /* JSWebExtensionAPIUnified.mm in Sources */,
-<<<<<<< HEAD
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-				1C5DC45F2909B05A0061EC62 /* JSWebExtensionWrapperCocoa.mm in Sources */,
-=======
 				3375A3772942A19D0028536D /* JSWebExtensionAPIWebNavigation.mm in Sources */,
 				33F68338293FF6F5005C63C0 /* JSWebExtensionAPIWebNavigationEvent.mm in Sources */,
 				B63A99772B7EA002004611FD /* JSWebExtensionAPIWebPageNamespace.mm in Sources */,
@@ -21032,8 +21028,6 @@
 				337042022B58A0B70077FF78 /* JSWebExtensionAPIWebRequestEvent.mm in Sources */,
 				1C5ACFA62A96F8C400C041C0 /* JSWebExtensionAPIWindows.mm in Sources */,
 				1C5ACFA72A96F8C400C041C0 /* JSWebExtensionAPIWindowsEvent.mm in Sources */,
-				1C5DC45F2909B05A0061EC62 /* JSWebExtensionWrapperCocoa.mm in Sources */,
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
 				C14D37FE24ACE086007FF014 /* LaunchServicesDatabaseManager.mm in Sources */,
 				C1710CF724AA643200D7C112 /* LaunchServicesDatabaseObserver.mm in Sources */,
 				41A0EB142641714900794471 /* LibWebRTCCodecsProxy.mm in Sources */,

@@ -917,19 +917,13 @@ public:
 
     void setPageLoadStateObserver(RefPtr<PageLoadStateObserverBase>&&);
 
-<<<<<<< HEAD
-    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags, WebCore::ReferrerPolicy);
-||||||| parent of 9386c5d2950c (chore(webkit): bootstrap build #2215)
-    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags);
-=======
     void setAuthCredentialsForAutomation(std::optional<WebCore::Credential>&&, std::optional<URL>&&);
     void setPermissionsForAutomation(const UncheckedKeyHashMap<String, HashSet<String>>&);
     void setOrientationOverride(std::optional<int>&& angle);
     void setActiveForAutomation(std::optional<bool> active);
     void logToStderr(const String& str);
 
-    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags);
->>>>>>> 9386c5d2950c (chore(webkit): bootstrap build #2215)
+    void initializeWebPage(const WebCore::Site&, WebCore::SandboxFlags, WebCore::ReferrerPolicy);
     void setDrawingArea(RefPtr<DrawingAreaProxy>&&);
 
     WeakPtr<SecKeyProxyStore> secKeyProxyStore(const WebCore::AuthenticationChallenge&);
