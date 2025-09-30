@@ -478,7 +478,7 @@ void FrameConsoleClient::screenshot(JSC::JSGlobalObject* lexicalGlobalObject, Re
 
 void FrameConsoleClient::bindingCalled(JSC::JSGlobalObject* globalObject, const String& name, const String& arg)
 {
-    RefPtr frame = dynamicDowncast<LocalFrame>(m_frame.get());
+    RefPtr frame = m_frame.get();
     if (!frame)
         return;
     InspectorInstrumentation::bindingCalled(*frame->page(), globalObject, name, arg);
