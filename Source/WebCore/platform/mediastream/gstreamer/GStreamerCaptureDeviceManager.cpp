@@ -226,9 +226,9 @@ std::optional<GStreamerCaptureDevice> GStreamerCaptureDeviceManager::captureDevi
     auto nodeName = gstStructureGetString(properties.get(), "node.name"_s);
     String identifier;
     if (nodeName.isEmpty())
-        identifier = makeString(deviceName.span());
+        identifier = makeString(deviceName.span(), ", "_s, deviceClass, ", tag="_s, String::number(g_random_int()));
     else
-        identifier = nodeName.toString();
+        identifier = makeString(nodeName.toString(), ", "_s, deviceClass, ", tag="_s, String::number(g_random_int()));
 
     bool isMock = false;
     if (auto persistentId = gstStructureGetString(properties.get(), "persistent-id"_s)) {
