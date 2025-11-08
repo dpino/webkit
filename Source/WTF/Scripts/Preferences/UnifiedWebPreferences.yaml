@@ -5934,7 +5934,7 @@ OpportunisticSweepingAndGarbageCollectionEnabled:
       default: false
     WebKit:
       "PLATFORM(IOS_FAMILY)": false
-      default: true
+      default: false
     WebCore:
       default: false
 
