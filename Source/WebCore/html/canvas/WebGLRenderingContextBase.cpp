@@ -685,6 +685,12 @@ void WebGLRenderingContextBase::destroyGraphicsContextGL()
     }
 }
 
+static inline FloatRect toLayerCoordinates(const FloatRect& rect, float canvasHeight)
+{
+    // WebGL canvas has Y inverted, so we need to invert it back to get layer coordinates.
+    return FloatRect { { rect.x(), canvasHeight - rect.maxY() }, rect.size() };
+}
+
 void WebGLRenderingContextBase::willUpdateDrawingBufferContents(WebGLRenderingContextBase::CallerType caller)
 {
     // Draw and clear ops with rasterizer discard enabled do not change the canvas.
@@ -700,7 +706,12 @@ void WebGLRenderingContextBase::willUpdateDrawingBufferContents(WebGLRenderingCo
         m_readDrawingBuffer.clear();
         updateMemoryCost();
     }
-    willUpdateCanvasContents();
+
+    Ref canvas = canvasBase();
+    if (m_damage) {
+        canvas->willUpdateContents(toLayerCoordinates(*m_latestScissor, canvas->height()), ShouldApplyPostProcessingToDirtyRect::No);
+    } else
+        canvas->willUpdateContents(FloatRect { { }, canvas->size() }, ShouldApplyPostProcessingToDirtyRect::No);
 }
 
 bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::CallerType caller, GCGLbitfield mask)
