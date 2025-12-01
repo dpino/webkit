@@ -266,10 +266,12 @@ public:
     WEBCORE_EXPORT virtual int verticalScrollbarWidth() const;
     WEBCORE_EXPORT virtual int horizontalScrollbarHeight() const;
     int intrinsicScrollbarLogicalWidthIncludingGutter() const;
+    WEBCORE_EXPORT int effectiveScrollbarGutterWidth() const;
     inline int scrollbarLogicalWidth() const;
     inline int scrollbarLogicalHeight() const;
     bool includeVerticalScrollbarSize() const;
     bool includeHorizontalScrollbarSize() const;
+    bool shouldReserveVerticalScrollbarGutterSpace() const;
     bool canUseOverlayScrollbars() const;
     bool hasAutoScrollbar(ScrollbarOrientation) const;
     bool hasAlwaysPresentScrollbar(ScrollbarOrientation) const;
