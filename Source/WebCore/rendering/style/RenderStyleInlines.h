@@ -223,7 +223,7 @@ constexpr bool RenderStyle::isDisplayInlineType(DisplayType display)
         || display == DisplayType::RubyAnnotation;
 }
 
-constexpr bool RenderStyle::isDisplayRegionType() const
+bool RenderStyle::isDisplayRegionType() const
 {
     return display() == DisplayType::Block
         || display() == DisplayType::InlineBlock
@@ -265,7 +265,7 @@ constexpr bool RenderStyle::isRubyContainerOrInternalRubyBox(DisplayType display
         || display == DisplayType::RubyBase;
 }
 
-constexpr bool RenderStyle::doesDisplayGenerateBlockContainer() const
+bool RenderStyle::doesDisplayGenerateBlockContainer() const
 {
     auto display = this->display();
     return (display == DisplayType::Block
@@ -606,21 +606,21 @@ inline bool RenderStyle::hasVisibleBorderDecoration() const { return hasVisibleB
 
 inline bool RenderStyle::isColumnFlexDirection() const { return flexDirection() == FlexDirection::Column || flexDirection() == FlexDirection::ColumnReverse; }
 inline bool RenderStyle::isRowFlexDirection() const { return flexDirection() == FlexDirection::Row || flexDirection() == FlexDirection::RowReverse; }
-constexpr bool RenderStyle::isDisplayBlockLevel() const { return isDisplayBlockType(display()); }
+bool RenderStyle::isDisplayBlockLevel() const { return isDisplayBlockType(display()); }
 constexpr bool RenderStyle::isDisplayDeprecatedFlexibleBox(DisplayType display) { return display == DisplayType::Box || display == DisplayType::InlineBox; }
 constexpr bool RenderStyle::isDisplayFlexibleBox(DisplayType display) { return display == DisplayType::Flex || display == DisplayType::InlineFlex; }
-constexpr bool RenderStyle::isDisplayDeprecatedFlexibleBox() const { return isDisplayDeprecatedFlexibleBox(display()); }
+bool RenderStyle::isDisplayDeprecatedFlexibleBox() const { return isDisplayDeprecatedFlexibleBox(display()); }
 constexpr bool RenderStyle::isDisplayFlexibleBoxIncludingDeprecatedOrGridFormattingContextBox() const { return isDisplayFlexibleOrGridFormattingContextBox() || isDisplayDeprecatedFlexibleBox(); }
-constexpr bool RenderStyle::isDisplayFlexibleOrGridFormattingContextBox() const { return isDisplayFlexibleOrGridFormattingContextBox(display()); }
+bool RenderStyle::isDisplayFlexibleOrGridFormattingContextBox() const { return isDisplayFlexibleOrGridFormattingContextBox(display()); }
 constexpr bool RenderStyle::isDisplayFlexibleOrGridFormattingContextBox(DisplayType display) { return isDisplayFlexibleBox(display) || isDisplayGridFormattingContextBox(display); }
 constexpr bool RenderStyle::isDisplayGridFormattingContextBox(DisplayType display) { return isDisplayGridBox(display) || isDisplayGridLanesBox(display); }
 constexpr bool RenderStyle::isDisplayGridBox(DisplayType display) { return display == DisplayType::Grid || display == DisplayType::InlineGrid; }
 constexpr bool RenderStyle::isDisplayGridLanesBox(DisplayType display) { return display == DisplayType::GridLanes || display == DisplayType::InlineGridLanes; }
-constexpr bool RenderStyle::isDisplayInlineType() const { return isDisplayInlineType(display()); }
+bool RenderStyle::isDisplayInlineType() const { return isDisplayInlineType(display()); }
 constexpr bool RenderStyle::isDisplayListItemType(DisplayType display) { return display == DisplayType::ListItem; }
-constexpr bool RenderStyle::isDisplayTableOrTablePart() const { return isDisplayTableOrTablePart(display()); }
-constexpr bool RenderStyle::isInternalTableBox() const { return isInternalTableBox(display()); }
-constexpr bool RenderStyle::isRubyContainerOrInternalRubyBox() const { return isRubyContainerOrInternalRubyBox(display()); }
+bool RenderStyle::isDisplayTableOrTablePart() const { return isDisplayTableOrTablePart(display()); }
+bool RenderStyle::isInternalTableBox() const { return isInternalTableBox(display()); }
+bool RenderStyle::isRubyContainerOrInternalRubyBox() const { return isRubyContainerOrInternalRubyBox(display()); }
 inline bool RenderStyle::isFixedTableLayout() const { return tableLayout() == TableLayoutType::Fixed && (logicalWidth().isSpecified() || logicalWidth().isFitContent() || logicalWidth().isFillAvailable() || logicalWidth().isMinContent()); }
 inline bool RenderStyle::isFloating() const { return floating() != Float::None; }
 constexpr bool RenderStyle::isOriginalDisplayBlockType() const { return isDisplayBlockType(originalDisplay()); }

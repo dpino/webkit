@@ -1921,18 +1921,18 @@ public:
     void dumpDifferences(TextStream&, const RenderStyle&) const;
 #endif
 
-    constexpr bool isDisplayInlineType() const;
+    bool isDisplayInlineType() const;
     constexpr bool isOriginalDisplayInlineType() const;
-    constexpr bool isDisplayFlexibleOrGridFormattingContextBox() const;
-    constexpr bool isDisplayDeprecatedFlexibleBox() const;
+    bool isDisplayFlexibleOrGridFormattingContextBox() const;
+    bool isDisplayDeprecatedFlexibleBox() const;
     constexpr bool isDisplayFlexibleBoxIncludingDeprecatedOrGridFormattingContextBox() const;
-    constexpr bool isDisplayRegionType() const;
-    constexpr bool isDisplayBlockLevel() const;
-    constexpr bool doesDisplayGenerateBlockContainer() const;
+    bool isDisplayRegionType() const;
+    bool isDisplayBlockLevel() const;
+    bool doesDisplayGenerateBlockContainer() const;
     constexpr bool isOriginalDisplayBlockType() const;
-    constexpr bool isDisplayTableOrTablePart() const;
-    constexpr bool isInternalTableBox() const;
-    constexpr bool isRubyContainerOrInternalRubyBox() const;
+    bool isDisplayTableOrTablePart() const;
+    bool isInternalTableBox() const;
+    bool isRubyContainerOrInternalRubyBox() const;
     constexpr bool isOriginalDisplayListItemType() const;
 
     inline TextDirection computedDirection() const;
