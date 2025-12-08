@@ -29,8 +29,14 @@
 #if ENABLE(VIDEO) || ENABLE(WEB_AUDIO)
 
 #include "RemoteMediaSessionClientProxy.h"
+<<<<<<< HEAD
 #include "RemoteMediaSessionManagerMessages.h"
+||||||| parent of cf8b511ef249 (chore(webkit): bootstrap build #2237)
+=======
+#include "RemoteMediaSessionManager.h"
+>>>>>>> cf8b511ef249 (chore(webkit): bootstrap build #2237)
 #include "RemoteMediaSessionManagerProxyMessages.h"
+#include "RemoteMediaSessionManagerMessages.h"
 #include "RemoteMediaSessionProxy.h"
 #include "RemoteMediaSessionState.h"
 #include "WebPage.h"
