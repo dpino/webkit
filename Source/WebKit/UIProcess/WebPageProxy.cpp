@@ -4377,22 +4377,6 @@ void WebPageProxy::processNextQueuedMouseEvent()
         }
         didReceiveEventIPC(process->connection(), eventType, true, std::nullopt);
     }
-<<<<<<< HEAD
-
-    LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
-
-    sendMouseEvent(targetFrame->frameID(), eventWithCoalescedEvents, WTFMove(sandboxExtensions));
-
-    internals().coalescedMouseEvents.clear();
-||||||| parent of cf8b511ef249 (chore(webkit): bootstrap build #2237)
-
-    LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
-
-    sendMouseEvent(m_mainFrame->frameID(), eventWithCoalescedEvents, WTFMove(sandboxExtensions));
-
-    internals().coalescedMouseEvents.clear();
-=======
->>>>>>> cf8b511ef249 (chore(webkit): bootstrap build #2237)
 }
 
 #if ENABLE(MAC_GESTURE_EVENTS)
@@ -4761,13 +4745,7 @@ static TrackingType mergeTrackingTypes(TrackingType a, TrackingType b)
 
 void WebPageProxy::updateTouchEventTracking(const WebTouchEvent& touchStartEvent)
 {
-<<<<<<< HEAD
-#if PLATFORM(COCOA)
-||||||| parent of cf8b511ef249 (chore(webkit): bootstrap build #2237)
-#if ENABLE(ASYNC_SCROLLING) && PLATFORM(COCOA)
-=======
-#if ENABLE(ASYNC_SCROLLING) && PLATFORM(IOS_FAMILY)
->>>>>>> cf8b511ef249 (chore(webkit): bootstrap build #2237)
+#if PLATFORM(IOS_FAMILY)
     for (auto& touchPoint : touchStartEvent.touchPoints()) {
         auto location = touchPoint.locationInRootView();
         auto update = [this, location](TrackingType& trackingType, EventTrackingRegions::EventType eventType) {

@@ -1633,21 +1633,11 @@ public:
     bool isControlledByAutomation() const;
     void setControlledByAutomation(bool);
 
-<<<<<<< HEAD
     void connectInspector(Inspector::FrontendChannel::ConnectionType);
     void disconnectInspector();
     void sendMessageToTargetBackend(const String& message);
-||||||| parent of cf8b511ef249 (chore(webkit): bootstrap build #2237)
-    void connectInspector(const String& targetId, Inspector::FrontendChannel::ConnectionType);
-    void disconnectInspector(const String& targetId);
-    void sendMessageToTargetBackend(const String& targetId, const String& message);
-=======
-    void connectInspector(const String& targetId, Inspector::FrontendChannel::ConnectionType);
-    void disconnectInspector(const String& targetId);
-    void sendMessageToTargetBackend(const String& targetId, const String& message);
     void resumeInspectorIfPausedInNewWindow();
     void didAddWebPageToWebProcess();
->>>>>>> cf8b511ef249 (chore(webkit): bootstrap build #2237)
 
     void insertNewlineInQuotedContent();
 

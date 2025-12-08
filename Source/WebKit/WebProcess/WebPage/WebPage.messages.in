@@ -159,20 +159,10 @@ messages -> WebPage WantsAsyncDispatchMessage {
 
     SetControlledByAutomation(bool controlled)
 
-<<<<<<< HEAD
     ConnectInspector(Inspector::FrontendChannel::ConnectionType connectionType)
     DisconnectInspector()
     SendMessageToTargetBackend(String message)
-||||||| parent of cf8b511ef249 (chore(webkit): bootstrap build #2237)
-    ConnectInspector(String targetId, Inspector::FrontendChannel::ConnectionType connectionType)
-    DisconnectInspector(String targetId)
-    SendMessageToTargetBackend(String targetId, String message)
-=======
-    ConnectInspector(String targetId, Inspector::FrontendChannel::ConnectionType connectionType)
-    DisconnectInspector(String targetId)
-    SendMessageToTargetBackend(String targetId, String message)
     ResumeInspectorIfPausedInNewWindow();
->>>>>>> cf8b511ef249 (chore(webkit): bootstrap build #2237)
 
 #if ENABLE(REMOTE_INSPECTOR)
     SetIndicating(bool indicating);
