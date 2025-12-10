@@ -87,6 +87,7 @@ bool webkitWebViewBaseIsInWindowActive(WebKitWebViewBase*);
 bool webkitWebViewBaseIsFocused(WebKitWebViewBase*);
 bool webkitWebViewBaseIsVisible(WebKitWebViewBase*);
 bool webkitWebViewBaseIsInWindow(WebKitWebViewBase*);
+void webkitWebViewBasePaste(WebKitWebViewBase*);
 
 void webkitWebViewBaseAddDialog(WebKitWebViewBase*, GtkWidget*);
 void webkitWebViewBaseAddWebInspector(WebKitWebViewBase*, GtkWidget* inspector, WebKit::AttachmentSide);

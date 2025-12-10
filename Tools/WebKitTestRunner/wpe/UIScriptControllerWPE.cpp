@@ -70,8 +70,27 @@ void UIScriptControllerWPE::copyText(JSStringRef text)
         wpe_clipboard_set_content(clipboard, content);
         wpe_clipboard_content_unref(content);
     }
-#endif
+#else
     // FIXME: implement.
+#endif
+}
+
+void UIScriptControllerWPE::paste()
+{
+
+#if ENABLE(WPE_PLATFORM)
+    if (!TestController::singleton().useWPELegacyAPI()) {
+        auto* clipboard = wpe_display_get_clipboard(wpe_display_get_primary());
+        auto* content = wpe_clipboard_content_new();
+        const char* text = wpe_clipboard_content_get_text(content);
+        UNUSED_PARAM(text);
+        UNUSED_PARAM(clipboard);
+        // wpe_clipboard_set_content(clipboard, content);
+        wpe_clipboard_content_unref(content);
+    }
+#else
+    // FIXME: implement.
+#endif
 }
 
 void UIScriptControllerWPE::dismissMenu()

@@ -2785,6 +2785,12 @@ void webkitWebViewBaseSetEditable(WebKitWebViewBase* webViewBase, bool editable)
     priv->pageProxy->setEditable(editable);
 }
 
+void webkitWebViewBasePaste(WebKitWebViewBase* webViewBase)
+{
+    WebKitWebViewBasePrivate* priv = webViewBase->priv;
+    priv->pageProxy->executeEditCommand("Paste"_s, { });
+}
+
 IntSize webkitWebViewBaseGetViewSize(WebKitWebViewBase* webViewBase)
 {
     WebKitWebViewBasePrivate* priv = webViewBase->priv;

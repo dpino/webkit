@@ -95,7 +95,8 @@ void UIScriptControllerGtk::copyText(JSStringRef text)
 
 void UIScriptControllerGtk::paste()
 {
-    // FIXME: implement.
+    auto* webView = TestController::singleton().mainWebView()->platformView();
+    WKViewPaste(webView);
 }
 
 void UIScriptControllerGtk::dismissMenu()

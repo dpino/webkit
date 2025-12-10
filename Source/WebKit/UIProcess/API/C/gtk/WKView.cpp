@@ -73,3 +73,8 @@ GVariant* WKViewContentsOfUserInterfaceItem(WKViewRef viewRef, const char* userI
 {
     return webkitWebViewBaseContentsOfUserInterfaceItem(toImpl(viewRef), userInterfaceItem);
 }
+
+void WKViewPaste(WKViewRef viewRef)
+{
+    webkitWebViewBasePaste(toImpl(viewRef));
+}
