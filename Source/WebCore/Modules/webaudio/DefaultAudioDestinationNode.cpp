@@ -186,6 +186,8 @@ void DefaultAudioDestinationNode::resume(CompletionHandler<void(std::optional<Ex
         });
         return;
     }
+    if (!isConnected())
+        return completionHandler(std::nullopt);
     m_wasDestinationStarted = true;
     m_destination->start(dispatchToRenderThreadFunction(), [completionHandler = WTF::move(completionHandler)](bool success) mutable {
         completionHandler(success ? std::nullopt : std::make_optional(Exception { ExceptionCode::InvalidStateError, "Failed to start the audio device"_s }));
@@ -201,7 +203,8 @@ void DefaultAudioDestinationNode::suspend(CompletionHandler<void(std::optional<E
         });
         return;
     }
-
+    if (!isConnected())
+        return completionHandler(std::nullopt);
     m_wasDestinationStarted = false;
     m_destination->stop([completionHandler = WTF::move(completionHandler)](bool success) mutable {
         completionHandler(success ? std::nullopt : std::make_optional(Exception { ExceptionCode::InvalidStateError, "Failed to stop the audio device"_s }));
