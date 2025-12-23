@@ -255,6 +255,8 @@ void PageClientImpl::doneWithKeyEvent(const NativeWebKeyboardEvent& event, bool 
 {
     if (wasEventHandled || event.type() != WebEventType::KeyDown || !event.nativeEvent())
         return;
+    if (!event.nativeEvent())
+        return;
 
     // Always consider arrow keys as handled, otherwise the GtkWindow key bindings will move the focus.
     guint keyval;
@@ -345,9 +347,15 @@ void PageClientImpl::selectionDidChange()
         webkitWebViewSelectionDidChange(WEBKIT_WEB_VIEW(m_viewWidget));
 }
 
-RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect)
+RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect, bool nominalResolution)
 {
+<<<<<<< HEAD
     return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTF::move(clipRect));
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTFMove(clipRect));
+=======
+    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTFMove(clipRect), nominalResolution);
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 }
 
 void PageClientImpl::didChangeContentSize(const IntSize& size)

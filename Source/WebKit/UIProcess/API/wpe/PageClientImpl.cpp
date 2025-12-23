@@ -36,9 +36,12 @@
 #include "WPEWebViewLegacy.h"
 #include "WPEWebViewPlatform.h"
 #include "WebColorPicker.h"
+#include "WebColorPickerWPE.h"
+#include "WebDateTimePickerWPE.h"
 #include "WebContextMenuProxy.h"
 #include "WebContextMenuProxyWPE.h"
 #include "WebDataListSuggestionsDropdown.h"
+#include "WebDataListSuggestionsDropdownWPE.h"
 #include "WebDateTimePicker.h"
 #include "WebKitPopupMenu.h"
 #include <WebCore/ActivityState.h>
@@ -58,10 +61,20 @@
 #include <wpe/wpe-platform.h>
 #endif
 
+<<<<<<< HEAD
 #if USE(LIBWPE)
 #include <wpe/wpe.h>
 #endif
 
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+=======
+#if USE(SKIA)
+#include <skia/core/SkBitmap.h>
+#include <skia/core/SkCanvas.h>
+#include <skia/core/SkImage.h>
+#endif
+
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 namespace WebKit {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(PageClientImpl);
@@ -318,14 +331,14 @@ Ref<WebContextMenuProxy> PageClientImpl::createContextMenuProxy(WebPageProxy& pa
 }
 #endif
 
-RefPtr<WebColorPicker> PageClientImpl::createColorPicker(WebPageProxy&, const WebCore::Color& intialColor, const WebCore::IntRect&, ColorControlSupportsAlpha supportsAlpha, Vector<WebCore::Color>&&)
+RefPtr<WebColorPicker> PageClientImpl::createColorPicker(WebPageProxy& page, const WebCore::Color& intialColor, const WebCore::IntRect& rect, ColorControlSupportsAlpha supportsAlpha, Vector<WebCore::Color>&&)
 {
-    return nullptr;
+    return WebColorPickerWPE::create(page, intialColor, rect);
 }
 
-RefPtr<WebDataListSuggestionsDropdown> PageClientImpl::createDataListSuggestionsDropdown(WebPageProxy&)
+RefPtr<WebKit::WebDataListSuggestionsDropdown> PageClientImpl::createDataListSuggestionsDropdown(WebKit::WebPageProxy& page)
 {
-    return nullptr;
+    return WebDataListSuggestionsDropdownWPE::create(page);
 }
 
 RefPtr<WebDateTimePicker> PageClientImpl::createDateTimePicker(WebPageProxy& page)
@@ -586,11 +599,17 @@ void PageClientImpl::callAfterNextPresentationUpdate(CompletionHandler<void()>&&
 }
 
 #if USE(SKIA)
-RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect)
+RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect, bool nominalResolution)
 {
 #if ENABLE(WPE_PLATFORM)
     if (m_view.wpeView()) {
+<<<<<<< HEAD
         auto snapshot = static_cast<WKWPE::ViewPlatform&>(m_view).takeViewSnapshot(WTF::move(clipRect));
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+        auto snapshot = static_cast<WKWPE::ViewPlatform&>(m_view).takeViewSnapshot(WTFMove(clipRect));
+=======
+        auto snapshot = static_cast<WKWPE::ViewPlatform&>(m_view).takeViewSnapshot(WTFMove(clipRect), nominalResolution);
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
         // FIXME Forward the Expected in https://webkit.org/b/300271
         if (snapshot)
             return WTF::move(snapshot.value());
@@ -599,6 +618,13 @@ RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::Int
     UNUSED_PARAM(clipRect);
 #endif
     return nullptr;
+}
+#endif
+
+#if ENABLE(DATE_AND_TIME_INPUT_TYPES)
+RefPtr<WebDateTimePicker> PageClientImpl::createDateTimePicker(WebPageProxy& page)
+{
+    return WebDateTimePickerWPE::create(page);
 }
 #endif
 

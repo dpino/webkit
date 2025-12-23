@@ -431,10 +431,16 @@ void WebProcessPool::setAutomationClient(std::unique_ptr<API::AutomationClient>&
 
 void WebProcessPool::setOverrideLanguages(Vector<String>&& languages)
 {
+<<<<<<< HEAD
     WebKit::setOverrideLanguages(WTF::move(languages));
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    WebKit::setOverrideLanguages(WTFMove(languages));
+=======
+    m_configuration->setOverrideLanguages(WTFMove(languages));
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 
     LOG_WITH_STREAM(Language, stream << "WebProcessPool is setting OverrideLanguages: " << languages);
-    sendToAllProcesses(Messages::WebProcess::UserPreferredLanguagesChanged(overrideLanguages()));
+    sendToAllProcesses(Messages::WebProcess::UserPreferredLanguagesChanged(m_configuration->overrideLanguages()));
 
 #if ENABLE(GPU_PROCESS)
     if (RefPtr gpuProcess = GPUProcessProxy::singletonIfCreated())
@@ -442,9 +448,10 @@ void WebProcessPool::setOverrideLanguages(Vector<String>&& languages)
 #endif
 #if USE(SOUP)
     for (Ref networkProcess : NetworkProcessProxy::allNetworkProcesses())
-        networkProcess->send(Messages::NetworkProcess::UserPreferredLanguagesChanged(overrideLanguages()), 0);
+        networkProcess->send(Messages::NetworkProcess::UserPreferredLanguagesChanged(m_configuration->overrideLanguages()), 0);
 #endif
 }
+/* end playwright revert fb205fb */
 
 void WebProcessPool::fullKeyboardAccessModeChanged(bool fullKeyboardAccessEnabled)
 {
@@ -1004,7 +1011,7 @@ void WebProcessPool::initializeNewWebProcess(WebProcessProxy& process, WebsiteDa
 #endif
 
     parameters.cacheModel = LegacyGlobalSettings::singleton().cacheModel();
-    parameters.overrideLanguages = overrideLanguages();
+    parameters.overrideLanguages = configuration().overrideLanguages(); /* playwright revert fb205fb */
     LOG_WITH_STREAM(Language, stream << "WebProcessPool is initializing a new web process with overrideLanguages: " << parameters.overrideLanguages);
 
     parameters.urlSchemesRegisteredAsSecure = copyToVector(LegacyGlobalSettings::singleton().schemesToRegisterAsSecure());

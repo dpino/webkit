@@ -165,7 +165,14 @@ void NetworkDataTaskCurl::curlDidReceiveResponse(CurlRequest& request, CurlRespo
     m_response = ResourceResponse(receivedResponse);
 
     updateNetworkLoadMetrics(receivedResponse.networkLoadMetrics);
+<<<<<<< HEAD
     m_response.setDeprecatedNetworkLoadMetrics(Box<NetworkLoadMetrics>::create(WTF::move(receivedResponse.networkLoadMetrics)));
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    m_response.setDeprecatedNetworkLoadMetrics(Box<NetworkLoadMetrics>::create(WTFMove(receivedResponse.networkLoadMetrics)));
+=======
+    m_response.setDeprecatedNetworkLoadMetrics(Box<NetworkLoadMetrics>::create(WTFMove(receivedResponse.networkLoadMetrics)));
+    m_response.m_httpRequestHeaderFields = request.resourceRequest().httpHeaderFields();
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 
     handleCookieHeaders(request.resourceRequest(), receivedResponse);
 

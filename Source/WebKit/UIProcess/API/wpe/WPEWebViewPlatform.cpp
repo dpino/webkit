@@ -666,9 +666,15 @@ void ViewPlatform::callAfterNextPresentationUpdate(CompletionHandler<void()>&& c
 }
 
 #if USE(SKIA)
-Expected<Ref<ViewSnapshot>, String> ViewPlatform::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect)
+Expected<Ref<ViewSnapshot>, String> ViewPlatform::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect, bool nominalResolution)
 {
+<<<<<<< HEAD
     return m_backingStore->takeSnapshot(WTF::move(clipRect));
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    return m_backingStore->takeSnapshot(WTFMove(clipRect));
+=======
+    return m_backingStore->takeSnapshot(WTFMove(clipRect), nominalResolution);
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 }
 #endif
 

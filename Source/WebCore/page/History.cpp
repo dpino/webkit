@@ -34,6 +34,7 @@
 #include "FrameLoader.h"
 #include "HistoryController.h"
 #include "HistoryItem.h"
+#include "InspectorInstrumentation.h"
 #include "LocalFrame.h"
 #include "LocalFrameLoaderClient.h"
 #include "Logging.h"
@@ -311,7 +312,15 @@ ExceptionOr<void> History::stateObjectAdded(RefPtr<SerializedScriptValue>&& data
             return { };
     }
 
+<<<<<<< HEAD
     frame->loader().updateURLAndHistory(fullURL, WTF::move(data), historyBehavior);
+||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    frame->loader().updateURLAndHistory(fullURL, WTFMove(data), historyBehavior);
+=======
+    frame->loader().updateURLAndHistory(fullURL, WTFMove(data), historyBehavior);
+    InspectorInstrumentation::didNavigateWithinPage(*frame);
+
+>>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
     return { };
 }
 
