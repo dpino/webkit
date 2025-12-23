@@ -164,7 +164,7 @@ void setGeolocationProvider(BrowserContext* browserContext) {
     auto provider = makeUnique<OverridenGeolocationProvider>();
     browserContext->geolocationProvider = *provider;
     auto* geoManager = browserContext->processPool->supplement<WebGeolocationManagerProxy>();
-    geoManager->setProvider(WTFMove(provider));
+    geoManager->setProvider(WTF::move(provider));
 }
 
 String toBrowserContextIDProtocolString(const PAL::SessionID& sessionID)
@@ -282,9 +282,9 @@ class InspectorPlaywrightAgent::BrowserContextDeletion {
     WTF_DEPRECATED_MAKE_FAST_ALLOCATED(InspectorPlaywrightAgent::BrowserContextDeletion);
 public:
     BrowserContextDeletion(std::unique_ptr<BrowserContext>&& context, size_t numberOfPages, Ref<DeleteContextCallback>&& callback)
-        : m_browserContext(WTFMove(context))
+        : m_browserContext(WTF::move(context))
         , m_numberOfPages(numberOfPages)
-        , m_callback(WTFMove(callback)) { }
+        , m_callback(WTF::move(callback)) { }
 
     void didDestroyPage(const WebPageProxy& page)
     {
@@ -422,7 +422,7 @@ void InspectorPlaywrightAgent::didCreateInspectorController(WebPageProxy& page)
     page.inspectorController().connectFrontend(*pageProxyChannel);
     // Always pause new targets if controlled remotely.
     page.inspectorController().setPauseOnStart(true);
-    m_pageProxyChannels.set(pageProxyID, WTFMove(pageProxyChannel));
+    m_pageProxyChannels.set(pageProxyID, WTF::move(pageProxyChannel));
     page.setFullScreenManagerClientOverride(makeUnique<PlaywrightFullScreenManagerProxyClient>(page));
 }
 
@@ -502,7 +502,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorPlaywrightAgent::enable()
         // Add default context to the map so that we can easily find it for
         // created/deleted pages.
         PAL::SessionID sessionID = context->dataStore->sessionID();
-        m_browserContexts.set(toBrowserContextIDProtocolString(sessionID), WTFMove(context));
+        m_browserContexts.set(toBrowserContextIDProtocolString(sessionID), WTF::move(context));
     }
 
     WebsiteDataStore::forEachWebsiteDataStore([this] (WebsiteDataStore& dataStore) {
@@ -511,7 +511,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorPlaywrightAgent::enable()
     for (Ref pool : WebProcessPool::allProcessPools()) {
         for (Ref process : pool->processes()) {
             for (Ref page : process->pages())
-                didCreateInspectorController(WTFMove(page));
+                didCreateInspectorController(WTF::move(page));
         }
     }
     return { };
@@ -555,7 +555,7 @@ Inspector::Protocol::ErrorStringOr<String> InspectorPlaywrightAgent::getInfo()
 
 void InspectorPlaywrightAgent::close(Ref<CloseCallback>&& callback)
 {
-    closeImpl([callback = WTFMove(callback)] (String error) {
+    closeImpl([callback = WTF::move(callback)] (String error) {
         if (!callback->isActive())
             return;
         if (error.isNull())
@@ -574,7 +574,7 @@ void InspectorPlaywrightAgent::closeImpl(Function<void(String)>&& callback)
     // all existing Web Processes wether in a pool or not.
     for (Ref process : WebProcessProxy::allProcessesForInspector()) {
         for (Ref page : process->pages())
-            pages.append(WTFMove(page));
+            pages.append(WTF::move(page));
     }
     for (Ref page : pages)
         page->closePage();
@@ -585,7 +585,7 @@ void InspectorPlaywrightAgent::closeImpl(Function<void(String)>&& callback)
         return;
     }
 
-    m_defaultContext->dataStore->syncLocalStorage([this, callback = WTFMove(callback)] () {
+    m_defaultContext->dataStore->syncLocalStorage([this, callback = WTF::move(callback)] () {
         if (m_client == nullptr) {
             callback("no platform delegate to close browser"_s);
         } else {
@@ -603,14 +603,14 @@ Inspector::Protocol::ErrorStringOr<String /* browserContextID */> InspectorPlayw
     if (!browserContext)
         return makeUnexpected(errorString);
 
-    browserContext->enableStoragePartitioning = WTFMove(enableStoragePartitioning);
+    browserContext->enableStoragePartitioning = WTF::move(enableStoragePartitioning);
     // Ensure network process.
     browserContext->dataStore->networkProcess();
     browserContext->dataStore->setDownloadInstrumentation(this);
     setGeolocationProvider(browserContext.get());
     PAL::SessionID sessionID = browserContext->dataStore->sessionID();
     String browserContextID = toBrowserContextIDProtocolString(sessionID);
-    m_browserContexts.set(browserContextID, WTFMove(browserContext));
+    m_browserContexts.set(browserContextID, WTF::move(browserContext));
     return browserContextID;
 }
 
@@ -634,7 +634,7 @@ void InspectorPlaywrightAgent::deleteContext(const String& browserContextID, Ref
     if (pages.isEmpty()) {
         callback->sendSuccess();
     } else {
-        m_browserContextDeletions.set(browserContextID, makeUnique<BrowserContextDeletion>(WTFMove(contextHolder), pages.size(), WTFMove(callback)));
+        m_browserContextDeletions.set(browserContextID, makeUnique<BrowserContextDeletion>(WTF::move(contextHolder), pages.size(), WTF::move(callback)));
         for (auto* page : pages)
             page->closePage();
     }
@@ -705,7 +705,7 @@ void InspectorPlaywrightAgent::navigate(const String& url, const String& pagePro
         }
     }
 
-    pageProxyChannel->page().inspectorController().navigate(WTFMove(resourceRequest), frame, [callback = WTFMove(callback)](const String& error, Markable<WebCore::NavigationIdentifier> navigationID) {
+    pageProxyChannel->page().inspectorController().navigate(WTF::move(resourceRequest), frame, [callback = WTF::move(callback)](const String& error, Markable<WebCore::NavigationIdentifier> navigationID) {
         if (!error.isEmpty()) {
             callback->sendFailure(error);
             return;
@@ -735,7 +735,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorPlaywrightAgent::grantFileRead
     }
 
     auto sandboxExtensionHandles = SandboxExtension::createReadOnlyHandlesForFiles("InspectorPlaywrightAgent::grantFileReadAccess"_s, files);
-    pageProxyChannel->page().legacyMainFrameProcess().send(Messages::WebPage::ExtendSandboxForFilesFromOpenPanel(WTFMove(sandboxExtensionHandles)), pageProxyChannel->page().webPageIDInMainFrameProcess());
+    pageProxyChannel->page().legacyMainFrameProcess().send(Messages::WebPage::ExtendSandboxForFilesFromOpenPanel(WTF::move(sandboxExtensionHandles)), pageProxyChannel->page().webPageIDInMainFrameProcess());
 #endif
     return { };
 }
@@ -751,7 +751,7 @@ void InspectorPlaywrightAgent::takePageScreenshot(const String& pageProxyID, int
 
     bool nominalResolution = omitDeviceScaleFactor.has_value() && *omitDeviceScaleFactor;
     WebCore::IntRect clip(x, y, width, height);
-    m_client->takePageScreenshot(pageProxyChannel->page(), WTFMove(clip), nominalResolution, [callback = WTFMove(callback)](const String& error, const String& data) {
+    m_client->takePageScreenshot(pageProxyChannel->page(), WTF::move(clip), nominalResolution, [callback = WTF::move(callback)](const String& error, const String& data) {
         if (error.isEmpty())
             callback->sendSuccess(data);
         else
@@ -793,14 +793,14 @@ void InspectorPlaywrightAgent::getAllCookies(const String& browserContextID, Ref
     }
 
     browserContext->dataStore->cookieStore().cookies(
-        [callback = WTFMove(callback)](const Vector<WebCore::Cookie>& allCookies) {
+        [callback = WTF::move(callback)](const Vector<WebCore::Cookie>& allCookies) {
             if (!callback->isActive())
                 return;
             auto cookies = JSON::ArrayOf<Inspector::Protocol::Playwright::Cookie>::create();
 
             for (const auto& cookie : allCookies)
                 cookies->addItem(buildObjectForCookie(cookie));
-            callback->sendSuccess(WTFMove(cookies));
+            callback->sendSuccess(WTF::move(cookies));
         });
 }
 
@@ -855,11 +855,11 @@ void InspectorPlaywrightAgent::setCookies(const String& browserContextID, Ref<JS
             cookie.sameSite = WebCore::Cookie::SameSitePolicy::Lax;
 #endif
         }
-        cookies.append(WTFMove(cookie));
+        cookies.append(WTF::move(cookie));
     }
 
-    browserContext->dataStore->cookieStore().setCookies(WTFMove(cookies),
-        [callback = WTFMove(callback)]() {
+    browserContext->dataStore->cookieStore().setCookies(WTF::move(cookies),
+        [callback = WTF::move(callback)]() {
             if (!callback->isActive())
                 return;
             callback->sendSuccess();
@@ -875,7 +875,7 @@ void InspectorPlaywrightAgent::deleteAllCookies(const String& browserContextID, 
     }
 
     browserContext->dataStore->cookieStore().deleteAllCookies(
-        [callback = WTFMove(callback)]() {
+        [callback = WTF::move(callback)]() {
             if (!callback->isActive())
                 return;
             callback->sendSuccess();
@@ -898,7 +898,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorPlaywrightAgent::setLanguages(
         items.append(language);
     }
 
-    browserContext->processPool->configuration().setOverrideLanguages(WTFMove(items));
+    browserContext->processPool->configuration().setOverrideLanguages(WTF::move(items));
     return { };
 }
 

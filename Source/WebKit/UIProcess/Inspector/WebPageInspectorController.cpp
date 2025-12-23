@@ -92,17 +92,17 @@ void WebPageInspectorController::init()
 {
     auto targetAgent = makeUniqueRef<InspectorTargetAgent>(m_frontendRouter.get(), m_backendDispatcher.get());
     m_targetAgent = targetAgent.ptr();
-    m_agents.append(WTFMove(targetAgent));
+    m_agents.append(WTF::move(targetAgent));
     auto emulationAgent = makeUniqueRef<WebPageInspectorEmulationAgent>(m_backendDispatcher.get(), m_inspectedPage);
     m_emulationAgent = emulationAgent.ptr();
-    m_agents.append(WTFMove(emulationAgent));
+    m_agents.append(WTF::move(emulationAgent));
     auto inputAgent = makeUniqueRef<WebPageInspectorInputAgent>(m_backendDispatcher.get(), m_inspectedPage);
     m_inputAgent = inputAgent.ptr();
-    m_agents.append(WTFMove(inputAgent));
+    m_agents.append(WTF::move(inputAgent));
     m_agents.append(makeUniqueRef<InspectorDialogAgent>(m_backendDispatcher.get(), m_frontendRouter.get(), m_inspectedPage));
     auto screencastAgent = makeUniqueRef<InspectorScreencastAgent>(m_backendDispatcher.get(), m_frontendRouter.get(), m_inspectedPage);
     m_screecastAgent = screencastAgent.ptr();
-    m_agents.append(WTFMove(screencastAgent));
+    m_agents.append(WTF::move(screencastAgent));
     if (s_observer)
         s_observer->didCreateInspectorController(m_inspectedPage);
 }
@@ -275,20 +275,20 @@ void WebPageInspectorController::didPaint(sk_sp<SkImage>&& surface)
     if (!m_frontendRouter->hasFrontends())
         return;
 
-    m_screecastAgent->didPaint(WTFMove(surface));
+    m_screecastAgent->didPaint(WTF::move(surface));
 }
 #endif
 
 
 void WebPageInspectorController::navigate(WebCore::ResourceRequest&& request, WebFrameProxy* frame, NavigationHandler&& completionHandler)
 {
-    auto navigation = m_inspectedPage->loadRequestForInspector(WTFMove(request), frame);
+    auto navigation = m_inspectedPage->loadRequestForInspector(WTF::move(request), frame);
     if (!navigation) {
         completionHandler("Failed to navigate"_s, { });
         return;
     }
 
-    m_pendingNavigations.set(navigation->navigationID(), WTFMove(completionHandler));
+    m_pendingNavigations.set(navigation->navigationID(), WTF::move(completionHandler));
 }
 
 void WebPageInspectorController::didReceivePolicyDecision(WebCore::PolicyAction action, std::optional<WebCore::NavigationIdentifier> navigationID)
@@ -396,7 +396,7 @@ void WebPageInspectorController::setContinueLoadingCallback(WTF::Function<void()
 {
     auto* target = m_targets.get(WebPageInspectorTarget::toTargetID(m_inspectedPage->webPageIDInMainFrameProcess()));
     ASSERT(target);
-    target->setResumeCallback(WTFMove(callback));
+    target->setResumeCallback(WTF::move(callback));
 }
 
 bool WebPageInspectorController::shouldPauseLoading(const ProvisionalPageProxy& provisionalPage) const

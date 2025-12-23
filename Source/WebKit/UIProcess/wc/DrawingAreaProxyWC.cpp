@@ -127,7 +127,7 @@ void DrawingAreaProxyWC::captureFrame()
     auto image = surface->makeImageSnapshot();
     if (!image)
         return;
-    page()->inspectorController().didPaint(WTFMove(image));
+    page()->inspectorController().didPaint(WTF::move(image));
 }
 
 } // namespace WebKit

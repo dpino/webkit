@@ -43,7 +43,7 @@ void WebPageInspectorEmulationAgent::platformSetSize(int width, int height, Func
     struct wpe_view_backend* backend = m_page.viewBackend();
     wpe_view_backend_dispatch_set_size(backend, viewSize.width(), viewSize.height());
     if (auto* drawingArea = static_cast<DrawingAreaProxyCoordinatedGraphics*>(m_page.drawingArea())) {
-        drawingArea->waitForSizeUpdate([callback = WTFMove(callback)](const DrawingAreaProxyCoordinatedGraphics&) mutable {
+        drawingArea->waitForSizeUpdate([callback = WTF::move(callback)](const DrawingAreaProxyCoordinatedGraphics&) mutable {
             callback(String());
         });
     } else

@@ -128,7 +128,7 @@ void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, con
         isSystemKey,
         modifiers,
         timestamp,
-        WTFMove(macCommands));
+        WTF::move(macCommands));
     m_page.handleKeyboardEvent(event);
 }
 

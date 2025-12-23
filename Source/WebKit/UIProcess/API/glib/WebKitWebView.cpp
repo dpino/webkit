@@ -539,7 +539,7 @@ void WebKitWebViewClient::frameDisplayed(WKWPE::View&)
 #if USE(SKIA)
     sk_sp<SkImage> surface(webkitWebViewBackendTakeScreenshot(m_webView->priv->backend.get()));
     if (surface)
-        getPage(m_webView).inspectorController().didPaint(WTFMove(surface));
+        getPage(m_webView).inspectorController().didPaint(WTF::move(surface));
 #endif
 
     {

@@ -69,7 +69,7 @@ void WebPageInspectorInputAgent::platformDispatchKeyEvent(WebEventType type, con
         isSystemKey,
         modifiers,
         timestamp,
-        WTFMove(commands));
+        WTF::move(commands));
     m_page.handleKeyboardEvent(event);
 }
 

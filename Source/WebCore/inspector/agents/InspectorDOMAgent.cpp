@@ -1641,7 +1641,7 @@ Inspector::Protocol::ErrorStringOr<void> InspectorDOMAgent::highlightNode(std::o
 Inspector::Protocol::ErrorStringOr<void> InspectorDOMAgent::highlightNode(std::optional<Inspector::Protocol::DOM::NodeId>&& nodeId, const Inspector::Protocol::Runtime::RemoteObjectId& objectId, Ref<JSON::Object>&& highlightInspectorObject, RefPtr<JSON::Object>&& gridOverlayInspectorObject, RefPtr<JSON::Object>&& flexOverlayInspectorObject, std::optional<bool>&& showRulers)
 {
     Inspector::Protocol::ErrorString errorString;
-    Node* node = assertNode(errorString, WTFMove(nodeId), objectId);
+    Node* node = assertNode(errorString, WTF::move(nodeId), objectId);
     if (!node)
         return makeUnexpected(errorString);
 
@@ -2044,12 +2044,12 @@ Inspector::Protocol::ErrorStringOr<Ref<Protocol::Runtime::RemoteObject>> Inspect
 
         node = frame->ownerElement();
     } else {
-        node = assertNode(errorString, WTFMove(nodeId), objectId);
+        node = assertNode(errorString, WTF::move(nodeId), objectId);
     }
     if (!node)
         return makeUnexpected(errorString);
 
-    auto object = resolveNode(node, objectGroup, WTFMove(contextId));
+    auto object = resolveNode(node, objectGroup, WTF::move(contextId));
     if (!object)
         return makeUnexpected("Missing injected script for given nodeId"_s);
 
@@ -3511,9 +3511,9 @@ void InspectorDOMAgent::setInputFiles(const String& objectId, Ref<JSON::Array>&&
     HTMLInputElement* element = static_cast<HTMLInputElement*>(node);
     Vector<Ref<File>> fileObjects;
     if (element->hasAttributeWithoutSynchronization(webkitdirectoryAttr)) {
-        auto directoryFileListCreator = DirectoryFileListCreator::create([element = RefPtr { element }, callback = WTFMove(callback)](Ref<FileList>&& fileList) mutable {
+        auto directoryFileListCreator = DirectoryFileListCreator::create([element = RefPtr { element }, callback = WTF::move(callback)](Ref<FileList>&& fileList) mutable {
             ASSERT(isMainThread());
-            element->setFiles(WTFMove(fileList));
+            element->setFiles(WTF::move(fileList));
             callback->sendSuccess();
         });
         Vector<FileChooserFileInfo> fileChooserFiles;
@@ -3533,8 +3533,8 @@ void InspectorDOMAgent::setInputFiles(const String& objectId, Ref<JSON::Array>&&
             ScriptExecutionContext* context = element->scriptExecutionContext();
             fileObjects.append(File::create(context, path));
         }
-        RefPtr<FileList> fileList = FileList::create(WTFMove(fileObjects));
-        element->setFiles(WTFMove(fileList));
+        RefPtr<FileList> fileList = FileList::create(WTF::move(fileObjects));
+        element->setFiles(WTF::move(fileList));
         callback->sendSuccess();
     }
 }

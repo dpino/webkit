@@ -80,7 +80,7 @@ void InspectorPlaywrightAgentClientMac::deleteBrowserContext(WTF::String& error,
 void InspectorPlaywrightAgentClientMac::takePageScreenshot(WebPageProxy& page, WebCore::IntRect&& clipRect, bool, CompletionHandler<void(const String&, const String&)>&& completionHandler)
 {
     int toolbarHeight = headless_ ? 0 : 59;
-    page.callAfterNextPresentationUpdate([protectedPage = Ref { page }, toolbarHeight, clipRect = WTFMove(clipRect), completionHandler = WTFMove(completionHandler)]() mutable {
+    page.callAfterNextPresentationUpdate([protectedPage = Ref { page }, toolbarHeight, clipRect = WTF::move(clipRect), completionHandler = WTF::move(completionHandler)]() mutable {
         RetainPtr<CGImageRef> imageRef = protectedPage->pageClient()->takeSnapshotForAutomation();
         if (!imageRef) {
             completionHandler("Could not take view snapshot"_s, emptyString());

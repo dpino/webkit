@@ -74,8 +74,8 @@ std::unique_ptr<BrowserContext> InspectorPlaywrightAgentClientWin::createBrowser
     m_configureDataStore(toAPI(browserContext->dataStore.get()));
     if (!proxyServer.isEmpty()) {
         URL proxyURL = URL(URL(), proxyServer);
-        WebCore::CurlProxySettings settings(WTFMove(proxyURL), String(proxyBypassList));
-        browserContext->dataStore->setNetworkProxySettings(WTFMove(settings));
+        WebCore::CurlProxySettings settings(WTF::move(proxyURL), String(proxyBypassList));
+        browserContext->dataStore->setNetworkProxySettings(WTF::move(settings));
     }
     return browserContext;
 }

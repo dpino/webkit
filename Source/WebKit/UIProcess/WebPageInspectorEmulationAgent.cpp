@@ -74,17 +74,17 @@ void WebPageInspectorEmulationAgent::setDeviceMetricsOverride(int width, int hei
         m_page.setCustomDeviceScaleFactor(deviceScaleFactor.value(), [] { });
     m_page.setUseFixedLayout(fixedlayout);
     if (!m_page.pageClient()->isActiveViewVisible() && m_page.configuration().relatedPage()) {
-        m_commandsToRunWhenShown.append([this, width, height, callback = WTFMove(callback)]() mutable {
-            setSize(width, height, WTFMove(callback));
+        m_commandsToRunWhenShown.append([this, width, height, callback = WTF::move(callback)]() mutable {
+            setSize(width, height, WTF::move(callback));
         });
     } else {
-        setSize(width, height, WTFMove(callback));
+        setSize(width, height, WTF::move(callback));
     }
 }
 
 void WebPageInspectorEmulationAgent::setSize(int width, int height, Ref<SetDeviceMetricsOverrideCallback>&& callback)
 {
-    platformSetSize(width, height, [callback = WTFMove(callback)](const String& error) {
+    platformSetSize(width, height, [callback = WTF::move(callback)](const String& error) {
         if (error.isEmpty())
             callback->sendSuccess();
         else
@@ -111,7 +111,7 @@ Inspector::Protocol::ErrorStringOr<void> WebPageInspectorEmulationAgent::setAuth
 
 Inspector::Protocol::ErrorStringOr<void> WebPageInspectorEmulationAgent::setActiveAndFocused(std::optional<bool>&& active)
 {
-    m_page.setActiveForAutomation(WTFMove(active));
+    m_page.setActiveForAutomation(WTF::move(active));
     return { };
 }
 
@@ -125,7 +125,7 @@ Inspector::Protocol::ErrorStringOr<void> WebPageInspectorEmulationAgent::grantPe
 
         set.add(name);
     }
-    m_permissions.set(origin, WTFMove(set));
+    m_permissions.set(origin, WTF::move(set));
     m_page.setPermissionsForAutomation(m_permissions);
     return { };
 }
@@ -140,7 +140,7 @@ Inspector::Protocol::ErrorStringOr<void> WebPageInspectorEmulationAgent::resetPe
 Inspector::Protocol::ErrorStringOr<void> WebPageInspectorEmulationAgent::setOrientationOverride(std::optional<int>&& angle)
 {
 #if ENABLE(ORIENTATION_EVENTS)
-    m_page.setOrientationOverride(WTFMove(angle));
+    m_page.setOrientationOverride(WTF::move(angle));
     return { };
 #else
     UNUSED_PARAM(angle);

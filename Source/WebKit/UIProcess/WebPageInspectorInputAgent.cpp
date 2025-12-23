@@ -57,7 +57,7 @@ public:
 
     void append(Ref<T>&& callback)
     {
-        m_callbacks.append(WTFMove(callback));
+        m_callbacks.append(WTF::move(callback));
     }
 
     void sendSuccess()
@@ -197,7 +197,7 @@ void WebPageInspectorInputAgent::dispatchKeyEvent(const String& type, std::optio
         return;
     }
 
-    m_keyboardCallbacks->append(WTFMove(callback));
+    m_keyboardCallbacks->append(WTF::move(callback));
     platformDispatchKeyEvent(
         eventType,
         text,
@@ -262,7 +262,7 @@ void WebPageInspectorInputAgent::dispatchMouseEvent(const String& type, int x, i
     int eventDeltaY = 0;
     if (deltaY)
         eventDeltaY = *deltaY;
-    m_mouseCallbacks->append(WTFMove(callback));
+    m_mouseCallbacks->append(WTF::move(callback));
 
     // Convert css coordinates to view coordinates (dip).
     double totalScale = m_page.pageScaleFactor() * m_page.viewScaleFactor() * m_page.pageZoomFactor();
@@ -279,7 +279,7 @@ void WebPageInspectorInputAgent::dispatchMouseEvent(const String& type, int x, i
     UNUSED_VARIABLE(eventType);
     UNUSED_VARIABLE(eventButton);
     UNUSED_VARIABLE(eventClickCount);
-    platformDispatchMouseEvent(type, x, y, WTFMove(modifiers), button, WTFMove(clickCount), eventButtons);
+    platformDispatchMouseEvent(type, x, y, WTF::move(modifiers), button, WTF::move(clickCount), eventButtons);
 #elif PLATFORM(GTK) || PLATFORM(WPE) || PLATFORM(WIN)
     MonotonicTime timestamp = MonotonicTime::now();
     NativeWebMouseEvent event(
@@ -353,7 +353,7 @@ void WebPageInspectorInputAgent::dispatchTouchEvent(const String& type, std::opt
         touchPoints.append(WebPlatformTouchPoint(id, state, position, position, radius, rotationAngle, force));
     }
 
-    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, MonotonicTime::now()}, WTFMove(touchPoints), {}, {});
+    WebTouchEvent touchEvent({WebEventType::TouchStart, eventModifiers, MonotonicTime::now()}, WTF::move(touchPoints), {}, {});
     m_page.legacyMainFrameProcess().sendWithAsyncReply(Messages::WebPage::TouchEvent(touchEvent), [callback] (std::optional<WebEventType> eventType, bool) {
         if (!eventType) {
             callback->sendFailure("Failed to dispatch touch event."_s);
@@ -375,7 +375,7 @@ void WebPageInspectorInputAgent::dispatchWheelEvent(int x, int y, std::optional<
     float eventDeltaY = 0.0f;
     if (deltaY)
         eventDeltaY = *deltaY;
-    m_wheelCallbacks->append(WTFMove(callback));
+    m_wheelCallbacks->append(WTF::move(callback));
 
     // Convert css coordinates to view coordinates (dip).
     double totalScale = m_page.pageScaleFactor() * m_page.viewScaleFactor() * m_page.pageZoomFactor();

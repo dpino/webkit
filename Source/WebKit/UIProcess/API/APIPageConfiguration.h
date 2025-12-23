@@ -178,7 +178,7 @@ public:
 
     // This is similar to relatedPage(), but it is also set for noopener links.
     WebKit::WebPageProxy* openerPageForInspector() const;
-    void setOpenerPageForInspector(WeakPtr<WebKit::WebPageProxy>&& openerPageForInspector) { m_data.openerPageForInspector = WTFMove(openerPageForInspector); }
+    void setOpenerPageForInspector(WeakPtr<WebKit::WebPageProxy>&& openerPageForInspector) { m_data.openerPageForInspector = WTF::move(openerPageForInspector); }
 
     WebKit::WebPageProxy* pageToCloneSessionStorageFrom() const;
     void setPageToCloneSessionStorageFrom(WeakPtr<WebKit::WebPageProxy>&&);

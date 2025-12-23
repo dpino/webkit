@@ -70,7 +70,7 @@ static WebCore::SoupNetworkProxySettings parseProxySettings(const String& proxyS
         for (String token : tokens) {
             CString cstr = token.utf8();
             ignoreHosts.append(cstr.data());
-            protectTokens.append(WTFMove(cstr));
+            protectTokens.append(WTF::move(cstr));
         }
     }
     ignoreHosts.append(nullptr);
@@ -131,11 +131,11 @@ std::unique_ptr<BrowserContext> InspectorPlaywrightAgentClientGlib::createBrowse
     browserContext->processPool = &webkitWebContextGetProcessPool(context.get());
     browserContext->dataStore = &webkitWebsiteDataManagerGetDataStore(data_manager.get());
     PAL::SessionID sessionID = browserContext.get()->dataStore->sessionID();
-    m_idToContext.set(sessionID, WTFMove(context));
+    m_idToContext.set(sessionID, WTF::move(context));
 
     if (!proxyServer.isEmpty()) {
         WebCore::SoupNetworkProxySettings contextProxySettings = parseProxySettings(proxyServer, proxyBypassList);
-        browserContext->dataStore->setNetworkProxySettings(WTFMove(contextProxySettings));
+        browserContext->dataStore->setNetworkProxySettings(WTF::move(contextProxySettings));
     } else {
         browserContext->dataStore->setNetworkProxySettings(WebCore::SoupNetworkProxySettings(m_proxySettings));
     }
@@ -149,9 +149,9 @@ void InspectorPlaywrightAgentClientGlib::deleteBrowserContext(WTF::String& error
 
 void InspectorPlaywrightAgentClientGlib::takePageScreenshot(WebPageProxy& page, WebCore::IntRect&& clip, bool nominalResolution, CompletionHandler<void(const String&, const String&)>&& completionHandler)
 {
-    page.callAfterNextPresentationUpdate([protectedPage = Ref{ page }, clip = WTFMove(clip), nominalResolution, completionHandler = WTFMove(completionHandler)]() mutable {
+    page.callAfterNextPresentationUpdate([protectedPage = Ref{ page }, clip = WTF::move(clip), nominalResolution, completionHandler = WTF::move(completionHandler)]() mutable {
 #if PLATFORM(GTK) || (PLATFORM(WPE) && USE(SKIA))
-        RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient()->takeViewSnapshot(WTFMove(clip), nominalResolution);
+        RefPtr<ViewSnapshot> viewSnapshot = protectedPage->pageClient()->takeViewSnapshot(WTF::move(clip), nominalResolution);
         if (viewSnapshot) {
             std::optional<String> data = WebAutomationSession::platformGetBase64EncodedPNGData(*viewSnapshot);
             if (data) {

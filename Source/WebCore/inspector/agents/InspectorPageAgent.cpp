@@ -1252,7 +1252,7 @@ Protocol::ErrorStringOr<void> InspectorPageAgent::setDefaultBackgroundColorOverr
         return { };
     }
 
-    view->updateBackgroundRecursively(InspectorDOMAgent::parseColor(WTFMove(color)));
+    view->updateBackgroundRecursively(InspectorDOMAgent::parseColor(WTF::move(color)));
     return { };
 }
 
@@ -1263,7 +1263,7 @@ Protocol::ErrorStringOr<void> InspectorPageAgent::createUserWorld(const String& 
 
     Ref<DOMWrapperWorld> world = ScriptController::createWorld(name, ScriptController::WorldType::User);
     ensureUserWorldsExistInAllFrames({world.ptr()});
-    createdUserWorlds().set(name, WTFMove(world));
+    createdUserWorlds().set(name, WTF::move(world));
     return { };
 }
 

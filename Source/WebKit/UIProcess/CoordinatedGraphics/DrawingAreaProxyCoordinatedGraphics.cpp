@@ -191,7 +191,7 @@ void DrawingAreaProxyCoordinatedGraphics::deviceScaleFactorDidChange(CompletionH
 
 void DrawingAreaProxyCoordinatedGraphics::waitForSizeUpdate(Function<void (const DrawingAreaProxyCoordinatedGraphics&)>&& callback)
 {
-    m_callbacks.append(WTFMove(callback));
+    m_callbacks.append(WTF::move(callback));
 }
 
 void DrawingAreaProxyCoordinatedGraphics::setBackingStoreIsDiscardable(bool isBackingStoreDiscardable)
@@ -289,7 +289,7 @@ void DrawingAreaProxyCoordinatedGraphics::captureFrame()
     if (!skImage)
         return;
 
-    protectedPage()->inspectorController().didPaint(WTFMove(skImage));
+    protectedPage()->inspectorController().didPaint(WTF::move(skImage));
 }
 #endif // PLATFORM(GTK)
 

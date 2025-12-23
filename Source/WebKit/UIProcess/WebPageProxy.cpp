@@ -2154,7 +2154,7 @@ RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceR
     return navigation;
 }
 
-RefPtr<API::Navigation> WebPageProxy::loadRequest(WebCore::ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, IsPerformingHTTPFallback isPerformingHTTPFallback, std::unique_ptr<NavigationActionData>&& lastNavigationAction, API::Object* userData, bool isRequestFromClientOrUserInput)
+RefPtr<API::Navigation> WebPageProxy::loadRequest(WebCore::ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, WebCore::NavigationUpgradeToHTTPSBehavior navigationUpgradeToHTTPSBehavior, std::unique_ptr<NavigationActionData>&& lastNavigationAction, API::Object* userData, bool isRequestFromClientOrUserInput)
 {
     if (m_isClosed)
         return nullptr;
@@ -2843,8 +2843,8 @@ RefPtr<WebAutomationSession> WebPageProxy::activeAutomationSession() const
 
 void WebPageProxy::setAuthCredentialsForAutomation(std::optional<WebCore::Credential>&& credentials, std::optional<URL>&& origin)
 {
-    m_credentialsForAutomation = WTFMove(credentials);
-    m_authOriginForAutomation = WTFMove(origin);
+    m_credentialsForAutomation = WTF::move(credentials);
+    m_authOriginForAutomation = WTF::move(origin);
 }
 
 void WebPageProxy::setPermissionsForAutomation(const UncheckedKeyHashMap<String, HashSet<String>>& permissions)
@@ -2865,7 +2865,7 @@ static inline WebCore::ScreenOrientationType toScreenOrientationType(int angle)
 
 void WebPageProxy::setOrientationOverride(std::optional<int>&& angle)
 {
-    m_deviceOrientationOverride = WTFMove(angle);
+    m_deviceOrientationOverride = WTF::move(angle);
     auto deviceOrientation = toScreenOrientationType(m_deviceOrientationOverride.value_or(0));
     if (m_screenOrientationManager)
         m_screenOrientationManager->setCurrentOrientation(deviceOrientation);
@@ -4060,7 +4060,7 @@ void WebPageProxy::didPerformDragControllerAction(std::optional<WebCore::DragOpe
 void WebPageProxy::startDrag(SelectionData&& selectionData, OptionSet<WebCore::DragOperation> dragOperationMask, std::optional<ShareableBitmap::Handle>&& dragImageHandle, IntPoint&& dragImageHotspot)
 {
     if (m_interceptDrags) {
-        m_dragSelectionData = WTFMove(selectionData);
+        m_dragSelectionData = WTF::move(selectionData);
         m_dragSourceOperationMask = dragOperationMask;
     } else {
 #if PLATFORM(GTK)
@@ -4078,7 +4078,7 @@ void WebPageProxy::startDrag(SelectionData&& selectionData, OptionSet<WebCore::D
 void WebPageProxy::startDrag(WebCore::DragDataMap&& dragDataMap)
 {
     if (m_interceptDrags) {
-        m_dragSelectionData = WTFMove(dragDataMap);
+        m_dragSelectionData = WTF::move(dragDataMap);
         m_dragSourceOperationMask = WebCore::anyDragOperation();
     }
     didStartDrag();
@@ -4345,7 +4345,7 @@ void WebPageProxy::processNextQueuedMouseEvent()
 
         LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
 
-        sendMouseEvent(m_mainFrame->frameID(), eventWithCoalescedEvents, WTFMove(sandboxExtensions));
+        sendMouseEvent(m_mainFrame->frameID(), eventWithCoalescedEvents, WTF::move(sandboxExtensions));
 
         internals().coalescedMouseEvents.clear();
     } else {
@@ -4360,7 +4360,7 @@ void WebPageProxy::processNextQueuedMouseEvent()
             if (m_currentDragOperation && m_dragSourceOperationMask.containsAny(m_currentDragOperation.value())) {
                 SandboxExtension::Handle sandboxExtensionHandle;
                 Vector<SandboxExtension::Handle> sandboxExtensionsForUpload;
-                performDragOperation(dragData, ""_s, WTFMove(sandboxExtensionHandle), WTFMove(sandboxExtensionsForUpload));
+                performDragOperation(dragData, ""_s, WTF::move(sandboxExtensionHandle), WTF::move(sandboxExtensionsForUpload));
             }
             m_dragSelectionData = std::nullopt;
             dragEnded(roundedIntPoint(event->position()), roundedIntPoint(event->globalPosition()), m_dragSourceOperationMask);
@@ -10522,7 +10522,7 @@ void WebPageProxy::resourceLoadDidCompleteWithError(ResourceLoadInfo&& loadInfo,
 #if ENABLE(FULLSCREEN_API)
 void WebPageProxy::setFullScreenManagerClientOverride(std::unique_ptr<WebFullScreenManagerProxyClient>&& client)
 {
-    m_fullScreenManagerClientOverride = WTFMove(client);
+    m_fullScreenManagerClientOverride = WTF::move(client);
 }
 
 WebFullScreenManagerProxy* WebPageProxy::fullScreenManager()

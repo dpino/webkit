@@ -225,7 +225,7 @@ static Expected<Ref<ViewSnapshot>, String> saveBufferSnapshot(const GRefPtr<WPEB
 
     float deviceScale = m_view.page().deviceScaleFactor();
     if (!clipRect && (!nominalResolution || deviceScale == 1))
-        return { ViewSnapshot::create(WTFMove(fullScreenshot)) };
+        return { ViewSnapshot::create(WTF::move(fullScreenshot)) };
 
     WebCore::IntSize size = clipRect ? clipRect->size() : m_view.page().viewSize();
     if (!nominalResolution) {
