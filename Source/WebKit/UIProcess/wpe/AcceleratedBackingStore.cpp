@@ -234,25 +234,6 @@ static Expected<Ref<ViewSnapshot>, String> saveBufferSnapshot(const GRefPtr<WPEB
             clipRect->scale(deviceScale);
     }
 
-<<<<<<< HEAD
-    auto image = SkImages::RasterFromPixmap(pixmap, [](const void*, void* context) {
-        g_bytes_unref(static_cast<GBytes*>(context));
-    }, bytes.leakRef());
-
-    if (!image)
-        return makeUnexpected("Failed to create snapshot image"_s);
-
-    return { ViewSnapshot::create(WTF::move(image)) };
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    auto image = SkImages::RasterFromPixmap(pixmap, [](const void*, void* context) {
-        g_bytes_unref(static_cast<GBytes*>(context));
-    }, bytes.leakRef());
-
-    if (!image)
-        return makeUnexpected("Failed to create snapshot image"_s);
-
-    return { ViewSnapshot::create(WTFMove(image)) };
-=======
     SkBitmap bitmap;
     bitmap.allocPixels(SkImageInfo::Make(size.width(), size.height(), kN32_SkColorType, kPremul_SkAlphaType));
     SkCanvas canvas(bitmap);
@@ -264,8 +245,7 @@ static Expected<Ref<ViewSnapshot>, String> saveBufferSnapshot(const GRefPtr<WPEB
     if (nominalResolution)
         canvas.scale(1/deviceScale, 1/deviceScale);
     canvas.drawImage(fullScreenshot, 0, 0);
-    return { ViewSnapshot::create(WTFMove(bitmap.asImage())) };
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    return { ViewSnapshot::create(WTF::move(bitmap.asImage())) };
 }
 
 Expected<Ref<ViewSnapshot>, String> AcceleratedBackingStore::takeSnapshot(std::optional<WebCore::IntRect>&& clipRect, bool nominalResolution)
@@ -273,13 +253,7 @@ Expected<Ref<ViewSnapshot>, String> AcceleratedBackingStore::takeSnapshot(std::o
     if (!m_committedBuffer && !m_pendingBuffer) [[unlikely]]
         return makeUnexpected("No buffer to create snapshot from"_s);
 
-<<<<<<< HEAD
-    return saveBufferSnapshot(m_committedBuffer ? m_committedBuffer : m_pendingBuffer, WTF::move(clipRect));
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    return saveBufferSnapshot(m_committedBuffer ? m_committedBuffer : m_pendingBuffer, WTFMove(clipRect));
-=======
-    return saveBufferSnapshot(m_committedBuffer ? m_committedBuffer : m_pendingBuffer, WTFMove(clipRect), nominalResolution);
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    return saveBufferSnapshot(m_committedBuffer ? m_committedBuffer : m_pendingBuffer, WTF::move(clipRect), nominalResolution);
 }
 
 #endif

@@ -1299,18 +1299,12 @@ Inspector::Protocol::ErrorStringOr<void> InspectorNetworkAgent::interceptRequest
     }
     response.setHTTPHeaderFields(WTF::move(explicitHeaders));
     response.setHTTPHeaderField(HTTPHeaderName::ContentType, response.mimeType());
-<<<<<<< HEAD
-    loader->didReceiveResponse(WTF::move(response), [loader, buffer = data.releaseNonNull()]() {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    loader->didReceiveResponse(WTFMove(response), [loader, buffer = data.releaseNonNull()]() {
-=======
 
     auto* frame = loader->frame();
     if (!setCookieValue.isEmpty() && frame && frame->page())
         frame->page()->cookieJar().setCookieFromResponse(*loader.get(), setCookieValue);
 
-    loader->didReceiveResponse(WTFMove(response), [loader, buffer = data.releaseNonNull()]() {
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    loader->didReceiveResponse(WTF::move(response), [loader, buffer = data.releaseNonNull()]() {
         if (loader->reachedTerminalState())
             return;
 

@@ -383,23 +383,6 @@ static WebKitWebView* createWebViewImpl(WebKitWebView* webView, WebKitWebContext
     }
 #endif
 
-<<<<<<< HEAD
-    auto* newWebView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,
-#if defined(USE_LIBWPE) && USE_LIBWPE
-        "backend", viewBackend,
-#endif
-        "related-view", webView,
-        "settings", webkit_web_view_get_settings(webView),
-        "user-content-manager", webkit_web_view_get_user_content_manager(webView),
-        nullptr));
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    auto* newWebView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,
-        "backend", viewBackend,
-        "related-view", webView,
-        "settings", webkit_web_view_get_settings(webView),
-        "user-content-manager", webkit_web_view_get_user_content_manager(webView),
-        nullptr));
-=======
 // Playwright begin
     if (headlessMode) {
         webkit_web_view_backend_set_screenshot_callback(viewBackend,
@@ -411,17 +394,20 @@ static WebKitWebView* createWebViewImpl(WebKitWebView* webView, WebKitWebContext
     WebKitWebView* newWebView;
     if (webView) {
         newWebView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,
+#if defined(USE_LIBWPE) && USE_LIBWPE
             "backend", viewBackend,
+#endif
             "related-view", webView,
             nullptr));
     } else {
         newWebView = WEBKIT_WEB_VIEW(g_object_new(WEBKIT_TYPE_WEB_VIEW,
+#if defined(USE_LIBWPE) && USE_LIBWPE
             "backend", viewBackend,
+#endif
             "web-context", webContext,
             "is-controlled-by-automation", TRUE,
             nullptr));
     }
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 
 #if ENABLE_WPE_PLATFORM
     if (auto* wpeView = webkit_web_view_get_wpe_view(newWebView)) {
@@ -528,10 +514,7 @@ void loadConfigFile(WPESettings* settings)
 }
 #endif
 
-<<<<<<< HEAD
 #if defined(USE_LIBWPE) && USE_LIBWPE
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-=======
 static WebKitWebView* createWebView(WebKitWebView* webView, WebKitNavigationAction*, gpointer user_data)
 {
     return createWebViewImpl(webView, nullptr, user_data);
@@ -615,7 +598,6 @@ static void configureBrowserInspector(GApplication* application)
     webkit_browser_inspector_initialize_pipe(proxy, ignoreHosts);
 }
 
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 static void activate(GApplication* application, WPEToolingBackends::ViewBackend* backend)
 #else
 static void activate(GApplication* application, gpointer)
@@ -974,17 +956,13 @@ int main(int argc, char *argv[])
     GApplication* application = g_application_new("org.wpewebkit.MiniBrowser", G_APPLICATION_NON_UNIQUE);
 #if defined(USE_LIBWPE) && USE_LIBWPE
     g_signal_connect(application, "activate", G_CALLBACK(activate), backend.release());
-<<<<<<< HEAD
 #else
     g_signal_connect(application, "activate", G_CALLBACK(activate), nullptr);
 #endif
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-=======
 
     if (inspectorPipe)
         configureBrowserInspector(application);
 
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
     g_application_run(application, 0, nullptr);
     g_object_unref(application);
 

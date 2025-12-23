@@ -313,39 +313,17 @@ struct ResourceResponseData {
     ResourceResponseData() = default;
     ResourceResponseData(ResourceResponseData&&) = default;
     ResourceResponseData& operator=(ResourceResponseData&&) = default;
-<<<<<<< HEAD
-    ResourceResponseData(URL&& url, String&& mimeType, long long expectedContentLength, String&& textEncodingName, int httpStatusCode, String&& httpStatusText, String&& httpVersion, HTTPHeaderMap&& httpHeaderFields, std::optional<NetworkLoadMetrics>&& networkLoadMetrics, ResourceResponseSource source, ResourceResponseBaseType type, ResourceResponseBaseTainting tainting, bool isRedirected, UsedLegacyTLS usedLegacyTLS, WasPrivateRelayed wasPrivateRelayed, String&& proxyName, bool isRangeRequested, std::optional<CertificateInfo> certificateInfo, IPAddressSpace ipAddressSpace)
+    ResourceResponseData(URL&& url, String&& mimeType, long long expectedContentLength, String&& textEncodingName, int httpStatusCode, String&& httpStatusText, String&& httpVersion, HTTPHeaderMap&& httpHeaderFields, HTTPHeaderMap&& httpRequestHeaderFields, std::optional<NetworkLoadMetrics>&& networkLoadMetrics, ResourceResponseSource source, ResourceResponseBaseType type, ResourceResponseBaseTainting tainting, bool isRedirected, UsedLegacyTLS usedLegacyTLS, WasPrivateRelayed wasPrivateRelayed, String&& proxyName, bool isRangeRequested, std::optional<CertificateInfo> certificateInfo, IPAddressSpace ipAddressSpace)
         : url(WTF::move(url))
         , mimeType(WTF::move(mimeType))
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    ResourceResponseData(URL&& url, String&& mimeType, long long expectedContentLength, String&& textEncodingName, int httpStatusCode, String&& httpStatusText, String&& httpVersion, HTTPHeaderMap&& httpHeaderFields, std::optional<NetworkLoadMetrics>&& networkLoadMetrics, ResourceResponseSource source, ResourceResponseBaseType type, ResourceResponseBaseTainting tainting, bool isRedirected, UsedLegacyTLS usedLegacyTLS, WasPrivateRelayed wasPrivateRelayed, String&& proxyName, bool isRangeRequested, std::optional<CertificateInfo> certificateInfo, IPAddressSpace ipAddressSpace)
-        : url(WTFMove(url))
-        , mimeType(WTFMove(mimeType))
-=======
-    ResourceResponseData(URL&& url, String&& mimeType, long long expectedContentLength, String&& textEncodingName, int httpStatusCode, String&& httpStatusText, String&& httpVersion, HTTPHeaderMap&& httpHeaderFields, HTTPHeaderMap&& httpRequestHeaderFields, std::optional<NetworkLoadMetrics>&& networkLoadMetrics, ResourceResponseSource source, ResourceResponseBaseType type, ResourceResponseBaseTainting tainting, bool isRedirected, UsedLegacyTLS usedLegacyTLS, WasPrivateRelayed wasPrivateRelayed, String&& proxyName, bool isRangeRequested, std::optional<CertificateInfo> certificateInfo, IPAddressSpace ipAddressSpace)
-        : url(WTFMove(url))
-        , mimeType(WTFMove(mimeType))
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
         , expectedContentLength(expectedContentLength)
         , textEncodingName(WTF::move(textEncodingName))
         , httpStatusCode(httpStatusCode)
-<<<<<<< HEAD
         , httpStatusText(WTF::move(httpStatusText))
         , httpVersion(WTF::move(httpVersion))
         , httpHeaderFields(WTF::move(httpHeaderFields))
+        , httpRequestHeaderFields(WTF::move(httpRequestHeaderFields))
         , networkLoadMetrics(WTF::move(networkLoadMetrics))
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-        , httpStatusText(WTFMove(httpStatusText))
-        , httpVersion(WTFMove(httpVersion))
-        , httpHeaderFields(WTFMove(httpHeaderFields))
-        , networkLoadMetrics(WTFMove(networkLoadMetrics))
-=======
-        , httpStatusText(WTFMove(httpStatusText))
-        , httpVersion(WTFMove(httpVersion))
-        , httpHeaderFields(WTFMove(httpHeaderFields))
-        , httpRequestHeaderFields(WTFMove(httpRequestHeaderFields))
-        , networkLoadMetrics(WTFMove(networkLoadMetrics))
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
         , source(source)
         , type(type)
         , tainting(tainting)

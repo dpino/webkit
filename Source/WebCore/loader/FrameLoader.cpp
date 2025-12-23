@@ -1944,15 +1944,9 @@ void FrameLoader::loadWithDocumentLoader(DocumentLoader* loader, FrameLoadType t
 
     auto policyDecisionMode = loader->triggeringAction().isFromNavigationAPI() ? PolicyDecisionMode::Synchronous : PolicyDecisionMode::Asynchronous;
     RELEASE_ASSERT(!isBackForwardLoadType(policyChecker().loadType()) || history().provisionalItem());
-<<<<<<< HEAD
-    policyChecker().checkNavigationPolicy(ResourceRequest(loader->request()), ResourceResponse { } /* redirectResponse */, loader, WTF::move(formSubmission), [this, protectedThis = Ref { *this }, allowNavigationToInvalidURL, completionHandler = completionHandlerCaller.release()] (const ResourceRequest& request, WeakPtr<const FormSubmission>&& weakFormSubmission, NavigationPolicyDecision navigationPolicyDecision) mutable {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    policyChecker().checkNavigationPolicy(ResourceRequest(loader->request()), ResourceResponse { } /* redirectResponse */, loader, WTFMove(formSubmission), [this, protectedThis = Ref { *this }, allowNavigationToInvalidURL, completionHandler = completionHandlerCaller.release()] (const ResourceRequest& request, WeakPtr<const FormSubmission>&& weakFormSubmission, NavigationPolicyDecision navigationPolicyDecision) mutable {
-=======
     InspectorInstrumentation::willCheckNavigationPolicy(m_frame);
-    policyChecker().checkNavigationPolicy(ResourceRequest(loader->request()), ResourceResponse { } /* redirectResponse */, loader, WTFMove(formSubmission), [this, protectedThis = Ref { *this }, allowNavigationToInvalidURL, completionHandler = completionHandlerCaller.release()] (const ResourceRequest& request, WeakPtr<const FormSubmission>&& weakFormSubmission, NavigationPolicyDecision navigationPolicyDecision) mutable {
+    policyChecker().checkNavigationPolicy(ResourceRequest(loader->request()), ResourceResponse { } /* redirectResponse */, loader, WTF::move(formSubmission), [this, protectedThis = Ref { *this }, allowNavigationToInvalidURL, completionHandler = completionHandlerCaller.release()] (const ResourceRequest& request, WeakPtr<const FormSubmission>&& weakFormSubmission, NavigationPolicyDecision navigationPolicyDecision) mutable {
         InspectorInstrumentation::didCheckNavigationPolicy(m_frame, navigationPolicyDecision != NavigationPolicyDecision::ContinueLoad);
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
         continueLoadAfterNavigationPolicy(request, RefPtr { weakFormSubmission.get() }.get(), navigationPolicyDecision, allowNavigationToInvalidURL);
         completionHandler();
     }, policyDecisionMode, determineNavigationType(type, NavigationHistoryBehavior::Auto));

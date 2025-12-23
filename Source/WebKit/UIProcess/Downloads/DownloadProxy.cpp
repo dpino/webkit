@@ -91,14 +91,8 @@ void DownloadProxy::cancel(CompletionHandler<void(API::Data*)>&& completionHandl
 {
     m_downloadIsCancelled = true;
     if (m_dataStore) {
-<<<<<<< HEAD
-        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [weakThis = WeakPtr { *this }, completionHandler = WTF::move(completionHandler)] (std::span<const uint8_t> resumeData) mutable {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [weakThis = WeakPtr { *this }, completionHandler = WTFMove(completionHandler)] (std::span<const uint8_t> resumeData) mutable {
-=======
         auto* instrumentation = m_dataStore->downloadInstrumentation();
-        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [weakThis = WeakPtr { *this }, completionHandler = WTFMove(completionHandler), instrumentation] (std::span<const uint8_t> resumeData) mutable {
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+        protectedDataStore()->protectedNetworkProcess()->sendWithAsyncReply(Messages::NetworkProcess::CancelDownload(m_downloadID), [weakThis = WeakPtr { *this }, completionHandler = WTF::move(completionHandler), instrumentation] (std::span<const uint8_t> resumeData) mutable {
             RefPtr protectedThis = weakThis.get();
             if (!protectedThis)
                 return completionHandler(nullptr);
@@ -177,11 +171,6 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
         suggestedFilename = m_suggestedFilename;
     suggestedFilename = MIMETypeRegistry::appendFileExtensionIfNecessary(suggestedFilename, response.mimeType());
 
-<<<<<<< HEAD
-    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTF::move(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
-=======
     if (auto* instrumentation = m_dataStore->downloadInstrumentation())
       instrumentation->downloadFilenameSuggested(m_uuid, suggestedFilename);
 
@@ -191,9 +180,9 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
         if (*m_dataStore->allowDownloadForAutomation()) {
             destination = FileSystem::pathByAppendingComponent(m_dataStore->downloadPathForAutomation(), m_uuid);
             if (auto handle = SandboxExtension::createHandle(destination, SandboxExtension::Type::ReadWrite))
-                sandboxExtensionHandle = WTFMove(*handle);
+                sandboxExtensionHandle = WTF::move(*handle);
         }
-        m_client->decidePlaceholderPolicy(*this, [completionHandler = WTFMove(completionHandler), destination = WTFMove(destination), sandboxExtensionHandle = WTFMove(sandboxExtensionHandle)] (WebKit::UseDownloadPlaceholder usePlaceholder, const URL& url) mutable {
+        m_client->decidePlaceholderPolicy(*this, [completionHandler = WTF::move(completionHandler), destination = WTF::move(destination), sandboxExtensionHandle = WTF::move(sandboxExtensionHandle)] (WebKit::UseDownloadPlaceholder usePlaceholder, const URL& url) mutable {
             SandboxExtension::Handle placeHolderSandboxExtensionHandle;
             Vector<uint8_t> bookmarkData;
             Vector<uint8_t> activityTokenData;
@@ -202,15 +191,14 @@ void DownloadProxy::decideDestinationWithSuggestedFilename(const WebCore::Resour
             activityTokenData = activityAccessToken();
 #else
             if (auto handle = SandboxExtension::createHandle(url.fileSystemPath(), SandboxExtension::Type::ReadWrite))
-                placeHolderSandboxExtensionHandle = WTFMove(*handle);
+                placeHolderSandboxExtensionHandle = WTF::move(*handle);
 #endif
-            completionHandler(destination, WTFMove(sandboxExtensionHandle), AllowOverwrite::Yes, WebKit::UseDownloadPlaceholder::No, url, WTFMove(placeHolderSandboxExtensionHandle), bookmarkData.span(), activityTokenData.span());
+            completionHandler(destination, WTF::move(sandboxExtensionHandle), AllowOverwrite::Yes, WebKit::UseDownloadPlaceholder::No, url, WTF::move(placeHolderSandboxExtensionHandle), bookmarkData.span(), activityTokenData.span());
         });
         return;
     }
 
-    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTFMove(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    protectedClient()->decideDestinationWithSuggestedFilename(*this, response, ResourceResponseBase::sanitizeSuggestedFilename(suggestedFilename), [this, protectedThis = Ref { *this }, completionHandler = WTF::move(completionHandler)] (AllowOverwrite allowOverwrite, String destination) mutable {
         SandboxExtension::Handle sandboxExtensionHandle;
         if (!destination.isNull()) {
             if (auto handle = SandboxExtension::createHandle(destination, SandboxExtension::Type::ReadWrite))

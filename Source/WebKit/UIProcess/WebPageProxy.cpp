@@ -2139,28 +2139,22 @@ Ref<WebProcessProxy> WebPageProxy::ensureProtectedRunningProcess()
     return ensureRunningProcess();
 }
 
-<<<<<<< HEAD
-RefPtr<API::Navigation> WebPageProxy::loadRequest(WebCore::ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, NavigationUpgradeToHTTPSBehavior navigationUpgradeToHTTPSBehavior, std::unique_ptr<NavigationActionData>&& lastNavigationAction, API::Object* userData, bool isRequestFromClientOrUserInput)
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-RefPtr<API::Navigation> WebPageProxy::loadRequest(WebCore::ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, IsPerformingHTTPFallback isPerformingHTTPFallback, std::unique_ptr<NavigationActionData>&& lastNavigationAction, API::Object* userData, bool isRequestFromClientOrUserInput)
-=======
 RefPtr<API::Navigation> WebPageProxy::loadRequestForInspector(WebCore::ResourceRequest&& request, WebFrameProxy* frame)
 {
     if (!frame || frame == mainFrame())
-        return loadRequest(WTFMove(request), WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow);
+        return loadRequest(WTF::move(request), WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow);
 
     auto navigation = m_navigationState->createLoadRequestNavigation(legacyMainFrameProcess().coreProcessIdentifier(), ResourceRequest(request), m_backForwardList->currentItem());
     LoadParameters loadParameters;
     loadParameters.navigationID = navigation->navigationID();
-    loadParameters.request = WTFMove(request);
+    loadParameters.request = WTF::move(request);
     loadParameters.shouldOpenExternalURLsPolicy = WebCore::ShouldOpenExternalURLsPolicy::ShouldNotAllow;
     loadParameters.shouldTreatAsContinuingLoad = ShouldTreatAsContinuingLoad::No;
-    m_legacyMainFrameProcess->send(Messages::WebPage::LoadRequestInFrameForInspector(WTFMove(loadParameters), frame->frameID()), m_webPageID);
+    m_legacyMainFrameProcess->send(Messages::WebPage::LoadRequestInFrameForInspector(WTF::move(loadParameters), frame->frameID()), m_webPageID);
     return navigation;
 }
 
 RefPtr<API::Navigation> WebPageProxy::loadRequest(WebCore::ResourceRequest&& request, ShouldOpenExternalURLsPolicy shouldOpenExternalURLsPolicy, IsPerformingHTTPFallback isPerformingHTTPFallback, std::unique_ptr<NavigationActionData>&& lastNavigationAction, API::Object* userData, bool isRequestFromClientOrUserInput)
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 {
     if (m_isClosed)
         return nullptr;
@@ -2281,19 +2275,12 @@ void WebPageProxy::loadRequestWithNavigationShared(Ref<WebProcessProxy>&& proces
 
         navigation->setIsLoadedWithNavigationShared(true);
         protectedProcess->markProcessAsRecentlyUsed();
-<<<<<<< HEAD
-        if (!protectedProcess->isLaunching() || !url.protocolIsFile())
-            protectedProcess->send(Messages::WebPage::LoadRequest(WTF::move(loadParameters)), webPageID);
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-        if (!protectedProcess->isLaunching() || !url.protocolIsFile())
-            protectedProcess->send(Messages::WebPage::LoadRequest(WTFMove(loadParameters)), webPageID);
-=======
 
         // Pause loading for new window navigation.
         Function<void()> continuation = [
             weakThis = WeakPtr { protectedThis },
             weakProcess = WeakPtr { protectedProcess },
-            loadParameters = WTFMove(loadParameters),
+            loadParameters = WTF::move(loadParameters),
             webPageID,
             url
         ]() mutable {
@@ -2302,24 +2289,15 @@ void WebPageProxy::loadRequestWithNavigationShared(Ref<WebProcessProxy>&& proces
             if (!innerProtectedProcess || !innerProtectedThis)
                 return;
             if (!innerProtectedProcess->isLaunching() || !url.protocolIsFile())
-                innerProtectedProcess->send(Messages::WebPage::LoadRequest(WTFMove(loadParameters)), webPageID);
+                innerProtectedProcess->send(Messages::WebPage::LoadRequest(WTF::move(loadParameters)), webPageID);
             else
-                innerProtectedProcess->send(Messages::WebPage::LoadRequestWaitingForProcessLaunch(WTFMove(loadParameters), innerProtectedThis->internals().pageLoadState.resourceDirectoryURL(), innerProtectedThis->identifier(), true), webPageID);
+                innerProtectedProcess->send(Messages::WebPage::LoadRequestWaitingForProcessLaunch(WTF::move(loadParameters), innerProtectedThis->internals().pageLoadState.resourceDirectoryURL(), innerProtectedThis->identifier(), true), webPageID);
             innerProtectedProcess->startResponsivenessTimer();
         };
         if (protectedThis->m_inspectorController->shouldPauseLoadRequest())
-            protectedThis->m_inspectorController->setContinueLoadingCallback(WTFMove(continuation));
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+            protectedThis->m_inspectorController->setContinueLoadingCallback(WTF::move(continuation));
         else
-<<<<<<< HEAD
-            protectedProcess->send(Messages::WebPage::LoadRequestWaitingForProcessLaunch(WTF::move(loadParameters), protectedThis->pageLoadState().resourceDirectoryURL(), protectedThis->identifier(), true), webPageID);
-        protectedProcess->startResponsivenessTimer();
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-            protectedProcess->send(Messages::WebPage::LoadRequestWaitingForProcessLaunch(WTFMove(loadParameters), protectedThis->pageLoadState().resourceDirectoryURL(), protectedThis->identifier(), true), webPageID);
-        protectedProcess->startResponsivenessTimer();
-=======
             continuation();
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
     });
 }
 
@@ -4086,22 +4064,10 @@ void WebPageProxy::startDrag(SelectionData&& selectionData, OptionSet<WebCore::D
         m_dragSourceOperationMask = dragOperationMask;
     } else {
 #if PLATFORM(GTK)
-<<<<<<< HEAD
-    if (RefPtr pageClient = this->pageClient()) {
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTF::move(*dragImageHandle)) : nullptr;
-        pageClient->startDrag(WTF::move(selectionData), dragOperationMask, WTF::move(dragImage), WTF::move(dragImageHotspot));
-    }
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    if (RefPtr pageClient = this->pageClient()) {
-        RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-        pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
-    }
-=======
         if (RefPtr pageClient = this->pageClient()) {
-            RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTFMove(*dragImageHandle)) : nullptr;
-            pageClient->startDrag(WTFMove(selectionData), dragOperationMask, WTFMove(dragImage), WTFMove(dragImageHotspot));
+            RefPtr dragImage = dragImageHandle ? ShareableBitmap::create(WTF::move(*dragImageHandle)) : nullptr;
+            pageClient->startDrag(WTF::move(selectionData), dragOperationMask, WTF::move(dragImage), WTF::move(dragImageHotspot));
         }
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 #endif
     }
     didStartDrag();
@@ -4401,22 +4367,6 @@ void WebPageProxy::processNextQueuedMouseEvent()
         }
         didReceiveEventIPC(process->connection(), eventType, true, std::nullopt);
     }
-<<<<<<< HEAD
-
-    LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
-
-    sendMouseEvent(targetFrame->frameID(), eventWithCoalescedEvents, WTF::move(sandboxExtensions));
-
-    internals().coalescedMouseEvents.clear();
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-
-    LOG_WITH_STREAM(MouseHandling, stream << "UIProcess: sent mouse event " << eventType << " (queue size " << internals().mouseEventQueue.size() << ", coalesced events size " << internals().coalescedMouseEvents.size() << ")");
-
-    sendMouseEvent(targetFrame->frameID(), eventWithCoalescedEvents, WTFMove(sandboxExtensions));
-
-    internals().coalescedMouseEvents.clear();
-=======
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
 }
 
 #if ENABLE(MAC_GESTURE_EVENTS)
@@ -9721,18 +9671,10 @@ void WebPageProxy::runJavaScriptAlert(IPC::Connection& connection, FrameIdentifi
             automationSession->willShowJavaScriptDialog(*this, message, std::nullopt);
     }
 
-<<<<<<< HEAD
     runModalJavaScriptDialog(WTF::move(frame), WTF::move(frameInfo), WTF::move(message), [reply = WTF::move(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, String&& message, CompletionHandler<void()>&& completion) mutable {
-        page.m_uiClient->runJavaScriptAlert(page, WTF::move(message), frame, WTF::move(frameInfo), [reply = WTF::move(reply), completion = WTF::move(completion)]() mutable {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    runModalJavaScriptDialog(WTFMove(frame), WTFMove(frameInfo), WTFMove(message), [reply = WTFMove(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, String&& message, CompletionHandler<void()>&& completion) mutable {
-        page.m_uiClient->runJavaScriptAlert(page, WTFMove(message), frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
-=======
-    runModalJavaScriptDialog(WTFMove(frame), WTFMove(frameInfo), WTFMove(message), [reply = WTFMove(reply)](WebPageProxy& page, WebFrameProxy* frame, FrameInfoData&& frameInfo, String&& message, CompletionHandler<void()>&& completion) mutable {
         if (page.m_inspectorDialogAgent)
             page.m_inspectorDialogAgent->javascriptDialogOpening("alert"_s, message);
-        page.m_uiClient->runJavaScriptAlert(page, WTFMove(message), frame, WTFMove(frameInfo), [reply = WTFMove(reply), completion = WTFMove(completion)]() mutable {
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+        page.m_uiClient->runJavaScriptAlert(page, WTF::move(message), frame, WTF::move(frameInfo), [reply = WTF::move(reply), completion = WTF::move(completion)]() mutable {
             reply();
             completion();
         });
@@ -10727,11 +10669,6 @@ void WebPageProxy::requestDOMPasteAccess(IPC::Connection& connection, DOMPasteAc
         }
     }
 
-<<<<<<< HEAD
-    protectedPageClient()->requestDOMPasteAccess(pasteAccessCategory, requiresInteraction, elementRect, originIdentifier, WTF::move(completionHandler));
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    protectedPageClient()->requestDOMPasteAccess(pasteAccessCategory, requiresInteraction, elementRect, originIdentifier, WTFMove(completionHandler));
-=======
     if (isControlledByAutomation()) {
         DOMPasteAccessResponse response = DOMPasteAccessResponse::DeniedForGesture;
         if (permissionForAutomation(originIdentifier, "clipboard-read"_s).value_or(false)) {
@@ -10743,8 +10680,7 @@ void WebPageProxy::requestDOMPasteAccess(IPC::Connection& connection, DOMPasteAc
         return;
     }
 
-    protectedPageClient()->requestDOMPasteAccess(pasteAccessCategory, requiresInteraction, elementRect, originIdentifier, WTFMove(completionHandler));
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    protectedPageClient()->requestDOMPasteAccess(pasteAccessCategory, requiresInteraction, elementRect, originIdentifier, WTF::move(completionHandler));
 }
 
 // BackForwardList

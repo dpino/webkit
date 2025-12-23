@@ -349,13 +349,7 @@ void PageClientImpl::selectionDidChange()
 
 RefPtr<ViewSnapshot> PageClientImpl::takeViewSnapshot(std::optional<WebCore::IntRect>&& clipRect, bool nominalResolution)
 {
-<<<<<<< HEAD
-    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTF::move(clipRect));
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTFMove(clipRect));
-=======
-    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTFMove(clipRect), nominalResolution);
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    return webkitWebViewBaseTakeViewSnapshot(WEBKIT_WEB_VIEW_BASE(m_viewWidget), WTF::move(clipRect), nominalResolution);
 }
 
 void PageClientImpl::didChangeContentSize(const IntSize& size)

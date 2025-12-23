@@ -431,13 +431,7 @@ void WebProcessPool::setAutomationClient(std::unique_ptr<API::AutomationClient>&
 
 void WebProcessPool::setOverrideLanguages(Vector<String>&& languages)
 {
-<<<<<<< HEAD
-    WebKit::setOverrideLanguages(WTF::move(languages));
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    WebKit::setOverrideLanguages(WTFMove(languages));
-=======
-    m_configuration->setOverrideLanguages(WTFMove(languages));
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    m_configuration->setOverrideLanguages(WTF::move(languages));
 
     LOG_WITH_STREAM(Language, stream << "WebProcessPool is setting OverrideLanguages: " << languages);
     sendToAllProcesses(Messages::WebProcess::UserPreferredLanguagesChanged(m_configuration->overrideLanguages()));

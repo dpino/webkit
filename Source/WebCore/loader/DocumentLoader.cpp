@@ -769,14 +769,8 @@ void DocumentLoader::willSendRequest(ResourceRequest&& newRequest, const Resourc
     if (!didReceiveRedirectResponse)
         return completionHandler(WTF::move(newRequest));
 
-<<<<<<< HEAD
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTF::move(completionHandler)] (ResourceRequest&& request, WeakPtr<FormSubmission>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormSubmission>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
-=======
     InspectorInstrumentation::willCheckNavigationPolicy(*frame);
-    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTFMove(completionHandler)] (ResourceRequest&& request, WeakPtr<FormSubmission>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+    auto navigationPolicyCompletionHandler = [this, protectedThis = Ref { *this }, frame, completionHandler = WTF::move(completionHandler)] (ResourceRequest&& request, WeakPtr<FormSubmission>&&, NavigationPolicyDecision navigationPolicyDecision) mutable {
         m_waitingForNavigationPolicy = false;
         InspectorInstrumentation::didCheckNavigationPolicy(*frame, navigationPolicyDecision != NavigationPolicyDecision::ContinueLoad);
         switch (navigationPolicyDecision) {

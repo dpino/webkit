@@ -91,18 +91,12 @@ public:
 #if USE(LIBWPE)
     enum class HandledByInputMethod : bool { No, Yes };
     NativeWebKeyboardEvent(struct wpe_input_keyboard_event*, const String&, bool isAutoRepeat, HandledByInputMethod, std::optional<Vector<WebCore::CompositionUnderline>>&&, std::optional<EditingRange>&&);
-<<<<<<< HEAD
-#endif
-#if ENABLE(WPE_PLATFORM)
-||||||| parent of f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
-#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
-=======
     NativeWebKeyboardEvent(WebEventType type, const String& text, const String& unmodifiedText, const String& key, const String& code, const String& keyIdentifier, int windowsVirtualKeyCode, int nativeVirtualKeyCode, bool isAutoRepeat, bool isKeypad, bool isSystemKey, OptionSet<WebEventModifier> modifiers, MonotonicTime timestamp)
         : WebKeyboardEvent(type, text, unmodifiedText, key, code, keyIdentifier, windowsVirtualKeyCode, nativeVirtualKeyCode, isAutoRepeat, isKeypad, isSystemKey, modifiers, timestamp)
     {
     }
-#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
->>>>>>> f6caf75cf5c2 (chore(webkit): bootstrap build #2242)
+#endif
+#if ENABLE(WPE_PLATFORM)
     NativeWebKeyboardEvent(WPEEvent*, const String&, bool isAutoRepeat);
     NativeWebKeyboardEvent(const String&, std::optional<Vector<WebCore::CompositionUnderline>>&&, std::optional<EditingRange>&&);
 #endif
