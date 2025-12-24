@@ -9,9 +9,10 @@
 # regardless of whether those objects are already contained in a SHARED
 # library in the list. Including both WebKit and the OBJECT frameworks
 # would cause duplicate symbols and bloated binaries.
-set(jsc_FRAMEWORKS WebKit)
 
 if (DEVELOPER_MODE)
+    set(jsc_FRAMEWORKS WebKit)
+
     set(testapi_FRAMEWORKS ${jsc_FRAMEWORKS})
     set(testmasm_FRAMEWORKS ${jsc_FRAMEWORKS})
     set(testRegExp_FRAMEWORKS ${jsc_FRAMEWORKS})
