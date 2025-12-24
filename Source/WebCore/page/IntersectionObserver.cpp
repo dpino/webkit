@@ -58,6 +58,7 @@
 #include "VisibleRectContext.h"
 #include "WebCoreOpaqueRootInlines.h"
 #include <JavaScriptCore/AbstractSlotVisitorInlines.h>
+#include <optional>
 #include <ranges>
 #include <wtf/TZoneMallocInlines.h>
 #include <wtf/Vector.h>
