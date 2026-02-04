@@ -239,13 +239,7 @@ bool LocalFrameViewLayoutContext::performLayout(bool canDeferUpdateLayerPosition
         LOG_WITH_STREAM(Layout, stream << "LocalFrameView " << &view() << " elapsed time before first layout: " << document()->timeSinceDocumentCreation());
 #endif
 #if PLATFORM(IOS_FAMILY)
-<<<<<<< HEAD
     if (protect(view())->updateFixedPositionLayoutRect() && subtreeLayoutRoot())
-||||||| parent of 71947e6c7f22 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    if (protectedView()->updateFixedPositionLayoutRect() && subtreeLayoutRoot())
-=======
-    if (protectedView()->updateFixedPositionLayoutRect() && isSubtreeLayout())
->>>>>>> 71947e6c7f22 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
         convertSubtreeLayoutToFullLayout();
 #endif
     {
