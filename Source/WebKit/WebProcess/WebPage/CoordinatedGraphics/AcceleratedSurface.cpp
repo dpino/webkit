@@ -1142,24 +1142,11 @@ void AcceleratedSurface::willRenderFrame(const IntSize& size)
         glViewport(0, 0, size.width(), size.height());
 }
 
-<<<<<<< HEAD
 void AcceleratedSurface::clear(const OptionSet<WebCore::CompositionReason>& reasons)
 {
     ASSERT(!RunLoop::isMain());
     auto backgroundColor = m_backgroundColor.load();
     if (!isColorOpaque(backgroundColor)) {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-    } else if (reasons.contains(CompositionReason::AsyncScrolling)) {
-        auto [r, g, b, a] = backgroundColor;
-        glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
-||||||| parent of 4e807c5fac4b ([PATCH] ThreadedCompositor: Avoid calling glClear in each composition.)
-    if (!m_isOpaque) {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-=======
-    if (!m_isOpaque) {
         static bool stop_glClear = false;
         static std::once_flag glClear_flag;
         std::call_once(glClear_flag, []{
@@ -1183,6 +1170,10 @@ void AcceleratedSurface::clear(const OptionSet<WebCore::CompositionReason>& reas
                 glClear(GL_COLOR_BUFFER_BIT);
             }
         }
+    } else if (reasons.contains(CompositionReason::AsyncScrolling)) {
+        auto [r, g, b, a] = backgroundColor;
+        glClearColor(r, g, b, a);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 }
 
