@@ -548,7 +548,11 @@ void ScrollingEffectsController::scrollAnimationDidEnd(ScrollAnimation& animatio
     UNUSED_PARAM(animation);
 #endif
 
-    if (is<ScrollAnimationKeyboard>(animation) || is<ScrollAnimationSmooth>(animation))
+    bool shouldNotifyDidStopAnimatedScroll = is<ScrollAnimationKeyboard>(animation) || is<ScrollAnimationSmooth>(animation);
+#if ENABLE(KINETIC_SCROLLING) && !PLATFORM(MAC)
+    shouldNotifyDidStopAnimatedScroll = shouldNotifyDidStopAnimatedScroll || is<ScrollAnimationKinetic>(animation);
+#endif
+    if (shouldNotifyDidStopAnimatedScroll)
         m_client.didStopAnimatedScroll();
 
     if (is<ScrollAnimationKeyboard>(animation)) {
