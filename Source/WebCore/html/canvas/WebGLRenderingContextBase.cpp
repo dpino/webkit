@@ -687,24 +687,16 @@ void WebGLRenderingContextBase::markContextChangedAndNotifyCanvasObserver(WebGLR
         return;
 
     m_compositingResultsNeedUpdating = true;
-<<<<<<< HEAD
     if (m_readDrawingBuffer) {
         m_readDrawingBuffer = nullptr;
         updateMemoryCost();
     }
-    markCanvasChanged();
-||||||| parent of b87da3bd2f50 ([PATCH] Propagate WebGL damage)
-    m_canvasBufferContents = std::nullopt;
-    markCanvasChanged();
-=======
-    m_canvasBufferContents = std::nullopt;
 
     Ref canvas = canvasBase();
     if (m_damage) {
         canvas->didDraw(toLayerCoordinates(*m_latestScissor, canvas->height()), ShouldApplyPostProcessingToDirtyRect::No);
     } else
         canvas->didDraw(FloatRect { { }, canvas->size() }, ShouldApplyPostProcessingToDirtyRect::No);
->>>>>>> b87da3bd2f50 ([PATCH] Propagate WebGL damage)
 }
 
 bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::CallerType caller, GCGLbitfield mask)
