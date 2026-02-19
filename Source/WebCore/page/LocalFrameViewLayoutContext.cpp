@@ -578,44 +578,20 @@ void LocalFrameViewLayoutContext::scheduleSubtreeLayout(RenderElement& layoutRoo
     ASSERT(!renderView->renderTreeBeingDestroyed());
     ASSERT(frame().view() == &view());
 
-<<<<<<< HEAD
-    if (renderView->needsLayout() && !subtreeLayoutRoot()) {
-        layoutRoot.markContainingBlocksForLayout(renderView.ptr());
-||||||| parent of a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    if (renderView.needsLayout() && !subtreeLayoutRoot()) {
-        layoutRoot.markContainingBlocksForLayout(&renderView);
-=======
     if (renderView.needsLayout() && !isSubtreeLayout()) {
-        layoutRoot.markContainingBlocksForLayout(&renderView);
->>>>>>> a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
+        layoutRoot.markContainingBlocksForLayout(renderView.ptr());
         return;
     }
 
     if (!isLayoutPending() && isLayoutSchedulingEnabled()) {
         ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
-<<<<<<< HEAD
-        setSubtreeLayoutRoot(layoutRoot);
-        InspectorInstrumentation::didInvalidateLayout(protect(frame()));
-||||||| parent of a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-        setSubtreeLayoutRoot(layoutRoot);
-        InspectorInstrumentation::didInvalidateLayout(protectedFrame());
-=======
         addSubtreeLayoutRoot(layoutRoot);
-        InspectorInstrumentation::didInvalidateLayout(protectedFrame());
->>>>>>> a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
+        InspectorInstrumentation::didInvalidateLayout(protect(frame()));
         m_layoutTimer.startOneShot(0_s);
         return;
     }
 
-<<<<<<< HEAD
-    CheckedPtr subtreeLayoutRoot = this->subtreeLayoutRoot();
-    if (subtreeLayoutRoot == &layoutRoot)
-||||||| parent of a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    auto* subtreeLayoutRoot = this->subtreeLayoutRoot();
-    if (subtreeLayoutRoot == &layoutRoot)
-=======
     if (hasSubtreeLayoutRoot(layoutRoot))
->>>>>>> a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
         return;
 
     if (!isSubtreeLayout()) {
@@ -637,44 +613,16 @@ void LocalFrameViewLayoutContext::scheduleSubtreeLayout(RenderElement& layoutRoo
             // Existing subtree is a subtree of new subtree.
             subtreeLayoutRoot->markContainingBlocksForLayout(&layoutRoot);
             ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
-            InspectorInstrumentation::didInvalidateLayout(protectedFrame());
+            InspectorInstrumentation::didInvalidateLayout(protect(frame()));
             removeSubtreeLayoutRoot(*subtreeLayoutRoot);
             addSubtreeLayoutRoot(layoutRoot);
             return;
         }
     }
 
-<<<<<<< HEAD
-    if (isObjectAncestorContainerOf(layoutRoot, *subtreeLayoutRoot)) {
-        // Re-root at newRelayoutRoot.
-        subtreeLayoutRoot->markContainingBlocksForLayout(&layoutRoot);
-        setSubtreeLayoutRoot(layoutRoot);
-        ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
-        InspectorInstrumentation::didInvalidateLayout(protect(frame()));
-        return;
-    }
-    // Two disjoint subtrees need layout. Mark both of them and issue a full layout instead.
-    convertSubtreeLayoutToFullLayout();
-    layoutRoot.markContainingBlocksForLayout(renderView.ptr());
-    InspectorInstrumentation::didInvalidateLayout(protect(frame()));
-||||||| parent of a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    if (isObjectAncestorContainerOf(layoutRoot, *subtreeLayoutRoot)) {
-        // Re-root at newRelayoutRoot.
-        subtreeLayoutRoot->markContainingBlocksForLayout(&layoutRoot);
-        setSubtreeLayoutRoot(layoutRoot);
-        ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
-        InspectorInstrumentation::didInvalidateLayout(protectedFrame());
-        return;
-    }
-    // Two disjoint subtrees need layout. Mark both of them and issue a full layout instead.
-    convertSubtreeLayoutToFullLayout();
-    layoutRoot.markContainingBlocksForLayout(&renderView);
-    InspectorInstrumentation::didInvalidateLayout(protectedFrame());
-=======
     // We already have a pending subtree layout. Just add new subtree to collection.
     addSubtreeLayoutRoot(layoutRoot);
-    InspectorInstrumentation::didInvalidateLayout(protectedFrame());
->>>>>>> a246f01593b9 ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
+    InspectorInstrumentation::didInvalidateLayout(protect(frame));
 }
 
 void LocalFrameViewLayoutContext::layoutTimerFired()

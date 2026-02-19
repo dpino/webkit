@@ -115,17 +115,9 @@ public:
     std::optional<TextBoxTrim> textBoxTrim() const { return m_textBoxTrim; }
     void setTextBoxTrim(std::optional<TextBoxTrim> textBoxTrim) { m_textBoxTrim = textBoxTrim; }
 
-<<<<<<< HEAD
-    RenderElement* NODELETE subtreeLayoutRoot() const;
-    void clearSubtreeLayoutRoot() { m_subtreeLayoutRoot.clear(); }
-||||||| parent of df58820b63ba ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
-    RenderElement* subtreeLayoutRoot() const;
-    void clearSubtreeLayoutRoot() { m_subtreeLayoutRoot.clear(); }
-=======
     bool hasSubtreeLayoutRoot(const RenderElement&) const;
     void removeSubtreeLayoutRoot(const RenderElement&);
     void clearSubtreeLayoutRoots();
->>>>>>> df58820b63ba ([PATCH] Fallback to full-layout happens when more than 1 subtree layout is pending https://bugs.webkit.org/show_bug.cgi?id=275394)
     void convertSubtreeLayoutToFullLayout();
 
     void reset();
