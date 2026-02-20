@@ -900,18 +900,12 @@ void WebGLRenderingContextBase::didUpdateCanvasSizeProperties(bool)
     if (newSize == m_defaultFramebuffer->size())
         return;
 
-<<<<<<< HEAD
     m_readDrawingBuffer = nullptr;
     m_readDisplayBuffer = nullptr;
-||||||| parent of 633f1abbf38f ([PATCH] Improve WebGL performance using Damage)
-    // We don't have to mark the canvas as dirty, since the newly created image buffer will also start off
-    // clear (and this matches what reshape will do).
-=======
     m_damage = std::nullopt;
 
     // We don't have to mark the canvas as dirty, since the newly created image buffer will also start off
     // clear (and this matches what reshape will do).
->>>>>>> 633f1abbf38f ([PATCH] Improve WebGL performance using Damage)
     m_defaultFramebuffer->reshape(newSize);
     updateMemoryCost();
 
@@ -5711,7 +5705,6 @@ bool WebGLRenderingContextBase::isOpaque() const
     return !m_attributes.alpha;
 }
 
-<<<<<<< HEAD
 void WebGLRenderingContextBase::updateMemoryCost() const
 {
     // Computes only a rough ballpark figure to drive garbage collection.
@@ -5731,8 +5724,6 @@ void WebGLRenderingContextBase::updateMemoryCost() const
     CanvasRenderingContext::updateMemoryCost(newMemoryCost);
 }
 
-||||||| parent of 633f1abbf38f ([PATCH] Improve WebGL performance using Damage)
-=======
 void WebGLRenderingContextBase::clearAccumulatedDirtyRect()
 {
     if (m_scissorEnabled && m_latestScissor) {
@@ -5742,7 +5733,6 @@ void WebGLRenderingContextBase::clearAccumulatedDirtyRect()
         m_damage = std::nullopt;
 }
 
->>>>>>> 633f1abbf38f ([PATCH] Improve WebGL performance using Damage)
 WebCoreOpaqueRoot root(WebGLRenderingContextBase* context)
 {
     return WebCoreOpaqueRoot { context };
