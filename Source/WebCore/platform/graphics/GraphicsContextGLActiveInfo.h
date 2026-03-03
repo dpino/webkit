@@ -28,38 +28,15 @@
 #if ENABLE(WEBGL)
 
 #include <WebCore/GraphicsTypesGL.h>
-#include <wtf/Vector.h>
 #include <wtf/text/CString.h>
 
 namespace WebCore {
 
-class GCGLUniformActiveInfo {
-public:
-    CString name;
-    GCGLenum type { 0 };
-    int size { -1 };
-    // WebGL2 properties.
-    int blockIndex { -1 };
-    int offset { -1 };
-    int arrayStride { -1 };
-    int matrixStride { -1 };
-    int isRowMajor { -1 };
-    // For default block uniforms.
-    Vector<int> locations;
-};
-
-class GCGLAttribActiveInfo {
+class GraphicsContextGLActiveInfo {
 public:
     CString name;
     GCGLenum type;
-    int location;
-};
-
-class GCGLTransformFeedbackActiveInfo {
-public:
-    CString name;
-    GCGLenum type;
-    int size { 0 };
+    GCGLint size;
 };
 
 } // namespace WebCore
