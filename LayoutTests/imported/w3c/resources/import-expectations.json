@@ -381,5 +381,8 @@
     "web-platform-tests/worklets": "import",
     "web-platform-tests/x-frame-options": "import",
     "web-platform-tests/xhr": "import",
-    "web-platform-tests/xml": "import"
+    "web-platform-tests/xml": "import",
+    "web-platform-tests/html/semantics/popovers": "import",
+    "web-platform-tests/html/semantics/popovers/resources": "import",
+    "web-platform-tests/html/semantics/popovers/resources/toggle-event-source-test.js": "import"
 }
