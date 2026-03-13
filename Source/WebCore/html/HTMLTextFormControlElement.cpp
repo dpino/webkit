@@ -264,6 +264,9 @@ ExceptionOr<void> HTMLTextFormControlElement::setRangeText(StringView replacemen
 
     String text = innerTextValue();
     unsigned textLength = text.length();
+    if (!textLength)
+        return { };
+
     unsigned replacementLength = replacement.length();
     unsigned newSelectionStart = selectionStart();
     unsigned newSelectionEnd = selectionEnd();
