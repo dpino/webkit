@@ -269,6 +269,9 @@ void PageTimelineAgent::didPaint(RenderObject& renderer, const LayoutRect& clipR
 
 void PageTimelineAgent::mainFrameStartedLoading()
 {
+    if (tracking())
+        return;
+
     if (!m_autoCaptureEnabled)
         return;
 
