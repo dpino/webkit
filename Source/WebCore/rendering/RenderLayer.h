@@ -890,7 +890,6 @@ public:
     RenderLayer* backingProviderLayerAtEndOfCompositingUpdate() const { return m_backingProviderLayerAtEndOfCompositingUpdate.get(); }
     void setBackingProviderLayerAtEndOfCompositingUpdate(RenderLayer* provider) { m_backingProviderLayerAtEndOfCompositingUpdate = provider; }
     RenderLayerModelObject* repaintContainer() const { return m_repaintContainer.get(); }
-    void clearRepaintContainer() { m_repaintContainer = nullptr; }
 
     RenderLayerBacking* backing() const { return m_backing.get(); }
     RenderLayerBacking* ensureBacking();
@@ -1304,7 +1303,7 @@ private:
     void updatePagination();
 
     void setWasOmittedFromZOrderTree();
-    void setWasIncludedInZOrderTree() { m_wasOmittedFromZOrderTree = false; }
+    void setWasIncludedInZOrderTree();
     void removeSelfFromCompositor();
     void removeDescendantsFromCompositor();
 

@@ -2562,7 +2562,6 @@ void RenderLayerCompositor::layerWillBeRemoved(RenderLayer& parent, RenderLayer&
     } else
         return;
 
-    child.clearRepaintContainer();
     child.setNeedsCompositingLayerConnection();
 }
 
