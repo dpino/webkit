@@ -42,6 +42,7 @@ struct QuirksData {
     bool isGoogleProperty : 1 { false };
     bool isGoogleMaps : 1 { false };
     bool isGoogleAccounts : 1 { false };
+    bool isIHeart : 1 { false };
     bool isNetflix : 1 { false };
     bool isOutlook : 1 { false };
     bool isSoundCloud : 1 { false };
@@ -106,9 +107,7 @@ struct QuirksData {
 #endif
         NeedsResettingTransitionCancelsRunningTransitionQuirk,
         NeedsReuseLiveRangeForSelectionUpdateQuirk,
-#if PLATFORM(IOS_FAMILY)
         NeedsScriptToEvaluateBeforeRunningScriptFromURLQuirk,
-#endif
         NeedsScrollbarWidthThinDisabledQuirk,
         NeedsSeekingSupportDisabledQuirk,
         NeedsSuppressPostLayoutBoundaryEventsQuirk,
