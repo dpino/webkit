@@ -7468,6 +7468,12 @@ void WebPageProxy::didFailProvisionalLoadForFrameShared(Ref<WebProcessProxy>&& p
             navigation->setClientNavigationActivity(nullptr);
 
         callLoadCompletionHandlersIfNecessary(false);
+
+        // Update current main frame when provisional main frame load fails, because it
+        // is updated when provisional main frame load starts or gets redirected.
+        RefPtr mainFrame = m_mainFrame;
+        if (&frame != mainFrame && !mainFrame->frameLoadState().provisionalURL().isEmpty())
+            mainFrame->didFailProvisionalLoad();
     }
 
     frame.didFailProvisionalLoad();
