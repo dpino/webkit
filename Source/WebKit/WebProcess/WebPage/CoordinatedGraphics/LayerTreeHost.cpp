@@ -561,6 +561,11 @@ void LayerTreeHost::adjustTransientZoom(double scale, FloatPoint origin)
     m_transientZoomOrigin = origin;
 
     applyTransientZoomToLayers(m_transientZoomScale, m_transientZoomOrigin);
+
+    if (m_isWaitingForRenderer)
+        scheduleRenderingUpdate();
+    else
+        updateRendering();
 }
 
 void LayerTreeHost::commitTransientZoom(double scale, FloatPoint origin)
