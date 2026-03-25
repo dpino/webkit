@@ -119,7 +119,10 @@ static void webKitGLVideoSinkConstructed(GObject* object)
 
     ASSERT(upload);
     ASSERT(colorconvert);
-    gst_bin_add_many(GST_BIN_CAST(sink), upload, colorconvert, sink->priv->appSink.get(), nullptr);
+
+    auto* queue = gst_element_factory_make("queue", nullptr);
+    g_object_set(queue, "max-size-buffers", 5, "max-size-time", static_cast<guint64>(0), "max-size-bytes", 0, nullptr);
+    gst_bin_add_many(GST_BIN_CAST(sink), upload, colorconvert, queue, sink->priv->appSink.get(), nullptr);
 
     GRefPtr<GstCaps> caps = adoptGRef(gst_caps_new_empty());
 #if USE(GBM)
@@ -134,9 +137,7 @@ static void webKitGLVideoSinkConstructed(GObject* object)
 
     if (imxVideoConvertG2D)
         gst_element_link(imxVideoConvertG2D, upload);
-    gst_element_link(upload, colorconvert);
-
-    gst_element_link(colorconvert, sink->priv->appSink.get());
+    gst_element_link_many(upload, colorconvert, queue, sink->priv->appSink.get(), nullptr);
 
     GstElement* sinkElement =
         [&] {
