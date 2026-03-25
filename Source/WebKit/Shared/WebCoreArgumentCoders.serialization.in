@@ -8944,7 +8944,7 @@ header: <WebCore/TrackInfo.h>
 [CustomHeader] struct WebCore::TrackInfoData {
     WebCore::FourCC codecName;
     String codecString;
-    TrackID trackID;
+    WebCore::TrackID trackID;
 
 #if ENABLE(ENCRYPTED_MEDIA)
     std::optional<WebCore::EncryptionDataCollection> encryptionData;

@@ -2274,6 +2274,7 @@ bool Quirks::needsInstagramResizingReelsQuirk(const Element& element, const Rend
 {
     QUIRKS_EARLY_RETURN_IF_DISABLED_WITH_VALUE(false);
 
+#if ENABLE(VIDEO)
     if (!m_quirksData.quirkIsEnabled(QuirksData::SiteSpecificQuirk::NeedsInstagramResizingReelsQuirk))
         return false;
 
@@ -2293,6 +2294,12 @@ bool Quirks::needsInstagramResizingReelsQuirk(const Element& element, const Rend
         return false;
 
     return descendantsOfType<HTMLVideoElement>(element).first();
+#else
+    UNUSED_PARAM(element);
+    UNUSED_PARAM(elementStyle);
+    UNUSED_PARAM(parentStyle);
+    return false;
+#endif // ENABLE(VIDEO)
 }
 
 bool Quirks::needsWebKitMediaTextTrackDisplayQuirk() const

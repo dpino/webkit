@@ -1861,11 +1861,8 @@ void ContextMenuController::checkOrEnableIfNeeded(ContextMenuItem& item) const
         case ContextMenuItemTagProofread:
         case ContextMenuItemTagRewrite:
         case ContextMenuItemTagSummarize:
-            break;
-#if ENABLE(VIDEO)
         case ContextMenuItemCaptionDisplayStyleSubmenu:
             break;
-#endif
     }
 
     item.setChecked(shouldCheck);
