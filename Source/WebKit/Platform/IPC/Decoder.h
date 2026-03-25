@@ -131,6 +131,7 @@ public:
     void markInvalid()
     {
         auto buffer = std::exchange(m_buffer, { });
+        m_bufferPosition = m_buffer.begin();
         if (m_bufferDeallocator && !buffer.empty())
             m_bufferDeallocator(WTF::move(buffer));
     }
