@@ -105,6 +105,9 @@ public:
         GST_BUFFER_FLAG_SET(buffer, GST_BUFFER_FLAG_DROPPABLE);
         return false;
     }
+
+    virtual std::optional<GstState> eosMediaPlayerState() const { return { }; }
+
 };
 
 class GStreamerHolePunchQuirk : public GStreamerQuirkBase {
@@ -138,6 +141,8 @@ public:
     std::optional<bool> isHardwareAccelerated(GstElementFactory*) const;
     GstElementFactoryListType audioVideoDecoderFactoryListType() const;
     Vector<String> disallowedWebAudioDecoders() const;
+
+    GstState eosMediaPlayerState() const;
 
     bool supportsVideoHolePunchRendering() const;
     GstElement* createHolePunchVideoSink(bool isLegacyPlaybin, const MediaPlayer*);

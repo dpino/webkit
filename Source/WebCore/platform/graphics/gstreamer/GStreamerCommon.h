@@ -498,4 +498,8 @@ void gst_pad_probe_info_set_buffer(GstPadProbeInfo*, GstBuffer*);
 void gst_pad_probe_info_set_event(GstPadProbeInfo*, GstEvent*);
 #endif
 
+#if !GST_CHECK_VERSION(1, 28, 0)
+#define gst_state_get_name gst_element_state_get_name
+#endif
+
 #endif // USE(GSTREAMER)
