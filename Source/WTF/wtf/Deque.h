@@ -391,6 +391,7 @@ inline void Deque<T, inlineCapacity>::swap(Deque<T, inlineCapacity>& other)
     checkValidity();
     other.checkValidity();
     invalidateIterators();
+    other.invalidateIterators();
     std::swap(m_start, other.m_start);
     std::swap(m_end, other.m_end);
     m_buffer.swap(other.m_buffer, 0, 0);
