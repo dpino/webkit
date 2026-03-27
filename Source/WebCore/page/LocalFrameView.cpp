@@ -3017,16 +3017,16 @@ static bool checkTextFragmentSecurity(LocalFrame& frame)
     if (!localOpener)
         return false;
 
-    auto* openerDocument = localOpener->document();
-    auto* currentDocument = frame.document();
+    RefPtr openerDocument = localOpener->document();
+    RefPtr currentDocument = frame.document();
     if (!openerDocument || !currentDocument)
         return true;
 
-    auto& openerOrigin = openerDocument->securityOrigin();
-    auto& currentOrigin = currentDocument->securityOrigin();
+    Ref openerOrigin = openerDocument->securityOrigin();
+    Ref currentOrigin = currentDocument->securityOrigin();
 
     // Block if cross-origin popup
-    if (!openerOrigin.isSameOriginAs(currentOrigin))
+    if (!openerOrigin->isSameOriginAs(currentOrigin))
         return false;
 
     return true;
