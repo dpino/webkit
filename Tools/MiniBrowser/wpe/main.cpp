@@ -612,28 +612,18 @@ static void activate(GApplication* application, gpointer)
 #if ENABLE_2022_GLIB_API
     WebKitNetworkSession* networkSession = nullptr;
     if (!automationMode) {
-<<<<<<< HEAD
-        if (privateMode)
+        if (inspectorPipe || privateMode || automationMode)
             networkSession = webkit_network_session_new_ephemeral();
         else if (profileDirectory) {
             g_autofree char* dataDirectory = g_build_filename(profileDirectory, "data", nullptr);
             g_autofree char* cacheDirectory = g_build_filename(profileDirectory, "cache", nullptr);
             networkSession = webkit_network_session_new(dataDirectory, cacheDirectory);
+        else if (userDataDir) {
+            networkSession = webkit_network_session_new(userDataDir, userDataDir);
+            cookiesFile = g_build_filename(userDataDir, "cookies.txt", nullptr);
         } else
             networkSession = webkit_network_session_new(nullptr, nullptr);
 
-||||||| parent of 03f39660e7a9 (chore(webkit): bootstrap build #2274)
-        networkSession = privateMode ? webkit_network_session_new_ephemeral() : webkit_network_session_new(nullptr, nullptr);
-=======
-        if (userDataDir) {
-            networkSession = webkit_network_session_new(userDataDir, userDataDir);
-            cookiesFile = g_build_filename(userDataDir, "cookies.txt", nullptr);
-        } else if (inspectorPipe || privateMode || automationMode) {
-            networkSession = webkit_network_session_new_ephemeral();
-        } else {
-            networkSession = webkit_network_session_new(nullptr, nullptr);
-        }
->>>>>>> 03f39660e7a9 (chore(webkit): bootstrap build #2274)
         webkit_network_session_set_itp_enabled(networkSession, enableITP);
 
         if (proxy) {
@@ -663,30 +653,19 @@ static void activate(GApplication* application, gpointer)
     auto* webContext = WEBKIT_WEB_CONTEXT(g_object_new(WEBKIT_TYPE_WEB_CONTEXT, "time-zone-override", timeZone, nullptr));
     webkit_web_context_set_network_session_for_automation(webContext, networkSession);
 #else
-<<<<<<< HEAD
     WebKitWebsiteDataManager* manager;
-    if (privateMode || automationMode)
+    if (inspectorPipe || privateMode || automationMode)
         manager = webkit_website_data_manager_new_ephemeral();
     else if (profileDirectory) {
         g_autofree char* dataDirectory = g_build_filename(profileDirectory, "data", nullptr);
         g_autofree char* cacheDirectory = g_build_filename(profileDirectory, "cache", nullptr);
         webkit_website_data_manager_new("base-data-directory", dataDirectory, "base-cache-directory", cacheDirectory, nullptr);
+    } else if (userDataDir) {
+        manager = webkit_website_data_manager_new("base-data-directory", userDataDir, "base-cache-directory", userDataDir, NULL);
+        cookiesFile = g_build_filename(userDataDir, "cookies.txt", NULL);
     } else
         webkit_website_data_manager_new(nullptr);
 
-||||||| parent of 03f39660e7a9 (chore(webkit): bootstrap build #2274)
-    auto* manager = (privateMode || automationMode) ? webkit_website_data_manager_new_ephemeral() : webkit_website_data_manager_new(nullptr);
-=======
-    WebKitWebsiteDataManager *manager;
-    if (userDataDir) {
-        manager = webkit_website_data_manager_new("base-data-directory", userDataDir, "base-cache-directory", userDataDir, NULL);
-        cookiesFile = g_build_filename(userDataDir, "cookies.txt", NULL);
-    } else if (inspectorPipe || privateMode || automationMode) {
-        manager = webkit_website_data_manager_new_ephemeral();
-    } else {
-        manager = webkit_website_data_manager_new(NULL);
-    }
->>>>>>> 03f39660e7a9 (chore(webkit): bootstrap build #2274)
     webkit_website_data_manager_set_itp_enabled(manager, enableITP);
 
     if (proxy) {

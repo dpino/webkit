@@ -882,19 +882,9 @@ static void activate(GApplication *application, WebKitSettings *webkitSettings)
         cookiesFile = g_build_filename(userDataDir, "cookies.txt", NULL);
     } else if (inspectorPipe || remoteDebuggingPort != -1 || privateMode || automationMode) {
         networkSession = webkit_network_session_new_ephemeral();
-<<<<<<< HEAD
-    else {
+    } else {
         g_autofree char *dataDirectory = profileDirectory ? g_build_filename(profileDirectory, "data", NULL) : g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
         g_autofree char *cacheDirectory = profileDirectory ? g_build_filename(profileDirectory, "cache", NULL) : g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-||||||| parent of 03f39660e7a9 (chore(webkit): bootstrap build #2274)
-    else {
-        char *dataDirectory = g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-        char *cacheDirectory = g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-=======
-    } else {
-        char *dataDirectory = g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-        char *cacheDirectory = g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
->>>>>>> 03f39660e7a9 (chore(webkit): bootstrap build #2274)
         networkSession = webkit_network_session_new(dataDirectory, cacheDirectory);
     }
 
@@ -939,19 +929,9 @@ static void activate(GApplication *application, WebKitSettings *webkitSettings)
         cookiesFile = g_build_filename(userDataDir, "cookies.txt", NULL);
     } else if (inspectorPipe || remoteDebuggingPort != -1 || privateMode || automationMode) {
         manager = webkit_website_data_manager_new_ephemeral();
-<<<<<<< HEAD
-    else {
+    } else {
         g_autofree char *dataDirectory = profileDirectory ? g_build_filename(profileDirectory, "data", NULL) : g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
         g_autofree char *cacheDirectory = profileDirectory ? g_build_filename(profileDirectory, "cache", NULL) : g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-||||||| parent of 03f39660e7a9 (chore(webkit): bootstrap build #2274)
-    else {
-        char *dataDirectory = g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-        char *cacheDirectory = g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-=======
-    } else {
-        char *dataDirectory = g_build_filename(g_get_user_data_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
-        char *cacheDirectory = g_build_filename(g_get_user_cache_dir(), "webkitgtk-" WEBKITGTK_API_VERSION, "MiniBrowser", NULL);
->>>>>>> 03f39660e7a9 (chore(webkit): bootstrap build #2274)
         manager = webkit_website_data_manager_new("base-data-directory", dataDirectory, "base-cache-directory", cacheDirectory, NULL);
     }
 
