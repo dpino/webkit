@@ -118,16 +118,8 @@ public:
 #endif
     }
 
-<<<<<<< HEAD
-#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
-    bool usesGL() const { return m_renderingPurpose == RenderingPurpose::Composited || m_hardwareAccelerationEnabled; }
-||||||| parent of e9598b5d6917 (chore(webkit): bootstrap build #2274)
-#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
-    bool usesGL() const { return m_swapChain.type() != SwapChain::Type::SharedMemoryWithoutGL; }
-=======
 #if PLATFORM(GTK) || PLATFORM(WPE)
-    bool usesGL() const { return m_swapChain.type() != SwapChain::Type::SharedMemoryWithoutGL; }
->>>>>>> e9598b5d6917 (chore(webkit): bootstrap build #2274)
+    bool usesGL() const { return m_renderingPurpose == RenderingPurpose::Composited || m_hardwareAccelerationEnabled; }
 #endif
 
     SkCanvas* canvas();
