@@ -85,6 +85,9 @@ BitmapTexture::BitmapTexture(const IntSize& size, OptionSet<Flags> flags)
     , m_size(size)
     , m_pixelFormat(PixelFormat::RGBA8)
 {
+    GLint boundTexture = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
+
 #if USE(GBM)
     if (m_flags.contains(Flags::BackedByDMABuf)) {
         OptionSet<MemoryMappedGPUBuffer::BufferFlag> bufferFlags;
@@ -103,15 +106,14 @@ BitmapTexture::BitmapTexture(const IntSize& size, OptionSet<Flags> flags)
         // Proceed as usual with GL texture creation if the dma-buf creation failed.
         // as we only want to allocate the dma-buf, but neither map it, nor create a texture now - but when we
         // need it (from the thread that needs it!).
-        if (allocateTextureFromMemoryMappedGPUBuffer())
+        if (allocateTextureFromMemoryMappedGPUBuffer()) {
+            glBindTexture(GL_TEXTURE_2D, boundTexture);
             return;
+        }
 
         m_flags.remove(Flags::BackedByDMABuf);
     }
 #endif
-
-    GLint boundTexture = 0;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 
     allocateTexture();
 
@@ -184,9 +186,8 @@ void BitmapTexture::swapTexture(BitmapTexture& other)
     std::swap(m_flags, other.m_flags);
     std::swap(m_id, other.m_id);
 
-    // This texture needs to be in the same pixel format as the 'other'
-    // texture, before the reset above. The 'other' texture should be
-    // reset to RGBA default pixel format.
+    // Take the pixel format from the source texture. The source texture
+    // (going back to the pool) is reset to the default pixel format.
     m_pixelFormat = other.m_pixelFormat;
     other.m_pixelFormat = PixelFormat::RGBA8;
 }
@@ -275,8 +276,6 @@ void BitmapTexture::updateContents(const void* srcData, const IntRect& targetRec
         CRASH();
     }
 #endif
-
-    glBindTexture(GL_TEXTURE_2D, m_id);
 
     const unsigned bytesPerPixel = 4;
     auto data = static_cast<const uint8_t*>(srcData);
@@ -480,13 +479,13 @@ void BitmapTexture::copyFromExternalTexture(GLuint sourceTextureID, const IntRec
         m_pixelFormat = PixelFormat::RGBA8;
     }
 
-    GLint boundTexture = 0;
     GLint boundFramebuffer = 0;
     GLint boundActiveTexture = 0;
+    GLint boundTextureOnOriginalUnit = 0;
 
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &boundFramebuffer);
     glGetIntegerv(GL_ACTIVE_TEXTURE, &boundActiveTexture);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTextureOnOriginalUnit);
 
     glBindTexture(GL_TEXTURE_2D, sourceTextureID);
 
@@ -496,13 +495,21 @@ void BitmapTexture::copyFromExternalTexture(GLuint sourceTextureID, const IntRec
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sourceTextureID, 0);
 
     glActiveTexture(GL_TEXTURE0);
+
+    // Save GL_TEXTURE0's binding separately when switching away from a different unit.
+    GLint boundTextureOnUnit0 = 0;
+    if (static_cast<GLenum>(boundActiveTexture) != GL_TEXTURE0)
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTextureOnUnit0);
+
     glBindTexture(GL_TEXTURE_2D, id());
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, targetRect.x(), targetRect.y(), sourceOffset.width(), sourceOffset.height(), targetRect.width(), targetRect.height());
 
-    glBindTexture(GL_TEXTURE_2D, boundTexture);
+    if (static_cast<GLenum>(boundActiveTexture) != GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, boundTextureOnUnit0);
+
     glBindFramebuffer(GL_FRAMEBUFFER, boundFramebuffer);
-    glBindTexture(GL_TEXTURE_2D, boundTexture);
     glActiveTexture(boundActiveTexture);
+    glBindTexture(GL_TEXTURE_2D, boundTextureOnOriginalUnit);
     glDeleteFramebuffers(1, &copyFbo);
 }
 
