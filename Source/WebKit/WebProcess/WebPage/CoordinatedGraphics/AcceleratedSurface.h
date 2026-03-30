@@ -120,7 +120,7 @@ public:
 #endif
     }
 
-#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
+#if PLATFORM(GTK) || PLATFORM(WPE)
     bool usesGL() const { return m_swapChain.type() != SwapChain::Type::SharedMemoryWithoutGL; }
 #endif
 
@@ -361,7 +361,7 @@ private:
 
         enum class Type {
             Invalid,
-#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
+#if PLATFORM(GTK) || PLATFORM(WPE)
 #if USE(GBM) || OS(ANDROID)
             EGLImage,
 #endif
