@@ -906,7 +906,7 @@ LayoutRect AccessibilityRenderObject::boundingBoxRect() const
 
             CheckedPtr cache = axObjectCache();
             RefPtr endNode = cache ? lastNode(stitchGroup->members(), *cache) : nullptr;
-            if (endNode) {
+            if (node && endNode) {
                 if (std::optional range = makeSimpleRange(positionBeforeNode(node.get()), positionAfterNode(endNode.get()))) {
                     quads = RenderObject::absoluteTextQuads(*range);
 
