@@ -118,8 +118,16 @@ public:
 #endif
     }
 
+<<<<<<< HEAD
 #if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
     bool usesGL() const { return m_renderingPurpose == RenderingPurpose::Composited || m_hardwareAccelerationEnabled; }
+||||||| parent of 2d3b213e7dbb (chore(webkit): bootstrap build #2274)
+#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
+    bool usesGL() const { return m_swapChain.type() != SwapChain::Type::SharedMemoryWithoutGL; }
+=======
+#if PLATFORM(GTK) || PLATFORM(WPE)
+    bool usesGL() const { return m_swapChain.type() != SwapChain::Type::SharedMemoryWithoutGL; }
+>>>>>>> 2d3b213e7dbb (chore(webkit): bootstrap build #2274)
 #endif
 
     SkCanvas* canvas();
@@ -335,7 +343,7 @@ private:
 
         enum class Type {
             Invalid,
-#if PLATFORM(GTK) || ENABLE(WPE_PLATFORM)
+#if PLATFORM(GTK) || PLATFORM(WPE)
 #if USE(GBM) || OS(ANDROID)
             EGLImage,
 #endif
