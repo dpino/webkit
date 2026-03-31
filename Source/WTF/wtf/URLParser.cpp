@@ -1311,11 +1311,7 @@ void URLParser::parse(std::span<const CharacterType> input, const URL& base, con
             if (*c == '/') {
                 appendToASCIIBuffer('/');
                 advance(c);
-                if (c.atEnd()) {
-                    failure();
-                    return;
-                }
-                if (*c == '/') {
+                if (!c.atEnd() && *c == '/') {
                     appendToASCIIBuffer('/');
                     state = State::SpecialAuthorityIgnoreSlashes;
                     ++c;
