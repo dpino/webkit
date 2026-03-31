@@ -724,5 +724,8 @@ PASS Parsing: <non-special:\/opaque> without base
 PASS Parsing: <non-special:/\path> without base
 PASS Parsing: <non-special://host\a> without base
 PASS Parsing: <non-special://host/a\b> without base
+PASS Parsing: <\a> against <foo://foo/a>
+PASS Parsing: <\/a> against <foo://foo/a>
+PASS Parsing: <\\a> against <foo://foo/a>
 PASS Parsing: <http://example.com/U+d800𐟾U+dfff﷐﷏﷯ﷰ￾￿?U+d800𐟾U+dfff﷐﷏﷯ﷰ￾￿> without base
 

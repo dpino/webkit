@@ -1301,6 +1301,7 @@ void URLParser::parse(std::span<const CharacterType> input, const URL& base, con
                 break;
             }
             if (!base.protocolIsFile()) {
+                m_urlIsSpecial = isSpecialScheme(base.protocol());
                 state = State::Relative;
                 break;
             }
@@ -1343,7 +1344,6 @@ void URLParser::parse(std::span<const CharacterType> input, const URL& base, con
             LOG_STATE("Relative");
             switch (*c) {
             case '/':
-            case '\\':
                 state = State::RelativeSlash;
                 ++c;
                 break;
@@ -1363,6 +1363,13 @@ void URLParser::parse(std::span<const CharacterType> input, const URL& base, con
                 state = State::Fragment;
                 ++c;
                 break;
+            case '\\':
+                if (m_urlIsSpecial) {
+                    state = State::RelativeSlash;
+                    ++c;
+                    break;
+                }
+                [[fallthrough]];
             default:
                 copyURLPartsUntil(base, URLPart::PathAfterLastSlash, c, nonUTF8QueryEncoding);
                 if ((currentPosition(c) && parsedDataView(currentPosition(c) - 1) != '/')
@@ -1376,7 +1383,7 @@ void URLParser::parse(std::span<const CharacterType> input, const URL& base, con
             break;
         case State::RelativeSlash:
             LOG_STATE("RelativeSlash");
-            if (*c == '/' || *c == '\\') {
+            if (*c == '/' || (*c == '\\' && m_urlIsSpecial)) {
                 ++c;
                 copyURLPartsUntil(base, URLPart::SchemeEnd, c, nonUTF8QueryEncoding);
                 appendToASCIIBuffer("://"_span8);
