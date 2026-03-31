@@ -755,9 +755,6 @@ test/staging/sm/RegExp/unicode-class-braced.js:
 test/staging/sm/TypedArray/constructor-buffer-sequence.js:
   default: 'Test262Error: Expected a ExpectedError but got a Error'
   strict mode: 'Test262Error: Expected a ExpectedError but got a Error'
-test/staging/sm/TypedArray/iterator-next-with-detached.js:
-  default: 'TypeError: Underlying ArrayBuffer has been detached from the view or out-of-bounds'
-  strict mode: 'TypeError: Underlying ArrayBuffer has been detached from the view or out-of-bounds'
 test/staging/sm/TypedArray/set-with-receiver.js:
   default: 'Test262Error: Expected SameValue(«47», «0») to be true'
   strict mode: 'Test262Error: Expected SameValue(«47», «0») to be true'
