@@ -1605,6 +1605,8 @@ webkit.org/b/213699 http/wpt/mediarecorder/MediaRecorder-audio-bitrate.html [ Pa
 webkit.org/b/213699 http/wpt/mediarecorder/MediaRecorder-AV-audio-video-dataavailable.html [ Crash Timeout Failure ]
 webkit.org/b/213699 http/wpt/mediarecorder/MediaRecorder-first-frame.html [ Failure Pass ]
 
+webkit.org/b/307032 imported/w3c/web-platform-tests/mediacapture-streams/MediaStream-removetrack.https.html [ Pass Failure ]
+
 # No support for Matroska container in GStreamer port.
 http/wpt/mediarecorder/MediaRecorder-matroska-AV-audio-video-dataavailable.html
 
