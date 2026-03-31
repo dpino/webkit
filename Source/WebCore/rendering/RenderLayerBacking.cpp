@@ -348,7 +348,7 @@ RenderLayerBacking::RenderLayerBacking(RenderLayer& layer)
 RenderLayerBacking::~RenderLayerBacking()
 {
     // Note that m_owningLayer->backing() is null here.
-    updateAncestorClipping(false, nullptr);
+    clearAncestorClippingStack();
     updateDescendantClippingLayer(false);
     clearOverflowControlsLayers();
     updateForegroundLayer(false);
@@ -2511,6 +2511,23 @@ bool RenderLayerBacking::requiresScrollCornerLayer() const
     auto verticalScrollbar = scrollableArea->verticalScrollbar();
     auto scrollbar = verticalScrollbar ? verticalScrollbar : scrollableArea->horizontalScrollbar();
     return requiresLayerForScrollbar(scrollbar);
+}
+
+void RenderLayerBacking::clearAncestorClippingStack()
+{
+    auto clearStack = [](std::unique_ptr<LayerAncestorClippingStack>& stack) {
+        if (!stack)
+            return;
+
+        for (auto& entry : stack->stack()) {
+            GraphicsLayer::unparentAndClear(entry.clippingLayer);
+            GraphicsLayer::unparentAndClear(entry.scrollingLayer);
+        }
+        stack = nullptr;
+    };
+
+    clearStack(m_ancestorClippingStack);
+    clearStack(m_overflowControlsHostLayerAncestorClippingStack);
 }
 
 void RenderLayerBacking::clearOverflowControlsLayers()
