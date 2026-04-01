@@ -1142,17 +1142,24 @@ void zeroBytes(T& object)
 }
 
 template<typename T, std::size_t Extent>
-void secureMemsetSpan(std::span<T, Extent> destination, uint8_t byte)
+void secureZeroSpan(std::span<T, Extent> destination)
 {
     static_assert(std::is_trivially_copyable_v<T>);
 #ifdef __STDC_LIB_EXT1__
-    memset_s(destination.data(), destination.size_bytes(), byte, destination.size_bytes()); // NOLINT
+    memset_s(reinterpret_cast<void*>(destination.data()), destination.size_bytes(), 0, destination.size_bytes()); // NOLINT
 #else
-    // Use a volatile function pointer to prevent the compiler from
-    // recognizing this as a dead store and optimizing it away.
-    static void* (* const volatile memsetPtr)(void*, int, size_t) = memset;
-    memsetPtr(destination.data(), byte, destination.size_bytes()); // NOLINT
+    memset(reinterpret_cast<void*>(destination.data()), 0, destination.size_bytes()); // NOLINT
+    // Prevent the compiler from eliding the memset as a dead store.
+    // Without this barrier, the compiler may prove that no well-defined
+    // read follows and optimize away the write.
+    asm volatile("" ::: "memory");
 #endif
+}
+
+// Like zeroBytes, but guaranteed not to be optimized away by the compiler.
+template<typename T> void secureZeroBytes(T& object)
+{
+    secureZeroSpan(asMutableByteSpan(object));
 }
 
 template<typename T> void skip(std::span<T>& data, size_t amountToSkip)
@@ -1617,7 +1624,7 @@ using WTF::memmoveSpan;
 using WTF::memsetSpan;
 using WTF::mergeDeduplicatedSorted;
 using WTF::reinterpretCastSpanStartTo;
-using WTF::secureMemsetSpan;
+using WTF::secureZeroSpan;
 using WTF::singleElementSpan;
 using WTF::skip;
 using WTF::spanConstCast;
@@ -1634,6 +1641,7 @@ using WTF::valueOrCompute;
 using WTF::valueOrDefault;
 using WTF::weakOrderingCast;
 using WTF::zeroBytes;
+using WTF::secureZeroBytes;
 using WTF::zeroSpan;
 using WTF::Invocable;
 using WTF::SameSizeUnsignedInteger;
