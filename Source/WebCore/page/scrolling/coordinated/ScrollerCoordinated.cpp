@@ -114,6 +114,9 @@ void ScrollerCoordinated::updateValues()
     int width = AdwaitaScrollbarPainter::scrollbarSize;
     IntRect rect { 0, 0, width, int(values.visibleSize) };
 
+    if (rect.isEmpty())
+        return;
+
     if (m_orientation == ScrollbarOrientation::Horizontal)
         rect = rect.transposedRect();
 
