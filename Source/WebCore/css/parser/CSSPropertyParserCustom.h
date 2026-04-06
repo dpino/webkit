@@ -1784,6 +1784,8 @@ inline bool PropertyParserCustom::consumeTransformOriginShorthand(CSSParserToken
 inline bool PropertyParserCustom::consumePerspectiveOriginShorthand(CSSParserTokenRange& range, PropertyParserState& state, const StylePropertyShorthand&, PropertyParserResult& result)
 {
     if (auto position = consumePositionUnresolved(range, state)) {
+        if (!range.atEnd())
+            return false;
         auto [positionX, positionY] = split(WTF::move(*position));
         result.addPropertyForCurrentShorthand(state, CSSPropertyPerspectiveOriginX, CSSPositionXValue::create(WTF::move(positionX)));
         result.addPropertyForCurrentShorthand(state, CSSPropertyPerspectiveOriginY, CSSPositionYValue::create(WTF::move(positionY)));
