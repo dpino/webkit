@@ -2356,7 +2356,10 @@ IDBError SQLiteIDBBackingStore::getIndexRecord(const IDBResourceIdentifier& tran
             getResult = { cursor->currentPrimaryKey() };
         else {
             auto* objectStoreInfo = infoForObjectStore(objectStoreID);
-            ASSERT(objectStoreInfo);
+            if (!objectStoreInfo) {
+                RELEASE_LOG_ERROR(IndexedDB, "%p - SQLiteIDBBackingStore::getIndexRecord: object store cannot be found in database", this);
+                return IDBError { ExceptionCode::UnknownError, "Object store cannot be found in the database"_s };
+            }
             getResult = { cursor->currentPrimaryKey(), cursor->currentPrimaryKey(), IDBValue(cursor->currentValue()), objectStoreInfo->keyPath() };
         }
     }
@@ -2417,7 +2420,10 @@ IDBError SQLiteIDBBackingStore::uncheckedGetIndexRecordForOneKey(IDBIndexIdentif
         return error;
 
     auto* objectStoreInfo = infoForObjectStore(objectStoreID);
-    ASSERT(objectStoreInfo);
+    if (!objectStoreInfo) {
+        RELEASE_LOG_ERROR(IndexedDB, "%p - SQLiteIDBBackingStore::uncheckedGetIndexRecordForOneKey: object store cannot be found in database", this);
+        return IDBError { ExceptionCode::UnknownError, "Object store cannot be found in the database"_s };
+    }
     getResult = { objectStoreKey, objectStoreKey, { ThreadSafeDataBuffer::create(WTF::move(valueVector)), WTF::move(blobURLs), WTF::move(blobFilePaths) }, objectStoreInfo->keyPath() };
     return IDBError { };
 }
@@ -2625,7 +2631,10 @@ IDBError SQLiteIDBBackingStore::openCursor(const IDBResourceIdentifier& transact
     m_cursors.set(cursor->identifier(), cursor.get());
 
     auto* objectStoreInfo = infoForObjectStore(info.objectStoreIdentifier());
-    ASSERT(objectStoreInfo);
+    if (!objectStoreInfo) {
+        RELEASE_LOG_ERROR(IndexedDB, "%p - SQLiteIDBBackingStore::openCursor: object store cannot be found in database", this);
+        return IDBError { ExceptionCode::UnknownError, "Object store cannot be found in the database"_s };
+    }
     cursor->currentData(result, objectStoreInfo->keyPath());
     return IDBError { };
 }
@@ -2669,7 +2678,10 @@ IDBError SQLiteIDBBackingStore::iterateCursor(const IDBResourceIdentifier& trans
 
     if (data.option == IndexedDB::CursorIterateOption::Reply) {
         auto* objectStoreInfo = infoForObjectStore(cursor->objectStoreID());
-        ASSERT(objectStoreInfo);
+        if (!objectStoreInfo) {
+            RELEASE_LOG_ERROR(IndexedDB, "%p - SQLiteIDBBackingStore::iterateCursor: object store cannot be found in database", this);
+            return IDBError { ExceptionCode::UnknownError, "Object store cannot be found in the database"_s };
+        }
 
         bool shouldPrefetch = key.isNull() && primaryKey.isNull();
         if (shouldPrefetch)
