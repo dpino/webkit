@@ -1006,6 +1006,11 @@ void VM::throwTerminationException()
 {
     ASSERT(hasTerminationRequest());
     ASSERT(!traps().isDeferringTermination());
+    // Termination can occur while executing DFG/FTL code that has set
+    // doesGC expectations. Reset the expectation so that subsequent
+    // heap access (e.g. JSLock re-acquisition) doesn't hit a stale
+    // doesGC assertion.
+    setDoesGCExpectation(true, DoesGCCheck::Special::Termination);
     setException(terminationException());
     if (m_executionForbiddenOnTermination)
         setExecutionForbidden();
