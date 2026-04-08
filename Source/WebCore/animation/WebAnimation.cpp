@@ -1558,8 +1558,10 @@ void WebAnimation::tick()
 
     if (!isEffectInvalidationSuspended() && m_effect) {
         m_effect->animationDidTick();
-        if (wasPending && !pending())
-            m_effect->animationBecameReady();
+        if (RefPtr keyframeEffect = this->keyframeEffect()) {
+            if (wasPending && !pending())
+                keyframeEffect->animationBecameReady();
+        }
     }
 }
 
