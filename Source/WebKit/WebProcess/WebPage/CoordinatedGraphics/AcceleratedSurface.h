@@ -395,16 +395,8 @@ private:
 #endif
     };
 
-<<<<<<< HEAD
-||||||| constructed merge base
-    static constexpr ColorComponents white { 1.f, 1.f, 1.f, WebCore::AlphaTraits<float>::opaque };
-
-=======
-    static constexpr ColorComponents white { 1.f, 1.f, 1.f, WebCore::AlphaTraits<float>::opaque };
-
     static void checkClearShader();
 
->>>>>>> [PATCH] ThreadedCompositor: Avoid calling glClear in each composition.
     const WeakRef<WebPage> m_webPage;
     Function<void()> m_frameCompleteHandler;
     uint64_t m_id { 0 };

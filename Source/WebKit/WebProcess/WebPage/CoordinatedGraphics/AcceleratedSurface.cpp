@@ -1047,7 +1047,17 @@ void AcceleratedSurface::doClear(float r, float g, float b, float a)
 
 void AcceleratedSurface::clear(const OptionSet<WebCore::CompositionReason>& reasons)
 {
-<<<<<<< HEAD
+    static bool stop_glClear = false;
+    static std::once_flag glClear_flag;
+    std::call_once(glClear_flag, []{
+        const char* var = getenv("WEBKIT_STOP_CLEAR_COMPOSITING");
+        if (var && !strcmp(var, "1"))
+            stop_glClear = true;
+    });
+
+    if (stop_glClear)
+        return;
+
     std::optional<Color> backgroundColor;
     {
         Locker locker { m_backgroundColorLock };
@@ -1063,49 +1073,16 @@ void AcceleratedSurface::clear(const OptionSet<WebCore::CompositionReason>& reas
     }
 
     if (backgroundColor && !backgroundColor->isOpaque()) {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        doClear(0, 0, 0, 0);
         return;
     }
 
     if (reasons.contains(CompositionReason::AsyncScrolling)) {
         if (backgroundColor) {
             auto [r, g, b, a] = backgroundColor->toResolvedColorComponentsInColorSpace(WebCore::ColorSpace::SRGB);
-            glClearColor(r, g, b, a);
+            doClear(r, g, b, a);
         } else
-            glClearColor(1, 1, 1, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-||||||| constructed merge base
-    ASSERT(!RunLoop::isMain());
-    auto backgroundColor = m_backgroundColor.load();
-    if (!isColorOpaque(backgroundColor)) {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-    } else if (reasons.contains(CompositionReason::AsyncScrolling)) {
-        auto [r, g, b, a] = backgroundColor;
-        glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
-=======
-    ASSERT(!RunLoop::isMain());
-    
-    static bool stop_glClear = false;
-    static std::once_flag glClear_flag;
-    std::call_once(glClear_flag, []{
-        const char* var = getenv("WEBKIT_STOP_CLEAR_COMPOSITING");
-        if (var && !strcmp(var, "1"))
-            stop_glClear = true;
-    });
-
-    if (stop_glClear)
-        return;
-
-    auto backgroundColor = m_backgroundColor.load();
-    if (!isColorOpaque(backgroundColor)) {
-        doClear(0, 0, 0, 0);
-    } else if (reasons.contains(CompositionReason::AsyncScrolling)) {
-        auto [r, g, b, a] = backgroundColor;
-        doClear(r, g, b, a);
->>>>>>> [PATCH] ThreadedCompositor: Avoid calling glClear in each composition.
+            doClear(1, 1, 1, 1);
     }
 }
 
