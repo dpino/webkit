@@ -204,6 +204,7 @@ Ref<Page> createPageForSanitizingWebContent(Document* destinationDocument)
 {
     bool useDarkAppearance = false;
     bool useElevatedUserInterfaceLevel = false;
+    std::optional<FontGenericFamilies> fontGenericFamilies;
 
     if (destinationDocument) {
         if (RefPtr destinationPage = destinationDocument->page()) {
@@ -216,6 +217,7 @@ Ref<Page> createPageForSanitizingWebContent(Document* destinationDocument)
 
             useDarkAppearance = documentNeedsDarkAppearance && destinationPage->useDarkAppearance();
             useElevatedUserInterfaceLevel = destinationPage->useElevatedUserInterfaceLevel();
+            fontGenericFamilies = destinationPage->settings().fontGenericFamilies();
         }
     }
 
@@ -230,6 +232,9 @@ Ref<Page> createPageForSanitizingWebContent(Document* destinationDocument)
     page->settings().setHTMLParserScriptingFlagPolicy(HTMLParserScriptingFlagPolicy::Enabled);
     page->settings().setAcceleratedCompositingEnabled(false);
     page->settings().setLinkPreloadEnabled(false);
+
+    if (fontGenericFamilies)
+        page->settings().fontGenericFamilies() = *fontGenericFamilies;
 
     RefPtr frame = page->localMainFrame();
     if (!frame)
