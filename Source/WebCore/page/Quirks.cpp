@@ -1862,6 +1862,10 @@ String Quirks::scriptToEvaluateBeforeRunningScriptFromURL(const URL& scriptURL)
     if (m_quirksData.isIHeart)
         return "document.cookie = 'app=listen:60; path=/; domain=.iheart.com';"_s;
 
+    // bestbuy.com rdar://136235936
+    if (m_quirksData.isBestBuy) [[unlikely]]
+        return "Object.defineProperty(navigator,'language',{get:function(){return'en-US'}});Object.defineProperty(navigator,'languages',{get:function(){return['en-US','en']}});"_s;
+
 #if PLATFORM(IOS_FAMILY)
     // player.anyclip.com rdar://138789765
     if (m_quirksData.isThesaurus && scriptURL.lastPathComponent().endsWith("lre.js"_s)) [[unlikely]] {
@@ -3005,6 +3009,15 @@ static void handleIHeartQuirks(QuirksData& quirksData, const URL& /* quirksURL *
     quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsScriptToEvaluateBeforeRunningScriptFromURLQuirk);
 }
 
+static void handleBestBuyQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL& /* documentURL */)
+{
+    QUIRKS_EARLY_RETURN_IF_NOT_DOMAIN("bestbuy.com"_s);
+
+    // bestbuy.com rdar://136235936
+    quirksData.isBestBuy = true;
+    quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsScriptToEvaluateBeforeRunningScriptFromURLQuirk);
+}
+
 static void handleIMDBQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL&  /* documentURL */)
 {
     QUIRKS_EARLY_RETURN_IF_NOT_DOMAIN("imdb.com"_s);
@@ -3455,6 +3468,7 @@ void Quirks::determineRelevantQuirks()
         { "codepen"_s, &handleCodepenQuirks },
 #endif
         { "bankofamerica"_s, &handleBankOfAmericaQuirks },
+        { "bestbuy"_s, &handleBestBuyQuirks },
         { "bing"_s, &handleBingQuirks },
         { "bungalow"_s, &handleBungalowQuirks },
         { "capitalgroup"_s, &handleCapitalGroupQuirks },
