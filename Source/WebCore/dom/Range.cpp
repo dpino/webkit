@@ -425,7 +425,10 @@ ExceptionOr<RefPtr<DocumentFragment>> Range::processContents(ActionType action)
                 return result.releaseException();
         }
 
-        if (processStart) {
+        // If the original end container was disconnected from the common root (e.g. by a mutation
+        // event during left contents processing), processEnd will be null and the loop below would
+        // extract all remaining siblings, including nodes beyond the original range.
+        if (processStart && (processEnd || commonRoot->contains(originalEnd.container()))) {
             Vector<Ref<Node>> nodes;
             for (Node* node = processStart.get(); node && node != processEnd; node = node->nextSibling())
                 nodes.append(*node);
