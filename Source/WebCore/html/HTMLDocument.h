@@ -23,6 +23,8 @@
 #pragma once
 
 #include <WebCore/Document.h>
+#include <WebCore/JSDOMConvertInterface.h>
+#include <WebCore/JSDOMConvertNullable.h>
 #include <WebCore/TreeScopeOrderedMap.h>
 
 namespace WebCore {

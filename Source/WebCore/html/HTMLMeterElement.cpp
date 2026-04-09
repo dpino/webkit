@@ -30,6 +30,7 @@
 #include "HTMLNames.h"
 #include "HTMLParserIdioms.h"
 #include "HTMLStyleElement.h"
+#include "NodeDocument.h"
 #include "NodeName.h"
 #include "Page.h"
 #include "RenderMeter.h"

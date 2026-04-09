@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Apple Inc. All rights reserved.
+ * Copyright (C) 2026 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,34 +23,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "config.h"
+#include "PlatformControl.h"
 
-#include "Exception.h"
-#include "JSDOMPromiseDeferred.h"
-#include <wtf/RefCounted.h>
-#include <wtf/WeakPtr.h>
+#include "ControlPart.h"
 
 namespace WebCore {
 
-class Worklet;
-
-// https://drafts.css-houdini.org/worklets/#pending-tasks-struct
-class WorkletPendingTasks : public ThreadSafeRefCounted<WorkletPendingTasks> {
-public:
-    static Ref<WorkletPendingTasks> create(Worklet& worklet, DOMPromiseDeferred<void>&& promise, int counter)
-    {
-        return adoptRef(*new WorkletPendingTasks(worklet, WTF::move(promise), counter));
-    }
-
-    void abort(Exception&&);
-    void decrementCounter();
-
-private:
-    WorkletPendingTasks(Worklet&, DOMPromiseDeferred<void>&&, int counter);
-
-    WeakPtr<Worklet> m_worklet;
-    DOMPromiseDeferred<void> m_promise;
-    int m_counter;
-};
+PlatformControl::PlatformControl(ControlPart& owningPart)
+    : m_owningPart(owningPart)
+{
+}
 
 } // namespace WebCore

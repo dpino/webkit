@@ -26,6 +26,8 @@
 
 #include "ContainerNodeInlines.h"
 #include "Document.h"
+#include "DocumentPage.h"
+#include "FrameDestructionObserverInlines.h"
 #include "DocumentEventLoop.h"
 #include "DocumentQuirks.h"
 #include "DocumentView.h"

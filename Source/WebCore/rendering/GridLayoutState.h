@@ -28,6 +28,7 @@
 #include <WebCore/RenderBox.h>
 #include <wtf/CheckedPtr.h>
 #include <wtf/TZoneMalloc.h>
+#include <wtf/WeakHashMap.h>
 
 namespace WebCore {
 

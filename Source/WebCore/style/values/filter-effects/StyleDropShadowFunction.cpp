@@ -27,14 +27,16 @@
 #include "StyleDropShadowFunction.h"
 
 #include "CSSDropShadowFunction.h"
+#include "CSSFilterFunctionDescriptor.h"
 #include "CSSPrimitiveValue.h"
 #include "Document.h"
 #include "DropShadowFilterOperationWithStyleColor.h"
 #include "FilterOperation.h"
-#include "RenderStyle.h"
 #include "RenderStyle+GettersInlines.h"
+#include "RenderStyle.h"
 #include "StyleColor.h"
 #include "StylePrimitiveNumericTypes+Conversions.h"
+#include "StylePrimitiveNumericTypes+Evaluation.h"
 
 namespace WebCore {
 namespace Style {

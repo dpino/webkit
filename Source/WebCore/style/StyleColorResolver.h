@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include "StyleAppleColorFilter.h"
+#include <WebCore/Color.h>
 #include <WebCore/RenderStyle.h>
 
 namespace WebCore {

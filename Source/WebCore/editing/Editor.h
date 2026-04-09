@@ -212,7 +212,7 @@ public:
 
     CompositeEditCommand* lastEditCommand() { return m_lastEditCommand.get(); }
 
-    Document& document() const { return m_document.get(); }
+    Document& document() const;
     Ref<Document> protectedDocument() const { return m_document.get(); }
 
     WEBCORE_EXPORT void ref() const;

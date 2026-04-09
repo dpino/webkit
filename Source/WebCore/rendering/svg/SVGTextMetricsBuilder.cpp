@@ -22,6 +22,7 @@
 
 #include "ComplexTextController.h"
 #include "FontCascadeCache.h"
+#include "FontCascadeInlines.h"
 #include "RenderChildIterator.h"
 #include "RenderSVGInline.h"
 #include "RenderSVGInlineText.h"

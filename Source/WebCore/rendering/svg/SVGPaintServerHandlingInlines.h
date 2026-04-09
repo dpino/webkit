@@ -22,6 +22,7 @@
 
 #include "RenderSVGResourceGradient.h"
 #include "RenderStyle+GettersInlines.h"
+#include "LocalFrameView.h"
 #include "RenderView.h"
 #include "SVGPaintServerHandling.h"
 #include "SVGRenderSupport.h"

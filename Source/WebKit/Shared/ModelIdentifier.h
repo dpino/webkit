@@ -30,6 +30,8 @@
 #if ENABLE(ARKIT_INLINE_PREVIEW_IOS)
 #import <WebCore/PlatformLayerIdentifier.h>
 #endif
+#include "InternalFunction.h"
+#include "WebAssemblySuspendingPrototype.h"
 
 namespace WebKit {
 

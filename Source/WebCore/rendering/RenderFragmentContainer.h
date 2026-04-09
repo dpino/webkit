@@ -34,6 +34,7 @@
 #include "RenderFragmentedFlow.h"
 #include "VisiblePosition.h"
 #include <memory>
+#include <wtf/WeakHashMap.h>
 
 namespace WebCore {
 

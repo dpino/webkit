@@ -64,6 +64,7 @@
 #include "ShadowRealmGlobalScope.h"
 #include "SharedWorkerGlobalScope.h"
 #include "StructuredClone.h"
+#include "TrustedType.h"
 #include "WebCoreJSBuiltinInternals.h"
 #include "WebCoreJSClientData.h"
 #include "WorkerGlobalScope.h"

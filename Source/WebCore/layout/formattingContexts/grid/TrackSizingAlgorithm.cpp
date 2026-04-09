@@ -27,6 +27,8 @@
 #include "TrackSizingAlgorithm.h"
 
 #include "NotImplemented.h"
+#include "PlacedGridItem.h"
+#include "StyleContentAlignmentData.h"
 #include "TrackSizingFunctions.h"
 #include <wtf/Vector.h>
 

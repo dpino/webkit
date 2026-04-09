@@ -26,6 +26,7 @@
 #pragma once
 
 #include "CSSFontFace.h"
+#include "ExceptionOr.h"
 #include <wtf/AbstractRefCountedAndCanMakeWeakPtr.h>
 #include <wtf/HashMap.h>
 #include <wtf/Observer.h>

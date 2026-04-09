@@ -28,6 +28,7 @@
 #include "CSSValueKeywords.h"
 #include "ContainerNodeInlines.h"
 #include "Font.h"
+#include "FontCascadeInlines.h"
 #include "FrameSelection.h"
 #include "HTMLNames.h"
 #include "HitTestResult.h"

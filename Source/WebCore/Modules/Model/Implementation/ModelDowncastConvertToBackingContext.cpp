@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "ModelDowncastConvertToBackingContext.h"
+#include <JavaScriptCore/JSCellInlines.h>
 
 #if HAVE(WEBGPU_IMPLEMENTATION)
 

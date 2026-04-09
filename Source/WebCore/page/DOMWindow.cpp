@@ -65,6 +65,7 @@
 #include <wtf/NeverDestroyed.h>
 #include <wtf/TypeCasts.h>
 #include <wtf/TZoneMallocInlines.h>
+#include "DocumentPage.h"
 
 namespace WebCore {
 

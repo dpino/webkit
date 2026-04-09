@@ -27,6 +27,7 @@
 #include "InlineIteratorLineBox.h"
 #include "LayoutIntegrationLineLayout.h"
 #include "LayoutRepainter.h"
+#include "RenderBlockFlowInlines.h"
 #include "RenderBoxInlines.h"
 #include "RenderBoxModelObjectInlines.h"
 #include "RenderDescendantIterator.h"

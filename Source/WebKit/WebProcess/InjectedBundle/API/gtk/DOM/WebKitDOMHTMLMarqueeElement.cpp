@@ -20,19 +20,20 @@
 #include "config.h"
 #include "WebKitDOMHTMLMarqueeElement.h"
 
-#include <WebCore/CSSImportRule.h>
+#include "ConvertToUTF8String.h"
 #include "DOMObjectCache.h"
-#include <WebCore/DOMException.h>
-#include <WebCore/Document.h>
 #include "GObjectEventListener.h"
-#include <WebCore/HTMLNames.h>
-#include <WebCore/JSExecState.h>
 #include "WebKitDOMEventPrivate.h"
 #include "WebKitDOMEventTarget.h"
 #include "WebKitDOMHTMLMarqueeElementPrivate.h"
 #include "WebKitDOMNodePrivate.h"
 #include "WebKitDOMPrivate.h"
-#include "ConvertToUTF8String.h"
+#include <WebCore/AddEventListenerOptionsInlines.h>
+#include <WebCore/CSSImportRule.h>
+#include <WebCore/DOMException.h>
+#include <WebCore/Document.h>
+#include <WebCore/HTMLNames.h>
+#include <WebCore/JSExecState.h>
 #include <wtf/GetPtr.h>
 #include <wtf/RefPtr.h>
 

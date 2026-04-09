@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "CustomPaintImage.h"
+#include "ContextDestructionObserverInlines.h"
 
 #include "CSSComputedStyleDeclaration.h"
 #include "CSSImageValue.h"

@@ -26,6 +26,7 @@
 #include "config.h"
 #include "LocalFrameLoaderClient.h"
 
+#include "Frame.h"
 #include "FrameLoader.h"
 
 namespace WebCore {

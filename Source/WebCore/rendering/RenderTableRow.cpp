@@ -27,6 +27,7 @@
 #include "config.h"
 #include "RenderTableRow.h"
 
+#include "BackgroundPainter.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "HitTestResult.h"

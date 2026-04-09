@@ -27,8 +27,11 @@
 
 #include <WebCore/GridTypeAliases.h>
 #include <WebCore/LayoutUnit.h>
+#include <wtf/Function.h>
 
 namespace WebCore {
+
+class StyleContentAlignmentData;
 
 namespace Layout {
 

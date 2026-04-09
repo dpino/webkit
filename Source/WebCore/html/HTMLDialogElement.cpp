@@ -42,6 +42,7 @@
 #include "RenderBlock.h"
 #include "RenderElement.h"
 #include "ScopedEventQueue.h"
+#include "Settings.h"
 #include "ToggleEvent.h"
 #include "ToggleEventTask.h"
 #include "TypedElementDescendantIteratorInlines.h"

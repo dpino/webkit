@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "RenderSVGPath.h"
+#include "RenderObjectNode.h"
 
 #include "Gradient.h"
 #include "ReferencedSVGResources.h"

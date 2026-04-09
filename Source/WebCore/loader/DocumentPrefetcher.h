@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <WebCore/CachedResourceClient.h>
+#include <WebCore/CachedRawResourceClient.h>
 #include <WebCore/CachedResourceHandle.h>
 #include <optional>
 #include <wtf/CompletionHandler.h>

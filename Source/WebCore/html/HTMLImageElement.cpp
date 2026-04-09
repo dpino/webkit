@@ -67,6 +67,8 @@
 #include "ShadowRoot.h"
 #include "SizesAttributeParser.h"
 #include <wtf/TZoneMallocInlines.h>
+#include "DocumentPage.h"
+#include "FrameDestructionObserverInlines.h"
 #include <wtf/text/StringBuilder.h>
 
 #if ENABLE(SERVICE_CONTROLS)

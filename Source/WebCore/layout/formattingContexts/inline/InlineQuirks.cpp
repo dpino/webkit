@@ -27,6 +27,8 @@
 #include "InlineQuirks.h"
 
 #include "InlineFormattingContext.h"
+#include "FontCascadeInlines.h"
+#include "LayoutBoxInlines.h"
 #include "InlineLineBox.h"
 #include "LayoutBoxGeometry.h"
 #include "RenderStyle+GettersInlines.h"

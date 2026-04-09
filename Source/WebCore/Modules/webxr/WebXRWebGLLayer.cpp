@@ -52,6 +52,11 @@ namespace WebCore {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(WebXRWebGLLayer);
 
+const WebXRSession* WebXRWebGLLayer::session()
+{
+    return m_session.get();
+}
+
 // Arbitrary value for minimum framebuffer scaling.
 // Below this threshold the resulting framebuffer would be too small to see.
 constexpr double MinFramebufferScalingFactor = 0.2;

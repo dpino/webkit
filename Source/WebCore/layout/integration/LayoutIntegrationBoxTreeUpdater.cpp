@@ -32,6 +32,7 @@
 #include "LayoutInlineTextBox.h"
 #include "RenderBlock.h"
 #include "RenderBlockFlow.h"
+#include "RenderBlockFlowInlines.h"
 #include "RenderButton.h"
 #include "RenderChildIterator.h"
 #include "RenderCombineText.h"

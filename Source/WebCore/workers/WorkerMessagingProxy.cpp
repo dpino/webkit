@@ -36,6 +36,7 @@
 #include "DedicatedWorkerGlobalScope.h"
 #include "DedicatedWorkerThread.h"
 #include "Document.h"
+#include "DocumentPage.h"
 #include "ErrorEvent.h"
 #include "EventNames.h"
 #include "FetchRequestCredentials.h"
@@ -441,6 +442,11 @@ void WorkerMessagingProxy::workerGlobalScopeClosed()
     ScriptExecutionContext::postTaskTo(*m_scriptExecutionContextIdentifier, [this](auto&) {
         terminateWorkerGlobalScope();
     });
+}
+
+Worker* WorkerMessagingProxy::workerObject() const
+{
+    return m_workerObject.get();
 }
 
 void WorkerMessagingProxy::workerGlobalScopeDestroyedInternal()

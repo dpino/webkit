@@ -32,6 +32,7 @@
 #include <wtf/MainThread.h>
 #include <wtf/RunLoop.h>
 #include <wtf/TZoneMallocInlines.h>
+#include <wtf/WeakPtr.h>
 
 namespace WebCore {
 

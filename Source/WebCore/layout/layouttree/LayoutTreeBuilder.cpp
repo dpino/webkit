@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "LayoutTreeBuilder.h"
+#include "LayoutBoxInlines.h"
 
 #include "CachedImage.h"
 #include "HTMLNames.h"

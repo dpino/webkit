@@ -32,6 +32,7 @@
 #include "RenderTreeBuilder.h"
 #include "RenderTreeBuilderBlock.h"
 #include "RenderTreeBuilderInline.h"
+#include "RenderStyle+SettersInlines.h"
 #include "UnicodeBidi.h"
 #include <wtf/TZoneMallocInlines.h>
 

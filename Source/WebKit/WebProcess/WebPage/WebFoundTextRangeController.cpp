@@ -34,6 +34,7 @@
 #include <WebCore/Document.h>
 #include <WebCore/DocumentMarkerController.h>
 #include <WebCore/DocumentMarkers.h>
+#include <WebCore/DocumentPage.h>
 #include <WebCore/DocumentQuirks.h>
 #include <WebCore/DocumentView.h>
 #include <WebCore/Editor.h>

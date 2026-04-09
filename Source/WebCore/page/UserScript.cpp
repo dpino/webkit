@@ -27,6 +27,10 @@
 #include "config.h"
 #include "UserScript.h"
 
+#include <wtf/HashCountedSet.h>
+#include <wtf/MainThread.h>
+#include <wtf/NeverDestroyed.h>
+#include <wtf/text/StringHash.h>
 #include <wtf/TZoneMallocInlines.h>
 #include <wtf/text/MakeString.h>
 

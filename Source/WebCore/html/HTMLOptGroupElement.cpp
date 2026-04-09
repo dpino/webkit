@@ -27,6 +27,8 @@
 
 #include "Document.h"
 #include "ElementAncestorIteratorInlines.h"
+#include "ElementChildIterator.h"
+#include "ElementChildIteratorInlines.h"
 #include "ElementIterator.h"
 #include "HTMLNames.h"
 #include "HTMLOptionElement.h"
@@ -34,6 +36,9 @@
 #include "PseudoClassChangeInvalidation.h"
 #include "RenderMenuList.h"
 #include "NodeRenderStyle.h"
+#include "ScriptDisallowedScope.h"
+#include "ScriptElement.h"
+#include "Settings.h"
 #include "StyleResolver.h"
 #include "TypedElementDescendantIteratorInlines.h"
 #include <wtf/StdLibExtras.h>

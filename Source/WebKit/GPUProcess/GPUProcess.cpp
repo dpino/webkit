@@ -46,6 +46,8 @@
 #include "WebProcessPoolMessages.h"
 #include <WebCore/CommonAtomStrings.h>
 #include <WebCore/DeprecatedGlobalSettings.h>
+#include <WebCore/FloatSize.h>
+#include <WebCore/FrameIdentifier.h>
 #include <WebCore/LogInitialization.h>
 #include <WebCore/MediaPlayer.h>
 #include <WebCore/MemoryRelease.h>
@@ -80,6 +82,8 @@
 #if HAVE(SCREEN_CAPTURE_KIT)
 #include <WebCore/ScreenCaptureKitCaptureSource.h>
 #endif
+
+using namespace WebCore;
 
 namespace WebKit {
 

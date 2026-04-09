@@ -523,6 +523,22 @@ MacroAssemblerCodeRef<JITThunkPtrTag> deleteByValWithSymbolDeleteMissHandler(VM&
 MacroAssemblerCodeRef<JITThunkPtrTag> checkPrivateBrandHandler(VM&);
 MacroAssemblerCodeRef<JITThunkPtrTag> setPrivateBrandHandler(VM&);
 
+bool doesJSCalls(AccessCase::AccessType);
+
+#if CPU(X86_64)
+static constexpr size_t prologueSizeInBytesDataIC = 1;
+#elif CPU(ARM64E)
+static constexpr size_t prologueSizeInBytesDataIC = 4;
+#elif CPU(ARM64)
+static constexpr size_t prologueSizeInBytesDataIC = 0;
+#elif CPU(ARM_THUMB2)
+static constexpr size_t prologueSizeInBytesDataIC = 0;
+#elif CPU(RISCV64)
+static constexpr size_t prologueSizeInBytesDataIC = 0;
+#else
+#error "unsupported architecture"
+#endif
+
 } // namespace JSC
 
 namespace WTF {

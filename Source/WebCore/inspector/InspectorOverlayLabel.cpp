@@ -33,8 +33,11 @@
 #include "FloatSize.h"
 #include "FontCascade.h"
 #include "FontCascadeDescription.h"
+#include "FontCascadeInlines.h"
+#include "FontSelector.h"
 #include "GraphicsContext.h"
 #include "Path.h"
+#include "TextRun.h"
 #include <wtf/TZoneMallocInlines.h>
 #include <wtf/text/MakeString.h>
 

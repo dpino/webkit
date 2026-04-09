@@ -27,6 +27,7 @@
 #include "LayoutState.h"
 
 #include "BlockFormattingState.h"
+#include "Document.h"
 #include "InlineContentCache.h"
 #include "LayoutBox.h"
 #include "LayoutBoxGeometry.h"
@@ -34,6 +35,7 @@
 #include "LayoutElementBox.h"
 #include "LayoutInitialContainingBlock.h"
 #include "RenderBox.h"
+#include "RenderStyle+GettersInlines.h"
 #include "Settings.h"
 #include "TableFormattingState.h"
 #include <wtf/TZoneMallocInlines.h>

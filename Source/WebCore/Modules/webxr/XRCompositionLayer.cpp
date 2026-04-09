@@ -28,6 +28,7 @@
 
 #if ENABLE(WEBXR_LAYERS)
 
+#include "WebXRSession.h"
 #include "XRLayerBacking.h"
 #include <wtf/TZoneMallocInlines.h>
 

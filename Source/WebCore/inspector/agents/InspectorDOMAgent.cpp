@@ -96,6 +96,7 @@
 #include "JSVideoTransferCharacteristics.h"
 #include "LocalDOMWindow.h"
 #include "LocalFrame.h"
+#include "LocalFrameInlines.h"
 #include "LocalFrameView.h"
 #include "MutationEvent.h"
 #include "Node.h"

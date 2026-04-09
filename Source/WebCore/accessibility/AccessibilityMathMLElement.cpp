@@ -36,6 +36,7 @@
 #include "FrameDestructionObserverInlines.h"
 #include "MathMLNames.h"
 #include "NodeInlines.h"
+#include "RenderStyle+GettersInlines.h"
 #include "Settings.h"
 
 namespace WebCore {

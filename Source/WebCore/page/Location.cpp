@@ -30,6 +30,7 @@
 #include "Location.h"
 
 #include "DocumentQuirks.h"
+#include "DocumentSecurityOrigin.h"
 #include "ExceptionOr.h"
 #include "FrameLoader.h"
 #include "LocalDOMWindow.h"
@@ -44,6 +45,7 @@
 #include <wtf/URL.h>
 #include <wtf/text/MakeString.h>
 #include <wtf/text/StringToIntegerConversion.h>
+#include "LocalFrameInlines.h"
 
 namespace WebCore {
 

@@ -52,8 +52,10 @@
 #include "WebKitDOMXPathExpressionPrivate.h"
 #include "WebKitDOMXPathNSResolverPrivate.h"
 #include "WebKitDOMXPathResultPrivate.h"
+#include <WebCore/AddEventListenerOptionsInlines.h>
 #include <WebCore/CSSImportRule.h>
 #include <WebCore/CSSStyleProperties.h>
+#include <WebCore/CustomElementRegistry.h>
 #include <WebCore/DOMException.h>
 #include <WebCore/DocumentFullscreen.h>
 #include <WebCore/DocumentInlines.h>

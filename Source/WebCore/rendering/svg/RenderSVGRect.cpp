@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "RenderSVGRect.h"
+#include "RenderObjectNode.h"
 
 #include "RenderSVGShapeInlines.h"
 #include "RenderStyle+GettersInlines.h"

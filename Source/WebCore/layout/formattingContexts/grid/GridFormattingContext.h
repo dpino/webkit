@@ -29,6 +29,10 @@
 #include <WebCore/LayoutIntegrationUtils.h>
 #include <WebCore/LayoutState.h>
 #include <WebCore/LayoutUnit.h>
+#include <WebCore/StyleGapGutter.h>
+#include <WebCore/StyleGridTemplateList.h>
+#include <WebCore/StyleGridTrackSizes.h>
+#include <WebCore/StylePrimitiveNumericTypes+Evaluation.h>
 #include <wtf/CheckedRef.h>
 
 namespace WebCore {

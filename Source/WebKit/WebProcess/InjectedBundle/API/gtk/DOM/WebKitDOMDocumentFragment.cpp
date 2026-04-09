@@ -20,14 +20,11 @@
 #include "config.h"
 #include "WebKitDOMDocumentFragment.h"
 
-#include <WebCore/CSSImportRule.h>
-#include <WebCore/CustomElementRegistry.h>
+#include "ConvertToUTF8String.h"
 #include "DOMObjectCache.h"
-#include <WebCore/DOMException.h>
-#include <WebCore/Document.h>
 #include "GObjectEventListener.h"
-#include <WebCore/JSExecState.h>
 #include "WebKitDOMDocumentFragmentPrivate.h"
+#include "WebKitDOMDocumentFragmentUnstable.h"
 #include "WebKitDOMElementPrivate.h"
 #include "WebKitDOMEventPrivate.h"
 #include "WebKitDOMEventTarget.h"
@@ -35,8 +32,12 @@
 #include "WebKitDOMNodeListPrivate.h"
 #include "WebKitDOMNodePrivate.h"
 #include "WebKitDOMPrivate.h"
-#include "ConvertToUTF8String.h"
-#include "WebKitDOMDocumentFragmentUnstable.h"
+#include <WebCore/AddEventListenerOptionsInlines.h>
+#include <WebCore/CSSImportRule.h>
+#include <WebCore/CustomElementRegistry.h>
+#include <WebCore/DOMException.h>
+#include <WebCore/Document.h>
+#include <WebCore/JSExecState.h>
 #include <wtf/GetPtr.h>
 #include <wtf/RefPtr.h>
 

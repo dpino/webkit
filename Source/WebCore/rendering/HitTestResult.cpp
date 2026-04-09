@@ -43,6 +43,7 @@
 #include "HTMLVideoElement.h"
 #include "ImageOverlay.h"
 #include "LocalFrame.h"
+#include "LocalFrameInlines.h"
 #include "NodeInlines.h"
 #include "OriginAccessPatterns.h"
 #include "PseudoElement.h"
@@ -62,6 +63,7 @@
 #include "VisibleUnits.h"
 #include "XLinkNames.h"
 #include <wtf/TZoneMallocInlines.h>
+#include "FrameDestructionObserverInlines.h"
 
 #if ENABLE(SERVICE_CONTROLS)
 #include "ImageControlsMac.h"

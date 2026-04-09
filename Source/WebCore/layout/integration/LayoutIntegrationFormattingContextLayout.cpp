@@ -27,10 +27,12 @@
 #include "LayoutIntegrationFormattingContextLayout.h"
 
 #include "BlockLayoutState.h"
+#include "FloatingObjects.h"
 #include "InlineLayoutState.h"
 #include "LayoutIntegrationBoxGeometryUpdater.h"
 #include "LayoutIntegrationUtils.h"
 #include "RenderBlock.h"
+#include "RenderBlockFlowInlines.h"
 #include "RenderBoxInlines.h"
 #include "RenderFlexibleBox.h"
 #include "RenderLayoutState.h"

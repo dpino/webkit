@@ -33,6 +33,8 @@
 #include "CSSPropertyParserConsumer+Ident.h"
 #include "CSSPropertyParserState.h"
 #include "CSSValueKeywords.h"
+#include "CSSValuePair.h"
+#include <wtf/EnumeratedArray.h>
 
 namespace WebCore {
 namespace CSSPropertyParserHelpers {

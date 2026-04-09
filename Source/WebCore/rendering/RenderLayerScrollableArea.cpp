@@ -57,6 +57,7 @@
 #include "ElementRuleCollector.h"
 #include "EventHandler.h"
 #include "FocusController.h"
+#include "FrameInlines.h"
 #include "FrameSelection.h"
 #include "HTMLBodyElement.h"
 #include "HTMLHtmlElement.h"

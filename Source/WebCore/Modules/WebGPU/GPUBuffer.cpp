@@ -27,6 +27,7 @@
 #include "GPUBuffer.h"
 
 #include "GPUDevice.h"
+#include "JSDOMConvertNull.h"
 #include "JSDOMPromiseDeferred.h"
 #include "JSGPUBufferMapState.h"
 

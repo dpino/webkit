@@ -72,6 +72,7 @@
 #include "TextIterator.h"
 #include <wtf/NeverDestroyed.h>
 #include <wtf/text/MakeString.h>
+#include "FrameDestructionObserverInlines.h"
 
 #if ENABLE(FORM_CONTROL_REFRESH)
 #include "PathCG.h"

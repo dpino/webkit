@@ -27,6 +27,8 @@
 
 #include "CSSNumericValue.h"
 #include "CSSTransformComponent.h"
+#include "JSDOMConvertInterface.h"
+#include "JSDOMConvertNullable.h"
 
 namespace WebCore {
 

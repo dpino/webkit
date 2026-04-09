@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "RenderSVGEllipse.h"
+#include "RenderObjectNode.h"
 
 #include "RenderSVGShapeInlines.h"
 #include "SVGCircleElement.h"

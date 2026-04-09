@@ -74,6 +74,7 @@
 #include <wtf/SetForScope.h>
 #include <wtf/TZoneMallocInlines.h>
 #include <wtf/Vector.h>
+#include "LocalFrameInlines.h"
 
 namespace WebCore {
 

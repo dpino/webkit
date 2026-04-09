@@ -63,6 +63,7 @@
 #include "DocumentResourceLoader.h"
 #include "DocumentView.h"
 #include "Editing.h"
+#include "EditingInlines.h"
 #include "EditorClient.h"
 #include "ElementAncestorIteratorInlines.h"
 #include "EventHandler.h"
@@ -103,6 +104,7 @@
 #include "NodeTraversal.h"
 #include "PagePasteboardContext.h"
 #include "Pasteboard.h"
+#include "PositionInlines.h"
 #include "Range.h"
 #include "RemoveFormatCommand.h"
 #include "RenderAncestorIterator.h"
@@ -356,6 +358,8 @@ EditingBehavior Editor::behavior() const
 {
     return document().editingBehavior();
 }
+
+Document& Editor::document() const { return m_document; }
 
 EditorClient* Editor::client() const
 {

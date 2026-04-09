@@ -30,13 +30,15 @@
 #if ENABLE(MATHML)
 
 #include "CSSUnits.h"
+#include "FontCascadeInlines.h"
 #include "GraphicsContext.h"
 #include "LayoutRepainter.h"
 #include "MathMLElement.h"
 #include "MathMLNames.h"
 #include "MathMLPresentationElement.h"
-#include "RenderChildIterator.h"
+#include "OpenTypeMathData.h"
 #include "RenderBoxInlines.h"
+#include "RenderChildIterator.h"
 #include "RenderElementStyleInlines.h"
 #include "RenderObjectInlines.h"
 #include "RenderTableInlines.h"

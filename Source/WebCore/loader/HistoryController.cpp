@@ -30,6 +30,7 @@
 
 #include "config.h"
 #include "HistoryController.h"
+#include "LocalFrameInlines.h"
 
 #include "BackForwardCache.h"
 #include "BackForwardController.h"

@@ -27,6 +27,9 @@
 #include "InlineIteratorSVGTextBox.h"
 
 #include "LayoutIntegrationLineLayout.h"
+#include "RenderBlockFlowInlines.h"
+#include "RenderBoxInlines.h"
+#include "RenderElementInlines.h"
 #include "RenderSVGText.h"
 #include "SVGInlineTextBox.h"
 #include "SVGRootInlineBox.h"

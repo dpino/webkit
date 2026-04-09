@@ -44,6 +44,7 @@
 #include "DocumentView.h"
 #include "Editing.h"
 #include "EditingBehavior.h"
+#include "EditingStyle.h"
 #include "EditingInlines.h"
 #include "ElementIteratorInlines.h"
 #include "EventNames.h"
@@ -87,6 +88,7 @@
 #include <wtf/RobinHoodHashSet.h>
 #include <wtf/StdLibExtras.h>
 #include <wtf/TZoneMallocInlines.h>
+#include "DocumentPage.h"
 
 namespace WebCore {
 

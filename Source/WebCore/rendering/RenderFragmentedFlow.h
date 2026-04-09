@@ -34,6 +34,7 @@
 #include "RenderBlockFlow.h"
 #include "RenderFragmentContainer.h"
 #include <wtf/InlineWeakPtr.h>
+#include <wtf/WeakHashMap.h>
 #include <wtf/WeakListHashSet.h>
 
 namespace WebCore {

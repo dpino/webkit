@@ -77,6 +77,8 @@ ScriptModuleLoader::ScriptModuleLoader(ScriptExecutionContext* context, OwnerTyp
 {
 }
 
+ScriptExecutionContext* ScriptModuleLoader::context() { return m_context.get(); }
+
 ScriptModuleLoader::~ScriptModuleLoader()
 {
     for (auto& loader : m_loaders)

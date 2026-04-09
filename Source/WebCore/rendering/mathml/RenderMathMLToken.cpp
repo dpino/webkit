@@ -30,6 +30,8 @@
 
 #if ENABLE(MATHML)
 
+#include "FontCascadeInlines.h"
+#include "GlyphPage.h"
 #include "MathMLElement.h"
 #include "MathMLNames.h"
 #include "MathMLTokenElement.h"
@@ -40,6 +42,7 @@
 #include "RenderIterator.h"
 #include "RenderObjectInlines.h"
 #include "RenderStyle+GettersInlines.h"
+#include "Settings.h"
 #include <wtf/StdLibExtras.h>
 #include <wtf/TZoneMallocInlines.h>
 

@@ -30,6 +30,7 @@
 #include "ElementInlines.h"
 #include "ElementRareData.h"
 #include "Event.h"
+#include "FrameDestructionObserverInlines.h"
 #include "File.h"
 #include "FileChooser.h"
 #include "FileList.h"

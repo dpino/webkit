@@ -20,6 +20,23 @@
 #include "config.h"
 #include "WebKitDOMElement.h"
 
+#include "ConvertToUTF8String.h"
+#include "GObjectEventListener.h"
+#include "WebKitDOMAttrPrivate.h"
+#include "WebKitDOMCSSStyleDeclarationPrivate.h"
+#include "WebKitDOMClientRectListPrivate.h"
+#include "WebKitDOMClientRectPrivate.h"
+#include "WebKitDOMDOMTokenListPrivate.h"
+#include "WebKitDOMElementPrivate.h"
+#include "WebKitDOMElementUnstable.h"
+#include "WebKitDOMEventPrivate.h"
+#include "WebKitDOMEventTarget.h"
+#include "WebKitDOMHTMLCollectionPrivate.h"
+#include "WebKitDOMNamedNodeMapPrivate.h"
+#include "WebKitDOMNodeListPrivate.h"
+#include "WebKitDOMNodePrivate.h"
+#include "WebKitDOMPrivate.h"
+#include <WebCore/AddEventListenerOptionsInlines.h>
 #include <WebCore/CSSImportRule.h>
 #include <WebCore/CSSStyleProperties.h>
 #include <WebCore/DOMException.h>
@@ -30,22 +47,6 @@
 #include <WebCore/JSExecState.h>
 #include <WebCore/ScrollIntoViewOptions.h>
 #include <WebCore/StyledElement.h>
-#include "GObjectEventListener.h"
-#include "WebKitDOMAttrPrivate.h"
-#include "WebKitDOMCSSStyleDeclarationPrivate.h"
-#include "WebKitDOMClientRectListPrivate.h"
-#include "WebKitDOMClientRectPrivate.h"
-#include "WebKitDOMDOMTokenListPrivate.h"
-#include "WebKitDOMElementPrivate.h"
-#include "WebKitDOMEventPrivate.h"
-#include "WebKitDOMEventTarget.h"
-#include "WebKitDOMHTMLCollectionPrivate.h"
-#include "WebKitDOMNamedNodeMapPrivate.h"
-#include "WebKitDOMNodeListPrivate.h"
-#include "WebKitDOMNodePrivate.h"
-#include "WebKitDOMPrivate.h"
-#include "ConvertToUTF8String.h"
-#include "WebKitDOMElementUnstable.h"
 #include <wtf/GetPtr.h>
 #include <wtf/RefPtr.h>
 

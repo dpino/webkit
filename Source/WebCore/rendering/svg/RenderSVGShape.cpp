@@ -39,6 +39,7 @@
 #include "LegacyRenderSVGResourceMarker.h"
 #include "PointerEventsHitRules.h"
 #include "RenderObjectDocument.h"
+#include "RenderObjectNode.h"
 #include "RenderSVGShapeInlines.h"
 #include "RenderStyle+GettersInlines.h"
 #include "RenderView.h"

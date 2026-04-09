@@ -33,6 +33,7 @@
 #include <WebCore/AddEventListenerOptions.h>
 #include <WebCore/EventListenerMap.h>
 #include <WebCore/EventListenerOptions.h>
+#include <WebCore/ExceptionOr.h>
 #include <WebCore/PlatformExportMacros.h>
 #include <WebCore/ScriptWrappable.h>
 #include <memory>
@@ -57,7 +58,6 @@ enum class EventTargetInterfaceType : uint8_t;
 class DOMWrapperWorld;
 class EventTarget;
 class JSEventListener;
-template<typename> class ExceptionOr;
 
 struct EventTargetData {
     WTF_MAKE_TZONE_ALLOCATED(EventTargetData);

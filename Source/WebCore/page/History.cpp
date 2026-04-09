@@ -28,6 +28,7 @@
 
 #include "BackForwardController.h"
 #include "Document.h"
+#include "DocumentPage.h"
 #include "DocumentQuirks.h"
 #include "DocumentView.h"
 #include "DocumentWindow.h"
@@ -35,6 +36,7 @@
 #include "HistoryController.h"
 #include "HistoryItem.h"
 #include "LocalFrame.h"
+#include "LocalFrameInlines.h"
 #include "LocalFrameLoaderClient.h"
 #include "Logging.h"
 #include "Navigation.h"

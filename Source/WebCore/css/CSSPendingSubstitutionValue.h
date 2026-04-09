@@ -29,12 +29,11 @@
 
 #pragma once
 
+#include "CSSProperty.h"
 #include "CSSValue.h"
 #include "CSSVariableReferenceValue.h"
 
 namespace WebCore {
-
-class CSSProperty;
 
 class CSSPendingSubstitutionValue final : public CSSValue {
 public:

@@ -22,6 +22,8 @@
 #include "WebKitDOMEvent.h"
 #include "WebKitDOMEventPrivate.h"
 #include "WebKitDOMEventTarget.h"
+#include <WebCore/AddEventListenerOptionsInlines.h>
+#include <WebCore/JSExecState.h>
 #include <WebCore/Event.h>
 #include <wtf/HashMap.h>
 

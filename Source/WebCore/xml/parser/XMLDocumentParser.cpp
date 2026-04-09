@@ -52,6 +52,7 @@
 #include "ScriptElement.h"
 #include "ScriptSourceCode.h"
 #include "StyleScope.h"
+#include "Text.h"
 #include "TextResourceDecoder.h"
 #include "XMLNSNames.h"
 #include <wtf/Ref.h>

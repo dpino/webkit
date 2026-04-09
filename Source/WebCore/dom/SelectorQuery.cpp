@@ -35,6 +35,7 @@
 #include "HTMLDocument.h"
 #include "HTMLNames.h"
 #include "SVGElement.h"
+#include "SecurityOrigin.h"
 #include "SelectorChecker.h"
 #include "StaticNodeList.h"
 #include "StyledElement.h"

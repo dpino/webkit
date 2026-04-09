@@ -28,6 +28,7 @@
 
 #include "AbortController.h"
 #include "AbortSignal.h"
+#include "ContextDestructionObserverInlines.h"
 #include "Exception.h"
 #include "ExceptionCode.h"
 #include "InternalObserver.h"

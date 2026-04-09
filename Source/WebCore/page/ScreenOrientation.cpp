@@ -41,6 +41,7 @@
 #include "Settings.h"
 #include "VisibilityState.h"
 #include <wtf/TZoneMallocInlines.h>
+#include "DocumentPage.h"
 
 namespace WebCore {
 

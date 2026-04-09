@@ -597,7 +597,7 @@ static bool isStateless(AccessCase::AccessType type)
 }
 #endif
 
-static bool doesJSCalls(AccessCase::AccessType type)
+bool doesJSCalls(AccessCase::AccessType type)
 {
     switch (type) {
     case AccessCase::Getter:
@@ -1203,20 +1203,6 @@ ScratchRegisterAllocator InlineCacheCompiler::makeDefaultScratchAllocator(GPRReg
 
     return allocator;
 }
-
-#if CPU(X86_64)
-static constexpr size_t prologueSizeInBytesDataIC = 1;
-#elif CPU(ARM64E)
-static constexpr size_t prologueSizeInBytesDataIC = 8;
-#elif CPU(ARM64)
-static constexpr size_t prologueSizeInBytesDataIC = 4;
-#elif CPU(ARM_THUMB2)
-static constexpr size_t prologueSizeInBytesDataIC = 6;
-#elif CPU(RISCV64)
-static constexpr size_t prologueSizeInBytesDataIC = 12;
-#else
-#error "unsupported architecture"
-#endif
 
 void InlineCacheCompiler::emitDataICPrologue(CCallHelpers& jit)
 {

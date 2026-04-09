@@ -80,7 +80,7 @@ public:
 
     static double getNativeFramebufferScaleFactor(const WebXRSession&);
 
-    const WebXRSession* session() { return m_session.get(); }
+    const WebXRSession* session();
 
     bool isCompositionEnabled() const { return m_isCompositionEnabled; }
 
