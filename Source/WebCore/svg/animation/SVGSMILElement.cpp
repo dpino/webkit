@@ -395,15 +395,24 @@ bool SVGSMILElement::parseCondition(StringView value, BeginOrEnd beginOrEnd)
     }
     if (conditionString.isEmpty())
         return false;
-    pos = conditionString.find('.');
-    
+
+    // Find the first dot not preceded by a backslash. Per the SMIL specification,
+    // dots in element IDs can be escaped with a backslash (e.g., "my\.anim.end").
+    size_t dotPosition = 0;
+    while (dotPosition != notFound) {
+        dotPosition = conditionString.find('.', dotPosition);
+        if (dotPosition == notFound || !dotPosition || conditionString[dotPosition - 1] != '\\')
+            break;
+        ++dotPosition;
+    }
+
     StringView baseID;
     StringView nameView;
-    if (pos == notFound)
+    if (dotPosition == notFound)
         nameView = conditionString;
     else {
-        baseID = conditionString.left(pos);
-        nameView = conditionString.substring(pos + 1);
+        baseID = conditionString.left(dotPosition);
+        nameView = conditionString.substring(dotPosition + 1);
     }
     if (nameView.isEmpty())
         return false;
@@ -434,7 +443,12 @@ bool SVGSMILElement::parseCondition(StringView value, BeginOrEnd beginOrEnd)
         nameString = nameView.toAtomString();
     }
     
-    m_conditions.append(Condition(type, beginOrEnd, baseID.toString(), WTF::move(nameString), offset, repeats));
+    // Remove backslash escapes from the element ID (e.g., "my\.anim" → "my.anim").
+    auto resolvedBaseID = baseID.toString();
+    if (resolvedBaseID.contains('\\'))
+        resolvedBaseID = resolvedBaseID.impl()->replace("\\."_s, "."_s);
+
+    m_conditions.append(Condition(type, beginOrEnd, WTF::move(resolvedBaseID), WTF::move(nameString), offset, repeats));
 
     if (type == Condition::EventBase && beginOrEnd == End)
         m_hasEndEventConditions = true;
