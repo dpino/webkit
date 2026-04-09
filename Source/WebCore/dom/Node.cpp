@@ -640,6 +640,17 @@ ExceptionOr<NodeVector> Node::convertNodesOrStringsIntoNodeVector(FixedVector<No
     if (nodeVector.size() == 1)
         return nodeVector; // step 3, if nodes contains one node, then set node to nodes[0].
 
+    // If the same node appears multiple times, keep only the last occurrence
+    // to match the spec behavior (as if a temporary DocumentFragment was used).
+    // https://dom.spec.whatwg.org/#converting-nodes-into-a-node
+    {
+        HashSet<Ref<Node>> seen;
+        for (size_t i = nodeVector.size(); i > 0; --i) {
+            if (!seen.add(nodeVector[i - 1]).isNewEntry)
+                nodeVector.removeAt(i - 1);
+        }
+    }
+
     for (auto& node : nodeVector) {
         auto result = node->remove();
         if (result.hasException())
