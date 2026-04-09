@@ -5410,6 +5410,8 @@ Expected<bool, RemoteFrameGeometryTransformer> EventHandler::handleTouchEvent(co
             allTouchReleased = false;
     }
 
+    bool swallowedEvent = false;
+
     for (unsigned index = 0; index < points.size(); index++) {
         auto& point = points[index];
         PlatformTouchPoint::State pointState = point.state();
@@ -5518,8 +5520,16 @@ Expected<bool, RemoteFrameGeometryTransformer> EventHandler::handleTouchEvent(co
 
         // FIXME: Pass the touch delta for pointermove events by remembering the position per pointerID similar to
         // Apple's m_touchLastGlobalPositionAndDeltaMap
-        document->protectedPage()->pointerCaptureController().dispatchEventForTouchAtIndex(
+        RefPtr page = document->protectedPage();
+        page->pointerCaptureController().dispatchEventForTouchAtIndex(
             *pointerTarget, event, index, !index, *document->windowProxy(), { 0, 0 });
+
+        // https://w3c.github.io/pointerevents/#suppressing-a-compatibility-mouse-event
+        // If pointerdown was canceled via preventDefault(), suppress compatibility mouse events
+        // by marking the touch event as handled. This propagates to the UIProcess via
+        // doneWithTouchEvent(wasEventHandled=true), preventing gesture-based mouse synthesis.
+        if (page->pointerCaptureController().preventsCompatibilityMouseEventsForIdentifier(PointerEvent::pointerIdForTouchPoint(point)))
+            swallowedEvent = true;
 #endif
 
         // pagePoint should always be relative to the target elements containing frame.
@@ -5564,7 +5574,6 @@ Expected<bool, RemoteFrameGeometryTransformer> EventHandler::handleTouchEvent(co
         m_originatingTouchPointDocument = nullptr;
 
     // Now iterate the changedTouches list and m_targets within it, sending events to the targets as required.
-    bool swallowedEvent = false;
     RefPtr<TouchList> emptyList = TouchList::create();
     for (unsigned state = 0; state != PlatformTouchPoint::TouchStateEnd; ++state) {
         if (!changedTouches[state].m_touches)
