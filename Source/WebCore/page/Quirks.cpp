@@ -1882,6 +1882,10 @@ String Quirks::scriptToEvaluateBeforeRunningScriptFromURL(const URL& scriptURL)
 #endif
 #endif
 
+    // invideo.io https://webkit.org/b/311602
+    if (m_quirksData.isInVideo) [[unlikely]]
+        return "if(!window.chrome)window.chrome={};"_s;
+
     return { };
 }
 
@@ -3018,6 +3022,15 @@ static void handleBestBuyQuirks(QuirksData& quirksData, const URL& /* quirksURL 
     quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsScriptToEvaluateBeforeRunningScriptFromURLQuirk);
 }
 
+static void handleInVideoQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL& /* documentURL */)
+{
+    QUIRKS_EARLY_RETURN_IF_NOT_DOMAIN("invideo.io"_s);
+
+    // invideo.io rdar://171741842 https://webkit.org/b/311602
+    quirksData.isInVideo = true;
+    quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsScriptToEvaluateBeforeRunningScriptFromURLQuirk);
+}
+
 static void handleIMDBQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL&  /* documentURL */)
 {
     QUIRKS_EARLY_RETURN_IF_NOT_DOMAIN("imdb.com"_s);
@@ -3504,6 +3517,7 @@ void Quirks::determineRelevantQuirks()
         { "iheart"_s, &handleIHeartQuirks },
         { "imdb"_s, &handleIMDBQuirks },
         { "instagram"_s, &handleInstagramQuirks },
+        { "invideo"_s, &handleInVideoQuirks },
         { "live"_s, &handleLiveQuirks },
 #if PLATFORM(MAC)
         { "madisoncityk12"_s, &handleMadisonCityK12Quirks },
