@@ -356,6 +356,12 @@ macro(WEBKIT_FRAMEWORK _target)
     _WEBKIT_TARGET(${_target})
     _WEBKIT_TARGET_ANALYZE(${_target})
 
+    # Apply PGO compile flags only to library targets (not executables) to avoid duplicate symbol errors
+    # Link flags are applied globally via CMAKE_SHARED_LINKER_FLAGS for LTO compatibility
+    if (PGO_COMPILE_OPTIONS)
+        target_compile_options(${_target} PRIVATE ${PGO_COMPILE_OPTIONS})
+    endif ()
+
     if (${_target}_OUTPUT_NAME)
         set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${${_target}_OUTPUT_NAME})
     endif ()
@@ -381,6 +387,12 @@ macro(WEBKIT_LIBRARY _target)
     _WEBKIT_LIBRARY_LINK_FRAMEWORK(${_target})
     _WEBKIT_TARGET(${_target})
     _WEBKIT_TARGET_ANALYZE(${_target})
+
+    # Apply PGO compile flags only to library targets (not executables) to avoid duplicate symbol errors
+    # Link flags are applied globally via CMAKE_SHARED_LINKER_FLAGS for LTO compatibility
+    if (PGO_COMPILE_OPTIONS)
+        target_compile_options(${_target} PRIVATE ${PGO_COMPILE_OPTIONS})
+    endif ()
 
     if (${_target}_OUTPUT_NAME)
         set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${${_target}_OUTPUT_NAME})
