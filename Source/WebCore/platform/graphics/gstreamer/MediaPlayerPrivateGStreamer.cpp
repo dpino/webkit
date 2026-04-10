@@ -4008,22 +4008,6 @@ void MediaPlayerPrivateGStreamer::triggerRepaint(GRefPtr<GstSample>&& sample)
                 GST_ERROR_OBJECT(pipeline(), "Received sample without caps: %" GST_PTR_FORMAT, m_sample.get());
                 return;
             }
-
-            if (!gst_caps_is_empty(caps.get()) && !gst_caps_is_any(caps.get())) [[unlikely]] {
-                auto structure = gst_caps_get_structure(caps.get(), 0);
-                int framerateNumerator, framerateDenominator;
-                if (gst_structure_get_fraction(structure, "framerate", &framerateNumerator, &framerateDenominator)) {
-                    // In case the framerate is unknown, the frame duration won't be set on buffers. In that
-                    // case, estimate it. Otherwise use 0 and expect the PTS to be set depending on the
-                    // framerate when computing the rvfc frame mediaTime.
-                    if (!framerateNumerator) {
-                        if (GST_BUFFER_PTS_IS_VALID(buffer) && !GST_BUFFER_DURATION_IS_VALID(buffer)) {
-                            GST_DEBUG_OBJECT(pipeline(), "Video framerate is unknown, estimating from first buffer PTS");
-                            m_estimatedVideoFrameDuration = fromGstClockTime(GST_BUFFER_PTS(buffer));
-                        }
-                    }
-                }
-            }
         }
         RunLoop::mainSingleton().dispatch([weakThis = ThreadSafeWeakPtr { *this }, this, caps = WTF::move(caps)] {
             RefPtr self = weakThis.get();
@@ -4701,8 +4685,11 @@ std::optional<VideoFrameMetadata> MediaPlayerPrivateGStreamer::videoFrameMetadat
     metadata.presentedFrames = m_sampleCount;
 
     if (GST_BUFFER_PTS_IS_VALID(buffer)) {
-        auto bufferPts = fromGstClockTime(GST_BUFFER_PTS(buffer));
-        metadata.mediaTime = (bufferPts - m_estimatedVideoFrameDuration).toDouble();
+        auto segment = gst_sample_get_segment(m_sample.get());
+        RELEASE_ASSERT(segment);
+        uint64_t streamTime;
+        if (int sign = gst_segment_to_stream_time_full(segment, GST_FORMAT_TIME, GST_BUFFER_PTS(buffer), &streamTime))
+            metadata.mediaTime = sign * fromGstClockTime(streamTime).toDouble();
     }
 
     // FIXME: presentationTime and expectedDisplayTime might not always have the same value, we should try getting more precise values.

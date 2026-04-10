@@ -702,8 +702,6 @@ private:
     RefPtr<GStreamerQuirksManager> m_quirksManagerForTesting;
     HashMap<const GStreamerQuirk*, std::unique_ptr<GStreamerQuirkBase::GStreamerQuirkState>> m_quirkStates;
 
-    MediaTime m_estimatedVideoFrameDuration { MediaTime::zeroTime() };
-
     std::optional<VideoFrameGStreamer::Info> m_videoInfo;
 
     bool m_volumeLocked { false };
