@@ -29,12 +29,15 @@
 #include <sched.h>
 #include <signal.h>
 #include <string.h>
+#include <wtf/Logging.h>
 #include <wtf/MainThread.h>
 #include <wtf/NeverDestroyed.h>
 #include <wtf/SafeStrerror.h>
 
 #if USE(GLIB)
 #include <gio/gio.h>
+#include <glib-unix.h>
+#include <sys/eventfd.h>
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <wtf/Seconds.h>
@@ -69,19 +72,11 @@ RealTimeThreads::RealTimeThreads()
 {
 #if USE(GLIB)
     m_discardRealTimeKitProxyTimer.setPriority(RunLoopSourcePriority::ReleaseUnusedResourcesTimer);
-#endif
 
-    callOnMainThread([] {
-        struct sigaction action;
-        sigemptyset(&action.sa_mask);
-        action.sa_sigaction = +[](int, siginfo_t*, void*) {
-            // We don't know which thread caused the limit to be reached,
-            // so we demote all real time threads to avoid SIGKILL.
-            RealTimeThreads::singleton().demoteAllThreadsFromRealTime();
-        };
-        action.sa_flags = SA_SIGINFO;
-        sigaction(SIGXCPU, &action, nullptr);
+    callOnMainThread([this] {
+        setupSignalHandler();
     });
+#endif
 }
 
 void RealTimeThreads::registerThread(Thread& thread)
@@ -140,8 +135,20 @@ void RealTimeThreads::demoteThreadFromRealTime(const Thread& thread)
 {
     ASSERT(isMainThread());
 
+    int previousPolicy = sched_getscheduler(thread.id());
+    struct sched_param prevParam = { };
+    sched_getparam(thread.id(), &prevParam);
+    if (previousPolicy == SCHED_OTHER && !prevParam.sched_priority) {
+        // Skipping thread not running in real-time.
+        return;
+    }
+
     struct sched_param param = { };
-    sched_setscheduler(thread.id(), SCHED_OTHER | SCHED_RESET_ON_FORK, &param);
+    auto ret = sched_setscheduler(thread.id(), SCHED_OTHER | SCHED_RESET_ON_FORK, &param);
+    if (ret)
+        LOG_ERROR("Demote p%d, t%d: sched_setscheduler failed: %s", getpid(), thread.id(), safeStrerror(errno).data());
+    else
+        LOG(Process, "Demote p%d, t%d: sched_setscheduler suceeded", getpid(), thread.id());
 }
 
 void RealTimeThreads::demoteAllThreadsFromRealTime()
@@ -153,6 +160,60 @@ void RealTimeThreads::demoteAllThreadsFromRealTime()
 
 #if USE(GLIB)
 static const Seconds s_dbusCallTimeout = 20_ms;
+
+static int s_eventFd = -1;
+
+static void sigxcpuHandler(int)
+{
+    uint64_t value = 1;
+    auto ret = write(s_eventFd, &value, sizeof(value));
+    UNUSED_VARIABLE(ret);
+}
+
+void RealTimeThreads::setupSignalHandler()
+{
+    ASSERT(isMainThread());
+
+    if ((s_eventFd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC)) < 0) {
+        LOG_ERROR("Failed to create eventfd for SIGXCPU: %s", safeStrerror(errno).data());
+        return;
+    }
+
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_handler = sigxcpuHandler;
+    action.sa_flags = SA_RESTART;
+
+    struct sigaction oldAction;
+    if (sigaction(SIGXCPU, &action, &oldAction))
+        LOG_ERROR("Failed to install SIGXCPU handler: %s", safeStrerror(errno).data());
+    else if (oldAction.sa_handler != SIG_DFL)
+        LOG_ERROR("Overriding existing handler for signal SIGXCPU");
+
+    g_unix_fd_add(s_eventFd, G_IO_IN, signalCallback, this);
+}
+
+gboolean RealTimeThreads::signalCallback(gint fd, GIOCondition condition, gpointer userData)
+{
+    ASSERT(s_eventFd == fd);
+
+    if (condition & (G_IO_ERR | G_IO_HUP)) {
+        LOG_ERROR("Removing event source as it has errored or disconnected. SIGXCPU is no longer handled.");
+        return G_SOURCE_REMOVE;
+    }
+
+    if (condition & G_IO_IN) {
+        uint64_t value;
+        while (read(fd, &value, sizeof(value)) == sizeof(value)) {
+        }
+
+        // We don't know which thread caused the limit to be reached,
+        // so we demote all real time threads to avoid SIGKILL.
+        static_cast<RealTimeThreads*>(userData)->demoteAllThreadsFromRealTime();
+    }
+
+    return G_SOURCE_CONTINUE;
+}
 
 #ifdef RLIMIT_RTTIME
 static int64_t realTimeKitGetProperty(GDBusProxy* proxy, const char* propertyName, GError** error)
@@ -214,7 +275,8 @@ void RealTimeThreads::realTimeKitMakeThreadRealTime(uint64_t processID, uint64_t
         }
 
         if (rl.rlim_max > static_cast<uint64_t>(rttimeMax)) {
-            rl.rlim_cur = rl.rlim_max = rttimeMax;
+            rl.rlim_cur = static_cast<uint64_t>(0.8 * rttimeMax);
+            rl.rlim_max = rttimeMax;
             setrlimit(RLIMIT_RTTIME, &rl);
         }
     }
