@@ -590,6 +590,7 @@ void WPEQtView::touchEvent(QTouchEvent* event)
     Q_D(WPEQtView);
     if (!d->m_webView)
         return;
+    forceActiveFocus();
     auto* wpeView = webkit_web_view_get_wpe_view(d->m_webView.get());
     wpe_view_dispatch_touch_event(WPE_VIEW_QTQUICK(wpeView), event);
 }
