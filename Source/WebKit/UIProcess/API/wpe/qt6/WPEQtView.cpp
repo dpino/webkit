@@ -594,6 +594,24 @@ void WPEQtView::touchEvent(QTouchEvent* event)
     wpe_view_dispatch_touch_event(WPE_VIEW_QTQUICK(wpeView), event);
 }
 
+void WPEQtView::focusInEvent(QFocusEvent*)
+{
+    Q_D(WPEQtView);
+    if (!d->m_webView)
+        return;
+    auto* wpeView = webkit_web_view_get_wpe_view(d->m_webView.get());
+    wpe_view_focus_in(WPE_VIEW(wpeView));
+}
+
+void WPEQtView::focusOutEvent(QFocusEvent*)
+{
+    Q_D(WPEQtView);
+    if (!d->m_webView)
+        return;
+    auto* wpeView = webkit_web_view_get_wpe_view(d->m_webView.get());
+    wpe_view_focus_out(WPE_VIEW(wpeView));
+}
+
 void WPEQtView::invalidateSceneGraph()
 {
     Q_D(WPEQtView);
