@@ -1,4 +1,22 @@
 =================
+WPE WebKit 2.52.2
+=================
+
+What's new in WPE WebKit 2.52.2?
+
+  - Improve handling of real-time threads.
+  - Improve focus handling in the WPE Qt binding.
+  - Allow QML code to invoke WPEQtView::webView() in the WPE Qt binding,
+    which allows using the public C API as well.
+  - Fix the WPE Qt binding build with Qt 6.9 or newer.
+  - Fix scrollbar rendering glitches visible in some GPU configurations.
+  - Fix V4L2 hardware accelerated media codecs now working due to overly
+    restrictive sandbox device access rules.
+  - Fix the build with ENABLE_BREAKPAD=ON.
+  - Partially fix the build in BSD and other non-Linux Unix systems.
+  - Fix several crashes and rendering issues.
+
+=================
 WPE WebKit 2.52.1
 =================
 
