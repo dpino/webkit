@@ -343,6 +343,13 @@ if (ENABLE_WPE_QT_API)
         target_link_libraries(WrapOpenGL::WrapOpenGL INTERFACE Epoxy::Epoxy)
     endif ()
     find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui)
+    # In older versions of Qt6, Qt::QuickPrivate is provided by Qt6Quick,
+    # but in newer versions, we need to find its own package.
+    # This change was introduced in Qt 6.9:
+    # https://code.qt.io/cgit/qt/qtbase.git/commit/cmake/QtTargetHelpers.cmake?id=ad7b94e163ac5c3959a7e38d7f48536be288a187
+    if (NOT TARGET Qt::QuickPrivate)
+      find_package(Qt6QuickPrivate REQUIRED)
+    endif ()
     find_package(Qt6Test REQUIRED)
 endif ()
 
