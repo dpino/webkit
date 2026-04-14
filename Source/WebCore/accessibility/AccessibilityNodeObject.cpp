@@ -4297,6 +4297,20 @@ String AccessibilityNodeObject::descriptionForElements(const Vector<Ref<Element>
 
 String AccessibilityNodeObject::ariaDescribedByAttribute() const
 {
+    // Per the W3C accname spec, if the current node is already part of an
+    // aria-describedby traversal, do not follow its aria-describedby. This
+    // prevents infinite recursion in multi-element cycles.
+    RefPtr element = this->element();
+    if (!element)
+        return { };
+
+    static NeverDestroyed<HashSet<const Element*>> elementsCurrentlyResolving;
+    if (!elementsCurrentlyResolving->add(element.get()).isNewEntry)
+        return { };
+    auto removeOnExit = makeScopeExit([&] {
+        elementsCurrentlyResolving->remove(element.get());
+    });
+
     return descriptionForElements(elementsFromAttribute(aria_describedbyAttr));
 }
 
@@ -4312,6 +4326,21 @@ Vector<Ref<Element>> AccessibilityNodeObject::ariaLabeledByElements() const
 
 String AccessibilityNodeObject::ariaLabeledByAttribute() const
 {
+    // Per the W3C accname spec, if the current node is already part of an
+    // aria-labelledby traversal, do not follow its aria-labelledby. This
+    // prevents infinite recursion in multi-element cycles (e.g., A labelledby
+    // D which contains E which is labelledby F which contains A).
+    RefPtr element = this->element();
+    if (!element)
+        return { };
+
+    static NeverDestroyed<HashSet<const Element*>> elementsCurrentlyResolving;
+    if (!elementsCurrentlyResolving->add(element.get()).isNewEntry)
+        return { };
+    auto removeOnExit = makeScopeExit([&] {
+        elementsCurrentlyResolving->remove(element.get());
+    });
+
     return descriptionForElements(ariaLabeledByElements());
 }
 
