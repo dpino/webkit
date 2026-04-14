@@ -1151,11 +1151,11 @@ void Adjuster::adjustForSiteSpecificQuirks(RenderStyle& style) const
 #endif
 #endif
 
-    if (documentQuirks.needsHotelsAnimationQuirk(*m_element, style)) {
+    if (documentQuirks.needsHotelsAnimationQuirk(*m_element)) {
         // We need to reset animation styles that are mistakenly overridden:
         //     animation-delay: 0s, 0.06s;
         //     animation-duration: 0.18s, 0.06s;
-        //     animation-fill-mode: none, forwards;
+        //     animation-fill-mode: none, both;
         //     animation-name: menu-grow-left, menu-fade-in;
         auto menuGrowLeftAnimation = Style::Animation { { ScopedName { "menu-grow-left"_s } } };
         menuGrowLeftAnimation.setDelay(0_css_s);
@@ -1165,7 +1165,7 @@ void Adjuster::adjustForSiteSpecificQuirks(RenderStyle& style) const
         auto menuFadeInAnimation = Style::Animation { { ScopedName { "menu-fade-in"_s } } };
         menuFadeInAnimation.setDelay(.06_css_s);
         menuFadeInAnimation.setDuration(.06_css_s);
-        menuFadeInAnimation.setFillMode(AnimationFillMode::Forwards);
+        menuFadeInAnimation.setFillMode(AnimationFillMode::Both);
 
         auto& animations = style.ensureAnimations();
         animations = Style::Animations { WTF::move(menuGrowLeftAnimation), WTF::move(menuFadeInAnimation) };

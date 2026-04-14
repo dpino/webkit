@@ -2165,14 +2165,17 @@ bool Quirks::needsFacebookStoriesCreationFormQuirk(const Element& element, const
 }
 
 // hotels.com rdar://126631968
-bool Quirks::needsHotelsAnimationQuirk(Element& element, const RenderStyle& style) const
+bool Quirks::needsHotelsAnimationQuirk(Element& element) const
 {
     QUIRKS_EARLY_RETURN_IF_DISABLED_WITH_VALUE(false);
 
     if (!m_quirksData.quirkIsEnabled(QuirksData::SiteSpecificQuirk::NeedsHotelsAnimationQuirk))
         return false;
 
-    if (!style.hasAnimations())
+    // Quick pre-filter to avoid running the full selector match on ~99% of elements.
+    // We also check for uitk-menu-open to only apply the opening animation fix
+    // when the menu is actively being opened, not in its closed state.
+    if (!element.hasClassName("uitk-menu-container"_s) || !element.hasClassName("uitk-menu-open"_s))
         return false;
 
     auto matches = Ref { element }->matches(".uitk-menu-mounted .uitk-menu-container.uitk-menu-container-autoposition.uitk-menu-container-has-intersection-root-el"_s);
