@@ -49,6 +49,7 @@
 #include "TypedElementDescendantIteratorInlines.h"
 #include "XLinkNames.h"
 #include <wtf/Language.h>
+#include <wtf/NeverDestroyed.h>
 
 namespace WebCore {
 
@@ -164,8 +165,15 @@ String AccessibilitySVGObject::description() const
             return xlinkTitle;
     }
 
-    if (RefPtr target = targetForUseElement())
-        return target->description();
+    if (RefPtr target = targetForUseElement()) {
+        // Avoid infinite recursion from circular <use> references by tracking ones we're currently resolving.
+        static NeverDestroyed<HashSet<Element*>> elementsResolvingDescription;
+        if (elementsResolvingDescription->add(element.get()).isNewEntry) {
+            auto result = target->description();
+            elementsResolvingDescription->remove(element.get());
+            return result;
+        }
+    }
 
     // FIXME: This is here to not break the svg-image.html test. But 'alt' is not
     // listed as a supported attribute of the 'image' element in the SVG spec:
@@ -200,8 +208,15 @@ String AccessibilitySVGObject::helpText() const
     if (RefPtr descriptionChild = childElementWithMatchingLanguage(descriptionElements))
         return descriptionChild->textContent();
 
-    if (RefPtr target = targetForUseElement())
-        return target->helpText();
+    if (RefPtr target = targetForUseElement()) {
+        // Avoid infinite recursion from circular <use> references by tracking ones we're currently resolving.
+        static NeverDestroyed<HashSet<Element*>> elementsResolvingHelpText;
+        if (elementsResolvingHelpText->add(element.get()).isNewEntry) {
+            auto result = target->helpText();
+            elementsResolvingHelpText->remove(element.get());
+            return result;
+        }
+    }
 
     auto titleElements = childrenOfType<SVGTitleElement>(*element);
     if (RefPtr titleChild = childElementWithMatchingLanguage(titleElements)) {
