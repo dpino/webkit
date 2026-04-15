@@ -1080,6 +1080,8 @@ imported/w3c/web-platform-tests/content-security-policy/font-src/font-match-allo
 [ Debug ] imported/w3c/web-platform-tests/html/dom/idlharness.https.html [ Skip ]
 [ Debug ] imported/w3c/web-platform-tests/html/dom/idlharness.worker.html [ Skip ]
 [ Debug ] accessibility/visible-character-range-scrolling.html [ Skip ]
+# This test does too much work (and thus runs too slowly) to work in debug.
+[ Debug ] accessibility/aria-owns-deep-chain-no-timeout.html [ Skip ]
 
 # These tests rely on virtual authenticators being supported, which only works in WebDriver, not WKTR.
 imported/w3c/web-platform-tests/webauthn/createcredential-abort.https.html [ Skip ]
