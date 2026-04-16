@@ -560,6 +560,7 @@ void HTMLTextAreaElement::copyNonAttributePropertiesFromElement(const Element& s
 
     setValueCommon(sourceElement.value(), DispatchNoEvent, TextControlSetValueSelection::DoNotSet);
     m_isDirty = sourceElement.m_isDirty;
+    m_wasModifiedByUser = sourceElement.m_wasModifiedByUser;
     HTMLTextFormControlElement::copyNonAttributePropertiesFromElement(source);
 
     updateValidity();
