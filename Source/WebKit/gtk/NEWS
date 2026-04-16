@@ -1,4 +1,17 @@
 ================
+WebKitGTK 2.52.3
+================
+
+What's new in WebKitGTK 2.52.3?
+
+  - Add support for the "scrollbar-color" CSS property.
+  - Fix some emoji glyphs being rendered as missing glyph boxes.
+  - Fix JavaScriptCore crashes on architectures other than x86_64.
+  - Fix the build on s390x.
+  - Fix several crashes and rendering issues.
+  - Translation updates: Serbian.
+
+================
 WebKitGTK 2.52.2
 ================
 
