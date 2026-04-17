@@ -206,6 +206,13 @@ Vector<FontSelectionCapabilities> FontCache::getFontSelectionCapabilitiesInFamil
 
 static String getFamilyNameStringFromFamily(const String& family)
 {
+    #if PLATFORM(GTK) || (PLATFORM(WPE) && ENABLE(WPE_PLATFORM))
+        if (family == *familyNamesData->at(FamilyNamesIndex::SystemUiFamily)
+                || family == "system-ui"_s
+                || family == "system-font"_s)
+            return SystemSettings::singleton().defaultSystemFont();
+    #endif
+
     // If we're creating a fallback font (e.g. "-webkit-monospace"), convert the name into
     // the fallback name (like "monospace") that fontconfig understands.
     if (family.length() && !family.startsWith("-webkit-"_s))
@@ -223,11 +230,6 @@ static String getFamilyNameStringFromFamily(const String& family)
         return "fantasy"_s;
     if (family == *familyNamesData->at(FamilyNamesIndex::MathFamily))
         return "math"_s;
-
-#if PLATFORM(GTK) || (PLATFORM(WPE) && ENABLE(WPE_PLATFORM))
-    if (family == *familyNamesData->at(FamilyNamesIndex::SystemUiFamily) || family == "-webkit-system-font"_s)
-        return SystemSettings::singleton().defaultSystemFont();
-#endif
 
     return emptyString();
 }

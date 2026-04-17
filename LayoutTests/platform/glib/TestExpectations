@@ -1584,7 +1584,6 @@ webkit.org/b/221445 fast/text/international/system-language/jp-circled.html [ Sk
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-ar.html [ ImageOnlyFailure ]
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-ja-vs-zh.html [ ImageOnlyFailure ]
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-ja.html [ ImageOnlyFailure ]
-webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-mixed.html [ ImageOnlyFailure ]
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-ur-vs-ar.html [ ImageOnlyFailure ]
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-ur.html [ ImageOnlyFailure ]
 webkit.org/b/178624 imported/w3c/web-platform-tests/css/css-fonts/system-ui-zh.html [ ImageOnlyFailure ]
@@ -1622,7 +1621,8 @@ webkit.org/b/152247 fast/forms/listbox-scrollbar-hit-test.html [ Skip ]
 
 webkit.org/b/209403 fast/forms/placeholder-content-center-line-height-greater-than-content-height.html [ ImageOnlyFailure ]
 
-webkit.org/b/209727 fast/forms/single-text-line-content-clipping.html [ ImageOnlyFailure ]
+# This test is also failing in iOS.
+fast/forms/single-text-line-content-clipping.html [ ImageOnlyFailure ]
 
 fast/forms/listbox-typeahead-cyrillic.html [ Failure ]
 fast/forms/listbox-typeahead-greek.html [ Failure ]
