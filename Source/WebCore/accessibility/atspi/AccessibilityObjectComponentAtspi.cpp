@@ -148,7 +148,7 @@ bool AccessibilityObjectAtspi::focus() const
     if (!m_coreObject)
         return false;
 
-    RefPtr<AXCoreObject> coreObject = m_coreObject;
+    Ref coreObject = *m_coreObject;
     coreObject->setFocused(true);
     coreObject->updateBackingStore();
     return coreObject->isFocused();
