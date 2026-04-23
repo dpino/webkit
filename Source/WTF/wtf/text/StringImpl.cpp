@@ -305,7 +305,11 @@ RefPtr<StringImpl> StringImpl::create(std::span<const char8_t> codeUnits)
     std::span<char16_t> data;
     auto string = createUninitializedInternalNonEmpty(utf16Length, data);
 
+#if CPU(BIG_ENDIAN)
+    size_t written = simdutf::convert_valid_utf8_to_utf16be(input, inputLength, data.data());
+#else
     size_t written = simdutf::convert_valid_utf8_to_utf16le(input, inputLength, data.data());
+#endif
     RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(written == utf16Length);
 
     return string;
