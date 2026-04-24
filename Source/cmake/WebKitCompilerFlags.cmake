@@ -411,6 +411,13 @@ if (COMPILER_IS_GCC_OR_CLANG)
 
 #define CPU(_FEATURE) (defined CPU_##_FEATURE && CPU_##_FEATURE)
 
+#if COMPILER(CLANG)
+#pragma clang optimize off
+#endif
+
+#if COMPILER(GCC)
+#pragma GCC optimize("O0")
+#endif
 
 #if COMPILER(GCC_COMPATIBLE)
 /* __LP64__ is not defined on 64bit Windows since it uses LLP64. Using __SIZEOF_POINTER__ is simpler. */
@@ -453,8 +460,9 @@ static inline bool compare_and_swap_uint64_weak(uint64_t* ptr, uint64_t old_valu
 #endif
 }
 
+std::atomic<std::optional<double>> d;
+
 int main() {
-    std::atomic<std::optional<double>> d;
     d = 0.0;
     bool y = false;
     bool expected = true;
