@@ -385,7 +385,7 @@ if (COMPILER_IS_GCC_OR_CLANG)
 endif ()
 
 if (COMPILER_IS_GCC_OR_CLANG)
-    set(ATOMIC_TEST_SOURCE "
+    set(ATOMIC_TEST_SOURCE [=[
 #include <atomic>
 #include <optional>
 #include <stdbool.h>
@@ -480,7 +480,7 @@ int main() {
                   l) ? 0 : 1;
     return static_cast<int>(result + d.load().value());
 }
-    ")
+    ]=])
     check_cxx_source_compiles("${ATOMIC_TEST_SOURCE}" ATOMICS_ARE_BUILTIN)
     if (NOT ATOMICS_ARE_BUILTIN)
         set(CMAKE_REQUIRED_LIBRARIES atomic)
