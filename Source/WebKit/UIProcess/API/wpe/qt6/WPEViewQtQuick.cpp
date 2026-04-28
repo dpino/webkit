@@ -368,9 +368,22 @@ void wpe_view_dispatch_wheel_event(WPEViewQtQuick *view, QWheelEvent *event)
 {
     auto position = event->position().toPoint();
     auto numPixels = event->pixelDelta();
-
+    double scrollX = 0;
+    double scrollY = 0;
+    auto hasPreciseDeltas = !numPixels.isNull();
+    if (hasPreciseDeltas) {
+        scrollX = numPixels.x();
+        scrollY = numPixels.y();
+    } else {
+        // Qt gives 120 for the wheel scroll of one tick
+        // In WebEventFactoryWPE.cpp, it accepts number of ticks
+        // for wheel events and convert it to pixels.
+        auto angleDelta = event->angleDelta().toPointF() / 120;
+        scrollX = angleDelta.x();
+        scrollY = angleDelta.y();
+    }
     auto* wpeEvent = wpe_event_scroll_new(WPE_VIEW(view), WPE_INPUT_SOURCE_MOUSE, event->timestamp(),
-        modifiersFromEvent(event), numPixels.x(), numPixels.y(), FALSE, FALSE, position.x(), position.y());
+        modifiersFromEvent(event), scrollX, scrollY, hasPreciseDeltas, FALSE, position.x(), position.y());
     wpe_view_event(WPE_VIEW(view), wpeEvent);
     wpe_event_unref(wpeEvent);
 }
