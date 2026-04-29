@@ -481,24 +481,25 @@ int main() {
     return static_cast<int>(result + d.load().value());
 }
     ]=])
+    cmake_push_check_state(RESET)
     set(CMAKE_REQUIRED_FLAGS "--std=c++17")
     check_cxx_source_compiles("${ATOMIC_TEST_SOURCE}" ATOMICS_ARE_BUILTIN)
     if (NOT ATOMICS_ARE_BUILTIN)
         set(CMAKE_REQUIRED_LIBRARIES atomic)
         check_cxx_source_compiles("${ATOMIC_TEST_SOURCE}" ATOMICS_REQUIRE_LIBATOMIC)
-        unset(CMAKE_REQUIRED_LIBRARIES)
         # If we failed to build the test source with libatomic then something is wrong
         if (NOT ATOMICS_REQUIRE_LIBATOMIC)
             message(FATAL_ERROR "Failed to detect support for atomic variables")
         endif ()
     endif ()
-    unset(CMAKE_REQUIRED_FLAGS)
+    cmake_pop_check_state()
 
     # <filesystem> vs <experimental/filesystem>
     set(FILESYSTEM_TEST_SOURCE "
         #include <filesystem>
         int main() { std::filesystem::path p1(\"\"); std::filesystem::status(p1); }
     ")
+    cmake_push_check_state(RESET)
     set(CMAKE_REQUIRED_FLAGS "--std=c++2b")
     check_cxx_source_compiles("${FILESYSTEM_TEST_SOURCE}" STD_FILESYSTEM_IS_AVAILABLE)
     if (NOT STD_FILESYSTEM_IS_AVAILABLE)
@@ -511,9 +512,8 @@ int main() {
         ")
         set(CMAKE_REQUIRED_LIBRARIES stdc++fs)
         check_cxx_source_compiles("${EXPERIMENTAL_FILESYSTEM_TEST_SOURCE}" STD_EXPERIMENTAL_FILESYSTEM_IS_AVAILABLE)
-        unset(CMAKE_REQUIRED_LIBRARIES)
     endif ()
-    unset(CMAKE_REQUIRED_FLAGS)
+    cmake_pop_check_state()
 endif ()
 
 if (NOT WTF_PLATFORM_COCOA)
@@ -542,9 +542,10 @@ if (WTF_CPU_ARM)
         set(CLANG_EXTRA_ARM_ARGS " -mthumb")
     endif ()
 
+    cmake_push_check_state(RESET)
     set(CMAKE_REQUIRED_FLAGS "${CLANG_EXTRA_ARM_ARGS}")
     CHECK_CXX_SOURCE_COMPILES("${ARM_THUMB2_TEST_SOURCE}" ARM_THUMB2_DETECTED)
-    unset(CMAKE_REQUIRED_FLAGS)
+    cmake_pop_check_state()
 
     if (ARM_THUMB2_DETECTED AND NOT (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin"))
         string(APPEND CMAKE_C_FLAGS " ${CLANG_EXTRA_ARM_ARGS}")
