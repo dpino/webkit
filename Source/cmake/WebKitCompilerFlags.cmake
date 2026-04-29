@@ -486,6 +486,10 @@ int main() {
         set(CMAKE_REQUIRED_LIBRARIES atomic)
         check_cxx_source_compiles("${ATOMIC_TEST_SOURCE}" ATOMICS_REQUIRE_LIBATOMIC)
         unset(CMAKE_REQUIRED_LIBRARIES)
+        # If we failed to build the test source with libatomic then something is wrong
+        if (NOT ATOMICS_REQUIRE_LIBATOMIC)
+            message(FATAL_ERROR "Failed to detect support for atomic variables")
+        endif ()
     endif ()
 
     # <filesystem> vs <experimental/filesystem>
