@@ -211,7 +211,7 @@ WI.LayerTreeManager = class LayerTreeManager extends WI.Object
                 callback(null);
                 return;
             }
-            callback(content);
+            callback(content || null);
         });
     }
 
