@@ -1509,6 +1509,8 @@ inline bool AXCoreObject::emitsNewline() const
 
 namespace Accessibility {
 
+constexpr unsigned maxDescendantTraversalIterations = 100000;
+
 template<typename T, typename MatchFunctionT, typename StopFunctionT>
 T* crossFrameFindAncestor(const T& object, bool includeSelf, const MatchFunctionT& matches, const StopFunctionT& shouldStop)
 {
@@ -1596,11 +1598,36 @@ AXCoreObject* findUnignoredDescendant(T& object, bool includeSelf, const F& matc
     if (includeSelf && matches(object) && !object.isIgnored())
         return &object;
 
-    for (Ref child : object.childrenIncludingIgnored()) {
-        if (RefPtr descendant = findUnignoredDescendant(child.get(), /* includeSelf */ true, matches))
-            return descendant.unsafeGet();
+    Vector<Ref<AXCoreObject>> stack;
+    for (const auto& child : object.childrenIncludingIgnored())
+        stack.append(child);
+
+    unsigned iterationCount = 0;
+#if AX_ASSERTS_ENABLED
+    HashSet<Ref<AXCoreObject>> visited;
+#endif
+
+    RefPtr<AXCoreObject> result = nullptr;
+    while (!stack.isEmpty()) {
+        if (++iterationCount > maxDescendantTraversalIterations)
+            break;
+
+        Ref current = stack.takeLast();
+#if AX_ASSERTS_ENABLED
+        bool foundCycle = !visited.add(current.copyRef()).isNewEntry;
+        AX_ASSERT(!foundCycle);
+        if (foundCycle)
+            break;
+#endif
+        if (matches(current.get()) && !current->isIgnored()) {
+            result = current.ptr();
+            break;
+        }
+
+        for (const auto& child : current->childrenIncludingIgnored())
+            stack.append(child);
     }
-    return nullptr;
+    return result.unsafeGet();
 }
 
 template<typename T, typename F>
@@ -1629,8 +1656,30 @@ void enumerateDescendantsIncludingIgnored(T& object, bool includeSelf, const F& 
     if (includeSelf)
         lambda(object);
 
-    for (const auto& child : object.childrenIncludingIgnored())
-        enumerateDescendantsIncludingIgnored(child.get(), true, lambda);
+    unsigned iterationCount = 0;
+#if AX_ASSERTS_ENABLED
+    HashSet<Ref<AXCoreObject>> visited;
+#endif
+
+    Vector<Ref<AXCoreObject>> stack;
+    for (auto& child : object.childrenIncludingIgnored())
+        stack.append(child);
+
+    while (!stack.isEmpty()) {
+        if (++iterationCount > maxDescendantTraversalIterations)
+            break;
+
+        Ref current = stack.takeLast();
+#if AX_ASSERTS_ENABLED
+        bool foundCycle = !visited.add(current.copyRef()).isNewEntry;
+        AX_ASSERT(!foundCycle);
+        if (foundCycle)
+            break;
+#endif
+        lambda(current.get());
+        for (auto& child : current->childrenIncludingIgnored())
+            stack.append(child);
+    }
 }
 
 template<typename T, typename F>
@@ -1639,11 +1688,30 @@ void enumerateUnignoredDescendants(T& object, bool includeSelf, const F& lambda)
     if (includeSelf)
         lambda(object);
 
-    // We have a reference to unignored children here, so it's possible that it will change when enumerating the unignored
-    // descendants, so copying here ensures they don't change.
-    auto children = object.unignoredChildren();
-    for (const auto& child : children)
-        enumerateUnignoredDescendants(child.get(), true, lambda);
+    Vector<Ref<AXCoreObject>> stack;
+    for (const auto& child : object.unignoredChildren())
+        stack.append(child);
+
+    unsigned iterationCount = 0;
+#if AX_ASSERTS_ENABLED
+    HashSet<Ref<AXCoreObject>> visited;
+#endif
+
+    while (!stack.isEmpty()) {
+        if (++iterationCount > maxDescendantTraversalIterations)
+            break;
+
+        Ref current = stack.takeLast();
+#if AX_ASSERTS_ENABLED
+        bool foundCycle = !visited.add(current.copyRef()).isNewEntry;
+        AX_ASSERT(!foundCycle);
+        if (foundCycle)
+            break;
+#endif
+        lambda(current.get());
+        for (const auto& child : current->unignoredChildren())
+            stack.append(child);
+    }
 }
 
 template<typename U> inline void performFunctionOnMainThreadAndWait(U&& lambda)
