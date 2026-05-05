@@ -179,19 +179,32 @@ void AXLiveRegionManager::handleLiveRegionChange(AccessibilityObject& object, An
     postAnnouncementForChange(object, oldSnapshot, newSnapshot);
 }
 
+// Limit on the number of objects visited during snapshot building to prevent
+// web content from hanging the process with excessively large live regions.
+static constexpr size_t maximumSnapshotObjects = 512;
+
 LiveRegionSnapshot AXLiveRegionManager::buildLiveRegionSnapshot(AccessibilityObject& object) const
 {
     LiveRegionSnapshot snapshot;
     snapshot.liveRegionStatus = stringToLiveRegionStatus(object.liveRegionStatus());
     snapshot.liveRegionRelevant = stringToLiveRegionRelevant(object.liveRegionRelevant());
 
-    std::function<void(AccessibilityObject&)> buildObjectList = [this, &buildObjectList, &snapshot] (AccessibilityObject& object) {
+    size_t objectsVisited = 0;
+    std::function<void(AccessibilityObject&)> buildObjectList = [this, &buildObjectList, &snapshot, &objectsVisited] (AccessibilityObject& object) {
+        if (objectsVisited >= maximumSnapshotObjects)
+            return;
+        ++objectsVisited;
+
         // Treat atomic objects as one object, so when they change the entire subtree is announced.
         if (object.liveRegionAtomic()) {
             HashSet<AXID> descendants;
 
             // Collect all atomic-region descendants to detect when nodes are added/removed within the atomic region.
-            std::function<void(AccessibilityObject&)> collectDescendants = [&collectDescendants, &descendants] (AccessibilityObject& descendant) {
+            std::function<void(AccessibilityObject&)> collectDescendants = [&collectDescendants, &descendants, &objectsVisited] (AccessibilityObject& descendant) {
+                if (objectsVisited >= maximumSnapshotObjects)
+                    return;
+                ++objectsVisited;
+
                 descendants.add(descendant.objectID());
                 for (auto& child : descendant.unignoredChildren())
                     collectDescendants(downcast<AccessibilityObject>(child.get()));
