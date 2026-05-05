@@ -143,6 +143,7 @@ if (ENABLE_VIDEO)
                 platform/rice/GRefPtrRice.h
                 platform/rice/GUniquePtrRice.h
                 platform/rice/RiceUtilities.h
+                platform/rice/RiceVersioning.h
             )
             list(APPEND WebCore_PRIVATE_INCLUDE_DIRECTORIES
                 "${WEBCORE_DIR}/Modules/mediastream/gstreamer"

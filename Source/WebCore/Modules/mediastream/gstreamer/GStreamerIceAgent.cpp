@@ -28,7 +28,6 @@
 #include "GStreamerWebRTCUtils.h"
 #include "GUniquePtrRice.h"
 #include "RiceGioBackend.h"
-#include "RiceUtilities.h"
 #include "ScriptExecutionContext.h"
 #include "SharedMemory.h"
 #include "SocketProvider.h"
@@ -101,7 +100,11 @@ typedef struct _WebKitGstIceAgentPrivate {
     String turnServer;
 
     HashSet<URL> turnServers;
+#if RICE_CHECK_VERSION(0, 4, 0)
+    Vector<GUniquePtr<RiceTurnConfig>> turnConfigs;
+#else
     Vector<GRefPtr<RiceTurnConfig>> turnConfigs;
+#endif
 
     GRefPtr<GSource> recvSource;
     bool forceRelay { false };
@@ -262,11 +265,22 @@ static void webkitGstWebRTCIceAgentAddRiceTurnServer(WebKitGstIceAgent* agent, c
     for (unsigned i = 0; i < nRelay; i++) {
         // FIXME: Hardcoding UDP as allocation transport type for now. Our TURN support needs further work anyway.
         // https://bugs.webkit.org/show_bug.cgi?id=310005
+#if RICE_CHECK_VERSION(0, 4, 0)
+        GUniquePtr<RiceTurnConfig> config(rice_turn_config_new(relays[i], riceAddress.get(), credentials.get()));
+        rice_turn_config_add_address_family(config.get(), family);
+        rice_turn_config_set_allocation_transport(config.get(), RICE_TRANSPORT_TYPE_UDP);
+        rice_turn_config_set_anonymous_username(config.get(), RICE_FEATURE_REQUIRED);
+        rice_turn_config_add_supported_integrity(config.get(), RICE_INTEGRITY_ALGORITHM_SHA1);
+        rice_turn_config_add_supported_integrity(config.get(), RICE_INTEGRITY_ALGORITHM_SHA256);
+        if (tlsConfig)
+            rice_turn_config_set_tls_config(config.get(), tlsConfig.get());
+#else
         auto config = adoptGRef(rice_turn_config_new(relays[i], riceAddress.get(), credentials.get(),
 #if RICE_CHECK_VERSION(0, 3, 0)
             RICE_TRANSPORT_TYPE_UDP,
 #endif
             1, &family, tlsConfig.get()));
+#endif // RICE_CHECK_VERSION(0, 4, 0)
         agent->priv->turnConfigs.append(WTF::move(config));
     }
 }
@@ -762,6 +776,14 @@ const GRefPtr<RiceAgent>& webkitGstWebRTCIceAgentGetRiceAgent(WebKitGstIceAgent*
     return agent->priv->agent;
 }
 
+#if RICE_CHECK_VERSION(0, 4, 0)
+Vector<GUniquePtr<RiceTurnConfig>> webkitGstWebRTCIceAgentGetTurnConfigs(WebKitGstIceAgent* agent)
+{
+    return agent->priv->turnConfigs.map([](const auto& config) {
+        return GUniquePtr<RiceTurnConfig>(rice_turn_config_copy(config.get()));
+    });
+}
+#else
 Vector<GRefPtr<RiceTurnConfig>> webkitGstWebRTCIceAgentGetTurnConfigs(WebKitGstIceAgent* agent)
 {
     Vector<GRefPtr<RiceTurnConfig>> result;
@@ -771,6 +793,7 @@ Vector<GRefPtr<RiceTurnConfig>> webkitGstWebRTCIceAgentGetTurnConfigs(WebKitGstI
 
     return result;
 }
+#endif // RICE_CHECK_VERSION(0, 4, 0)
 
 HashMap<std::pair<String, WebCore::RTCIceProtocol>, String> webkitGstWebRTCIceAgentGatherSocketAddresses(WebKitGstIceAgent* agent, unsigned streamId)
 {

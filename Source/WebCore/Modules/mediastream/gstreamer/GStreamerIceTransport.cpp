@@ -26,7 +26,6 @@
 #include "GStreamerCommon.h"
 #include "GStreamerIceStream.h"
 #include "GUniquePtrRice.h"
-#include "RiceUtilities.h"
 #include <gst/app/gstappsink.h>
 #include <gst/app/gstappsrc.h>
 #include <gst/webrtc/ice.h>

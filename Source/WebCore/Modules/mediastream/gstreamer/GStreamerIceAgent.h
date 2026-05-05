@@ -27,11 +27,11 @@
 #include "RTCIceComponent.h"
 #include "RTCIceConnectionState.h"
 #include "RTCIceProtocol.h"
+#include "RiceUtilities.h"
 #include "ScriptExecutionContextIdentifier.h"
 #include "SharedMemory.h"
 
 #include <glib-object.h>
-#include <rice-proto.h>
 #include <wtf/Expected.h>
 #include <wtf/Forward.h>
 #include <wtf/Function.h>
@@ -104,7 +104,12 @@ WebKitGstIceAgent* webkitGstWebRTCCreateIceAgent(const String&, WebCore::ScriptE
 
 const GRefPtr<RiceAgent>& webkitGstWebRTCIceAgentGetRiceAgent(WebKitGstIceAgent*);
 
+#if RICE_CHECK_VERSION(0, 4, 0)
+Vector<GUniquePtr<RiceTurnConfig>> webkitGstWebRTCIceAgentGetTurnConfigs(WebKitGstIceAgent*);
+#else
 Vector<GRefPtr<RiceTurnConfig>> webkitGstWebRTCIceAgentGetTurnConfigs(WebKitGstIceAgent*);
+#endif
+
 HashMap<std::pair<String, WebCore::RTCIceProtocol>, String> webkitGstWebRTCIceAgentGatherSocketAddresses(WebKitGstIceAgent*, unsigned);
 
 GstWebRTCICETransport *webkitGstWebRTCIceAgentCreateTransport(WebKitGstIceAgent*, GThreadSafeWeakPtr<WebKitGstIceStream>&&, WebCore::RTCIceComponent);
