@@ -3680,7 +3680,21 @@ bool RenderBox::skipContainingBlockForPercentHeightCalculation(const RenderBox& 
     
     // For quirks mode, we skip most auto-height containing blocks when computing
     // percentages.
-    return document().inQuirksMode() && !containingBlock.isRenderTableCell() && !containingBlock.isOutOfFlowPositioned() && !containingBlock.isRenderGrid() && !containingBlock.isFlexibleBoxIncludingDeprecated() && containingBlock.style().logicalHeight().isAuto();
+    auto shouldSkipContainingBlockInQuirksMode = [&] {
+        ASSERT(document().inQuirksMode());
+        if (containingBlock.isFlexItem() && downcast<RenderFlexibleBox>(containingBlock.parent())->canUseFlexItemForPercentageResolution(containingBlock))
+            return false;
+        if (containingBlock.isRenderTableCell())
+            return false;
+        if (containingBlock.isOutOfFlowPositioned())
+            return false;
+        if (containingBlock.isRenderGrid())
+            return false;
+        if (containingBlock.isFlexibleBoxIncludingDeprecated())
+            return false;
+        return containingBlock.style().logicalHeight().isAuto();
+    };
+    return document().inQuirksMode() && shouldSkipContainingBlockInQuirksMode();
 }
 
 static bool tableCellShouldHaveZeroInitialSize(const RenderTableCell& tableCell, const RenderBox& child, bool scrollsOverflowY)
