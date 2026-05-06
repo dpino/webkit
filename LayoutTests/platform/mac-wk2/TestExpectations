@@ -657,6 +657,8 @@ webkit.org/b/139828 svg/animations/animateMotion-additive-2d.svg [ Pass ImageOnl
 
 [ Debug ] editing/undo/remove-css-property-and-remove-style.html [ Pass Failure ]
 
+webkit.org/b/309824 [ x86_64 ] media/media-source/media-source-h264-bframes-lowfps.html [ Failure ]
+
 ### END OF (3) Unclassified failures
 ########################################
 
