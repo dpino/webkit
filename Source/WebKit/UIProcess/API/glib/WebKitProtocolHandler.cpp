@@ -737,7 +737,9 @@ void WebKitProtocolHandler::handleGPU(WebKitURISchemeRequest* request, RenderPro
 #endif
 
     if (policy != "never"_s) {
-        addTableRow(hardwareAccelerationObject, "API"_s, String::fromUTF8(openGLAPI()));
+        bool hasEGLContext = uiProcessContextIsEGL() && eglGetCurrentContext() != EGL_NO_CONTEXT;
+
+        addTableRow(hardwareAccelerationObject, "API"_s, hasEGLContext ? String::fromUTF8(openGLAPI()) : "Not available"_s);
 #if PLATFORM(GTK)
         bool showBuffersInfo = usingDMABufRenderer;
 #elif PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
@@ -761,7 +763,7 @@ void WebKitProtocolHandler::handleGPU(WebKitURISchemeRequest* request, RenderPro
 
         addTableRow(hardwareAccelerationObject, "Native interface"_s, uiProcessContextIsEGL() ? "EGL"_s : "None"_s);
 
-        if (uiProcessContextIsEGL() && eglGetCurrentContext() != EGL_NO_CONTEXT)
+        if (hasEGLContext)
             addEGLInfo(hardwareAccelerationObject);
     }
 
