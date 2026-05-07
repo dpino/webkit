@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010, 2013, 2016, 2017 Apple Inc. All rights reserved.
+ * Copyright (C) 2026 Igalia S.L.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,6 +31,7 @@
 #include <wtf/HashMap.h>
 #include <wtf/Lock.h>
 #include <wtf/Logging.h>
+#include <wtf/MainThread.h>
 #include <wtf/NeverDestroyed.h>
 #include <wtf/text/MakeString.h>
 #include <wtf/text/StringToIntegerConversion.h>
@@ -65,11 +67,13 @@ static ObserverMap& NODELETE observerMap()
 
 void addLanguageChangeObserver(void* context, LanguageChangeObserverFunction customObserver)
 {
+    RELEASE_ASSERT(isMainThread());
     observerMap().set(context, customObserver);
 }
 
 void removeLanguageChangeObserver(void* context)
 {
+    RELEASE_ASSERT(isMainThread());
     ASSERT(observerMap().contains(context));
     observerMap().remove(context);
 }

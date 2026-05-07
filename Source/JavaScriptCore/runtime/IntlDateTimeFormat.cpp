@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015 Andy VanWagoner (andy@vanwagoner.family)
  * Copyright (C) 2016-2025 Apple Inc. All rights reserved.
+ * Copyright (C) 2026 Igalia S.L.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -738,6 +739,22 @@ void IntlDateTimeFormat::initializeDateTimeFormat(JSGlobalObject* globalObject, 
     VM& vm = globalObject->vm();
     auto scope = DECLARE_THROW_SCOPE(vm);
 
+    std::optional<IntlDateTimeFormatImplKey> cacheKey;
+    const bool canCache = originalOptions.isUndefined() && (locales.isUndefined() || locales.isString()) && toLocaleStringTimeZone.isNull();
+    if (canCache) {
+        IntlDateTimeFormatImplKey key { .locales = std::monostate { }, .required = required, .defaults = defaults };
+        if (locales.isString()) {
+            key.locales = asString(locales)->value(globalObject);
+            RETURN_IF_EXCEPTION(scope, void());
+        }
+        if (auto cachedImpl = vm.intlCache().findCachedDateTimeFormatImpl(key)) {
+            setImpl(cachedImpl.releaseNonNull());
+            vm.heap.reportExtraMemoryAllocated(this, estimatedUDateFormatSize);
+            return;
+        }
+        cacheKey = WTF::move(key);
+    }
+
     Vector<String> requestedLocales = canonicalizeLocaleList(globalObject, locales);
     RETURN_IF_EXCEPTION(scope, void());
 
@@ -1076,6 +1093,9 @@ void IntlDateTimeFormat::initializeDateTimeFormat(JSGlobalObject* globalObject, 
     }
 
     vm.heap.reportExtraMemoryAllocated(this, estimatedUDateFormatSize);
+
+    if (cacheKey)
+        vm.intlCache().cacheDateTimeFormatImpl(*cacheKey, impl.copyRef());
     m_impl = WTF::move(impl);
 }
 
