@@ -27,6 +27,7 @@
 #if ENABLE(WEB_RTC) && USE(LIBWEBRTC)
 
 #include "PeerConnectionBackend.h"
+#include "RTCPeerConnection.h"
 #include "RealtimeMediaSource.h"
 #include <wtf/TZoneMalloc.h>
 

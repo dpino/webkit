@@ -28,6 +28,7 @@
 
 #if USE(LIBWEBRTC)
 
+#include <wtf/CheckedArithmetic.h>
 
 namespace WebKit {
 
