@@ -1257,7 +1257,12 @@ void TreeResolver::resolveComposedTree()
 
         Ref element = Ref { downcast<Element>(node.get()) };
 
-        if (it.depth() > Settings::defaultMaximumRenderTreeDepth) {
+        // At the maximum render tree depth, only the first child per parent gets a renderer.
+        // The HTML parser caps DOM depth by attaching overflow elements as siblings at this
+        // boundary (see HTMLConstructionSite::attachLater); skipping later siblings here keeps
+        // those overflow elements from being styled and laid out.
+        if (auto depth = it.depth(); depth > Settings::defaultMaximumRenderTreeDepth
+            || (depth == Settings::defaultMaximumRenderTreeDepth && element->previousElementSibling())) {
             resetStyleForNonRenderedDescendants(element.get());
             it.traverseNextSkippingChildren();
             continue;
