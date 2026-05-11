@@ -1063,18 +1063,8 @@ private:
 
     bool m_isSuspended { false };
     bool m_packReverseRowOrderSupported { false };
-<<<<<<< HEAD
-||||||| parent of 58001c0b916b ([PATCH] Improve WebGL performance using Damage)
-    // The ordinal number of when the context was last active (drew, read pixels).
-    uint64_t m_activeOrdinal { 0 };
-    WeakPtrFactory<WebGLRenderingContextBase> m_contextObjectWeakPtrFactory;
-=======
-    // The ordinal number of when the context was last active (drew, read pixels).
-    uint64_t m_activeOrdinal { 0 };
-    WeakPtrFactory<WebGLRenderingContextBase> m_contextObjectWeakPtrFactory;
     std::optional<IntRect> m_latestScissor;
     std::optional<Damage> m_damage;
->>>>>>> 58001c0b916b ([PATCH] Improve WebGL performance using Damage)
 };
 
 template<typename T>
