@@ -116,13 +116,21 @@ public:
 
     LayerRepresentation& operator=(const LayerRepresentation& other)
     {
+        if (this == &other)
+            return *this;
+
+        if (m_representation == PlatformLayerRepresentation && other.m_representation == PlatformLayerRepresentation) {
+            retainPlatformLayer(other.m_typelessPlatformLayer);
+            releasePlatformLayer(m_typelessPlatformLayer);
+        } else if (m_representation == PlatformLayerRepresentation)
+            releasePlatformLayer(m_typelessPlatformLayer);
+        else if (other.m_representation == PlatformLayerRepresentation)
+            retainPlatformLayer(other.m_typelessPlatformLayer);
+
         m_graphicsLayer = other.m_graphicsLayer;
         m_typelessPlatformLayer = other.m_typelessPlatformLayer;
         m_layerID = other.m_layerID;
         m_representation = other.m_representation;
-
-        if (m_representation == PlatformLayerRepresentation)
-            retainPlatformLayer(m_typelessPlatformLayer);
 
         return *this;
     }
