@@ -9046,6 +9046,13 @@ PlatformMediaSession::DisplayType HTMLMediaElement::displayType() const
 
 bool HTMLMediaElement::canProduceAudio() const
 {
+    return m_cachedCanProduceAudio.load(std::memory_order_relaxed);
+}
+
+bool HTMLMediaElement::computeCanProduceAudio() const
+{
+    ASSERT(isMainThread());
+
 #if ENABLE(WIRELESS_PLAYBACK_TARGET)
     // Because the remote target could unmute playback without notifying us, we must assume
     // that we may be playing audio.
@@ -10262,6 +10269,7 @@ RefPtr<MediaSessionManagerInterface> HTMLMediaElement::sessionManager() const
 
 void HTMLMediaElement::canProduceAudioChanged()
 {
+    m_cachedCanProduceAudio.store(computeCanProduceAudio(), std::memory_order_relaxed);
     protectedMediaSession()->canProduceAudioChanged();
     updateSleepDisabling();
 }
