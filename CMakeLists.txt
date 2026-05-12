@@ -50,7 +50,9 @@ if (ENABLE_TOOLS)
 endif ()
 
 if (DEVELOPER_MODE)
-    add_subdirectory(PerformanceTests)
+    if (EXISTS "${CMAKE_SOURCE_DIR}/PerformanceTests")
+        add_subdirectory(PerformanceTests)
+    endif ()
 endif ()
 
 # -----------------------------------------------------------------------------
