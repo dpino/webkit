@@ -605,8 +605,10 @@ bool MediaPlayerPrivateGStreamer::doSeek(const SeekTarget& target, float rate, b
     }
     auto seekFlags = static_cast<GstSeekFlags>(flag | GST_SEEK_FLAG_ACCURATE);
 
-    if (rate >= 0.0 && startTime >= duration()) {
-        GST_DEBUG_OBJECT(pipeline(), "Seek requested beyond duration, triggering EOS handler");
+    // Seeking towards the end is not well supported in oggdemux, sometimes it receives EOS
+    // while trying to retrieve a chain and thus disables seeking in push mode.
+    if (rate >= 0 && startTime == duration() && m_containerType == ContainerType::Ogg) {
+        GST_DEBUG_OBJECT(pipeline(), "Seek requested at duration for ogg media, triggering EOS handler");
         didEnd();
         return false;
     }
