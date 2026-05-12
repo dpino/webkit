@@ -1066,7 +1066,7 @@ void GraphicsLayerCoordinated::commitLayerChanges(CommitState& commitState, floa
 
     if (m_pendingChanges.contains(Change::ContentsTiling)) {
         m_platformLayer->setContentsTileSize(m_contentsTileSize);
-        m_platformLayer->setContentsTileSize(m_contentsTilePhase);
+        m_platformLayer->setContentsTilePhase(m_contentsTilePhase);
     }
 
     if (m_pendingChanges.contains(Change::ContentsClippingRect))

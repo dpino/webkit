@@ -1127,7 +1127,6 @@ webkit.org/b/169916 css3/blending/blend-mode-isolation-turn-off-self-painting-la
 webkit.org/b/169916 css3/blending/blend-mode-isolation-turn-on-self-painting-layer.html [ Failure ]
 webkit.org/b/169916 imported/blink/css3/blending/mix-blend-mode-with-squashing-layer.html [ ImageOnlyFailure ]
 
-compositing/patterns/direct-pattern-compositing-position.html [ ImageOnlyFailure ]
 compositing/repaint/needs-no-display-volatile.html [ ImageOnlyFailure Pass ]
 compositing/blend-mode/non-separable-blend-modes.html [ ImageOnlyFailure ]
 
