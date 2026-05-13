@@ -222,7 +222,7 @@ if (COMPILER_IS_GCC_OR_CLANG)
         WEBKIT_PREPEND_GLOBAL_CXX_FLAGS(-Wno-nonnull)
 
         # https://bugs.webkit.org/show_bug.cgi?id=240596
-        WEBKIT_PREPEND_GLOBAL_CXX_FLAGS(-Wno-stringop-overflow)
+        WEBKIT_PREPEND_GLOBAL_COMPILER_FLAGS(-Wno-stringop-overflow)
 
         # This triggers warnings in wtf/Packed.h, a header that is included in many places. It does not
         # respect ignore warning pragmas and we cannot easily suppress it for all affected files.
