@@ -1004,11 +1004,8 @@ void AcceleratedSurface::willDestroyGLContext()
 void AcceleratedSurface::checkClearShader()
 {
     const char* var = getenv("WEBKIT_FORCE_SHADER_CLEAR_COMPOSITING");
-    if (var && !strcmp(var, "1")) {
-        m_force_shader_clear = true;
-    } else {
-        m_force_shader_clear = false;
-    }
+
+    m_force_shader_clear = var && var == "1"_s;
 }
 
 uint64_t AcceleratedSurface::window()
@@ -1081,8 +1078,8 @@ void AcceleratedSurface::clear(const OptionSet<WebCore::CompositionReason>& reas
     static std::once_flag glClear_flag;
     std::call_once(glClear_flag, []{
         const char* var = getenv("WEBKIT_STOP_CLEAR_COMPOSITING");
-        if (var && !strcmp(var, "1"))
-            stop_glClear = true;
+
+        stop_glClear = var && var == "1"_s;
     });
 
     if (stop_glClear)
