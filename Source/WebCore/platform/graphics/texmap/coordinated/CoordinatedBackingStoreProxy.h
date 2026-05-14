@@ -30,6 +30,8 @@
 #include <wtf/TZoneMalloc.h>
 #include <wtf/ThreadSafeRefCounted.h>
 
+#include <sstream>
+
 namespace WebCore {
 class CoordinatedPlatformLayer;
 class CoordinatedTileBuffer;
@@ -101,7 +103,10 @@ private:
             char* mimimumCoverageRatioString = getenv("TILE_DIRTY_AREA_UNION_COVERAGE_RATIO");
             if (mimimumCoverageRatioString) {
                 float ratio;
-                if (sscanf(mimimumCoverageRatioString, "%f", &ratio) == 1) {
+                std::stringstream ss;
+
+                ss << mimimumCoverageRatioString;
+                if (ss >> ratio) {
                     minimumDirtyAreaUnionRatio = ratio;
                 }
             }
