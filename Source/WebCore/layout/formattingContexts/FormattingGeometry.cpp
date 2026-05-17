@@ -30,6 +30,7 @@
 #include "BlockFormattingContext.h"
 #include "FloatingContext.h"
 #include "FormattingQuirks.h"
+#include "LayoutBoxInlines.h"
 #include "LayoutContainingBlockChainIterator.h"
 #include "LayoutContext.h"
 #include "LayoutInitialContainingBlock.h"

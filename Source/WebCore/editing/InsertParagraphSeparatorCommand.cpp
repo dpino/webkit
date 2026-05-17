@@ -38,6 +38,7 @@
 #include "NodeName.h"
 #include "NodeTraversal.h"
 #include "PositionInlines.h"
+#include "RenderObjectStyle.h"
 #include "RenderText.h"
 #include "Text.h"
 #include "VisibleUnits.h"

@@ -34,6 +34,7 @@
 #include "DOMImplementation.h"
 #include "DocumentInlines.h"
 #include "DocumentLoader.h"
+#include "DocumentPage.h"
 #include "DocumentSecurityOrigin.h"
 #include "DocumentView.h"
 #include "FrameLoader.h"
