@@ -30,6 +30,7 @@
 #if ENABLE(WEBASSEMBLY)
 
 #include "HeapVerifier.h"
+#include "JSCellInlines.h"
 #include "JSWebAssemblyArray.h"
 #include "JSWebAssemblyStruct.h"
 #include "WasmCallee.h"
