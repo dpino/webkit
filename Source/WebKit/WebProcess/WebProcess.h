@@ -284,6 +284,14 @@ public:
     void setTextCheckerState(OptionSet<TextCheckerState>);
 
     EventDispatcher& eventDispatcher() { return m_eventDispatcher; }
+    const SharedPreferencesForWebProcess& sharedPreferencesForWebProcessValue() const { return m_sharedPreferencesForWebProcess; }
+
+    const String& uiProcessBundleIdentifier() const { return m_uiProcessBundleIdentifier; }
+    WebCacheStorageProvider& cacheStorageProvider() { return m_cacheStorageProvider.get(); }
+    WebBadgeClient& badgeClient() { return m_badgeClient.get(); }
+    WebBroadcastChannelRegistry& broadcastChannelRegistry() { return m_broadcastChannelRegistry.get(); }
+    WebCookieJar& cookieJar() { return m_cookieJar.get(); }
+    WebSocketChannelManager& webSocketChannelManager() { return m_webSocketChannelManager; }
     Ref<EventDispatcher> protectedEventDispatcher() { return m_eventDispatcher; }
     Ref<WebInspectorInterruptDispatcher> protectedWebInspectorInterruptDispatcher() { return m_webInspectorInterruptDispatcher; }
 #if ENABLE(REMOTE_INSPECTOR) && ENABLE(WEBASSEMBLY)
@@ -306,7 +314,6 @@ public:
     void removeWebTransportSession(WebTransportSessionIdentifier);
 
     std::optional<SharedPreferencesForWebProcess> sharedPreferencesForWebProcess() const { return m_sharedPreferencesForWebProcess; }
-    const SharedPreferencesForWebProcess& sharedPreferencesForWebProcessValue() const { return m_sharedPreferencesForWebProcess; }
     void updateSharedPreferencesForWebProcess(SharedPreferencesForWebProcess sharedPreferencesForWebProcess) { m_sharedPreferencesForWebProcess = WTF::move(sharedPreferencesForWebProcess); }
 
 #if USE(LIBRICE)
@@ -379,8 +386,6 @@ public:
     void releaseSystemMallocMemory();
 #endif
 
-    const String& uiProcessBundleIdentifier() const { return m_uiProcessBundleIdentifier; }
-
     void updateActivePages(const String& overrideDisplayName);
     void getActivePagesOriginsForTesting(CompletionHandler<void(Vector<String>&&)>&&);
     void pageActivityStateDidChange(WebCore::PageIdentifier, OptionSet<WebCore::ActivityState> changed);
@@ -414,8 +419,6 @@ public:
 #if ENABLE(MODEL_PROCESS)
     ModelProcessModelPlayerManager& modelProcessModelPlayerManager() { return m_modelProcessModelPlayerManager.get(); }
 #endif
-    WebCacheStorageProvider& cacheStorageProvider() { return m_cacheStorageProvider.get(); }
-    WebBadgeClient& badgeClient() { return m_badgeClient.get(); }
 #if ENABLE(GPU_PROCESS) && ENABLE(VIDEO)
     RemoteMediaPlayerManager& remoteMediaPlayerManager() { return m_remoteMediaPlayerManager.get(); }
     Ref<RemoteMediaPlayerManager> protectedRemoteMediaPlayerManager();
@@ -424,10 +427,7 @@ public:
     RemoteImageDecoderAVFManager& remoteImageDecoderAVFManager() { return m_remoteImageDecoderAVFManager.get(); }
     Ref<RemoteImageDecoderAVFManager> protectedRemoteImageDecoderAVFManager();
 #endif
-    WebBroadcastChannelRegistry& broadcastChannelRegistry() { return m_broadcastChannelRegistry.get(); }
-    WebCookieJar& cookieJar() { return m_cookieJar.get(); }
     Ref<WebCookieJar> protectedCookieJar();
-    WebSocketChannelManager& webSocketChannelManager() { return m_webSocketChannelManager; }
 
     Ref<WebNotificationManager> protectedNotificationManager();
 
@@ -739,7 +739,7 @@ private:
 #endif
 
 #if PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)
-    void setScreenProperties(const WebCore::ScreenProperties&);
+    void setScreenProperties(WebCore::ScreenProperties&&);
 #endif
 
 #if PLATFORM(COCOA)
