@@ -394,6 +394,7 @@ void ComplexTextController::collectComplexTextRuns()
     // would need to be updated accordingly too.
     nextFont = m_fontCascade->fontForCombiningCharacterSequence(baseOfString.first(currentIndex));
 
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     if (shouldProcessTextSpacingTrim && nextFont && !nextFont->isSystemFontFallbackPlaceholder()) {
         TextSpacing::CharactersData charactersData = { .currentCharacter = baseCharacter, .currentCharacterClass = TextSpacing::characterClass(baseCharacter) };
         halfWidthFont = TextSpacing::getHalfWidthFontIfNeeded(*nextFont, m_fontCascade->textSpacingTrim(), charactersData);
@@ -444,6 +445,7 @@ void ComplexTextController::collectComplexTextRuns()
         if (shouldProcessTextSpacingTrim && nextFont && !nextFont->isSystemFontFallbackPlaceholder()) {
             TextSpacing::CharactersData charactersData = { .currentCharacter = baseCharacter, .currentCharacterClass = TextSpacing::characterClass(baseCharacter) };
             halfWidthFont = TextSpacing::getHalfWidthFontIfNeeded(*nextFont, m_fontCascade->textSpacingTrim(), charactersData);
+            fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
             nextFont = halfWidthFont ? halfWidthFont : nextFont;
         }
 

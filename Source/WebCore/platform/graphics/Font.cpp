@@ -495,6 +495,7 @@ const Font* Font::smallCapsFont(const FontDescription& fontDescription) const
 
 const RefPtr<Font> Font::halfWidthFont() const
 {
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     if (isSystemFontFallbackPlaceholder()) {
         ASSERT_NOT_REACHED();
         return nullptr;

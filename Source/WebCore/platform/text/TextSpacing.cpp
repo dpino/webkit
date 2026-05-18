@@ -148,6 +148,7 @@ CharacterClass characterClass(char32_t character)
 
 RefPtr<Font> getHalfWidthFontIfNeeded(const Font& font, const TextSpacingTrim& textSpacingTrim, CharactersData& charactersData)
 {
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     return textSpacingTrim.shouldTrimSpacing(charactersData) ? font.halfWidthFont() : nullptr;
 }
 

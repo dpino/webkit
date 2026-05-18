@@ -379,6 +379,7 @@ static void NODELETE updateCharacterAndSmallCapsIfNeeded(SmallCapsState& smallCa
 
 static RefPtr<Font> applyTextSpacingTrimIfNeeded(GlyphData& glyphData, char32_t character, TextSpacingTrim textSpacingTrim)
 {
+    fprintf(stderr, "### %s:%s:%d\n", __func__, __FILE__, __LINE__);
     if (textSpacingTrim.isSpaceAll())
         return nullptr;
     TextSpacing::CharactersData charactersData = { .currentCharacter = character, .currentCharacterClass = TextSpacing::characterClass(character) };
