@@ -716,7 +716,7 @@ void ProvisionalPageProxy::didReceiveMessage(IPC::Connection& connection, IPC::D
 
     if (decoder.messageName() == Messages::WebBackForwardList::BackForwardUpdateItem::name()) {
         if (RefPtr page = m_page.get())
-            page->backForwardList().didReceiveMessage(connection, decoder);
+            page->backForwardList().didReceiveProvisionalMessage(connection, decoder);
         return;
     }
 
