@@ -834,11 +834,10 @@ WEBKIT_SETUP_SWIFT_AND_GENERATE_SWIFT_CPP_INTEROP_HEADER(WebKit WebKit
     "${WEBKIT_DIR}/Modules/Internal"
     "${WebKit_DERIVED_SOURCES_DIR}/WebKit-Swift-CPP.h")
 
-if (PORT STREQUAL GTK OR PORT STREQUAL WPE)
+if (ENABLE_UNSAFE_BUFFER_USAGE_WARNING)
     WEBKIT_ADD_TARGET_CXX_FLAGS(WebKit
         -Wunsafe-buffer-usage
         -Wunsafe-buffer-usage-in-libc-call
-        -Wno-unsafe-buffer-usage-in-format-attr-call
     )
 endif ()
 
