@@ -217,11 +217,13 @@ bool HTMLDialogElement::handleCommandInternal(HTMLButtonElement& invoker, const 
 
     if (isOpen()) {
         if (command == CommandType::Close) {
-            close(invoker.value().string());
+            String value = invoker.value().string();
+            close(value);
             return true;
         }
         if (command == CommandType::RequestClose) {
-            requestClose(invoker.value().string());
+            String value = invoker.value().string();
+            requestClose(value);
             return true;
         }
     } else {
