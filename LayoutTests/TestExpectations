@@ -2118,11 +2118,6 @@ webkit.org/b/244022 imported/w3c/web-platform-tests/quirks/percentage-height-qui
 webkit.org/b/244022 imported/w3c/web-platform-tests/quirks/text-decoration-doesnt-propagate-into-tables/quirks.html [ ImageOnlyFailure ]
 imported/w3c/web-platform-tests/quirks/line-height-preserved-segment-break.html [ ImageOnlyFailure ]
 
-# WPT tests requiring DTR/WTR to allow other URLs than localhost to not be blocked and be reachable (www2.localhost)
-imported/w3c/web-platform-tests/xhr/send-redirect-bogus.htm [ Skip ]
-imported/w3c/web-platform-tests/xhr/send-redirect-to-cors.htm [ Skip ]
-imported/w3c/web-platform-tests/xhr/send-redirect-to-non-cors.htm [ Skip ]
-
 imported/w3c/web-platform-tests/resource-timing/test_resource_timing.html [ Pass Failure ]
 imported/w3c/web-platform-tests/resource-timing/test_resource_timing.https.html [ Pass Failure ]
 imported/w3c/web-platform-tests/resource-timing/buffer-full-add-entries-during-callback-that-drop.html [ Skip ]
