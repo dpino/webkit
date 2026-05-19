@@ -96,7 +96,7 @@ struct QuirksData {
         NeedsGoogleTranslateScrollingQuirk,
 #endif
         NeedsGeforcenowWarningDisplayNoneQuirk,
-        NeedsHotelsAnimationQuirk,
+        NeedsExpediaGroupAnimationQuirk,
         NeedsMediaRewriteRangeRequestQuirk,
         NeedsMozillaFileTypeForDataTransferQuirk,
         NeedsNavigatorUserAgentDataQuirk,

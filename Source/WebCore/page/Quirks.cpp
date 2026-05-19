@@ -2164,12 +2164,12 @@ bool Quirks::needsFacebookStoriesCreationFormQuirk(const Element& element, const
 #endif
 }
 
-// hotels.com rdar://126631968
-bool Quirks::needsHotelsAnimationQuirk(Element& element) const
+// Expedia Group sites (hotels.com, expedia.*, orbitz.com, …) rdar://126631968
+bool Quirks::needsExpediaGroupAnimationQuirk(Element& element) const
 {
     QUIRKS_EARLY_RETURN_IF_DISABLED_WITH_VALUE(false);
 
-    if (!m_quirksData.quirkIsEnabled(QuirksData::SiteSpecificQuirk::NeedsHotelsAnimationQuirk))
+    if (!m_quirksData.quirkIsEnabled(QuirksData::SiteSpecificQuirk::NeedsExpediaGroupAnimationQuirk))
         return false;
 
     // Quick pre-filter to avoid running the full selector match on ~99% of elements.
@@ -2991,12 +2991,36 @@ static void handleHBOMaxQuirks(QuirksData& quirksData, const URL& quirksURL, con
     }
 }
 
-static void handleHotelsQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL&  /* documentURL */)
+static bool isExpediaGroupRegistrableDomain(const String& registrableDomain)
 {
-    QUIRKS_EARLY_RETURN_IF_NOT_DOMAIN("hotels.com"_s);
+    static NeverDestroyed<HashSet<String>> expediaGroupDomains { HashSet<String> {
+        "carrentals.com"_s,
+        "cheaptickets.com"_s,
+        "hoteis.com"_s,
+        "hoteles.com"_s,
+        "hotels.com"_s,
+        "mrjet.se"_s,
+        "orbitz.com"_s,
+        "travelocity.ca"_s,
+        "travelocity.com"_s,
+        "wotif.co.nz"_s,
+        "wotif.com"_s,
+    } };
 
-    // hotels.com rdar://126631968
-    quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsHotelsAnimationQuirk);
+    if (expediaGroupDomains->contains(registrableDomain))
+        return true;
+
+    return registrableDomain.startsWith("ebookers."_s)
+        || registrableDomain.startsWith("expedia."_s);
+}
+
+static void handleExpediaGroupQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL&  /* documentURL */)
+{
+    if (!isExpediaGroupRegistrableDomain(quirksDomainString)) [[unlikely]]
+        return;
+
+    // Expedia Group rdar://126631968
+    quirksData.enableQuirk(QuirksData::SiteSpecificQuirk::NeedsExpediaGroupAnimationQuirk);
 }
 
 static void handleHuluQuirks(QuirksData& quirksData, const URL& /* quirksURL */, const String& quirksDomainString, const URL&  /* documentURL */)
@@ -3517,7 +3541,18 @@ void Quirks::determineRelevantQuirks()
         { "geforcenow"_s, &handleGeforcenowQuirks },
         { "google"_s, &handleGoogleQuirks },
         { "hbomax"_s, &handleHBOMaxQuirks },
-        { "hotels"_s, &handleHotelsQuirks },
+        // Expedia Group rdar://126631968
+        { "carrentals"_s, &handleExpediaGroupQuirks },
+        { "cheaptickets"_s, &handleExpediaGroupQuirks },
+        { "ebookers"_s, &handleExpediaGroupQuirks },
+        { "expedia"_s, &handleExpediaGroupQuirks },
+        { "hoteis"_s, &handleExpediaGroupQuirks },
+        { "hoteles"_s, &handleExpediaGroupQuirks },
+        { "hotels"_s, &handleExpediaGroupQuirks },
+        { "mrjet"_s, &handleExpediaGroupQuirks },
+        { "orbitz"_s, &handleExpediaGroupQuirks },
+        { "travelocity"_s, &handleExpediaGroupQuirks },
+        { "wotif"_s, &handleExpediaGroupQuirks },
         { "hulu"_s, &handleHuluQuirks },
 #if PLATFORM(IOS_FAMILY) || PLATFORM(MAC)
         { "icloud"_s, &handleICloudQuirks },
