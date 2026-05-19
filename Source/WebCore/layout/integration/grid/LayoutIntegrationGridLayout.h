@@ -45,6 +45,7 @@ namespace LayoutIntegration {
 class GridLayout {
 public:
     GridLayout(RenderGrid&);
+    ~GridLayout();
 
     void updateFormattingContextGeometries();
 

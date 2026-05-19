@@ -46,6 +46,13 @@ GridLayout::GridLayout(RenderGrid& renderGrid)
 {
 }
 
+GridLayout::~GridLayout()
+{
+    CheckedRef renderer = gridBoxRenderer();
+    const_cast<CheckedPtr<Layout::ElementBox>&>(m_gridBox) = nullptr;
+    BoxTreeUpdater { renderer }.tearDown();
+}
+
 void GridLayout::updateFormattingContextGeometries()
 {
     auto boxGeometryUpdater = BoxGeometryUpdater { layoutState(), gridBox() };
