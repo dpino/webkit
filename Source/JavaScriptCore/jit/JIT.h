@@ -249,9 +249,9 @@ namespace JSC {
 
         void loadCodeBlockConstant(VirtualRegister, JSValueRegs);
         void loadCodeBlockConstantPayload(VirtualRegister, RegisterID);
-#if USE(JSVALUE32_64)
+    #if USE(JSVALUE32_64)
         void loadCodeBlockConstantTag(VirtualRegister, RegisterID);
-#endif
+    #endif
 
         void exceptionCheck(Jump jumpToHandler);
         void exceptionCheck();
@@ -282,27 +282,28 @@ namespace JSC {
         template<typename Op>
         void emitPutCallResult(const Op&);
 
-#if USE(JSVALUE64)
+    #if USE(JSVALUE64)
         template<typename Op> void compileOpStrictEq(const JSInstruction*);
         template<typename Op> void compileOpStrictEqJump(const JSInstruction*);
-#elif USE(JSVALUE32_64)
+    #elif USE(JSVALUE32_64)
         void compileOpEqCommon(VirtualRegister src1, VirtualRegister src2);
         void compileOpEqSlowCommon(Vector<SlowCaseEntry>::iterator&);
         void compileOpStrictEqCommon(VirtualRegister src1,  VirtualRegister src2);
-#endif
+    #endif
 
         enum class WriteBarrierMode { UnconditionalWriteBarrier, ShouldFilterBase, ShouldFilterValue, ShouldFilterBaseAndValue };
-#if COMPILER(GCC) && GCC_VERSION < 120300
+    #if COMPILER(GCC) && GCC_VERSION < 120300
         // Workaround for GCC < 12.3.0 ICE with using-enum in templates: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103081
         static constexpr auto UnconditionalWriteBarrier = WriteBarrierMode::UnconditionalWriteBarrier;
         static constexpr auto ShouldFilterBase = WriteBarrierMode::ShouldFilterBase;
         static constexpr auto ShouldFilterValue = WriteBarrierMode::ShouldFilterValue;
         static constexpr auto ShouldFilterBaseAndValue = WriteBarrierMode::ShouldFilterBaseAndValue;
-#else
+    #else
         using enum WriteBarrierMode;
-#endif
+    #endif
         // value register in write barrier is used before any scratch registers
         // so may safely be the same as either of the scratch registers.
+        void emitWriteBarrier(JSValueRegs owner, WriteBarrierMode);
         void emitWriteBarrier(VirtualRegister owner, WriteBarrierMode);
         void emitWriteBarrier(VirtualRegister owner, VirtualRegister value, WriteBarrierMode);
         void emitWriteBarrier(JSCell* owner);
@@ -337,9 +338,9 @@ namespace JSC {
         void emitGetVirtualRegisterPayload(VirtualRegister src, RegisterID dst);
         void emitPutVirtualRegister(VirtualRegister dst, JSValueRegs src);
 
-#if USE(JSVALUE32_64)
+    #if USE(JSVALUE32_64)
         void emitGetVirtualRegisterTag(VirtualRegister src, RegisterID dst);
-#elif USE(JSVALUE64)
+    #elif USE(JSVALUE64)
         // Machine register variants purely for convenience
         void emitGetVirtualRegister(VirtualRegister src, RegisterID dst);
         void emitPutVirtualRegister(VirtualRegister dst, RegisterID from);
@@ -347,7 +348,7 @@ namespace JSC {
         Jump emitJumpIfNotInt(RegisterID, RegisterID, RegisterID scratch);
         void emitJumpSlowCaseIfNotInt(RegisterID, RegisterID, RegisterID scratch);
         void emitJumpSlowCaseIfNotInt(RegisterID);
-#endif
+    #endif
 
         void emitJumpSlowCaseIfNotInt(JSValueRegs, JSValueRegs, RegisterID scratch);
         void emitJumpSlowCaseIfNotInt(JSValueRegs);
@@ -436,11 +437,11 @@ namespace JSC {
         void emit_op_is_undefined_or_null(const JSInstruction*);
         void emit_op_is_boolean(const JSInstruction*);
         void emit_op_is_number(const JSInstruction*);
-#if USE(BIGINT32)
+    #if USE(BIGINT32)
         void emit_op_is_big_int(const JSInstruction*);
-#else
+    #else
         [[noreturn]] void emit_op_is_big_int(const JSInstruction*);
-#endif
+    #endif
         void emit_op_is_object(const JSInstruction*);
         void emit_op_is_cell_with_type(const JSInstruction*);
         void emit_op_has_structure_with_flags(const JSInstruction*);
@@ -644,10 +645,10 @@ namespace JSC {
 
         JSValue getConstantOperand(VirtualRegister);
 
-#if USE(JSVALUE64)
+    #if USE(JSVALUE64)
         bool isOperandConstantDouble(VirtualRegister);
         double getOperandConstantDouble(VirtualRegister src);
-#endif
+    #endif
         bool isOperandConstantInt(VirtualRegister);
         int32_t getOperandConstantInt(VirtualRegister src);
         bool isOperandConstantChar(VirtualRegister);
@@ -815,38 +816,38 @@ namespace JSC {
 
         int jumpTarget(const JSInstruction*, int target);
 
-#ifndef NDEBUG
+    #ifndef NDEBUG
         void printBytecodeOperandTypes(VirtualRegister src1, VirtualRegister src2);
-#endif
+    #endif
 
-#if ENABLE(SAMPLING_FLAGS)
+    #if ENABLE(SAMPLING_FLAGS)
         void setSamplingFlag(int32_t);
         void clearSamplingFlag(int32_t);
-#endif
+    #endif
 
-#if ENABLE(SAMPLING_COUNTERS)
+    #if ENABLE(SAMPLING_COUNTERS)
         void emitCount(AbstractSamplingCounter&, int32_t = 1);
-#endif
+    #endif
 
-#if ENABLE(DFG_JIT)
+    #if ENABLE(DFG_JIT)
         bool canBeOptimized() { return m_canBeOptimized; }
         bool shouldEmitProfiling() { return m_shouldEmitProfiling; }
-#else
+    #else
         bool canBeOptimized() { return false; }
         // Enables use of value profiler with tiered compilation turned off,
         // in which case all code gets profiled.
         bool shouldEmitProfiling() { return false; }
-#endif
+    #endif
 
         void emitMaterializeMetadataAndConstantPoolRegisters();
 
         void emitSaveCalleeSaves();
         void emitRestoreCalleeSaves();
 
-#if ASSERT_ENABLED
+    #if ASSERT_ENABLED
         static MacroAssemblerCodeRef<JITThunkPtrTag> consistencyCheckGenerator(VM&);
         void emitConsistencyCheck();
-#endif
+    #endif
 
         static bool reportCompileTimes();
         static bool computeCompileTimes();
@@ -881,10 +882,10 @@ namespace JSC {
         Vector<SlowCaseEntry> m_slowCases;
         Vector<SwitchRecord> m_switches;
 
-#if ASSERT_ENABLED
+    #if ASSERT_ENABLED
         Label m_consistencyCheckLabel;
         Vector<Call> m_consistencyCheckCalls;
-#endif
+    #endif
 
         unsigned m_getByIdIndex { UINT_MAX };
         unsigned m_getByValIndex { UINT_MAX };
