@@ -88,6 +88,15 @@ uint32_t ModuleManager::registerInstance(JSWebAssemblyInstance* jsInstance)
     return instanceId;
 }
 
+uint32_t ModuleManager::unregisterInstance(JSWebAssemblyInstance* jsInstance)
+{
+    Locker locker { m_lock };
+    uint32_t instanceId = jsInstance->debugId();
+    m_instanceIdToInstance.remove(instanceId);
+    dataLogLnIf(Options::verboseWasmDebugger(), "[ModuleManager][unregisterInstance] - unregistered instance with ID: ", instanceId, " for module ID: ", jsInstance->module().debugId());
+    return instanceId;
+}
+
 Module* ModuleManager::module(uint32_t moduleId) const
 {
     Locker locker { m_lock };

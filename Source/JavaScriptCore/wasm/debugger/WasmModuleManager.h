@@ -60,6 +60,7 @@ public:
     Module* module(uint32_t moduleId) const;
 
     uint32_t registerInstance(JSWebAssemblyInstance*);
+    uint32_t unregisterInstance(JSWebAssemblyInstance*);
     JSWebAssemblyInstance* jsInstance(uint32_t instanceId);
     uint32_t nextInstanceId() const;
 
