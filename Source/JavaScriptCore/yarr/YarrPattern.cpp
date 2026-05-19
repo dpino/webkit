@@ -1116,6 +1116,123 @@ class YarrPatternConstructor {
         unsigned m_termIndex;
         const String m_namedGroup;
     };
+    class ParenthesisContext {
+    private:
+        class SavedContext {
+        public:
+            SavedContext(bool isModifier, bool invert, MatchDirection matchDirection, OptionSet<Flags> flags)
+                : m_isModifier(isModifier)
+                , m_invert(invert)
+                , m_matchDirection(matchDirection)
+                , m_flags(flags)
+            {
+            }
+
+            void restore(bool& isModifier, bool& invert, MatchDirection& matchDirection, OptionSet<Flags>& flags)
+            {
+                isModifier = m_isModifier;
+                invert = m_invert;
+                matchDirection = m_matchDirection;
+                flags = m_flags;
+            }
+
+        private:
+            bool m_isModifier { false };
+            bool m_invert { false };
+            MatchDirection m_matchDirection { Forward };
+            OptionSet<Flags> m_flags;
+        };
+
+    public:
+        ParenthesisContext()
+        {
+        }
+
+        void push()
+        {
+            ASSERT(m_stackDepth < std::numeric_limits<unsigned>::max());
+
+            if (m_stackDepth++ > 0)
+                m_backingStack.append(SavedContext(m_isModifier, m_invert, m_matchDirection, m_flags));
+
+            // isModifier should only apply to one frame at a time
+            m_isModifier = false;
+        }
+
+        void pop()
+        {
+            ASSERT(m_stackDepth > 0);
+
+            if (--m_stackDepth > 0) {
+                SavedContext context = m_backingStack.takeLast();
+                context.restore(m_isModifier, m_invert, m_matchDirection, m_flags);
+            } else {
+                m_isModifier = false;
+                m_invert = false;
+                m_matchDirection = Forward;
+                m_flags = { };
+            }
+        }
+
+        void setModifier(bool isMod)
+        {
+            m_isModifier = isMod;
+        }
+
+        bool isModifier() const
+        {
+            return m_isModifier;
+        }
+
+        void setInvert(bool invert)
+        {
+            m_invert = invert;
+        }
+
+        bool invert() const
+        {
+            return m_invert;
+        }
+
+        void setMatchDirection(MatchDirection matchDirection)
+        {
+            m_matchDirection = matchDirection;
+        }
+
+        MatchDirection matchDirection() const
+        {
+            return m_matchDirection;
+        }
+
+        void setFlags(OptionSet<Flags> flags)
+        {
+            m_flags = flags;
+        }
+
+        OptionSet<Flags> flags() const
+        {
+            return m_flags;
+        }
+
+        void reset()
+        {
+            m_backingStack.clear();
+            m_stackDepth = 0;
+
+            m_isModifier = false;
+            m_invert = false;
+            m_matchDirection = Forward;
+            m_flags = { };
+        }
+
+    private:
+        Vector<SavedContext, 0> m_backingStack;
+        unsigned m_stackDepth { 0 };
+        bool m_isModifier { false };
+        bool m_invert { false };
+        MatchDirection m_matchDirection { Forward };
+        OptionSet<Flags> m_flags;
+    };
 
 public:
     YarrPatternConstructor(YarrPattern& pattern, OptionSet<Flags> flags)
@@ -1439,7 +1556,7 @@ public:
         m_pattern.m_userCharacterClasses.append(WTF::move(newCharacterClass));
     }
 
-    void atomParenthesesSubpatternBegin(bool capture = true, std::optional<String> optGroupName = std::nullopt)
+    void atomParenthesesSubpatternBegin(bool capture, std::optional<String> optGroupName = std::nullopt)
     {
         unsigned subpatternId = m_pattern.m_numSubpatterns + 1;
         if (capture) {
@@ -1768,7 +1885,7 @@ public:
         return m_error;
     }
 
-    [[nodiscard]] ErrorCode setupAlternativeOffsets(PatternAlternative* alternative, unsigned currentCallFrameSize, unsigned initialInputPosition, unsigned& newCallFrameSize)
+    [[nodiscard]] ErrorCode setupAlternativeOffsets(PatternAlternative* alternative, CheckedUint32 currentCallFrameSize, unsigned initialInputPosition, CheckedUint32& newCallFrameSize)
     {
         if (!isSafeToRecurse()) [[unlikely]]
             return ErrorCode::TooManyDisjunctions;
@@ -1792,6 +1909,8 @@ public:
                 term.inputPosition = currentInputPosition;
                 term.frameLocation = currentCallFrameSize;
                 currentCallFrameSize += YarrStackSpaceForBackTrackInfoBackReference;
+                if (currentCallFrameSize.hasOverflowed())
+                    return ErrorCode::FrameTooLarge;
                 alternative->m_hasFixedSize = false;
                 break;
 
@@ -1804,6 +1923,8 @@ public:
                 if (term.quantityType != QuantifierType::FixedCount) {
                     term.frameLocation = currentCallFrameSize;
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoPatternCharacter;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     alternative->m_hasFixedSize = false;
                 } else if (m_pattern.eitherUnicode()) {
                     CheckedUint32 tempCount = term.quantityMaxCount;
@@ -1820,10 +1941,14 @@ public:
                 if (term.quantityType != QuantifierType::FixedCount) {
                     term.frameLocation = currentCallFrameSize;
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoCharacterClass;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     alternative->m_hasFixedSize = false;
                 } else if (m_pattern.eitherUnicode()) {
                     term.frameLocation = currentCallFrameSize;
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoCharacterClass;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     if (term.characterClass->hasOneCharacterSize() && !term.invert()) {
                         CheckedUint32 tempCount = term.quantityMaxCount;
                         tempCount *= term.characterClass->hasNonBMPCharacters() ? 2 : 1;
@@ -1843,6 +1968,8 @@ public:
                 term.frameLocation = currentCallFrameSize;
                 if (term.quantityMaxCount == 1 && !term.parentheses.isCopy) {
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoParenthesesOnce;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     error = setupDisjunctionOffsets(term.parentheses.disjunction, currentCallFrameSize, currentInputPosition, currentCallFrameSize);
                     if (hasError(error))
                         return error;
@@ -1852,6 +1979,8 @@ public:
                     term.inputPosition = currentInputPosition;
                 } else if (term.parentheses.isTerminal) {
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoParenthesesTerminal;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     error = setupDisjunctionOffsets(term.parentheses.disjunction, currentCallFrameSize, currentInputPosition, currentCallFrameSize);
                     if (hasError(error))
                         return error;
@@ -1859,6 +1988,8 @@ public:
                 } else {
                     term.inputPosition = currentInputPosition;
                     currentCallFrameSize += YarrStackSpaceForBackTrackInfoParentheses;
+                    if (currentCallFrameSize.hasOverflowed())
+                        return ErrorCode::FrameTooLarge;
                     error = setupDisjunctionOffsets(term.parentheses.disjunction, currentCallFrameSize, currentInputPosition, currentCallFrameSize);
                     if (hasError(error))
                         return error;
@@ -1871,7 +2002,10 @@ public:
                 unsigned disjunctionInitialInputPosition = (term.matchDirection() == Forward) ? currentInputPosition.value() : 0;
                 term.inputPosition = currentInputPosition;
                 term.frameLocation = currentCallFrameSize;
-                error = setupDisjunctionOffsets(term.parentheses.disjunction, currentCallFrameSize + YarrStackSpaceForBackTrackInfoParentheticalAssertion, disjunctionInitialInputPosition, currentCallFrameSize);
+                currentCallFrameSize += YarrStackSpaceForBackTrackInfoParentheticalAssertion;
+                if (currentCallFrameSize.hasOverflowed())
+                    return ErrorCode::FrameTooLarge;
+                error = setupDisjunctionOffsets(term.parentheses.disjunction, currentCallFrameSize, disjunctionInitialInputPosition, currentCallFrameSize);
                 if (hasError(error))
                     return error;
                 break;
@@ -1883,6 +2017,8 @@ public:
                 term.inputPosition = initialInputPosition;
                 m_pattern.m_initialStartValueFrameLocation = currentCallFrameSize;
                 currentCallFrameSize += YarrStackSpaceForDotStarEnclosure;
+                if (currentCallFrameSize.hasOverflowed())
+                    return ErrorCode::FrameTooLarge;
                 m_pattern.m_saveInitialStartValue = true;
                 break;
             }
@@ -1891,17 +2027,20 @@ public:
         }
 
         alternative->m_minimumSize = currentInputPosition - initialInputPosition;
-        newCallFrameSize = currentCallFrameSize;
+        newCallFrameSize = currentCallFrameSize.value();
         return error;
     }
 
-    ErrorCode setupDisjunctionOffsets(PatternDisjunction* disjunction, unsigned initialCallFrameSize, unsigned initialInputPosition, unsigned& callFrameSize)
+    ErrorCode setupDisjunctionOffsets(PatternDisjunction* disjunction, CheckedUint32 initialCallFrameSize, unsigned initialInputPosition, CheckedUint32& callFrameSize)
     {
         if (!isSafeToRecurse()) [[unlikely]]
             return ErrorCode::TooManyDisjunctions;
 
-        if ((disjunction != m_pattern.m_body) && (disjunction->m_alternatives.size() > 1))
+        if ((disjunction != m_pattern.m_body) && (disjunction->m_alternatives.size() > 1)) {
             initialCallFrameSize += YarrStackSpaceForBackTrackInfoAlternative;
+            if (initialCallFrameSize.hasOverflowed())
+                return ErrorCode::FrameTooLarge;
+        }
 
         unsigned minimumInputSize = UINT_MAX;
         unsigned maximumCallFrameSize = 0;
@@ -1910,17 +2049,17 @@ public:
 
         for (unsigned alt = 0; alt < disjunction->m_alternatives.size(); ++alt) {
             PatternAlternative* alternative = disjunction->m_alternatives[alt].get();
-            unsigned currentAlternativeCallFrameSize;
+            CheckedUint32 currentAlternativeCallFrameSize;
             error = setupAlternativeOffsets(alternative, initialCallFrameSize, initialInputPosition, currentAlternativeCallFrameSize);
             if (hasError(error))
                 return error;
             minimumInputSize = std::min(minimumInputSize, alternative->m_minimumSize);
-            maximumCallFrameSize = std::max(maximumCallFrameSize, currentAlternativeCallFrameSize);
+            maximumCallFrameSize = std::max(maximumCallFrameSize, currentAlternativeCallFrameSize.value());
             hasFixedSize &= alternative->m_hasFixedSize;
             if (alternative->m_minimumSize > INT_MAX)
                 m_pattern.m_containsUnsignedLengthPattern = true;
         }
-        
+
         ASSERT(maximumCallFrameSize >= initialCallFrameSize);
 
         disjunction->m_hasFixedSize = hasFixedSize;
@@ -1933,7 +2072,7 @@ public:
     ErrorCode setupOffsets()
     {
         // FIXME: Yarr should not use the stack to handle subpatterns (rdar://problem/26436314).
-        unsigned ignoredCallFrameSize;
+        CheckedUint32 ignoredCallFrameSize;
         return setupDisjunctionOffsets(m_pattern.m_body, 0, 0, ignoredCallFrameSize);
     }
 
@@ -2428,123 +2567,6 @@ public:
     ErrorCode error() { return m_error; }
 
 private:
-    class ParenthesisContext {
-    private:
-        class SavedContext {
-        public:
-            SavedContext(bool isModifier, bool invert, MatchDirection matchDirection, OptionSet<Flags> flags)
-                : m_isModifier(isModifier)
-                , m_invert(invert)
-                , m_matchDirection(matchDirection)
-                , m_flags(flags)
-            {
-            }
-
-            void restore(bool& isModifier, bool& invert, MatchDirection& matchDirection, OptionSet<Flags>& flags)
-            {
-                isModifier = m_isModifier;
-                invert = m_invert;
-                matchDirection = m_matchDirection;
-                flags = m_flags;
-            }
-
-        private:
-            bool m_isModifier { false };
-            bool m_invert { false };
-            MatchDirection m_matchDirection { Forward };
-            OptionSet<Flags> m_flags;
-        };
-
-    public:
-        ParenthesisContext()
-        {
-        }
-
-        void push()
-        {
-            ASSERT(m_stackDepth < std::numeric_limits<unsigned>::max());
-
-            if (m_stackDepth++ > 0)
-                m_backingStack.append(SavedContext(m_isModifier, m_invert, m_matchDirection, m_flags));
-
-            // isModifier should only apply to one frame at a time
-            m_isModifier = false;
-        }
-
-        void pop()
-        {
-            ASSERT(m_stackDepth > 0);
-
-            if (--m_stackDepth > 0) {
-                SavedContext context = m_backingStack.takeLast();
-                context.restore(m_isModifier, m_invert, m_matchDirection, m_flags);
-            } else {
-                m_isModifier = false;
-                m_invert = false;
-                m_matchDirection = Forward;
-                m_flags = { };
-            }
-        }
-
-        void setModifier(bool isMod)
-        {
-            m_isModifier = isMod;
-        }
-
-        bool isModifier() const
-        {
-            return m_isModifier;
-        }
-
-        void setInvert(bool invert)
-        {
-            m_invert = invert;
-        }
-
-        bool invert() const
-        {
-            return m_invert;
-        }
-
-        void setMatchDirection(MatchDirection matchDirection)
-        {
-            m_matchDirection = matchDirection;
-        }
-
-        MatchDirection matchDirection() const
-        {
-            return m_matchDirection;
-        }
-
-        void setFlags(OptionSet<Flags> flags)
-        {
-            m_flags = flags;
-        }
-
-        OptionSet<Flags> flags() const
-        {
-            return m_flags;
-        }
-
-        void reset()
-        {
-            m_backingStack.clear();
-            m_stackDepth = 0;
-
-            m_isModifier = false;
-            m_invert = false;
-            m_matchDirection = Forward;
-            m_flags = { };
-        }
-
-    private:
-        Vector<SavedContext, 0> m_backingStack;
-        unsigned m_stackDepth { 0 };
-        bool m_isModifier { false };
-        bool m_invert { false };
-        MatchDirection m_matchDirection { Forward };
-        OptionSet<Flags> m_flags;
-    };
 
     void pushParenthesisContext()
     {
