@@ -46,9 +46,9 @@ public:
     struct Min { Min isolatedCopy() const { return { }; } };
     struct Max { Max isolatedCopy() const { return { }; } };
     struct Invalid { Invalid isolatedCopy() const { return { }; } };
-    using ValueVariant = Variant<std::nullptr_t, Invalid, Vector<IDBKeyData>, String, double, Date, ThreadSafeDataBuffer, Min, Max>;
 
     enum IsolatedCopyTag { IsolatedCopy };
+    using ValueVariant = Variant<std::nullptr_t, Invalid, Vector<IDBKeyData>, String, double, Date, ThreadSafeDataBuffer, Min, Max>;
 
     IDBKeyData() = default;
     IDBKeyData(ValueVariant&& value)
@@ -99,11 +99,11 @@ public:
     bool isNull() const { return std::holds_alternative<std::nullptr_t>(m_value); }
     bool isValid() const;
     WEBCORE_EXPORT static bool isValidValue(const ValueVariant&);
-    IndexedDB::KeyType type() const;
+    WEBCORE_EXPORT IndexedDB::KeyType type() const;
 
     WEBCORE_EXPORT friend std::weak_ordering operator<=>(const IDBKeyData&, const IDBKeyData&);
 
-    bool operator==(const IDBKeyData& other) const;
+    WEBCORE_EXPORT bool operator==(const IDBKeyData& other) const;
 
     String string() const
     {
@@ -130,9 +130,9 @@ public:
         return std::get<Vector<IDBKeyData>>(m_value);
     }
 
-    size_t size() const;
+    const ValueVariant& value() const { return m_value; }
 
-    const ValueVariant& value() const { return m_value; };
+    size_t size() const;;
 
 private:
     friend struct IDBKeyDataHashTraits;
