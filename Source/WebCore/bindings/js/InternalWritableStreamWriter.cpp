@@ -168,7 +168,9 @@ void InternalWritableStreamWriter::onClosedPromiseRejection(Function<void(JSDOMG
         return;
 
     Ref domPromise = DOMPromise::create(*globalObject, *promise);
-    domPromise->whenSettledWithResult([callback = WTF::move(callback)](auto* globalObject, bool isFulfilled, auto result) mutable {
+    domPromise->whenSettledWithResult([domPromise, callback = WTF::move(callback)](auto* globalObject, bool isFulfilled, auto result) mutable {
+        if (domPromise->activeDOMObjectAreStopped())
+            return;
         if (isFulfilled || !globalObject)
             return;
         callback(*globalObject, result);
@@ -196,7 +198,9 @@ void InternalWritableStreamWriter::onClosedPromiseResolution(Function<void()>&& 
         return;
 
     Ref domPromise = DOMPromise::create(*globalObject, *promise);
-    domPromise->whenSettledWithResult([callback = WTF::move(callback)](auto*, bool isFulfilled, auto) mutable {
+    domPromise->whenSettledWithResult([domPromise, callback = WTF::move(callback)](auto*, bool isFulfilled, auto) mutable {
+        if (domPromise->activeDOMObjectAreStopped())
+            return;
         if (!isFulfilled)
             return;
         callback();
@@ -224,7 +228,9 @@ void InternalWritableStreamWriter::whenReady(Function<void (bool)>&& callback)
         return;
 
     Ref domPromise = DOMPromise::create(*globalObject, *promise);
-    domPromise->whenSettledWithResult([callback = WTF::move(callback)](auto*, bool isFulfilled, auto) mutable {
+    domPromise->whenSettledWithResult([domPromise, callback = WTF::move(callback)](auto*, bool isFulfilled, auto) mutable {
+        if (domPromise->activeDOMObjectAreStopped())
+            return;
         callback(isFulfilled);
     });
 }
