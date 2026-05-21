@@ -146,6 +146,7 @@ BEGIN {
        &libFuzzerIsEnabled
        &ltoMode
        &markBaseProductDirectoryAsCreatedByXcodeBuildSystem
+       &maybeEnterWebKitContainerSDK
        &maybeUseContainerSDKRootDir
        &maxCPULoad
        &nativeArchitecture
@@ -2524,6 +2525,37 @@ sub runInCrossTargetEnvironment(@)
                   "--cross-target", getCrossTargetName(), "--cross-toolchain-run-cmd");
     my @command = @_;
     exec @prefix, @command, argumentsForConfiguration(), @ARGV or die;
+}
+
+sub maybeEnterWebKitContainerSDK()
+{
+    # Must match linux_container_sdk_utils.AUTOENTER_DECLINED_EXIT_CODE.
+    my $AUTOENTER_DECLINED_EXIT_CODE = 100;
+
+    return if not isLinux();
+    # Cross-target builds use their own toolchain wrapper (runInCrossTargetEnvironment);
+    # don't double-wrap them in the SDK container.
+    return if (shouldBuildForCrossTarget() or inCrossTargetEnvironment());
+
+    # Mirror the cheap opt-out checks from maybe_enter_webkit_container_sdk so
+    # that the overwhelmingly common no-op case avoids forking a Python
+    # interpreter on every wrapper invocation. Keep in sync with that function.
+    return if ($ENV{'WEBKIT_CONTAINER_SDK_ENABLE_AUTOENTER'} // '') ne '1';
+    return if ($ENV{'WEBKIT_CONTAINER_SDK'} // '') eq '1';
+    return if ($ENV{'WEBKIT_FLATPAK'} // '') eq '1';
+    return if ($ENV{'WEBKIT_JHBUILD'} // '') eq '1';
+    return if ($ENV{'WEBKIT_CONTAINER_SDK_INSIDE_MOUNT_NAMESPACE'} // '') eq '1';
+    return unless -f File::Spec->catfile(sourceDir(), ".wkdev-sdk-version");
+
+    # Delegate to the Python helper. It either replaces this process with
+    # `podman exec ...` (never returning), or exits with
+    # $AUTOENTER_DECLINED_EXIT_CODE to signal "continue on the host".
+    my $helper = File::Spec->catfile($FindBin::Bin, "container-sdk-autoenter");
+    return unless -x $helper;
+    system($helper, Cwd::realpath($0) // $0, @ARGV);
+    my $status = exitStatus($?);
+    return if $status == $AUTOENTER_DECLINED_EXIT_CODE;
+    exit $status;
 }
 
 sub maybeUseContainerSDKRootDir()

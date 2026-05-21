@@ -418,6 +418,12 @@ _PATH_RULES_SPECIFIER = [
      ["-readability/naming/underscores",
       "-whitespace/tab"]),
 
+    ([  # WebKit Container SDK wrapper code passes Linux kernel mount-propagation
+        # ABI names to podman; those identifiers are dictated by the kernel and
+        # cannot be renamed.
+     os.path.join('Tools', 'Scripts', 'webkitpy', 'port', 'linux_container_sdk_utils.py')],
+     ["-non-inclusive-term"]),
+
     ([  # The GTK/WPE MiniBrowser uses public API and GLib-style conventions and indentation.
      os.path.join('Tools', 'MiniBrowser', 'gtk'),
      os.path.join('Tools', 'MiniBrowser', 'wpe')],

@@ -28,6 +28,9 @@ import optparse
 import sys
 import traceback
 
+from webkitpy.port.linux_container_sdk_utils import maybe_enter_webkit_container_sdk
+maybe_enter_webkit_container_sdk()
+
 from webkitpy.api_tests.manager import Manager
 from webkitpy.common.host import Host
 from webkitpy.layout_tests.views.metered_stream import MeteredStream

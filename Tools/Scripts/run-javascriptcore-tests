@@ -46,6 +46,8 @@ use webkitdirs;
 use Scalar::Util qw(looks_like_number);
 use Text::ParseWords;
 
+maybeEnterWebKitContainerSDK();
+
 # determine configuration
 setConfiguration();
 my $configuration = configuration();

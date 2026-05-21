@@ -48,6 +48,8 @@ use Text::ParseWords;
 
 sub writeCongrats();
 
+maybeEnterWebKitContainerSDK();
+
 checkRequiredSystemConfig();
 setConfiguration();
 
