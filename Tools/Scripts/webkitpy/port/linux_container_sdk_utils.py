@@ -204,7 +204,11 @@ def _build_podman_create_args(pinned_version):
         '--ulimit', 'host',
         '--pids-limit', '-1',
         '--tmpfs', '/tmp',
-        '--pid', 'host',
+        # No --pid host: crun rejects sharing the host PID namespace when the
+        # container is not creating its own cgroup ("containers not creating
+        # Cgroups must create a private PID namespace"). The build container
+        # runs `sleep infinity` as its own PID 1 with no systemd inside, so a
+        # private PID namespace is fine.
         '--ipc', 'host',
         '--network', 'host',
         '--pull=newer',
