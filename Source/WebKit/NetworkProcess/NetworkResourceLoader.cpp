@@ -181,8 +181,8 @@ NetworkResourceLoader::~NetworkResourceLoader()
     ASSERT(!m_networkLoad);
     ASSERT(!isSynchronous() || !m_synchronousLoadData->delayedReply);
     ASSERT(m_fileReferences.isEmpty());
-    if (m_responseCompletionHandler)
-        m_responseCompletionHandler(PolicyAction::Ignore);
+    while (!m_responseCompletionHandlers.isEmpty())
+        m_responseCompletionHandlers.takeFirst()(PolicyAction::Ignore);
 }
 
 Ref<NetworkConnectionToWebProcess> NetworkResourceLoader::protectedConnectionToWebProcess() const
@@ -607,7 +607,7 @@ void NetworkResourceLoader::cleanup(LoadResult result)
 
 void NetworkResourceLoader::convertToDownload(DownloadID downloadID, const ResourceRequest& request, const ResourceResponse& response)
 {
-    LOADER_RELEASE_LOG("convertToDownload: (downloadID=%" PRIu64 ", hasNetworkLoad=%d, hasResponseCompletionHandler=%d)", downloadID.toUInt64(), !!m_networkLoad, !!m_responseCompletionHandler);
+    LOADER_RELEASE_LOG("convertToDownload: (downloadID=%" PRIu64 ", hasNetworkLoad=%d, pendingResponseCompletionHandlers=%zu)", downloadID.toUInt64(), !!m_networkLoad, m_responseCompletionHandlers.size());
 
     RefPtr task = m_serviceWorkerFetchTask;
     if (task && task->convertToDownload(protectedConnectionToWebProcess()->networkProcess().checkedDownloadManager(), downloadID, request, response))
@@ -622,8 +622,12 @@ void NetworkResourceLoader::convertToDownload(DownloadID downloadID, const Resou
 
     auto networkLoad = std::exchange(m_networkLoad, nullptr);
 
-    if (m_responseCompletionHandler)
-        protectedConnectionToWebProcess()->networkProcess().checkedDownloadManager()->convertNetworkLoadToDownload(downloadID, networkLoad.releaseNonNull(), WTF::move(m_responseCompletionHandler), WTF::move(m_fileReferences), request, response);
+    if (!m_responseCompletionHandlers.isEmpty()) {
+        auto firstHandler = m_responseCompletionHandlers.takeFirst();
+        while (!m_responseCompletionHandlers.isEmpty())
+            m_responseCompletionHandlers.takeFirst()(PolicyAction::Ignore);
+        protectedConnectionToWebProcess()->networkProcess().checkedDownloadManager()->convertNetworkLoadToDownload(downloadID, networkLoad.releaseNonNull(), WTF::move(firstHandler), WTF::move(m_fileReferences), request, response);
+    }
 }
 
 void NetworkResourceLoader::abort()
@@ -686,7 +690,7 @@ void NetworkResourceLoader::transferToNewWebProcess(NetworkConnectionToWebProces
     if (parameters.options.resultingClientIdentifier && m_parameters.options.resultingClientIdentifier)
         send(Messages::WebResourceLoader::UpdateResultingClientIdentifier { *parameters.options.resultingClientIdentifier, *m_parameters.options.resultingClientIdentifier });
 
-    ASSERT(m_responseCompletionHandler || m_cacheEntryWaitingForContinueDidReceiveResponse || m_serviceWorkerFetchTask);
+    ASSERT(!m_responseCompletionHandlers.isEmpty() || m_cacheEntryWaitingForContinueDidReceiveResponse || m_serviceWorkerFetchTask);
     if (RefPtr serviceWorkerRegistration = m_serviceWorkerRegistration.get()) {
         if (RefPtr swConnection = newConnection.swConnection())
             swConnection->transferServiceWorkerLoadToNewWebProcess(*this, *serviceWorkerRegistration, parameters.request);
@@ -1058,7 +1062,7 @@ void NetworkResourceLoader::didReceiveResponse(ResourceResponse&& receivedRespon
             protectedConnectionToWebProcess()->networkProcess().protectedParentProcessConnection()->send(Messages::NetworkProcessProxy::ResourceLoadDidReceiveResponse(webPageProxyID(), resourceLoadInfo, response), 0);
 
         if (willWaitForContinueDidReceiveResponse) {
-            m_responseCompletionHandler = WTF::move(completionHandler);
+            m_responseCompletionHandlers.append(WTF::move(completionHandler));
             return;
         }
 
@@ -1559,7 +1563,7 @@ void NetworkResourceLoader::continueWillSendRequest(ResourceRequest&& newRequest
 
 void NetworkResourceLoader::continueDidReceiveResponse()
 {
-    LOADER_RELEASE_LOG("continueDidReceiveResponse: (hasCacheEntryWaitingForContinueDidReceiveResponse=%d, hasResponseCompletionHandler=%d)", !!m_cacheEntryWaitingForContinueDidReceiveResponse, !!m_responseCompletionHandler);
+    LOADER_RELEASE_LOG("continueDidReceiveResponse: (hasCacheEntryWaitingForContinueDidReceiveResponse=%d, pendingResponseCompletionHandlers=%zu)", !!m_cacheEntryWaitingForContinueDidReceiveResponse, m_responseCompletionHandlers.size());
     if (m_serviceWorkerFetchTask) {
         LOADER_RELEASE_LOG("continueDidReceiveResponse: continuing with ServiceWorkerFetchTask (fetchIdentifier=%" PRIu64 ")", m_serviceWorkerFetchTask->fetchIdentifier().toUInt64());
         protectedServiceWorkerFetchTask()->continueDidReceiveFetchResponse();
@@ -1572,8 +1576,8 @@ void NetworkResourceLoader::continueDidReceiveResponse()
         return;
     }
 
-    if (m_responseCompletionHandler)
-        m_responseCompletionHandler(PolicyAction::Use);
+    if (!m_responseCompletionHandlers.isEmpty())
+        m_responseCompletionHandlers.takeFirst()(PolicyAction::Use);
 }
 
 void NetworkResourceLoader::didSendData(uint64_t bytesSent, uint64_t totalBytesToBeSent)
