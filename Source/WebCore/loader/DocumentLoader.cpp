@@ -775,6 +775,18 @@ void DocumentLoader::willSendRequest(ResourceRequest&& newRequest, const Resourc
             stopLoadingForPolicyChange(navigationPolicyDecision == NavigationPolicyDecision::LoadWillContinueInAnotherProcess ? LoadWillContinueInAnotherProcess::Yes : LoadWillContinueInAnotherProcess::No);
             break;
         case NavigationPolicyDecision::ContinueLoad:
+            // The client may have updated the User-Agent (via webView.customUserAgent,
+            // WKWebpagePreferences._customUserAgent, an Inspector override, or a quirk
+            // triggered by the redirect target URL) during the policy callback. The
+            // redirected request still carries the previous request's User-Agent
+            // header, so FrameLoader::applyUserAgentIfNeeded() would skip it. Re-apply
+            // the authoritative UA here so all sources — including URL-dependent
+            // quirks — take effect on the redirected request.
+            if (RefPtr frameLoader = this->frameLoader()) {
+                String userAgent = frameLoader->userAgent(request.url());
+                if (!userAgent.isEmpty() && userAgent != request.httpUserAgent())
+                    request.setHTTPUserAgent(WTF::move(userAgent));
+            }
             break;
         }
 
