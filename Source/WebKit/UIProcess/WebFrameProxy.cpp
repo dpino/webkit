@@ -327,6 +327,8 @@ void WebFrameProxy::didFailProvisionalLoad()
 void WebFrameProxy::didCommitLoad(const String& contentType, const WebCore::CertificateInfo& certificateInfo, bool containsPluginDocument)
 {
     m_frameLoadState.didCommitLoad();
+    if (RefPtr page = m_page.get())
+        process().didCommitLoadClientOrigin(ClientOrigin { SecurityOriginData::fromURL(page->mainFrame()->url()), SecurityOriginData::fromURL(m_frameLoadState.url()) });
 
     m_title = String();
     m_MIMEType = contentType;
