@@ -390,7 +390,10 @@ def maybe_enter_webkit_container_sdk(argv=None):
     on first use using the version pinned in .wkdev-sdk-version.
 
     When already running inside a wkdev-sdk container, verify the running SDK
-    version matches the pinned one and warn loudly if not, but continue.
+    version matches the pinned one and warn loudly if not, but continue. The
+    in-container version check fires regardless of
+    WEBKIT_CONTAINER_SDK_ENABLE_AUTOENTER so users always learn when the
+    running container is out of sync with .wkdev-sdk-version.
 
     `argv` defaults to `sys.argv` when omitted; pass it explicitly when the
     caller is a wrapper (e.g. container-sdk-autoenter) whose own argv differs
@@ -410,21 +413,15 @@ def maybe_enter_webkit_container_sdk(argv=None):
     if any(os.environ.get(e) == '1' for e in ('WEBKIT_FLATPAK', 'WEBKIT_JHBUILD', 'WEBKIT_CONTAINER_SDK_INSIDE_MOUNT_NAMESPACE')):
         return
 
-    # Auto-enter is opt-in: bots and users flip it on via the environment.
-    if os.environ.get('WEBKIT_CONTAINER_SDK_ENABLE_AUTOENTER') != '1':
-        return
-
-    # Cross-target builds use their own toolchain wrapper (see webkitdirs.pm's
-    # runInCrossTargetEnvironment); don't double-wrap them in the SDK container.
-    if os.environ.get('WEBKIT_CROSS_TARGET'):
-        return
-
     source_dir = _source_dir()
     pinned_version = _read_pinned_sdk_version(source_dir)
     if not pinned_version:
         return
 
-    # Inside container: version-match check (warn, continue).
+    # Inside container: version-match check (warn, continue). Performed
+    # unconditionally -- the auto-enter opt-in below only gates host-side
+    # behavior, since by the time we are inside the container the user has
+    # already chosen the SDK they want to use.
     if os.environ.get('WEBKIT_CONTAINER_SDK') == '1':
         running_version = _read_running_sdk_version()
         if running_version and running_version != pinned_version:
@@ -436,6 +433,15 @@ def maybe_enter_webkit_container_sdk(argv=None):
                 '         from the host to recreate the container at the pinned version.',
                 '         Continuing with the current container.',
             ])
+        return
+
+    # Auto-enter is opt-in: bots and users flip it on via the environment.
+    if os.environ.get('WEBKIT_CONTAINER_SDK_ENABLE_AUTOENTER') != '1':
+        return
+
+    # Cross-target builds use their own toolchain wrapper (see webkitdirs.pm's
+    # runInCrossTargetEnvironment); don't double-wrap them in the SDK container.
+    if os.environ.get('WEBKIT_CROSS_TARGET'):
         return
 
     # Host side: podman is the only prerequisite.
