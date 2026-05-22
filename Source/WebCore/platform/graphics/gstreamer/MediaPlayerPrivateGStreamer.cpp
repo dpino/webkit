@@ -2137,6 +2137,10 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
                 }
                 break;
             }
+            if (g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_DECRYPT_NOKEY)) {
+                GST_DEBUG_OBJECT(pipeline(), "Ignoring decryption no-key error, the MediaKeySession will emit an updated keystatuses event");
+                break;
+            }
 
             GST_ERROR_OBJECT(pipeline(), "%s (url=%s) (code=%d)", err->message, m_url.string().utf8().data(), err->code);
 
@@ -2149,7 +2153,6 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
             error = MediaPlayer::NetworkState::Empty;
             if (g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_CODEC_NOT_FOUND)
                 || g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_DECRYPT)
-                || g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_DECRYPT_NOKEY)
                 || g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_WRONG_TYPE)
                 || g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_FAILED)
                 || g_error_matches(err.get(), GST_CORE_ERROR, GST_CORE_ERROR_MISSING_PLUGIN)
