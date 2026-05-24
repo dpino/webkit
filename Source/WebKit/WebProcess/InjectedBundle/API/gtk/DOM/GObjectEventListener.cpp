@@ -68,6 +68,7 @@ void GObjectEventListener::gobjectDestroyed()
 void GObjectEventListener::handleEvent(ScriptExecutionContext&, Event& event)
 {
     G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
     GValue parameters[2] = { G_VALUE_INIT, G_VALUE_INIT };
     g_value_init(&parameters[0], WEBKIT_DOM_TYPE_EVENT_TARGET);
     g_value_set_object(&parameters[0], m_target);
@@ -79,6 +80,7 @@ void GObjectEventListener::handleEvent(ScriptExecutionContext&, Event& event)
     g_closure_invoke(m_handler.get(), 0, 2, parameters, NULL);
     g_value_unset(parameters + 0);
     g_value_unset(parameters + 1);
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     G_GNUC_END_IGNORE_DEPRECATIONS;
 }
 

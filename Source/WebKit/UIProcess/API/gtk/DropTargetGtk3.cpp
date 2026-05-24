@@ -126,6 +126,7 @@ void DropTarget::accept(GdkDragContext* drop, std::optional<WebCore::IntPoint> p
         "org.webkitgtk.WebKit.custom-pasteboard-data"
     };
     Vector<GdkAtom, 4> targets;
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
     for (unsigned i = 0; i < G_N_ELEMENTS(supportedTargets); ++i) {
         GdkAtom atom = gdk_atom_intern_static_string(supportedTargets[i]);
         if (g_list_find(list, atom))
@@ -136,6 +137,7 @@ void DropTarget::accept(GdkDragContext* drop, std::optional<WebCore::IntPoint> p
                 targets.append(atom);
         }
     }
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
     if (targets.isEmpty())
         return;
@@ -185,10 +187,12 @@ void DropTarget::dataReceived(IntPoint&& position, GtkSelectionData* data, unsig
         const auto* markupData = gtk_selection_data_get_data_with_length(data, &length);
         if (length > 0) {
             // If data starts with UTF-16 BOM assume it's UTF-16, otherwise assume UTF-8.
+            WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
             if (length >= 2 && reinterpret_cast<const char16_t*>(markupData)[0] == 0xFEFF)
                 m_selectionData->setMarkup(String({ reinterpret_cast<const char16_t*>(markupData) + 1, static_cast<size_t>((length / 2) - 1) }));
             else
                 m_selectionData->setMarkup(String::fromUTF8(std::span(markupData, length)));
+            WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
         }
         break;
     }

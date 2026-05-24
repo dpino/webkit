@@ -57,7 +57,6 @@ static inline String nextToken(FILE* file)
 
     WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // Linux port
     char buffer[maxBuffer] = {0, };
-    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     unsigned int index = 0;
     while (index < maxBuffer) {
         int ch = fgetc(file);
@@ -68,6 +67,7 @@ static inline String nextToken(FILE* file)
             index++;
         }
     }
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
     return String::fromLatin1(buffer);
 }

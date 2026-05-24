@@ -531,6 +531,7 @@ void webkit_download_set_destination(WebKitDownload* download, const gchar* dest
 #if ENABLE(2022_GLIB_API)
     g_return_if_fail(g_path_is_absolute(destination));
 #else
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK/WPE
     g_return_if_fail(g_str_has_prefix(destination, "file://") || g_path_is_absolute(destination));
 
     GUniquePtr<char> destinationPath;
@@ -539,6 +540,7 @@ void webkit_download_set_destination(WebKitDownload* download, const gchar* dest
         destinationPath.reset(g_filename_from_uri(destination, nullptr, nullptr));
         destination = destinationPath.get();
     }
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 #endif
 
     if (g_strcmp0(download->priv->destination.get(), destination)) {

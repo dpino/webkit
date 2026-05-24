@@ -222,11 +222,13 @@ static Vector<GUniquePtr<cst_voice>>& fliteVoices()
     static Vector<GUniquePtr<cst_voice>> voices;
     static std::once_flag onceFlag;
     std::call_once(onceFlag, [] {
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK/WPE
         const unsigned voiceRegisterFunctionCount = sizeof(voiceRegisterFunctions) / sizeof(VoiceRegisterFunction);
         for (unsigned i = 0; i < voiceRegisterFunctionCount; ++i) {
             GUniquePtr<cst_voice> voice(voiceRegisterFunctions[i](nullptr));
             voices.append(WTF::move(voice));
         }
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     });
     return voices;
 }

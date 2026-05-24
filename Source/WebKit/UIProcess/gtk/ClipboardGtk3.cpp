@@ -81,10 +81,12 @@ void Clipboard::formats(CompletionHandler<void(Vector<String>&&)>&& completionHa
         std::unique_ptr<FormatsAsyncData> data(static_cast<FormatsAsyncData*>(userData));
 
         Vector<String> result;
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
         for (int i = 0; i < atomsCount; ++i) {
             GUniquePtr<char> atom(gdk_atom_name(atoms[i]));
             result.append(String::fromUTF8(atom.get()));
         }
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
         data->completionHandler(WTF::move(result));
     }, new FormatsAsyncData(WTF::move(completionHandler)));
 }
@@ -124,11 +126,13 @@ void Clipboard::readFilePaths(CompletionHandler<void(Vector<String>&&)>&& comple
     gtk_clipboard_request_uris(m_clipboard, [](GtkClipboard*, char** uris, gpointer userData) {
         std::unique_ptr<ReadFilePathsAsyncData> data(static_cast<ReadFilePathsAsyncData*>(userData));
         Vector<String> result;
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
         for (unsigned i = 0; uris && uris[i]; ++i) {
             GUniquePtr<gchar> filename(g_filename_from_uri(uris[i], nullptr, nullptr));
             if (filename)
                 result.append(String::fromUTF8(filename.get()));
         }
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
         data->completionHandler(WTF::move(result));
     }, new ReadFilePathsAsyncData(WTF::move(completionHandler)));
 }

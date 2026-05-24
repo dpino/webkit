@@ -109,11 +109,13 @@ GHashTable* webkit_form_submission_request_get_text_fields(WebKitFormSubmissionR
 
     if (!request->priv->values && request->priv->textFieldNames->len) {
         request->priv->values = adoptGRef(g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free));
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
         for (unsigned i = 0; i < request->priv->textFieldNames->len; i++) {
             GUniquePtr<char> name(g_strdup(static_cast<char*>(request->priv->textFieldNames->pdata[i])));
             GUniquePtr<char> value(g_strdup(static_cast<char*>(request->priv->textFieldValues->pdata[i])));
             g_hash_table_insert(request->priv->values.get(), name.release(), value.release());
         }
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     }
 
     return request->priv->values.get();

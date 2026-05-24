@@ -360,7 +360,6 @@ EGLContext GLContext::createContextForEGLVersion(EGLDisplay eglDisplay, EGLConfi
 {
     WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GLib / Windows ports.
     static EGLint contextAttributes[3];
-    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     static bool contextAttributesInitialized = false;
 
     if (!contextAttributesInitialized) {
@@ -372,6 +371,7 @@ EGLContext GLContext::createContextForEGLVersion(EGLDisplay eglDisplay, EGLConfi
     }
 
     return eglCreateContext(eglDisplay, config, sharingContext, contextAttributes);
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 }
 
 bool GLContext::makeCurrentImpl()

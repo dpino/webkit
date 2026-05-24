@@ -17,7 +17,9 @@ enum {
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
 
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN // GTK
 G_DEFINE_TYPE(WebKitDOMObject, webkit_dom_object, G_TYPE_OBJECT)
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
 static void webkit_dom_object_init(WebKitDOMObject*)
 {
