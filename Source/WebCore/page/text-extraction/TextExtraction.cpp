@@ -193,6 +193,8 @@ static inline TextNodesAndText collectText(const SimpleRange& range, IncludeText
 
 using ClientNodeAttributesMap = WeakHashMap<Node, HashMap<String, String>, WeakPtrImplWithEventTargetData>;
 
+static constexpr unsigned maxExtractionRecursionDepth = 255;
+
 struct TraversalContext {
     const Request originalRequest;
     const ClientNodeAttributesMap clientNodeAttributes;
@@ -202,6 +204,8 @@ struct TraversalContext {
     const FrameIdentifier frameIdentifier;
     Vector<WeakPtr<Node, WeakPtrImplWithEventTargetData>> enclosingBlocks;
     WeakHashMap<Node, unsigned, WeakPtrImplWithEventTargetData> enclosingBlockNumberMap;
+    WeakHashSet<Node, WeakPtrImplWithEventTargetData> visitedContainers;
+    unsigned depth { 0 };
     unsigned onlyCollectTextAndLinksCount { 0 };
     bool mergeParagraphs { false };
     bool skipNearlyTransparentContent { false };
@@ -679,8 +683,21 @@ static bool areSameOrigin(Document& document, Document& other)
 
 static inline void extractRecursive(Node& node, Item& parentItem, TraversalContext& context)
 {
+    if (context.depth >= maxExtractionRecursionDepth)
+        return;
+
     if (context.nodesToSkip.contains(node))
         return;
+
+    if (RefPtr container = dynamicDowncast<ContainerNode>(node)) {
+        if (!context.visitedContainers.add(*container).isNewEntry)
+            return;
+    }
+
+    ++context.depth;
+    auto depthScope = makeScopeExit([&] {
+        --context.depth;
+    });
 
     bool isBlock = WebCore::isBlock(node);
     if (isBlock)
@@ -1077,6 +1094,8 @@ Item extractItem(Request&& request, LocalFrame& frame)
             .frameIdentifier = WTF::move(frameID),
             .enclosingBlocks = { },
             .enclosingBlockNumberMap = { },
+            .visitedContainers = { },
+            .depth = 0,
             .onlyCollectTextAndLinksCount = 0,
             .mergeParagraphs = request.mergeParagraphs,
             .skipNearlyTransparentContent = request.skipNearlyTransparentContent,
