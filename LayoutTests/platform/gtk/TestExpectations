@@ -121,6 +121,7 @@ webkit.org/b/254733 inspector/canvas/recording-offscreen-webgl-full.html [ Failu
 webkit.org/b/254733 inspector/canvas/recording-offscreen-webgl-memoryLimit.html [ Failure Pass ]
 webkit.org/b/254733 inspector/canvas/shaderProgram-add-remove-webgl2.html [ Failure ]
 webkit.org/b/254733 inspector/canvas/shaderProgram-add-remove-webgl.html [ Failure ]
+inspector/canvas/setShaderProgramHighlighted.html [ Pass Failure ]
 
 # Crash on EWS bot.
 webrtc/vp8-then-h264-gpu-process-crash.html [ Skip ]

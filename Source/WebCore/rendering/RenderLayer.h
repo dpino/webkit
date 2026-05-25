@@ -1070,6 +1070,7 @@ private:
     LayoutRect clipRectRelativeToAncestor(const RenderLayer* ancestor, LayoutSize offsetFromAncestor, const LayoutRect& constrainingRect, bool temporaryClipRects = false) const;
 
     void clipToRect(GraphicsContext&, GraphicsContextStateSaver&, RegionContextStateSaver&, const LayerPaintingInfo&, OptionSet<PaintBehavior>, const ClipRect&, BorderRadiusClippingRule = IncludeSelfForBorderRadius);
+    void applyAncestorClippingForBorderRadius(GraphicsContext&, const LayerPaintingInfo&, OptionSet<PaintBehavior>, BorderRadiusClippingRule = IncludeSelfForBorderRadius);
 
     bool shouldRepaintAfterLayout() const;
 
