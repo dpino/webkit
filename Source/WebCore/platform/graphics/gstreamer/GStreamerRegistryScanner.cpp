@@ -1079,6 +1079,20 @@ GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::isConfi
             videoConfiguration.bitrate, videoConfiguration.framerate);
 #endif
 
+        if (configuration == Configuration::Decoding) {
+            if (auto* videoDecodingLimits = resolveVideoDecodingLimits()) {
+                if (videoConfiguration.width > videoDecodingLimits->mediaMaxWidth
+                    || videoConfiguration.height > videoDecodingLimits->mediaMaxHeight
+                    || videoConfiguration.framerate > videoDecodingLimits->mediaMaxFrameRate) {
+                    GST_DEBUG("Video configuration %ux%u@%f exceeds decoding limits %ux%u@%u",
+                        videoConfiguration.width, videoConfiguration.height, videoConfiguration.framerate,
+                        videoDecodingLimits->mediaMaxWidth, videoDecodingLimits->mediaMaxHeight,
+                        videoDecodingLimits->mediaMaxFrameRate);
+                    return { false, false, nullptr };
+                }
+            }
+        }
+
 #if ENABLE(WPE_PLATFORM)
         Ref platformScreen = PlatformScreen::singleton();
         auto* scrData = platformScreen->screenData(PlatformScreen::singleton()->primaryScreenDisplayID());
