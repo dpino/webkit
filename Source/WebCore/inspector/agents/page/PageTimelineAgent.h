@@ -90,6 +90,7 @@ private:
 #endif
     bool m_startedComposite { false };
     bool m_isCapturingScreenshot { false };
+    MonotonicTime m_lastCaptureTime;
 };
 
 } // namespace WebCore

@@ -326,6 +326,12 @@ bool PageTimelineAgent::shouldStartHeapInstrument() const
 
 void PageTimelineAgent::captureScreenshot()
 {
+    auto now = MonotonicTime::now();
+    static constexpr Seconds minScreenshotInterval = 250_ms;
+    if (now - m_lastCaptureTime < minScreenshotInterval)
+        return;
+    m_lastCaptureTime = now;
+
     SetForScope isTakingScreenshot(m_isCapturingScreenshot, true);
 
     auto snapshotStartTime = timestamp();
@@ -340,7 +346,8 @@ void PageTimelineAgent::captureScreenshot()
         return;
 
     if (auto snapshot = snapshotFrameRect(*localMainFrame, localMainFrameView->unobscuredContentRect(), { { }, PixelFormat::BGRA8, DestinationColorSpace::SRGB() })) {
-        auto snapshotRecord = TimelineRecordFactory::createScreenshotData(snapshot->toDataURL("image/png"_s));
+        auto dataUrl = snapshot->toDataURL("image/jpeg"_s, 0.7);
+        auto snapshotRecord = TimelineRecordFactory::createScreenshotData(dataUrl);
         pushCurrentRecord(WTF::move(snapshotRecord), TimelineRecordType::Screenshot, false, snapshotStartTime);
         didCompleteCurrentRecord(TimelineRecordType::Screenshot);
     }
