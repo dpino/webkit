@@ -2611,8 +2611,6 @@ webkit.org/b/222753 fast/text/multi-code-unit-simple-path.html [ ImageOnlyFailur
 
 webkit.org/b/223416 fast/text/image-alt-text-bidi-2.html [ ImageOnlyFailure ]
 
-fast/text/font-load-data-partitioned-alphabet.html [ Failure ]
-
 # Slightly different results, even if hyphenation happens, it probably needs to be checked.
 fast/text/simple-line-layout-hyphen-limit-before.html [ ImageOnlyFailure ]
 fast/text/simple-line-layout-hyphen-limit-lines.html [ ImageOnlyFailure ]
