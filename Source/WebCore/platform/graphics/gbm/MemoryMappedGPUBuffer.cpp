@@ -232,10 +232,12 @@ std::unique_ptr<MemoryMappedGPUBuffer> MemoryMappedGPUBuffer::create(const IntSi
         CRASH();
     }
 
+    /*
     if (flags.contains(BufferFlag::ForceVivanteSuperTiled) && (!bufferFormat.has_value() || !bufferFormat->modifiers.contains(DRM_FORMAT_MOD_VIVANTE_SUPER_TILED))) {
         WTFLogAlways("ERROR: ForceVivanteSuperTiled flag set but DRM_FORMAT_MOD_VIVANTE_SUPER_TILED not supported by the negotiated buffer format. Aborting ..."); // NOLINT
         CRASH();
     }
+    */
 
     if (!bufferFormat.has_value()) {
         RELEASE_LOG_ERROR(GraphicsBuffer, "MemoryMappedGPUBuffer::create(), failed to negotiate buffer format");
@@ -274,10 +276,12 @@ struct gbm_bo* MemoryMappedGPUBuffer::allocate(struct gbm_device* device, const 
     if (!bufferFormat.modifiers.isEmpty())
         bo = gbm_bo_create_with_modifiers2(device, allocateSize.width(), allocateSize.height(), bufferFormat.fourcc.value, bufferFormat.modifiers.span().data(), bufferFormat.modifiers.size(), GBM_BO_USE_RENDERING);
 
+    /*
     if (m_flags.contains(BufferFlag::ForceVivanteSuperTiled) && !bo) {
         WTFLogAlways("ERROR: ForceVivanteSuperTiled flag set but GBM couldn't allocate the buffer using gbm_bo_create_with_modifiers2. Aborting ..."); // NOLINT
         CRASH();
     }
+    */
 
     if (bo) {
         m_modifier = gbm_bo_get_modifier(bo);
