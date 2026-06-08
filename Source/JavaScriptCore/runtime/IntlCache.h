@@ -25,10 +25,15 @@
 
 #pragma once
 
+#include "IntlDateTimeFormat.h"
 #include <unicode/udatpg.h>
 #include <wtf/HashMap.h>
 #include <wtf/Noncopyable.h>
+#include <wtf/RefPtr.h>
 #include <wtf/TZoneMalloc.h>
+#include <wtf/TinyLRUCache.h>
+#include <wtf/Variant.h>
+#include <wtf/Vector.h>
 #include <wtf/text/CString.h>
 #include <wtf/text/StringHash.h>
 #include <wtf/text/WTFString.h>
@@ -36,16 +41,41 @@
 
 namespace JSC {
 
+enum class UndefinedLocale : bool { Undefined };
+
+struct IntlDateTimeFormatImplKey {
+    Variant<UndefinedLocale, String> locales = UndefinedLocale::Undefined;
+    IntlDateTimeFormat::RequiredComponent required { IntlDateTimeFormat::RequiredComponent::Any };
+    IntlDateTimeFormat::Defaults defaults { IntlDateTimeFormat::Defaults::All };
+
+    friend bool operator==(const IntlDateTimeFormatImplKey&, const IntlDateTimeFormatImplKey&) = default;
+};
+
 class IntlCache {
     WTF_MAKE_NONCOPYABLE(IntlCache);
     WTF_MAKE_TZONE_ALLOCATED(IntlCache);
 public:
-    IntlCache() = default;
+    IntlCache();
+    ~IntlCache();
 
     Vector<char16_t, 32> getBestDateTimePattern(const CString& locale, std::span<const char16_t> skeleton, UErrorCode&);
     Vector<char16_t, 32> getFieldDisplayName(const CString& locale, UDateTimePatternField, UDateTimePGDisplayWidth, UErrorCode&);
 
     String canonicalizeUnicodeLocaleID(const String& languageTag);
+    static constexpr size_t dateTimeFormatImplCacheCapacity = 4;
+    using DateTimeFormatImplCache = WTF::TinyLRUCache<IntlDateTimeFormatImplKey, RefPtr<const IntlDateTimeFormatImpl>, dateTimeFormatImplCacheCapacity>;
+    // Drops stale entries before access.
+    DateTimeFormatImplCache& dateTimeFormatImplCache()
+    {
+        if (hasLanguageChange()) [[unlikely]]
+            clearForLanguageChange();
+        return m_cachedDateTimeFormatImpls;
+    }
+
+    void clear() { m_cachedDateTimeFormatImpls.clear(); }
+    void clearForTimeZoneChange() { clear(); }
+    bool hasLanguageChange() const;
+    void clearForLanguageChange();
 
 private:
     UDateTimePatternGenerator* getSharedPatternGenerator(const CString& locale, UErrorCode& status)
@@ -62,6 +92,9 @@ private:
     std::unique_ptr<UDateTimePatternGenerator, ICUDeleter<udatpg_close>> m_cachedDateTimePatternGenerator;
     CString m_cachedDateTimePatternGeneratorLocale;
     UncheckedKeyHashMap<String, String> m_cachedCanonicalizedLocaleIDs;
+
+    DateTimeFormatImplCache m_cachedDateTimeFormatImpls;
+    uint64_t m_lastSeenLanguagesGeneration { 0 };
 };
 
 } // namespace JSC
