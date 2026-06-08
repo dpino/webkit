@@ -25,14 +25,49 @@
 
 #include "config.h"
 #include "IntlCache.h"
-#include "IntlObject.h"
 
+#include "IntlDateTimeFormat.h"
+#include "IntlObject.h"
+#include <atomic>
+#include <mutex>
+#include <wtf/Language.h>
 #include <wtf/TZoneMallocInlines.h>
 #include <wtf/Vector.h>
 
 namespace JSC {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(IntlCache);
+
+static std::atomic<uint64_t> s_languagesGeneration { 1 };
+
+static void ensureLanguageChangeObserverInstalled()
+{
+    static std::once_flag onceKey;
+    std::call_once(onceKey, [] {
+        WTF::addLanguageChangeObserver(&s_languagesGeneration, [](void*) {
+            s_languagesGeneration.fetch_add(1, std::memory_order_relaxed);
+        });
+    });
+}
+
+IntlCache::IntlCache()
+    : m_lastSeenLanguagesGeneration(s_languagesGeneration.load(std::memory_order_relaxed))
+{
+    ensureLanguageChangeObserverInstalled();
+}
+
+IntlCache::~IntlCache() = default;
+
+bool IntlCache::hasLanguageChange() const
+{
+    return m_lastSeenLanguagesGeneration != s_languagesGeneration.load(std::memory_order_relaxed);
+}
+
+void IntlCache::clearForLanguageChange()
+{
+    m_lastSeenLanguagesGeneration = s_languagesGeneration.load(std::memory_order_relaxed);
+    clear();
+}
 
 UDateTimePatternGenerator* IntlCache::cacheSharedPatternGenerator(const CString& locale, UErrorCode& status)
 {
