@@ -738,6 +738,22 @@ void IntlDateTimeFormat::initializeDateTimeFormat(JSGlobalObject* globalObject, 
     VM& vm = globalObject->vm();
     auto scope = DECLARE_THROW_SCOPE(vm);
 
+    std::optional<IntlDateTimeFormatImplKey> cacheKey;
+    const bool canCache = originalOptions.isUndefined() && (locales.isUndefined() || locales.isString()) && !globalObject->isHavingABadTime();
+    if (canCache) {
+        IntlDateTimeFormatImplKey key { .required = required, .defaults = defaults };
+        if (locales.isString()) {
+            key.locales = asString(locales)->value(globalObject);
+            RETURN_IF_EXCEPTION(scope, void());
+        }
+        if (auto cachedImpl = vm.intlCache().dateTimeFormatImplCache().findIfCached(key)) {
+            setImpl(cachedImpl->copyRef().releaseNonNull());
+            vm.heap.reportExtraMemoryAllocated(this, estimatedUDateFormatSize);
+            return;
+        }
+        cacheKey = WTF::move(key);
+    }
+
     Vector<String> requestedLocales = canonicalizeLocaleList(globalObject, locales);
     RETURN_IF_EXCEPTION(scope, void());
 
@@ -1068,6 +1084,9 @@ void IntlDateTimeFormat::initializeDateTimeFormat(JSGlobalObject* globalObject, 
     }
 
     vm.heap.reportExtraMemoryAllocated(this, estimatedUDateFormatSize);
+
+    if (cacheKey)
+        vm.intlCache().dateTimeFormatImplCache().insert(*cacheKey, RefPtr<const IntlDateTimeFormatImpl>(impl.copyRef()));
     m_impl = WTF::move(impl);
 }
 
