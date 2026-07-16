@@ -36,6 +36,7 @@
 #include "TransformationMatrix.h"
 #include <wtf/Lock.h>
 #include <wtf/ThreadSafeRefCounted.h>
+#include <wtf/ThreadSafeWeakPtr.h>
 
 namespace WebCore {
 class CoordinatedAnimatedBackingStoreClient;
@@ -59,7 +60,7 @@ class PaintingEngine;
 }
 #endif
 
-class CoordinatedPlatformLayer : public ThreadSafeRefCounted<CoordinatedPlatformLayer> {
+class CoordinatedPlatformLayer : public ThreadSafeRefCountedAndCanMakeThreadSafeWeakPtr<CoordinatedPlatformLayer> {
 public:
     // FIXME: remove this client when a subclass is added for the WebProcess.
     class Client {
@@ -167,6 +168,8 @@ public:
 
     void setAnimations(const TextureMapperAnimations&);
 
+    RefPtr<CoordinatedPlatformLayer> parent() const { return m_parent.get(); }
+
     void setChildren(Vector<Ref<CoordinatedPlatformLayer>>&&);
     const Vector<Ref<CoordinatedPlatformLayer>>& children() const;
 
@@ -198,6 +201,8 @@ public:
 
 private:
     explicit CoordinatedPlatformLayer(Client*);
+
+    void removeFromParent();
 
     void notifyCompositionRequired();
 
@@ -304,6 +309,7 @@ private:
     RefPtr<CoordinatedPlatformLayer> m_backdrop WTF_GUARDED_BY_LOCK(m_lock);
     FloatRoundedRect m_backdropRect WTF_GUARDED_BY_LOCK(m_lock);
     TextureMapperAnimations m_animations WTF_GUARDED_BY_LOCK(m_lock);
+    ThreadSafeWeakPtr<CoordinatedPlatformLayer> m_parent WTF_GUARDED_BY_LOCK(m_lock);
     Vector<Ref<CoordinatedPlatformLayer>> m_children WTF_GUARDED_BY_LOCK(m_lock);
     EventRegion m_eventRegion WTF_GUARDED_BY_LOCK(m_lock);
     Color m_debugBorderColor WTF_GUARDED_BY_LOCK(m_lock);

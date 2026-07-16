@@ -659,9 +659,38 @@ void CoordinatedPlatformLayer::setChildren(Vector<Ref<CoordinatedPlatformLayer>>
     if (m_children == children)
         return;
 
+    while (!m_children.isEmpty()) {
+        auto child = m_children.takeLast();
+        Locker childLocker { child->m_lock };
+        child->m_parent = nullptr;
+    }
+
     m_children = WTF::move(children);
+
+    for (auto& child : m_children) {
+        Locker childLocker { child->m_lock };
+        child->removeFromParent();
+        child->m_parent = this;
+    }
+
     m_pendingChanges.add(Change::Children);
     notifyCompositionRequired();
+}
+
+void CoordinatedPlatformLayer::removeFromParent()
+{
+    ASSERT(m_lock.isHeld());
+    RefPtr parent = m_parent.get();
+    if (!parent)
+        return;
+
+    m_parent = nullptr;
+
+    Locker parentLocker { parent->m_lock };
+
+    parent->m_children.removeFirstMatching([this](auto& layer) {
+        return layer.ptr() == this;
+    });
 }
 
 const Vector<Ref<CoordinatedPlatformLayer>>& CoordinatedPlatformLayer::children() const

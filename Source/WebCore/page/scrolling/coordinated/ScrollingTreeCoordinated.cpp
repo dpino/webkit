@@ -111,10 +111,10 @@ void ScrollingTreeCoordinated::didCompletePlatformRenderingUpdate()
     renderingUpdateComplete();
 }
 
-static bool collectDescendantLayersAtPoint(Vector<Ref<CoordinatedPlatformLayer>>& layersAtPoint, const Ref<CoordinatedPlatformLayer>& parent, const FloatPoint& point)
+using LayerAndPoint = std::pair<Ref<CoordinatedPlatformLayer>, FloatPoint>;
+
+static void collectDescendantLayersAtPoint(Vector<LayerAndPoint>& layersAtPoint, const Ref<CoordinatedPlatformLayer>& parent, const FloatPoint& point)
 {
-    bool existsOnDescendent = false;
-    bool existsOnLayer = !!parent->scrollingNodeID() && parent->bounds().contains(point) && parent->eventRegion().contains(roundedIntPoint(point));
     for (auto& child : parent->children()) {
         Locker childLocker { child->lock() };
         FloatPoint transformedPoint(point);
@@ -128,13 +128,37 @@ static bool collectDescendantLayersAtPoint(Vector<Ref<CoordinatedPlatformLayer>>
             auto pointInChildSpace = transform.projectPoint(point);
             transformedPoint.set(pointInChildSpace.x(), pointInChildSpace.y());
         }
-        existsOnDescendent |= collectDescendantLayersAtPoint(layersAtPoint, child, transformedPoint);
+        if (child->bounds().contains(transformedPoint) && (child->eventRegion().contains(roundedIntPoint(transformedPoint)) || child->scrollingNodeID()))
+            layersAtPoint.append({ child, transformedPoint });
+        collectDescendantLayersAtPoint(layersAtPoint, child, transformedPoint);
+    }
+}
+
+static bool isScrolledBy(const ScrollingTree& tree, ScrollingNodeID scrollingNodeID, const RefPtr<CoordinatedPlatformLayer>& hitLayer)
+{
+    for (auto layer = hitLayer; layer;) {
+        Locker locker { layer->lock() };
+
+        auto nodeID = layer->scrollingNodeID();
+        if (nodeID == scrollingNodeID)
+            return true;
+
+        RefPtr scrollingNode = tree.nodeForID(nodeID);
+        if (RefPtr proxyNode = dynamicDowncast<ScrollingTreeOverflowScrollProxyNode>(scrollingNode)) {
+            auto actingOverflowScrollingNodeID = proxyNode->overflowScrollingNodeID();
+            if (actingOverflowScrollingNodeID == scrollingNodeID)
+                return true;
+        }
+
+        if (RefPtr positionedNode = dynamicDowncast<ScrollingTreePositionedNode>(scrollingNode)) {
+            if (positionedNode->relatedOverflowScrollingNodes().contains(scrollingNodeID))
+                return false;
+        }
+
+        layer = layer->parent();
     }
 
-    if (existsOnLayer && !existsOnDescendent)
-        layersAtPoint.append(parent);
-
-    return existsOnLayer || existsOnDescendent;
+    return false;
 }
 
 RefPtr<ScrollingTreeNode> ScrollingTreeCoordinated::scrollingNodeForPoint(FloatPoint point)
@@ -146,16 +170,29 @@ RefPtr<ScrollingTreeNode> ScrollingTreeCoordinated::scrollingNodeForPoint(FloatP
     Locker layerLocker { m_layerHitTestMutex };
 
     auto rootContentsLayer = static_cast<ScrollingTreeFrameScrollingNodeCoordinated*>(rootScrollingNode)->rootContentsLayer();
-    Vector<Ref<CoordinatedPlatformLayer>> layersAtPoint;
+    Vector<LayerAndPoint> layersAtPoint;
     {
         Locker rootContentsLayerLocker { rootContentsLayer->lock() };
         collectDescendantLayersAtPoint(layersAtPoint, Ref { *rootContentsLayer }, point);
     }
 
-    for (auto& layer : layersAtPoint | std::views::reverse) {
-        Locker locker { layer->lock() };
-        auto* scrollingNode = nodeForID(layer->scrollingNodeID());
-        if (is<ScrollingTreeScrollingNode>(scrollingNode))
+    RefPtr<CoordinatedPlatformLayer> frontmostInteractiveLayer;
+    for (auto& [layer, transformedPoint] : layersAtPoint | std::views::reverse) {
+        RefPtr<ScrollingTreeNode> scrollingNode;
+
+        {
+            Locker layerLocker { layer->lock() };
+
+            if (!layer->eventRegion().contains(roundedIntPoint(transformedPoint)))
+                continue;
+
+            if (!frontmostInteractiveLayer)
+                frontmostInteractiveLayer = layer.get();
+
+            scrollingNode = nodeForID(layer->scrollingNodeID());
+        }
+
+        if (is<ScrollingTreeScrollingNode>(scrollingNode) && isScrolledBy(*this, scrollingNode->scrollingNodeID(), frontmostInteractiveLayer))
             return scrollingNode;
     }
 
