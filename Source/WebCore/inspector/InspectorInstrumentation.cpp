@@ -1187,22 +1187,18 @@ void InspectorInstrumentation::consoleStopRecordingCanvasImpl(InstrumentingAgent
         canvasAgent->consoleStopRecordingCanvas(context);
 }
 
-<<<<<<< HEAD
 void InspectorInstrumentation::consoleStopRecordingCanvasImpl(InstrumentingAgents& instrumentingAgents, GPUDevice& device)
 {
     if (CheckedPtr canvasAgent = instrumentingAgents.enabledCanvasAgent())
         canvasAgent->consoleStopRecordingCanvas(device);
 }
 
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-=======
 void InspectorInstrumentation::bindingCalledImpl(InstrumentingAgents& instrumentingAgents, JSC::JSGlobalObject* globalObject, const String& name, const String& arg)
 {
     if (auto* pageRuntimeAgent = instrumentingAgents.enabledPageRuntimeAgent())
         pageRuntimeAgent->bindingCalled(globalObject, name, arg);
 }
 
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
 void InspectorInstrumentation::didDispatchDOMStorageEventImpl(InstrumentingAgents& instrumentingAgents, const String& key, const String& oldValue, const String& newValue, StorageType storageType, const SecurityOrigin& securityOrigin)
 {
     if (auto* domStorageAgent = instrumentingAgents.enabledDOMStorageAgent())

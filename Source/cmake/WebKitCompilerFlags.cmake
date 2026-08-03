@@ -161,15 +161,9 @@ set(WEBKIT_UNSAFE_BUFFER_WARNING_FLAGS
 )
 option(ENABLE_UNSAFE_BUFFER_USAGE_WARNING "Build with -Wunsafe-buffer-usage" OFF)
 
-<<<<<<< HEAD
 option(ENABLE_THREAD_SAFETY_WARNING "Build with -Wthread-safety" OFF)
 
-option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" ON)
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" ON)
-=======
 option(DEVELOPER_MODE_FATAL_WARNINGS "Build with warnings as errors if DEVELOPER_MODE is also enabled" OFF)
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
 set(DEVELOPER_MODE_CXX_FLAGS)
 if (DEVELOPER_MODE AND DEVELOPER_MODE_FATAL_WARNINGS)
     if (MSVC)

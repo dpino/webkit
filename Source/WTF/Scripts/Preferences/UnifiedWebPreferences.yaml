@@ -212,14 +212,8 @@ AccessHandleEnabled:
       default: false
     WebKit:
       "PLATFORM(COCOA)" : true
-<<<<<<< HEAD
       "PLATFORM(GTK) || PLATFORM(WPE)" : true
-      default: false
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-      default: false
-=======
       default: true
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     WebCore:
       "PLATFORM(COCOA)" : true
       "PLATFORM(GTK) || PLATFORM(WPE)" : true
@@ -3301,14 +3295,8 @@ FileSystemEnabled:
       default: false
     WebKit:
       "PLATFORM(COCOA)" : true
-<<<<<<< HEAD
       "PLATFORM(GTK) || PLATFORM(WPE)" : true
-      default: false
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-      default: false
-=======
       default: true
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     WebCore:
       "PLATFORM(COCOA)" : true
       "PLATFORM(GTK) || PLATFORM(WPE)" : true
@@ -3347,14 +3335,8 @@ FileSystemWritableStreamEnabled:
       default: false
     WebKit:
       "PLATFORM(COCOA)" : true
-<<<<<<< HEAD
       "PLATFORM(GTK) || PLATFORM(WPE)": true
-      default: false
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-      default: false
-=======
       default: true
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     WebCore:
       "PLATFORM(COCOA)" : true
       "PLATFORM(GTK) || PLATFORM(WPE)": true
@@ -8538,14 +8520,8 @@ StorageAPIEnabled:
       default: false
     WebKit:
       "PLATFORM(COCOA)" : true
-<<<<<<< HEAD
       "PLATFORM(GTK) || PLATFORM(WPE)": true
-      default: false
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-      default: false
-=======
       default: true
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     WebCore:
       "PLATFORM(COCOA)" : true
       "PLATFORM(GTK) || PLATFORM(WPE)": true
@@ -8563,14 +8539,8 @@ StorageAPIEstimateEnabled:
       default: false
     WebKit:
       "PLATFORM(COCOA)" : true
-<<<<<<< HEAD
       "PLATFORM(GTK) || PLATFORM(WPE)": true
-      default: false
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-      default: false
-=======
       default: true
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     WebCore:
       "PLATFORM(COCOA)" : true
       "PLATFORM(GTK) || PLATFORM(WPE)": true

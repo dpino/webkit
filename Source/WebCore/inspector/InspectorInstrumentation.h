@@ -87,12 +87,8 @@ class Document;
 class DocumentLoader;
 class DocumentThreadableLoader;
 class EventListener;
-<<<<<<< HEAD
 class GPUDevice;
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-=======
 class HTMLInputElement;
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
 class HTTPHeaderMap;
 class InspectorTimelineAgent;
 class InstrumentingAgents;
@@ -299,12 +295,8 @@ public:
     static void consoleStartRecordingCanvas(CanvasRenderingContext&, JSC::JSGlobalObject&, JSC::JSObject* options);
     static void consoleStartRecordingCanvas(GPUDevice&, JSC::JSGlobalObject&, JSC::JSObject* options);
     static void consoleStopRecordingCanvas(CanvasRenderingContext&);
-<<<<<<< HEAD
     static void consoleStopRecordingCanvas(GPUDevice&);
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-=======
     static void bindingCalled(Page& , JSC::JSGlobalObject*, const String& name, const String& arg);
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
 
     static void performanceMark(ScriptExecutionContext&, const String&, std::optional<MonotonicTime>);
 
@@ -531,12 +523,8 @@ private:
     static void consoleStartRecordingCanvasImpl(InstrumentingAgents&, CanvasRenderingContext&, JSC::JSGlobalObject&, JSC::JSObject* options);
     static void consoleStartRecordingCanvasImpl(InstrumentingAgents&, GPUDevice&, JSC::JSGlobalObject&, JSC::JSObject* options);
     static void consoleStopRecordingCanvasImpl(InstrumentingAgents&, CanvasRenderingContext&);
-<<<<<<< HEAD
     static void consoleStopRecordingCanvasImpl(InstrumentingAgents&, GPUDevice&);
-||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
-=======
     static void bindingCalledImpl(InstrumentingAgents&, JSC::JSGlobalObject*, const String& name, const String& arg);
->>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
 
     static void performanceMarkImpl(InstrumentingAgents&, const String& label, std::optional<MonotonicTime>);
     static void didEnqueueFirstContentfulPaintImpl(InstrumentingAgents&);
