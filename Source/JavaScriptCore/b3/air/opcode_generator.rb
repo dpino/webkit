@@ -734,6 +734,7 @@ writeH("OpcodeUtils") {
     outp.puts "WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN"
     outp.puts ""
     outp.puts "#if ENABLE(B3_JIT)"
+<<<<<<< HEAD
 
     outp.puts "#include \"AirCustom.h\""
     outp.puts "#include \"AirInst.h\""
@@ -741,6 +742,15 @@ writeH("OpcodeUtils") {
 
     # The undefs have to follow every #include: <windows.h> defines macros named
     # after some opcodes, so anything that pulls it in later would put them back.
+||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
+
+=======
+    outp.puts ""
+    outp.puts "#include \"AirCustom.h\""
+    outp.puts "#include \"AirInst.h\""
+    outp.puts "#include \"AirFormTable.h\""
+    outp.puts ""
+>>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     outp.puts "#pragma push_macro(\"RotateLeft32\")"
     outp.puts "#pragma push_macro(\"RotateLeft64\")"
     outp.puts "#pragma push_macro(\"RotateRight32\")"
@@ -909,6 +919,7 @@ writeH("OpcodeGenerated") {
     outp.puts "WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN"
     outp.puts ""
     outp.puts "#if ENABLE(B3_JIT)"
+<<<<<<< HEAD
 
     outp.puts "#include \"AirInstInlines.h\""
     outp.puts "#include \"B3ProcedureInlines.h\""
@@ -917,6 +928,16 @@ writeH("OpcodeGenerated") {
 
     # The undefs have to follow every #include: <windows.h> defines macros named
     # after some opcodes, so anything that pulls it in later would put them back.
+||||||| parent of acc5fb55b810 (chore(webkit): bootstrap build #2341)
+
+=======
+    outp.puts ""
+    outp.puts "#include \"AirInstInlines.h\""
+    outp.puts "#include \"B3ProcedureInlines.h\""
+    outp.puts "#include \"CCallHelpers.h\""
+    outp.puts "#include \"wtf/PrintStream.h\""
+    outp.puts ""
+>>>>>>> acc5fb55b810 (chore(webkit): bootstrap build #2341)
     outp.puts "#pragma push_macro(\"RotateLeft32\")"
     outp.puts "#pragma push_macro(\"RotateLeft64\")"
     outp.puts "#pragma push_macro(\"RotateRight32\")"
