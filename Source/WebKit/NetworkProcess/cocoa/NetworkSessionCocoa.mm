@@ -1176,7 +1176,9 @@ NetworkSessionCocoa::NetworkSessionCocoa(NetworkProcess& networkProcess, const N
 
 // FIXME: rdar://152673570 Stop using `_usesNWLoader` as it is deprecated
 ALLOW_DEPRECATED_DECLARATIONS_BEGIN
-    configuration.get()._usesNWLoader = linkedOnOrAfterSDKWithBehavior(SDKAlignedBehavior::UseCFNetworkNetworkLoader);
+    // Playwright: force the legacy CFNetwork loader.
+    // Several Playwright tests were failing after WebKit switched from 'CFNetwork loader' to 'NWLoader' in 318278@main.
+    configuration.get()._usesNWLoader = NO;
 ALLOW_DEPRECATED_DECLARATIONS_END
 
     if (parameters.allowsHSTSWithUntrustedRootCertificate && [configuration respondsToSelector:@selector(_allowsHSTSWithUntrustedRootCertificate)])
