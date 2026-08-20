@@ -2573,6 +2573,21 @@ void webkitWebViewBaseSetMouseIsOverScrollbar(WebKitWebViewBase* webViewBase, We
     webViewBase->priv->mouseIsOverScrollbar = isScrollbar;
 }
 
+void webkitWebViewBaseSetMouseIsOverScrollbarForTesting(WebKitWebViewBase* webViewBase, MouseIsOverScrollbarForTesting isScrollbar)
+{
+    switch (isScrollbar) {
+    case MouseIsOverScrollbarForTesting::No:
+        webkitWebViewBaseSetMouseIsOverScrollbar(webViewBase, WebHitTestResultData::IsScrollbar::No);
+        break;
+    case MouseIsOverScrollbarForTesting::Horizontal:
+        webkitWebViewBaseSetMouseIsOverScrollbar(webViewBase, WebHitTestResultData::IsScrollbar::Horizontal);
+        break;
+    case MouseIsOverScrollbarForTesting::Vertical:
+        webkitWebViewBaseSetMouseIsOverScrollbar(webViewBase, WebHitTestResultData::IsScrollbar::Vertical);
+        break;
+    }
+}
+
 #if ENABLE(DRAG_SUPPORT)
 void webkitWebViewBaseStartDrag(WebKitWebViewBase* webViewBase, SelectionData&& selectionData, OptionSet<DragOperation> dragOperationMask, RefPtr<ShareableBitmap>&& image, IntPoint&& dragImageHotspot)
 {
@@ -3410,7 +3425,23 @@ void webkitWebViewBaseSynthesizeWheelEvent(WebKitWebViewBase* webViewBase, const
     if (priv->dialog)
         return;
 
+    bool isShiftPressed = false;
+    if (event) {
+        GdkModifierType state;
+        if (gdk_event_get_state(const_cast<GdkEvent*>(event), &state))
+            isShiftPressed = state & GDK_SHIFT_MASK;
+    }
+
     FloatSize wheelTicks(deltaX, deltaY);
+    // Match the real GDK scroll_event handler: scrolling with the wheel over a
+    // scrollbar always follows that scrollbar's orientation (unless Shift is
+    // held, which requests the perpendicular direction). This synthesized path
+    // is used both for testing (WebKitTestRunner eventSender) and for real
+    // touchpad gesture-to-wheel conversion, so it needs to apply the same
+    // direction inversion as webkitWebViewBaseScrollEvent().
+    if (shouldInvertDirectionForScrollEvent(priv->mouseIsOverScrollbar, isShiftPressed))
+        wheelTicks = wheelTicks.transposedSize();
+
     FloatSize delta(wheelTicks);
     if (!hasPreciseDeltas)
         delta.scale(static_cast<float>(Scrollbar::pixelsPerLineStep()));

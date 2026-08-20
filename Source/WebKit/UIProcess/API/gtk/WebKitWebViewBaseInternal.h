@@ -51,3 +51,9 @@ WK_EXPORT void webkitWebViewBaseSynthesizeWheelEvent(WebKitWebViewBase*, double 
 
 WK_EXPORT SkImage* webkitWebViewBaseSnapshotForTesting(WebKitWebViewBase*);
 
+// Used by WebKitTestRunner's eventSender to keep the scrollbar-hover state that
+// webkitWebViewBaseSynthesizeWheelEvent() relies on in sync, since synthesized events
+// bypass the mouseDidMoveOverElement round trip that normally updates it.
+enum class MouseIsOverScrollbarForTesting { No, Horizontal, Vertical };
+WK_EXPORT void webkitWebViewBaseSetMouseIsOverScrollbarForTesting(WebKitWebViewBase*, MouseIsOverScrollbarForTesting);
+

@@ -127,6 +127,12 @@
 #include <WebKit/WKContextConfigurationGlib.h>
 #endif
 
+#if PLATFORM(GTK)
+#include "APIHitTestResult.h"
+#include "WKAPICast.h"
+#include <webkit/WebKitWebViewBaseInternal.h>
+#endif
+
 #if PLATFORM(WIN)
 #include <direct.h>
 #include <shlwapi.h>
@@ -337,6 +343,31 @@ static void unfocus(WKPageRef page, const void* clientInfo)
     PlatformWebView* view = static_cast<PlatformWebView*>(const_cast<void*>(clientInfo));
     view->setWindowIsKey(false);
 }
+
+#if PLATFORM(GTK)
+// Synthesized wheel events (used by eventSender for testing, and by touchpad gesture-to-wheel
+// conversion) bypass the mouseDidMoveOverElement round trip that normally keeps the UI process's
+// notion of "is the mouse over a scrollbar" in sync, so webkitWebViewBaseSynthesizeWheelEvent()
+// would otherwise never see it updated. Wire the callback up here for GTK to keep it current.
+static void mouseDidMoveOverElement(WKPageRef, WKHitTestResultRef hitTestResult, WKEventModifiers, WKTypeRef, const void* clientInfo)
+{
+    PlatformWebView* view = static_cast<PlatformWebView*>(const_cast<void*>(clientInfo));
+    auto scrollbarType = WebKit::toImpl(hitTestResult)->scrollbarType();
+    auto testingType = MouseIsOverScrollbarForTesting::No;
+    switch (scrollbarType) {
+    case WebKit::WebHitTestResultData::IsScrollbar::No:
+        testingType = MouseIsOverScrollbarForTesting::No;
+        break;
+    case WebKit::WebHitTestResultData::IsScrollbar::Horizontal:
+        testingType = MouseIsOverScrollbarForTesting::Horizontal;
+        break;
+    case WebKit::WebHitTestResultData::IsScrollbar::Vertical:
+        testingType = MouseIsOverScrollbarForTesting::Vertical;
+        break;
+    }
+    webkitWebViewBaseSetMouseIsOverScrollbarForTesting(const_cast<WebKitWebViewBase*>(reinterpret_cast<const WebKitWebViewBase*>(view->platformView())), testingType);
+}
+#endif
 
 static void decidePolicyForGeolocationPermissionRequest(WKPageRef, WKFrameRef, WKSecurityOriginRef, WKGeolocationPermissionRequestRef permissionRequest, const void* clientInfo)
 {
@@ -1309,7 +1340,11 @@ void TestController::createWebViewWithOptions(const TestOptions& options)
         nullptr, // saveDataToFileInDownloadsFolder
         nullptr, // shouldInterruptJavaScript
         nullptr, // createNewPage_deprecatedForUseWithV1
+#if PLATFORM(GTK)
+        mouseDidMoveOverElement,
+#else
         nullptr, // mouseDidMoveOverElement
+#endif
         decidePolicyForNotificationPermissionRequest, // decidePolicyForNotificationPermissionRequest
         nullptr, // unavailablePluginButtonClicked_deprecatedForUseWithV1
         nullptr, // showColorPicker

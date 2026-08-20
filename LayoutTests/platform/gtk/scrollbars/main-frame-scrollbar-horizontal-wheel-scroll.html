@@ -1,42 +1,12 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <script src="../../../../resources/js-test.js"></script>
-    <script src="../../../../resources/ui-helper.js"></script>
-    <script>
-      window.jsTestIsAsync = true;
-
-      async function onLoad() {
-          if (window.eventSender == undefined) {
-              document.getElementById('console').innerText = "Scrolling with the mouse wheel over the horizontal main scrollbar should scroll the view horizontally";
-              return;
-          }
-
-          try {
-              /*
-              await UIHelper.startMonitoringWheelEvents();
-              eventSender.mouseMoveTo(4, window.innerHeight - 4);
-              eventSender.mouseScrollByWithWheelAndMomentumPhases(0, -40, "began", "none");
-              eventSender.mouseScrollByWithWheelAndMomentumPhases(0, -40, "changed", "none");
-              eventSender.mouseScrollByWithWheelAndMomentumPhases(0, 0, "ended", "none");
-              await UIHelper.waitForTargetScrollAnimationToSettle(document.scrollingElement);
-              await new Promise(resolve => requestAnimationFrame(resolve));
-              */
-              eventSender.mouseMoveTo(4, window.innerHeight - 4);
-              eventSender.mouseScrollBy(0, -1);
-              await UIHelper.waitForTargetScrollAnimationToSettle(document.scrollingElement);
-              await new Promise(resolve => requestAnimationFrame(resolve));
-          } catch (e) {
-              console.log(e);
-          } finally {
-              finishJSTest();
-          }
-      }
-    </script>
-  </head>
-  <body style="width: 5000px; height: 5000px" onload="onLoad();">
-      <div id="console"></div>
-      <p>This is a test for bug <a href="https://bugs.webkit.org/show_bug.cgi?id=122859">122859</a>.
-      Scrolling with the mouse wheel over the horizontal main scrollbar should scroll the view horizontally</p>
-  </body>
+<body style="width: 5000px; height: 5000px">
+<p>This is a test for bug <a href="https://bugs.webkit.org/show_bug.cgi?id=122859">122859</a>.
+Scrolling with the mouse wheel over the horizontal main scrollbar should scroll the view horizontally</p>
+<script>
+  if (window.eventSender) {
+      eventSender.mouseMoveTo(4, window.innerHeight - 4);
+      eventSender.mouseScrollBy(0, -1);
+  }
+</script>
+</body>
 </html>
