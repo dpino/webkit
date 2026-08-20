@@ -41,7 +41,7 @@ void FontCascade::drawGlyphs(GraphicsContext& graphicsContext, const Font& font,
         return;
 
     static_cast<GraphicsContextSkia*>(&graphicsContext)->drawSkiaText(blob, SkFloatToScalar(position.x()), SkFloatToScalar(position.y()),
-        font.enableAntialiasing(smoothingMode), font.platformData().orientation() == FontOrientation::Vertical);
+        font.enableAntialiasing(smoothingMode), font.platformData().orientation() == FontOrientation::Vertical && !font.isBrokenIdeographFallback());
 }
 
 bool FontCascade::canUseGlyphDisplayList(const Style::ComputedStyle&)

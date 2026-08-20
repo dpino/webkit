@@ -125,6 +125,7 @@ public:
     const Font& noSynthesizableFeaturesFont() const;
     const Font* emphasisMarkFont(const FontDescription&) const;
     const Font& brokenIdeographFont() const;
+    bool isBrokenIdeographFallback() const { return m_isBrokenIdeographFallback; }
     const RefPtr<Font> halfWidthFont() const;
 
     bool isProbablyOnlyUsedToRenderIcons() const;

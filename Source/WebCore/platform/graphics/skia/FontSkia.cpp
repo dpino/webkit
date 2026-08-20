@@ -230,7 +230,11 @@ sk_sp<SkTextBlob> Font::buildTextBlob(std::span<const GlyphBufferGlyph> glyphs, 
 
     const auto& font = m_platformData.skFont();
     auto edging = allowsAntialiasing() ? edgingForFontSmoothingMode(font, smoothingMode) : SkFont::Edging::kAlias;
-    bool isVertical = m_platformData.orientation() == FontOrientation::Vertical;
+    // A broken-ideograph fallback font is used to render a character that was misidentified as a CJK
+    // ideograph (e.g. because it falls in a CJK Unicode block) but whose font has no real vertical
+    // metrics; it must be laid out with ordinary horizontal metrics, matching FontCoreText's handling
+    // of m_isBrokenIdeographFallback, rather than rotated as if it were genuine vertical text.
+    bool isVertical = m_platformData.orientation() == FontOrientation::Vertical && !m_isBrokenIdeographFallback;
 
     SkTextBlobBuilder builder;
     const auto& buffer = [&]() {
