@@ -110,6 +110,35 @@ static hb_font_funcs_t* harfBuzzFontFunctions()
             return true;
         }, nullptr, nullptr);
 
+        // Vertical metrics come from the font's real vhea/vmtx/VORG tables via OpenTypeVerticalData
+        // (the same source used by the simple/non-complex text path), rather than being synthesized
+        // per-glyph from whatever vertical layout state FreeType/Cairo happen to have cached.
+        hb_font_funcs_set_glyph_v_advance_func(fontFunctions, [](hb_font_t*, void* context, hb_codepoint_t point, void*) -> hb_position_t {
+            auto& font = *static_cast<Font*>(context);
+            if (auto* verticalData = font.verticalData())
+                return doubleToHarfBuzzPosition(-verticalData->advanceHeight(&font, point));
+
+            auto* scaledFont = font.platformData().scaledFont();
+            ASSERT(scaledFont);
+            cairo_text_extents_t glyphExtents;
+            cairo_glyph_t glyph = { point, 0, 0 };
+            cairo_scaled_font_glyph_extents(scaledFont, &glyph, 1, &glyphExtents);
+            return doubleToHarfBuzzPosition(glyphExtents.y_advance ? -glyphExtents.y_advance : -glyphExtents.x_advance);
+        }, nullptr, nullptr);
+
+        hb_font_funcs_set_glyph_v_origin_func(fontFunctions, [](hb_font_t*, void* context, hb_codepoint_t point, hb_position_t* x, hb_position_t* y, void*) -> hb_bool_t {
+            auto& font = *static_cast<Font*>(context);
+            auto* verticalData = font.verticalData();
+            if (!verticalData)
+                return false;
+
+            float translation[2];
+            verticalData->getVerticalTranslationsForGlyphs(&font, &point, 1, translation);
+            *x = doubleToHarfBuzzPosition(-translation[0]);
+            *y = doubleToHarfBuzzPosition(-translation[1]);
+            return true;
+        }, nullptr, nullptr);
+
         hb_font_funcs_set_glyph_extents_func(fontFunctions, [](hb_font_t*, void* context, hb_codepoint_t point, hb_glyph_extents_t* extents, void*) -> hb_bool_t {
             auto& font = *static_cast<Font*>(context);
             auto* scaledFont = font.platformData().scaledFont();
@@ -373,13 +402,16 @@ void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const 
     for (unsigned i = 0; i < runCount; ++i) {
         auto& run = runList[m_run->rtl() ? runCount - i - 1 : i];
 
-        if (fontPlatformData.orientation() != FontOrientation::Vertical)
-            hb_buffer_set_script(buffer.get(), hb_icu_script_to_script(run.script));
-        if (!m_mayUseNaturalWritingDirection || m_run->directionalOverride())
-            hb_buffer_set_direction(buffer.get(), m_run->rtl() ? HB_DIRECTION_RTL : HB_DIRECTION_LTR);
+        if (fontPlatformData.orientation() == FontOrientation::Vertical)
+            hb_buffer_set_direction(buffer.get(), HB_DIRECTION_TTB);
         else {
-            // Leaving direction to HarfBuzz to guess is *really* bad, but will do for now.
-            hb_buffer_guess_segment_properties(buffer.get());
+            hb_buffer_set_script(buffer.get(), hb_icu_script_to_script(run.script));
+            if (!m_mayUseNaturalWritingDirection || m_run->directionalOverride())
+                hb_buffer_set_direction(buffer.get(), m_run->rtl() ? HB_DIRECTION_RTL : HB_DIRECTION_LTR);
+            else {
+                // Leaving direction to HarfBuzz to guess is *really* bad, but will do for now.
+                hb_buffer_guess_segment_properties(buffer.get());
+            }
         }
         hb_buffer_add_utf16(buffer.get(), reinterpret_cast<const uint16_t*>(characters.data()), characters.size(), run.startIndex, run.endIndex - run.startIndex);
 
