@@ -461,6 +461,7 @@ GlyphData FontCascadeFonts::glyphDataForVariant(char32_t character, const FontCa
 
         if (variant == FontVariant::Normal) {
             if (data.font->platformData().orientation() == FontOrientation::Vertical && !data.font->isTextOrientationFallback()) {
+                WTFLogAlways("BUG211940 glyphDataForVariant char=U+%04X isCJK=%d hasVerticalGlyphs=%d", character, FontCascade::isCJKIdeographOrSymbol(character), data.font->hasVerticalGlyphs());
                 if (!FontCascade::isCJKIdeographOrSymbol(character))
                     return glyphDataForNonCJKCharacterWithGlyphOrientation(character, description.nonCJKGlyphOrientation(), data);
 

@@ -231,6 +231,9 @@ sk_sp<SkTextBlob> Font::buildTextBlob(std::span<const GlyphBufferGlyph> glyphs, 
     const auto& font = m_platformData.skFont();
     auto edging = allowsAntialiasing() ? edgingForFontSmoothingMode(font, smoothingMode) : SkFont::Edging::kAlias;
     bool isVertical = m_platformData.orientation() == FontOrientation::Vertical;
+    WTFLogAlways("BUG211940 buildTextBlob glyphCount=%zu isVertical=%d isBrokenIdeographFallback=%d", glyphs.size(), isVertical, m_isBrokenIdeographFallback);
+    for (size_t i = 0; i < advances.size(); ++i)
+        WTFLogAlways("BUG211940   advance[%zu] width=%f height=%f", i, advances[i].width(), advances[i].height());
 
     SkTextBlobBuilder builder;
     const auto& buffer = [&]() {

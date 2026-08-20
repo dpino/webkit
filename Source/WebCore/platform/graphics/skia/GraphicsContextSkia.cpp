@@ -1320,6 +1320,7 @@ void GraphicsContextSkia::trackAcceleratedRenderingFenceIfNeeded(Pattern& patter
 
 void GraphicsContextSkia::drawSkiaText(const sk_sp<SkTextBlob>& blob, SkScalar x, SkScalar y, bool enableAntialias, bool isVertical)
 {
+    WTFLogAlways("BUG211940 drawSkiaText x=%f y=%f isVertical=%d bounds=(%f,%f,%f,%f)", x, y, isVertical, blob->bounds().left(), blob->bounds().top(), blob->bounds().right(), blob->bounds().bottom());
     if (isVertical) {
         m_canvas.save();
 
