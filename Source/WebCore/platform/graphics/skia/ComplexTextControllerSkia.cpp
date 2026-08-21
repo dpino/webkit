@@ -28,6 +28,7 @@
 #include "FontCascadeInlines.h"
 #include "FontFeatureValues.h"
 #include "FontTaggedSettings.h"
+#include "HarfBuzzShapingUtilities.h"
 #include "HbUniquePtr.h"
 #include "SurrogatePairAwareTextIterator.h"
 #include "TextFlags.h"
@@ -89,30 +90,6 @@ ComplexTextController::ComplexTextRun::ComplexTextRun(hb_buffer_t* buffer, const
     }
     WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
     m_initialAdvance = toFloatSize(m_glyphOrigins[0]);
-}
-
-// Finds a script under which the font's GSUB table lists the 'vert' or 'vrt2' feature, so that
-// buffers shaped for vertical text pick up the font's vertical glyph substitutions even when that
-// feature isn't listed under the default ('dflt') script.
-static hb_script_t findScriptForVerticalGlyphSubstitution(hb_face_t* face)
-{
-    static const unsigned maxCount = 32;
-
-    unsigned scriptCount = maxCount;
-    std::array<hb_tag_t, maxCount> scriptTags;
-    hb_ot_layout_table_get_script_tags(face, HB_OT_TAG_GSUB, 0, &scriptCount, scriptTags.data());
-    for (unsigned scriptIndex = 0; scriptIndex < scriptCount; ++scriptIndex) {
-        unsigned languageCount = maxCount;
-        std::array<hb_tag_t, maxCount> languageTags;
-        hb_ot_layout_script_get_language_tags(face, HB_OT_TAG_GSUB, scriptIndex, 0, &languageCount, languageTags.data());
-        for (unsigned languageIndex = 0; languageIndex < languageCount; ++languageIndex) {
-            unsigned featureIndex;
-            if (hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'e', 'r', 't'), &featureIndex)
-                || hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'r', 't', '2'), &featureIndex))
-                return hb_ot_tag_to_script(scriptTags[scriptIndex]);
-        }
-    }
-    return HB_SCRIPT_INVALID;
 }
 
 static std::optional<UScriptCode> characterScript(char32_t character)

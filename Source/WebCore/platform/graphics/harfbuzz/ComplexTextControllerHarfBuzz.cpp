@@ -30,6 +30,7 @@
 #include "FontCascadeInlines.h"
 #include "FontFeatureValues.h"
 #include "FontTaggedSettings.h"
+#include "HarfBuzzShapingUtilities.h"
 #include "HbUniquePtr.h"
 #include "SurrogatePairAwareTextIterator.h"
 #include "TextFlags.h"
@@ -285,27 +286,6 @@ static std::optional<HBRun> findNextRun(std::span<const char16_t> characters, un
     }
 
     return std::optional<HBRun>({ startIndex, textIterator.currentIndex(), currentScript.value() });
-}
-
-static hb_script_t findScriptForVerticalGlyphSubstitution(hb_face_t* face)
-{
-    static const unsigned maxCount = 32;
-
-    unsigned scriptCount = maxCount;
-    hb_tag_t scriptTags[maxCount];
-    hb_ot_layout_table_get_script_tags(face, HB_OT_TAG_GSUB, 0, &scriptCount, scriptTags);
-    for (unsigned scriptIndex = 0; scriptIndex < scriptCount; ++scriptIndex) {
-        unsigned languageCount = maxCount;
-        hb_tag_t languageTags[maxCount];
-        hb_ot_layout_script_get_language_tags(face, HB_OT_TAG_GSUB, scriptIndex, 0, &languageCount, languageTags);
-        for (unsigned languageIndex = 0; languageIndex < languageCount; ++languageIndex) {
-            unsigned featureIndex;
-            if (hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'e', 'r', 't'), &featureIndex)
-                || hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'r', 't', '2'), &featureIndex))
-                return hb_ot_tag_to_script(scriptTags[scriptIndex]);
-        }
-    }
-    return HB_SCRIPT_INVALID;
 }
 
 void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const char16_t> characters, unsigned stringLocation, const Font* font)
