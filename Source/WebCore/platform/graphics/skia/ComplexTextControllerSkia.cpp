@@ -183,6 +183,27 @@ static void forEachHBRun(const std::span<const char16_t>& characters, Function<v
     }
 }
 
+static hb_script_t findScriptForVerticalGlyphSubstitution(hb_face_t* face)
+{
+    static const unsigned maxCount = 32;
+
+    unsigned scriptCount = maxCount;
+    std::array<hb_tag_t, maxCount> scriptTags;
+    hb_ot_layout_table_get_script_tags(face, HB_OT_TAG_GSUB, 0, &scriptCount, scriptTags.data());
+    for (unsigned scriptIndex = 0; scriptIndex < scriptCount; ++scriptIndex) {
+        unsigned languageCount = maxCount;
+        hb_tag_t languageTags[maxCount];
+        hb_ot_layout_script_get_language_tags(face, HB_OT_TAG_GSUB, scriptIndex, 0, &languageCount, languageTags);
+        for (unsigned languageIndex = 0; languageIndex < languageCount; ++languageIndex) {
+            unsigned featureIndex;
+            if (hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'e', 'r', 't'), &featureIndex)
+                || hb_ot_layout_language_find_feature(face, HB_OT_TAG_GSUB, scriptIndex, languageIndex, HB_TAG('v', 'r', 't', '2'), &featureIndex))
+                return hb_ot_tag_to_script(scriptTags[scriptIndex]);
+        }
+    }
+    return HB_SCRIPT_INVALID;
+}
+
 void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const char16_t> characters, unsigned stringLocation, const Font* font)
 {
     ASSERT(!characters.empty());
@@ -200,16 +221,31 @@ void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const 
     const auto& features = fontPlatformData.features();
     // Kerning is not handled as font features, so only in case it's explicitly disabled
     // we need to create a new vector to include kern feature.
-    const hb_feature_t* featuresData = features.isEmpty() ? nullptr : features.span().data();
+    const hb_feature_t* featuresData;
     unsigned featuresSize = features.size();
-    Vector<hb_feature_t> featuresWithKerning;
+    if (featuresSize > 0)
+        featuresData = features.span().data();
+
+    // Append extra features.
+    Vector<hb_feature_t> extraFeatures;
+    extraFeatures.reserveInitialCapacity(featuresSize + 3);
     if (!m_fontCascade->enableKerning()) {
-        featuresWithKerning.reserveInitialCapacity(featuresSize + 1);
         static hb_feature_t kernFeature { HB_TAG('k', 'e', 'r', 'n'), 0, 0, static_cast<unsigned>(-1) };
-        featuresWithKerning.append(kernFeature);
-        featuresWithKerning.appendVector(features);
-        featuresData = featuresWithKerning.span().data();
-        featuresSize = featuresWithKerning.size();
+        extraFeatures.append(kernFeature);
+    }
+    if (fontPlatformData.orientation() == FontOrientation::Vertical) {
+        static hb_feature_t vertFeature { HB_TAG('v', 'e', 'r', 't'), 1, 0, static_cast<unsigned>(-1) };
+        static hb_feature_t vrt2Feature { HB_TAG('v', 'r', 't', '2'), 1, 0, static_cast<unsigned>(-1) };
+        extraFeatures.append(vertFeature);
+        extraFeatures.append(vrt2Feature);
+    }
+
+    // Maybe add extra features to list of features?
+    extraFeatures.shrinkToFit();
+    if (!extraFeatures.isEmpty()) {
+        extraFeatures.appendVector(features);
+        featuresData = extraFeatures.span().data();
+        featuresSize = extraFeatures.size();
     }
 
     static thread_local HbUniquePtr<hb_buffer_t> buffer(hb_buffer_create());
@@ -223,7 +259,14 @@ void ComplexTextController::collectComplexTextRunsForCharacters(std::span<const 
         hb_buffer_set_cluster_level(buffer.get(), HB_BUFFER_CLUSTER_LEVEL_CHARACTERS);
         hb_buffer_set_language(buffer.get(), language);
 
-        hb_buffer_set_script(buffer.get(), hb_icu_script_to_script(run.script));
+        auto verticalGlyphSubstitutionScript = HB_SCRIPT_INVALID;
+        if (fontPlatformData.orientation() == FontOrientation::Vertical)
+            verticalGlyphSubstitutionScript = findScriptForVerticalGlyphSubstitution(hb_font_get_face(hbFont));
+
+        if (verticalGlyphSubstitutionScript != HB_SCRIPT_INVALID)
+            hb_buffer_set_script(buffer.get(), verticalGlyphSubstitutionScript);
+        else
+            hb_buffer_set_script(buffer.get(), hb_icu_script_to_script(run.script));
 
         if (!m_mayUseNaturalWritingDirection || m_run->directionalOverride())
             hb_buffer_set_direction(buffer.get(), m_run->rtl() ? HB_DIRECTION_RTL : HB_DIRECTION_LTR);
