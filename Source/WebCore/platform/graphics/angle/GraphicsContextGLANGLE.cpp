@@ -823,10 +823,6 @@ void GraphicsContextGLANGLE::prepareTexture()
         resolveMultisamplingIfNecessary();
 
     if (m_preserveDrawingBufferTexture) {
-<<<<<<< HEAD
-||||||| constructed merge base
-        prepareForDrawingBufferWrite();
-=======
         const IntRect fullRect{ 0, 0, m_currentWidth, m_currentHeight };
         Damage::Rects rectsToCopy { };
         if (m_damage && m_previousDamage) {
@@ -838,8 +834,6 @@ void GraphicsContextGLANGLE::prepareTexture()
         m_previousDamage = WTF::move(m_damage);
         m_damage = std::nullopt;
 
-        prepareForDrawingBufferWrite();
->>>>>>> [PATCH] Improve WebGL performance using Damage
         // Blit m_preserveDrawingBufferTexture into m_texture.
         ScopedGLCapability scopedScissor(GL_SCISSOR_TEST, GL_FALSE);
         ScopedGLCapability scopedDither(GL_DITHER, GL_FALSE);
@@ -853,7 +847,6 @@ void GraphicsContextGLANGLE::prepareTexture()
             GL_BindTexture(GL_TEXTURE_2D, texture2DBinding);
         } else {
             GL_BindFramebuffer(GL_DRAW_FRAMEBUFFER_ANGLE, m_preserveDrawingBufferFBO);
-<<<<<<< HEAD
             // Read m_preserveDrawingBufferTexture through an own framebuffer instead of m_fbo, because
             // the read buffer of m_fbo, the emulated default framebuffer, is set by the WebGL 2 context
             // and might be NONE.
@@ -861,14 +854,8 @@ void GraphicsContextGLANGLE::prepareTexture()
             GL_BindFramebuffer(GL_READ_FRAMEBUFFER_ANGLE, readFBO);
             GL_FramebufferTexture2D(GL_READ_FRAMEBUFFER_ANGLE, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_preserveDrawingBufferTexture, 0);
             GL_BlitFramebufferANGLE(0, 0, m_currentWidth, m_currentHeight, 0, 0, m_currentWidth, m_currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-||||||| constructed merge base
-            GL_BindFramebuffer(GL_READ_FRAMEBUFFER_ANGLE, m_fbo);
-            GL_BlitFramebufferANGLE(0, 0, m_currentWidth, m_currentHeight, 0, 0, m_currentWidth, m_currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-=======
-            GL_BindFramebuffer(GL_READ_FRAMEBUFFER_ANGLE, m_fbo);
             for (const auto& rectToCopy : rectsToCopy)
                 GL_BlitFramebufferANGLE(rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), rectToCopy.x(), rectToCopy.y(), rectToCopy.x() + rectToCopy.width(), rectToCopy.y() + rectToCopy.height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
->>>>>>> [PATCH] Improve WebGL performance using Damage
         }
 
         if (m_isForWebGL2) {
