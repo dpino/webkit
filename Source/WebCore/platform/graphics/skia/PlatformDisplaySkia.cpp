@@ -199,6 +199,17 @@ static bool shouldAllowMSAAOnNewIntel()
 #endif
 }
 
+static bool shouldWorkAroundSlowGLClear()
+{
+    static std::once_flag onceFlag;
+    static bool workAroundSlowGLClear;
+    std::call_once(onceFlag, [] {
+        String envString = String::fromLatin1(getenv("WEBKIT_FORCE_SHADER_CLEAR_COMPOSITING"));
+        workAroundSlowGLClear = envString == "1"_s;
+    });
+    return workAroundSlowGLClear;
+}
+
 static unsigned initializeMSAASampleCount(GrDirectContext* grContext)
 {
     static std::once_flag onceFlag;
@@ -337,6 +348,8 @@ private:
         // lookup which is a slow-path in certain tiled GPUs (such as Vivante/etnaviv). Since we
         // don't use any mipmapping, it's safe to disable that, and avoid performance hits.
         options.fSharpenMipmappedTextures = false;
+        if (shouldWorkAroundSlowGLClear())
+            options.fDriverBugWorkarounds.gl_clear_broken = true;
         thread_local std::unique_ptr<SkExecutor> s_executor = SkExecutor::MakeFIFOThreadPool(2);
         options.fExecutor = s_executor.get();
         if (auto bytes = glyphCacheTextureMaximumBytes())
