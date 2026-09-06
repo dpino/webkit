@@ -352,6 +352,7 @@ public:
     WEBCORE_EXPORT void setMediaType(const AtomString&);
     void adjustMediaTypeForPrinting(bool printing);
 
+    void setInlineTransformMovedContents() { m_inlineTransformMovedContents = true; }
     void setCannotBlitToWindow();
     void setIsOverlapped(bool);
     void setContentIsOpaque(bool);
@@ -856,6 +857,7 @@ private:
 
     void applyRecursivelyWithVisibleRect(NOESCAPE const Function<void(LocalFrameView& frameView, const IntRect& visibleRect)>&);
     void resumeVisibleImageAnimations(const IntRect& visibleRect);
+    void didApplyInlineTransformsForThisFrame();
 #if ENABLE(ACCESSIBILITY_ANIMATION_CONTROL)
     void updatePlayStateForAllAnimations(const IntRect& visibleRect);
 #endif
@@ -1049,6 +1051,8 @@ private:
     unsigned m_textRendererCountForVisuallyNonEmptyCharacters { 0 };
     int m_headerHeight { 0 };
     int m_footerHeight { 0 };
+
+    bool m_inlineTransformMovedContents { false };
 
 #if PLATFORM(IOS_FAMILY)
     bool m_useCustomFixedPositionLayoutRect { false };

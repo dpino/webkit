@@ -200,6 +200,11 @@ public:
     void notifyFlushRequired(const GraphicsLayer*) override;
     void notifySubsequentFlushRequired(const GraphicsLayer*) override;
     void flushPendingLayerChanges(bool isFlushRoot = true);
+
+    void inlineTransformDidUpdate(RenderLayer&, const LayoutRect& transformedLocalBounds);
+    void forgetInlineTransformUpdates(RenderLayer&);
+    void expireInlineTransformUpdates();
+    bool hasScrollCoordinatedDescendant(const RenderLayer&) const;
     void NODELETE setRenderingIsSuppressed(bool);
 
     // Called when the GraphicsLayer for the given RenderLayer has flushed changes inside of flushPendingLayerChanges().
@@ -485,6 +490,7 @@ private:
 
     void updateCompositingLayersTimerFired();
 
+    void scheduleOverlapRecompute(RenderLayer&);
     void computeCompositingRequirements(RenderLayer* ancestorLayer, RenderLayer&, LayerOverlapMap&, CompositingState&, BackingSharingState&);
     void traverseUnchangedSubtree(RenderLayer* ancestorLayer, RenderLayer&, LayerOverlapMap&, CompositingState&, BackingSharingState&);
 
@@ -652,6 +658,12 @@ private:
     bool m_shouldFlushOnReattach { false };
     bool m_forceCompositingMode { false };
     bool m_rootElementCapturedInViewTransition { false };
+
+    struct InlineTransformUpdate {
+        LayoutRect referenceBounds;
+        bool isStale { false };
+    };
+    InlineWeakKeyHashMap<RenderLayer, InlineTransformUpdate> m_recentlyInlineTransformedLayers;
 
     bool m_isTrackingRepaints { false }; // Used for testing.
 

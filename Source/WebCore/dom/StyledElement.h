@@ -49,7 +49,10 @@ public:
     virtual ~StyledElement();
 
     void dirtyStyleAttribute();
-    void invalidateStyleAttribute();
+
+    enum class InvalidateStyle : bool { No, Yes };
+    void invalidateStyleAttribute(InvalidateStyle = InvalidateStyle::Yes);
+    bool canDirtyStyleAttributeWithoutStyleInvalidation();
 
     const StyleProperties* inlineStyle() const { return elementData() ? elementData()->m_inlineStyle.get() : nullptr; }
 

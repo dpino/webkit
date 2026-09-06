@@ -87,6 +87,7 @@
 #include "HitTestingTransformState.h"
 #include "ImageDocument.h"
 #include "InspectorInstrumentation.h"
+#include "KeyframeEffectStack.h"
 #include "LegacyRenderSVGForeignObject.h"
 #include "LegacyRenderSVGImage.h"
 #include "LegacyRenderSVGResourceClipper.h"
@@ -5796,10 +5797,84 @@ RenderLayerBacking* RenderLayer::ensureBacking()
     return m_backing.get();
 }
 
+bool RenderLayer::computeInlineTransformStyleEligible() const
+{
+    // This ONLY looks at style properties.
+    auto& style = renderer().style();
+
+    // Only the declaration the cascade picked may be applied without running the cascade.
+    if (!style.transformIsFromStyleAttribute())
+        return false;
+
+    // Receiving/loosing a transform changes compositing requirements.
+    if (style.transform().isNone())
+        return false;
+
+    // Transitions need a style change to start.
+    return style.transitions().isInitial();
+}
+
+bool RenderLayer::canUseInlineTransformFastPath() const
+{
+    // The caller has established that this element's style resolution is not pending, which is what
+    // makes renderer().style() and m_inlineTransformStyleEligible below authoritative. A recalc
+    // pending elsewhere in the document does not reach either.
+    ASSERT(!renderer().element() || !renderer().element()->needsStyleRecalc());
+
+    if (!isComposited())
+        return false;
+
+    if (!m_inlineTransformStyleEligible)
+        return false;
+
+    // A percentage transform resolves against the border box, so layout has to be clean on this child and all ancestors.
+    if (renderer().needsLayout())
+        return false;
+    if (renderer().view().frameView().layoutContext().needsLayout({ LayoutOptions::CanDeferUpdateLayerPositions }))
+        return false;
+
+    // When this is true, the graphic layer transform comes from the capture, not the style.
+    if (renderer().effectiveCapturedInViewTransition())
+        return false;
+
+    if (backing()->hasAnyScrollingNodeID() || compositor().hasScrollCoordinatedDescendant(*this))
+        return false;
+
+    // An animation already drives the transform.
+    if (auto styleable = Styleable::fromRenderer(renderer())) {
+        if (auto* effectStack = styleable->keyframeEffectStack(); effectStack && effectStack->containsTransformRelatedProperty())
+            return false;
+    }
+
+    return true;
+}
+
+void RenderLayer::inlineTransformDidChange()
+{
+    ASSERT(backing());
+
+    auto& view = renderer().view();
+
+    updateTransform();
+    backing()->inlineTransformDidChange();
+    clearClipRectsIncludingDescendants(AbsoluteClipRects);
+
+    auto localBounds = overlapBounds();
+    auto transformedLocalBounds = transform() ? enclosingLayoutRect(transform()->mapRect(FloatRect { localBounds })) : localBounds;
+    view.compositor().inlineTransformDidUpdate(*this, transformedLocalBounds);
+
+    ASSERT(!backing()->hasAnyScrollingNodeID());
+
+    view.frameView().setInlineTransformMovedContents();
+}
+
 void RenderLayer::clearBacking(OptionSet<UpdateBackingSharingFlags> flags, bool layerBeingDestroyed)
 {
     if (!m_backing)
         return;
+
+    // A compositing update can decomposite a layer without any style change reaching it.
+    compositor().forgetInlineTransformUpdates(*this);
 
     if (!renderer().renderTreeBeingDestroyed())
         compositor().layerBecameNonComposited(*this);
@@ -6218,6 +6293,11 @@ bool RenderLayer::isVisuallyNonEmpty(PaintedContentRequest* request) const
 
 void RenderLayer::styleChanged(Style::Difference diff, const Style::ComputedStyle* oldStyle)
 {
+    // The cascade is authoritative again.
+    if (m_inlineTransformStyleEligible)
+        compositor().forgetInlineTransformUpdates(*this);
+    m_inlineTransformStyleEligible = computeInlineTransformStyleEligible();
+
     setIsNormalFlowOnly(shouldBeNormalFlowOnly());
     setCanBeBackdropRoot(computeCanBeBackdropRoot());
 

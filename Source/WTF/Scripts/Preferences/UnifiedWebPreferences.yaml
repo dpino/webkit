@@ -4248,6 +4248,20 @@ InlineMediaPlaybackRequiresPlaysInlineAttribute:
     WebCore:
       default: false
 
+InlineTransformFastPathEnabled:
+  type: bool
+  status: internal
+  defaultsOverridable: true
+  humanReadableName: "Inline transform fast path"
+  humanReadableDescription: "Apply inline style transform updates without a style recalc"
+  defaultValue:
+    WebKitLegacy:
+      default: false
+    WebKit:
+      default: false
+    WebCore:
+      default: false
+
 InputMethodUsesCorrectKeyEventOrder:
   type: bool
   status: unstable

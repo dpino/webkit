@@ -169,6 +169,12 @@ public:
         return std::nullopt;
     }
 
+    bool hasAnyScrollingNodeID() const
+    {
+        return m_scrollingNodeID || m_frameHostingNodeID || m_pluginHostingNodeID
+            || m_viewportConstrainedNodeID || m_positioningNodeID || m_ancestorClippingStack;
+    }
+
     void setScrollingNodeIDForRole(ScrollingNodeID, ScrollCoordinationRole);
 
     bool hasMaskLayer() const { return m_maskLayer; }
@@ -203,6 +209,7 @@ public:
     void animationPaused(double timeOffset, const String& name);
     void animationFinished(const String& name);
     void transformRelatedPropertyDidChange();
+    void inlineTransformDidChange() { updateTransform(renderer().style()); }
     void suspendAnimations(MonotonicTime = MonotonicTime());
     void resumeAnimations();
 

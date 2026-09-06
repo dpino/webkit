@@ -56,8 +56,11 @@
 #include "StyleCustomPropertyData.h"
 #include "StyleCustomPropertyRegistry.h"
 #include "StyleFontSizeFunctions.h"
+#include "StyleLocalPropertyRegistry.h"
+#include "StyleProperties.h"
 #include "StylePropertyShorthand.h"
 #include "StyleSubstitutionResolver.h"
+#include "StyledElement.h"
 #include <wtf/SetForScope.h>
 #include <wtf/TZoneMallocInlines.h>
 
@@ -299,9 +302,22 @@ void Builder::applyCustomPropertyImpl(const AtomString& name, const PropertyCasc
     m_state->m_appliedCustomProperties.add(name);
 }
 
+inline bool Builder::transformIsFromNormalStyleAttributeDeclaration(const PropertyCascade::Property& property) const
+{
+    if (property.fromStyleAttribute != FromStyleAttribute::Yes)
+        return false;
+
+    RefPtr element = dynamicDowncast<StyledElement>(m_state->element());
+    RefPtr inlineStyle = element ? element->inlineStyle() : nullptr;
+    return inlineStyle && !inlineStyle->propertyIsImportant(CSSPropertyTransform);
+}
+
 inline void Builder::applyCascadeProperty(const PropertyCascade::Property& property)
 {
     SetForScope levelScope(m_state->m_currentProperty, &property);
+
+    if (property.id == CSSPropertyTransform)
+        m_state->style().setTransformIsFromStyleAttribute(transformIsFromNormalStyleAttributeDeclaration(property));
 
     auto applyWithLinkMatch = [&](SelectorChecker::LinkMatchMask linkMatch) {
         if (property.cssValue[linkMatch]) {

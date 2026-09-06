@@ -104,6 +104,15 @@ bool KeyframeEffectStack::containsProperty(CSSPropertyID property) const
     });
 }
 
+bool KeyframeEffectStack::containsTransformRelatedProperty() const
+{
+    return hasMatchingEffect([] (const KeyframeEffect& effect) {
+        return effect.animatesProperty(CSSPropertyTransform) || effect.animatesProperty(CSSPropertyTranslate)
+            || effect.animatesProperty(CSSPropertyRotate) || effect.animatesProperty(CSSPropertyScale)
+            || effect.animatesMotionPath();
+    });
+}
+
 bool KeyframeEffectStack::requiresPseudoElement() const
 {
     return hasMatchingEffect([] (const KeyframeEffect& effect) {

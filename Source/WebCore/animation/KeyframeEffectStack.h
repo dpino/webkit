@@ -56,6 +56,7 @@ public:
     const std::optional<Style::Animations>& cssAnimationList() const LIFETIME_BOUND { return m_cssAnimationList; }
     void setCSSAnimationList(std::optional<Style::Animations>&&);
     bool containsProperty(CSSPropertyID) const;
+    bool containsTransformRelatedProperty() const;
     bool isCurrentlyAffectingProperty(CSSPropertyID) const;
     bool requiresPseudoElement() const;
     OptionSet<AnimationImpact> applyKeyframeEffects(Style::ComputedStyle& targetStyle, HashSet<AnimatableCSSProperty>& affectedProperties, const Style::ComputedStyle* previousLastStyleChangeEventStyle, const Style::ResolutionContext&);

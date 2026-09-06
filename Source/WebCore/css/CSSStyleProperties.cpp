@@ -41,6 +41,7 @@
 #include "Quirks.h"
 #include "Settings.h"
 #include "StyleAttributeMutationScope.h"
+#include "StyleInlineTransformFastPath.h"
 #include "StyleProperties.h"
 #include "StyleSheetContents.h"
 #include "StyledElement.h"
@@ -438,7 +439,7 @@ ExceptionOr<void> PropertySetCSSStyleProperties::setProperty(const String& prope
     else
         changed = protect(m_propertySet)->setProperty(propertyID, value, cssParserContext(), important ? IsImportant::Yes : IsImportant::No);
 
-    didMutate(changed ? MutationType::PropertyChanged : MutationType::NoChanges);
+    didMutate(changed ? MutationType::PropertyChanged : MutationType::NoChanges, propertyID);
 
     if (changed) {
         // CSS DOM requires raising SyntaxError of parsing failed, but this is too dangerous for compatibility,
@@ -494,7 +495,7 @@ ExceptionOr<void> PropertySetCSSStyleProperties::setPropertyInternal(CSSProperty
         return { };
 
     SUPPRESS_UNCOUNTED_ARG if (m_propertySet->setProperty(propertyID, value, cssParserContext(), important)) {
-        didMutate(MutationType::PropertyChanged);
+        didMutate(MutationType::PropertyChanged, propertyID);
         mutationScope.enqueueMutationRecord();
     } else
         didMutate(MutationType::NoChanges);
@@ -569,7 +570,7 @@ bool StyleRuleCSSStyleProperties::willMutate()
     return true;
 }
 
-void StyleRuleCSSStyleProperties::didMutate(MutationType type)
+void StyleRuleCSSStyleProperties::didMutate(MutationType type, CSSPropertyID)
 {
     ASSERT(m_parentRule);
     ASSERT(m_parentRule->parentStyleSheet());
@@ -619,7 +620,7 @@ bool InlineCSSStyleProperties::willMutate()
     return true;
 }
 
-void InlineCSSStyleProperties::didMutate(MutationType type)
+void InlineCSSStyleProperties::didMutate(MutationType type, CSSPropertyID changedProperty)
 {
     if (type == MutationType::NoChanges)
         return;
@@ -635,12 +636,34 @@ void InlineCSSStyleProperties::didMutate(MutationType type)
     if (!parentElement)
         return;
 
+    auto shouldInvalidateStyle = StyledElement::InvalidateStyle::Yes;
+    if (changedProperty == CSSPropertyTransform && tryApplyTransformWithoutStyleRecalc(*parentElement))
+        shouldInvalidateStyle = StyledElement::InvalidateStyle::No;
+
     // Inline style changes from JavaScript (e.g., element.style.color = 'red') need to set
     // the mutation bit for innerHTML prefix cache invalidation, since they don't go through
     // the normal attribute change notification path.
     parentElement->setDidMutateSubtreeAfterSetInnerHTMLOnAncestors();
-    parentElement->invalidateStyleAttribute();
+    parentElement->invalidateStyleAttribute(shouldInvalidateStyle);
     InspectorInstrumentation::didInvalidateStyleAttr(*parentElement);
+}
+
+bool InlineCSSStyleProperties::tryApplyTransformWithoutStyleRecalc(StyledElement& element)
+{
+    if (!element.document().settings().inlineTransformFastPathEnabled())
+        return false;
+
+    if (!element.canDirtyStyleAttributeWithoutStyleInvalidation())
+        return false;
+
+    Ref propertySet = *m_propertySet;
+
+    // Ownership of transform is only recorded for a normal declaration, so let style resolution run.
+    if (propertySet->propertyIsImportant(CSSPropertyTransform))
+        return false;
+
+    RefPtr value = propertySet->getPropertyCSSValue(CSSPropertyTransform);
+    return value && Style::applyInlineTransformWithoutStyleRecalc(element, *value);
 }
 
 CSSStyleSheet* InlineCSSStyleProperties::parentStyleSheet() const

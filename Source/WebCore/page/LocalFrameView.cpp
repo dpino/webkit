@@ -957,6 +957,10 @@ bool LocalFrameView::flushCompositingStateForThisFrame(const LocalFrame& rootFra
 
     ASSERT(m_frame->view() == this);
 
+    // Layers that stopped moving under the inline transform fast path age out here, once per
+    // rendering update per compositor, before the early return below can skip the flush.
+    renderView->compositor().expireInlineTransformUpdates();
+
     // If we sync compositing layers when a layout is pending, we may cause painting of compositing
     // layer content to occur before layout has happened, which will cause paintContents() to bail.
     if (needsLayout())
@@ -1201,6 +1205,7 @@ bool LocalFrameView::flushCompositingStateIncludingSubframes()
     }
     return allFramesFlushed;
 }
+
 
 bool LocalFrameView::isSoftwareRenderable() const
 {
@@ -2880,6 +2885,12 @@ ScrollPosition LocalFrameView::unscaledMaximumScrollPosition() const
     }
 
     return maximumScrollPosition();
+}
+
+void LocalFrameView::didApplyInlineTransformsForThisFrame()
+{
+    if (std::exchange(m_inlineTransformMovedContents, false))
+        viewportContentsChanged();
 }
 
 void LocalFrameView::viewportContentsChanged()
@@ -6025,6 +6036,10 @@ void LocalFrameView::updateLayoutAndStyleIfNeededRecursive(OptionSet<LayoutOptio
         while (auto view = nextRenderedDescendant(deque)) {
             if (protect(view->m_frame->document())->updateLayout(layoutOptions | LayoutOptions::DoNotLayoutAncestorDocuments) == Document::UpdateLayoutResult::ChangesDone)
                 didWork = true;
+
+            // After the layout, since both halves read geometry: the position walk recomputes
+            // repaint rects and viewportContentsChanged() maps visible rects.
+            view->didApplyInlineTransformsForThisFrame();
         }
         if (!didWork)
             break;

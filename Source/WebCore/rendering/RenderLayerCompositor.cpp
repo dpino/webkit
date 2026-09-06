@@ -814,6 +814,85 @@ FloatRect RenderLayerCompositor::visibleRectForLayerFlushing() const
 #endif
 }
 
+bool RenderLayerCompositor::hasScrollCoordinatedDescendant(const RenderLayer& layer) const
+{
+    for (auto& weakLayer : m_scrollingNodeToLayerMap.values()) {
+        if (CheckedPtr scrollCoordinated = weakLayer.get(); scrollCoordinated && scrollCoordinated->isDescendantOf(layer))
+            return true;
+    }
+    return false;
+}
+
+void RenderLayerCompositor::scheduleOverlapRecompute(RenderLayer& layer)
+{
+    layer.setNeedsPostLayoutCompositingUpdateOnAncestors();
+    scheduleCompositingLayerUpdate();
+}
+
+static LayoutRect boundsWithOverlapMargin(const LayoutRect& bounds)
+{
+    auto marginated = bounds;
+    marginated.inflate(bounds.size());
+    return marginated;
+}
+
+void RenderLayerCompositor::inlineTransformDidUpdate(RenderLayer& layer, const LayoutRect& transformedLocalBounds)
+{
+    if (auto it = m_recentlyInlineTransformedLayers.find(layer); it != m_recentlyInlineTransformedLayers.end()) {
+        it->value.isStale = false;
+        if (boundsWithOverlapMargin(it->value.referenceBounds).contains(transformedLocalBounds))
+            return;
+
+        it->value.referenceBounds = transformedLocalBounds;
+        scheduleOverlapRecompute(layer);
+        return;
+    }
+
+    // Only the first update has to opt the layer into the overlap margin.
+    m_recentlyInlineTransformedLayers.add(layer, InlineTransformUpdate { transformedLocalBounds, false });
+    scheduleOverlapRecompute(layer);
+}
+
+void RenderLayerCompositor::forgetInlineTransformUpdates(RenderLayer& layer)
+{
+    if (!m_recentlyInlineTransformedLayers.remove(layer))
+        return;
+    if (layer.renderer().renderTreeBeingDestroyed())
+        return;
+
+    scheduleOverlapRecompute(layer);
+}
+
+// Runs once per rendering update, from LocalFrameView::flushCompositingStateIncludingSubframes().
+// An entry goes stale first, since a layer updated every frame would otherwise expire and
+// re-enter every frame.
+void RenderLayerCompositor::expireInlineTransformUpdates()
+{
+    m_recentlyInlineTransformedLayers.removeIf([&](auto& entry) {
+        // HashTable::removeIf drops a weak null bucket without calling this, so the key is live.
+        CheckedPtr layer = entry.key.get();
+        ASSERT(layer);
+
+        if (!entry.value.isStale) {
+            entry.value.isStale = true;
+
+            // The layer moved since the last rendering update. Its cached repaint rects are
+            // mapped through the transform, and only layout would otherwise recompute them, so
+            // do it here rather than once per assignment. Same shape as compositingStatusChanged().
+            layer->updateDescendantDependentFlags();
+            layer->updateRepaintRectsIncludingDescendants(RenderLayer::RepaintRectsUpdate::Recompute);
+            return false;
+        }
+
+        scheduleOverlapRecompute(*layer);
+        return true;
+    });
+
+    // Everything left was just marked stale, so it needs the flush it expires on.
+    if (!m_recentlyInlineTransformedLayers.isEmpty())
+        scheduleRenderingUpdate();
+}
+
 void RenderLayerCompositor::flushPendingLayerChanges(bool isFlushRoot)
 {
     // LocalFrameView::flushCompositingStateIncludingSubframes() flushes each subframe,
@@ -1394,7 +1473,7 @@ void RenderLayerCompositor::computeCompositingRequirements(RenderLayer* ancestor
     // Unless we leave the containing block chain, or have an animated transform,
     // then we can continue to use the inherited backing store attachment.
     bool allowsBackingStoreDetachingForFixed = false;
-    if (currentState.ancestorAllowsBackingStoreDetachingForFixed && ancestorLayer && layer.ancestorLayerIsInContainingBlockChain(*ancestorLayer) && !layerExtent.hasTransformAnimation)
+    if (currentState.ancestorAllowsBackingStoreDetachingForFixed && ancestorLayer && layer.ancestorLayerIsInContainingBlockChain(*ancestorLayer) && !layerExtent.hasTransformAnimation && !m_recentlyInlineTransformedLayers.contains(layer))
         allowsBackingStoreDetachingForFixed = true;
 
     auto layerWillCompositePostDescendants = [&] {
@@ -2614,6 +2693,11 @@ void RenderLayerCompositor::computeExtent(const LayerOverlapMap& overlapMap, con
     // In the animating transform case, we avoid double-accounting for the transform because
     // we told pushMappingsToAncestor() to ignore transforms earlier.
     extent.bounds = enclosingLayoutRect(overlapMap.geometryMap().absoluteRect(layerBounds));
+
+    // This layer moves without a compositing update, so overlap has to cover where it can get to
+    // before inlineTransformDidUpdate() asks for the next one.
+    if (m_recentlyInlineTransformedLayers.contains(layer))
+        extent.bounds = boundsWithOverlapMargin(extent.bounds);
 
     // Empty rects never intersect, but we need them to for the purposes of overlap testing.
     if (extent.bounds.isEmpty())

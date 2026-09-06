@@ -187,7 +187,7 @@ void StyledElement::dirtyStyleAttribute()
         synchronizeStyleAttributeForSelectorInvalidation();
 }
 
-void StyledElement::invalidateStyleAttribute()
+void StyledElement::invalidateStyleAttribute(InvalidateStyle invalidateStyle)
 {
     if (RefPtr inlineStyle = this->inlineStyle()) {
         if (usesStyleBasedEditability(*inlineStyle))
@@ -199,9 +199,9 @@ void StyledElement::invalidateStyleAttribute()
     // Inline style invalidation optimization does not work if there are selectors targeting the style attribute
     // as some rule may start or stop matching.
     auto selectorsForStyleAttribute = styleResolver().ruleSets().selectorsForStyleAttribute();
-    auto validity = selectorsForStyleAttribute == Style::SelectorsForStyleAttribute::None ? Style::Validity::InlineStyleInvalid : Style::Validity::ElementInvalid;
 
-    Node::invalidateStyle(validity);
+    if (invalidateStyle == InvalidateStyle::Yes)
+        Node::invalidateStyle(selectorsForStyleAttribute == Style::SelectorsForStyleAttribute::None ? Style::Validity::InlineStyleInvalid : Style::Validity::ElementInvalid);
 
     if (auto* svgElement = dynamicDowncast<SVGElement>(*this))
         svgElement->invalidateInstances();
@@ -209,6 +209,11 @@ void StyledElement::invalidateStyleAttribute()
     // In the rare case of selectors like "[style] ~ div" we need to synchronize immediately to invalidate.
     if (selectorsForStyleAttribute == Style::SelectorsForStyleAttribute::NonSubjectPosition)
         synchronizeStyleAttributeForSelectorInvalidation();
+}
+
+bool StyledElement::canDirtyStyleAttributeWithoutStyleInvalidation()
+{
+    return styleResolver().ruleSets().selectorsForStyleAttribute() == Style::SelectorsForStyleAttribute::None;
 }
 
 void StyledElement::inlineStyleChanged()

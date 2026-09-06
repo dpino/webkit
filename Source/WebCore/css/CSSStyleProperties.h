@@ -123,7 +123,7 @@ private:
     RefPtr<DeprecatedCSSOMValue> wrapForDeprecatedCSSOM(CSSValue*);
 
     [[nodiscard]] virtual bool willMutate() { return true; }
-    virtual void didMutate(MutationType) { }
+    virtual void didMutate(MutationType, CSSPropertyID = CSSPropertyInvalid) { }
 };
 
 class StyleRuleCSSStyleProperties final : public PropertySetCSSStyleProperties, public RefCounted<StyleRuleCSSStyleProperties> {
@@ -150,7 +150,7 @@ private:
     CSSRule* NODELETE parentRule() const final;
 
     [[nodiscard]] bool willMutate() final;
-    void didMutate(MutationType) final;
+    void didMutate(MutationType, CSSPropertyID changedProperty) final;
     OptionalOrReference<CSSParserContext> cssParserContext() const final;
 
     StyleRuleType m_parentRuleType;
@@ -170,8 +170,10 @@ private:
     CSSStyleSheet* parentStyleSheet() const final;
     StyledElement* parentElement() const final { return m_parentElement.get(); }
 
+    bool tryApplyTransformWithoutStyleRecalc(StyledElement&);
+
     [[nodiscard]] bool willMutate() final;
-    void didMutate(MutationType) final;
+    void didMutate(MutationType, CSSPropertyID changedProperty) final;
     OptionalOrReference<CSSParserContext> cssParserContext() const final;
 
     WeakPtr<StyledElement, WeakPtrImplWithEventTargetData> m_parentElement;

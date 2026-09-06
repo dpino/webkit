@@ -470,6 +470,9 @@ public:
     inline bool usesViewportUnits() const;
     inline void setUsesViewportUnits();
 
+    inline bool transformIsFromStyleAttribute() const;
+    inline void setTransformIsFromStyleAttribute(bool);
+
     inline bool isContainerDependent() const;
     inline void setIsContainerDependent();
 
@@ -759,6 +762,8 @@ public:
         PREFERRED_TYPE(Float) unsigned floating : 3;
 
         PREFERRED_TYPE(bool) unsigned usesViewportUnits : 1;
+        // The style attribute is the declaration that won the cascade for `transform`.
+        PREFERRED_TYPE(bool) unsigned transformIsFromStyleAttribute : 1;
         PREFERRED_TYPE(bool) unsigned isContainerDependent : 1;
         PREFERRED_TYPE(bool) unsigned useTreeCountingFunctions : 1;
         PREFERRED_TYPE(bool) unsigned hasExplicitlyInheritedProperties : 1; // Explicitly inherits a non-inherited property.

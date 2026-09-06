@@ -63,6 +63,11 @@ inline void ComputedStyleBase::setUsesViewportUnits()
     m_nonInheritedFlags.usesViewportUnits = true;
 }
 
+inline void ComputedStyleBase::setTransformIsFromStyleAttribute(bool flag)
+{
+    m_nonInheritedFlags.transformIsFromStyleAttribute = flag;
+}
+
 inline void ComputedStyleBase::setIsContainerDependent()
 {
     m_nonInheritedFlags.isContainerDependent = true;

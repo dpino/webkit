@@ -3236,6 +3236,7 @@ style/StyleCustomPropertyRegistry.cpp @header:RenderStyleGetters @cost:6
 style/StyleDifference.cpp @header:RenderStyleGetters @cost:5
 style/StyleExtractor.cpp @header:RenderStyleGetters @cost:6
 style/StyleFontSizeFunctions.cpp @header:RenderStyleGetters @cost:5
+style/StyleInlineTransformFastPath.cpp @header:RenderStyleGetters @cost:6
 style/StyleInterpolation.cpp @header:RenderStyleGetters @cost:6
 style/StyleInvalidator.cpp @cost:4
 style/StyleLocalPropertyRegistry.cpp

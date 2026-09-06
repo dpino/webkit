@@ -579,6 +579,10 @@ public:
 
     void updateTransform();
     
+    bool canUseInlineTransformFastPath() const;
+
+    void inlineTransformDidChange();
+
     void updateBlendMode();
     void NODELETE willRemoveChildWithBlendMode();
 
@@ -1072,6 +1076,7 @@ private:
     std::optional<SVGRendererTransform> computeRendererTransformForSVG(CheckedRef<RenderElement>, const LayoutSize& positionOffset) const;
     void dirtyPaintOrderListsOnChildChange(RenderLayer&);
 
+    bool computeInlineTransformStyleEligible() const;
     bool shouldBeNormalFlowOnly() const;
     bool shouldBeCSSStackingContext() const;
     bool computeCanBeBackdropRoot() const;
@@ -1476,6 +1481,7 @@ private:
     bool m_hasNotIsolatedBlendingDescendants : 1;
     bool m_hasNotIsolatedBlendingDescendantsStatusDirty : 1;
     bool m_repaintRectsValid : 1 { false };
+    bool m_inlineTransformStyleEligible : 1 { false };
 
     bool m_intrinsicallyComposited : 1 { false };
     bool m_alwaysIncludedInZOrderLists : 1 { false };

@@ -65,6 +65,7 @@ public:
     ValueOrReference<HashSet<AnimatableCSSProperty>> overriddenAnimatedProperties() const { return m_cascade.overriddenAnimatedProperties(); }
 
 private:
+    bool transformIsFromNormalStyleAttributeDeclaration(const PropertyCascade::Property&) const;
     void applyProperties(int firstProperty, int lastProperty);
     void applyLogicalGroupProperties();
     void applyCustomProperties();
