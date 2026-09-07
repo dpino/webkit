@@ -1791,6 +1791,9 @@ static void testTextReplacedObjects(AccessibilityTest* test, gconstpointer)
         "  <body>"
         "    <p>This is <button>button1</button> and <button>button2</button> in paragraph</p>"
         "    <p>This is <a href='#'>link1</a> and <a href='#'>link2</a> in paragraph</p>"
+        "    <p>Choose: <input value='foo' type='checkbox'/>foo <input value='bar' type='checkbox'/>bar (pick one)</p>"
+        "    <p>Choose: <select name='foo'><option>bar</option><option>baz</option></select> (pick one)</p>"
+        "    <p><input name='foobarbutton' value='foobar' type='button'/></p>"
         "  </body>"
         "</html>",
         nullptr);
@@ -1887,6 +1890,28 @@ static void testTextReplacedObjects(AccessibilityTest* test, gconstpointer)
     g_assert_true(ATSPI_IS_TEXT(link2.get()));
     text.reset(atspi_text_get_text(ATSPI_TEXT(link2.get()), 0, -1, nullptr));
     g_assert_cmpstr(text.get(), ==, "link2");
+
+    // Controls (checkboxes, selectboxes and buttons) are also replaced elements.
+    p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 2, nullptr));
+    g_assert_true(ATSPI_IS_TEXT(p.get()));
+    g_assert_cmpint(atspi_text_get_character_count(ATSPI_TEXT(p.get()), nullptr), ==, 28);
+    text.reset(atspi_text_get_text(ATSPI_TEXT(p.get()), 0, -1, nullptr));
+    g_assert_cmpstr(text.get(), ==, "Choose: \357\277\274foo \357\277\274bar (pick one)");
+    g_assert_cmpint(atspi_accessible_get_child_count(p.get(), nullptr), ==, 2);
+
+    p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 3, nullptr));
+    g_assert_true(ATSPI_IS_TEXT(p.get()));
+    g_assert_cmpint(atspi_text_get_character_count(ATSPI_TEXT(p.get()), nullptr), ==, 20);
+    text.reset(atspi_text_get_text(ATSPI_TEXT(p.get()), 0, -1, nullptr));
+    g_assert_cmpstr(text.get(), ==, "Choose: \357\277\274 (pick one)");
+    g_assert_cmpint(atspi_accessible_get_child_count(p.get(), nullptr), ==, 1);
+
+    p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 4, nullptr));
+    g_assert_true(ATSPI_IS_TEXT(p.get()));
+    g_assert_cmpint(atspi_text_get_character_count(ATSPI_TEXT(p.get()), nullptr), ==, 1);
+    text.reset(atspi_text_get_text(ATSPI_TEXT(p.get()), 0, -1, nullptr));
+    g_assert_cmpstr(text.get(), ==, "\357\277\274");
+    g_assert_cmpint(atspi_accessible_get_child_count(p.get(), nullptr), ==, 1);
 }
 
 static void testTextListMarkers(AccessibilityTest* test, gconstpointer)
