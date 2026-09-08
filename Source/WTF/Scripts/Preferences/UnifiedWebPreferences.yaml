@@ -5923,27 +5923,14 @@ SpeakerSelectionRequiresUserGesture:
   humanReadableName: "Require a user gesture for speaker selection"
   humanReadableDescription: "Require a user gesture for speaker selection"
   condition: ENABLE(MEDIA_STREAM)
-<<<<<<< HEAD
-  defaultValue: true
-||||||| parent of 3df4e6bf0316 ([PATCH] Do not require user gestures to allow speaker selection)
   defaultValue:
-    WebKitLegacy:
-      default: true
-    WebKit:
-      default: true
-    WebCore:
-      default: true
-=======
-  defaultValue:
-    WebKitLegacy:
-      default: true
+    default: true
     WebKit:
       "USE(GSTREAMER) && PLATFORM(WPE)": false
       default: true
     WebCore:
       "USE(GSTREAMER) && PLATFORM(WPE)": false
       default: true
->>>>>>> 3df4e6bf0316 ([PATCH] Do not require user gestures to allow speaker selection)
 
 SpeculationRulesPrefetchEnabled:
   type: bool
