@@ -20,7 +20,10 @@
 #include "config.h"
 
 #include "WebViewTest.h"
+#include <atomic>
 #include <wtf/MonotonicTime.h>
+#include <wtf/NeverDestroyed.h>
+#include <wtf/glib/GRefPtr.h>
 
 // The libatspi headers don't use G_BEGIN_DECLS
 extern "C" {
@@ -44,9 +47,102 @@ struct AtspiTextRangeDeleter {
 using UniqueAtspiEvent = std::unique_ptr<AtspiEvent, AtspiEventDeleter>;
 using UniqueAtspiTextRange = std::unique_ptr<AtspiTextRange, AtspiTextRangeDeleter>;
 
+
+// --- webkit.org/b/279009 : run libatspi client calls off the main thread -----
+//
+// TestWebKitAccessibility is at the same time an AT-SPI *application* (GTK4's
+// GtkAtSpiRoot serves this process's accessibility tree over D-Bus, dispatched
+// on the main thread's default GMainContext) and an AT-SPI *client* (it calls
+// the synchronous libatspi API). Since the GTK4 switch, running the synchronous
+// client calls on the main thread deadlocks the process against itself: the
+// client call blocks the main thread, so GtkAtSpiRoot can no longer answer the
+// very D-Bus requests the client is issuing about this process.
+//
+// AtspiRunner runs all libatspi client work on a dedicated thread that owns its
+// own GMainContext (libatspi binds its connection to whatever context is
+// thread-default when atspi_init() runs). run() dispatches the callable there
+// and blocks the caller, but keeps the caller's GMainContext iterating so
+// GtkAtSpiRoot keeps serving while the worker makes its blocking calls.
+class AtspiRunner {
+public:
+    static AtspiRunner& singleton()
+    {
+        static NeverDestroyed<AtspiRunner> runner;
+        return runner.get();
+    }
+
+    template<typename Function>
+    void run(Function&& function)
+    {
+        ensureStarted();
+
+        GMainContext* callerContext = g_main_context_get_thread_default();
+        if (!callerContext)
+            callerContext = g_main_context_default();
+
+        std::atomic<bool> done { false };
+        auto task = [&] {
+            function();
+            done.store(true, std::memory_order_release);
+            g_main_context_wakeup(callerContext);
+        };
+
+        GRefPtr<GSource> source = adoptGRef(g_idle_source_new());
+        g_source_set_priority(source.get(), G_PRIORITY_HIGH);
+        g_source_set_callback(source.get(), [](gpointer data) -> gboolean {
+            (*static_cast<decltype(task)*>(data))();
+            return G_SOURCE_REMOVE;
+        }, &task, nullptr);
+        g_source_attach(source.get(), m_context.get());
+
+        while (!done.load(std::memory_order_acquire))
+            g_main_context_iteration(callerContext, TRUE);
+    }
+
+private:
+    friend NeverDestroyed<AtspiRunner>;
+    AtspiRunner() = default;
+
+    void ensureStarted()
+    {
+        if (m_thread)
+            return;
+
+        m_context = adoptGRef(g_main_context_new());
+        m_loop = adoptGRef(g_main_loop_new(m_context.get(), FALSE));
+        m_thread = g_thread_new("atspi-client", [](gpointer data) -> gpointer {
+            auto& runner = *static_cast<AtspiRunner*>(data);
+            g_main_context_push_thread_default(runner.m_context.get());
+            atspi_init();
+            runner.m_started.store(true, std::memory_order_release);
+            g_main_context_wakeup(g_main_context_default());
+            g_main_loop_run(runner.m_loop.get());
+            atspi_exit();
+            g_main_context_pop_thread_default(runner.m_context.get());
+            return nullptr;
+        }, this);
+
+        while (!m_started.load(std::memory_order_acquire))
+            g_main_context_iteration(g_main_context_default(), TRUE);
+    }
+
+    GThread* m_thread { nullptr };
+    GRefPtr<GMainContext> m_context;
+    GRefPtr<GMainLoop> m_loop;
+    std::atomic<bool> m_started { false };
+};
+
 class AccessibilityTest : public WebViewTest {
 public:
     MAKE_GLIB_TEST_FIXTURE(AccessibilityTest);
+
+    // Run `function` (which may use the synchronous libatspi API) on the
+    // dedicated AT-SPI client thread. See AtspiRunner / webkit.org/b/279009.
+    template<typename Function>
+    void runAtspiClient(Function&& function)
+    {
+        AtspiRunner::singleton().run(std::forward<Function>(function));
+    }
 
     GRefPtr<AtspiAccessible> findTestApplication()
     {
@@ -296,6 +392,7 @@ static void testAccessibleIgnoredObjects(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -307,6 +404,7 @@ static void testAccessibleIgnoredObjects(AccessibilityTest* test, gconstpointer)
     g_assert_true(ATSPI_IS_ACCESSIBLE(p.get()));
     g_assert_cmpint(atspi_accessible_get_role(p.get(), nullptr), ==, ATSPI_ROLE_PARAGRAPH);
     g_assert_cmpint(atspi_accessible_get_child_count(p.get(), nullptr), ==, 0);
+    });
 }
 
 static void testAccessibleChildrenChanged(AccessibilityTest* test, gconstpointer)
@@ -430,6 +528,7 @@ static void testAccessibleAttributes(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     static const char* toolkitName = "WebKitGTK";
 
     auto testApp = test->findTestApplication();
@@ -463,6 +562,7 @@ static void testAccessibleAttributes(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "computed-role")), ==, "link");
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "id")), ==, "webkitgtk");
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "tag")), ==, "a");
+    });
 }
 
 static void testAccessibleState(AccessibilityTest* test, gconstpointer)
@@ -489,6 +589,7 @@ static void testAccessibleState(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -639,6 +740,7 @@ static void testAccessibleState(AccessibilityTest* test, gconstpointer)
     g_assert_true(atspi_state_set_contains(stateSet.get(), ATSPI_STATE_SENSITIVE));
     g_assert_true(atspi_state_set_contains(stateSet.get(), ATSPI_STATE_VISIBLE));
     g_assert_true(atspi_state_set_contains(stateSet.get(), ATSPI_STATE_SHOWING));
+    });
 }
 
 static void testAccessibleStateChangedFocus(AccessibilityTest* test, gconstpointer)
@@ -864,6 +966,7 @@ static void testAccessibleListMarkers(AccessibilityTest* test, gconstpointer)
         baseDir.get());
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -908,6 +1011,7 @@ static void testAccessibleListMarkers(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(name.get(), ==, "image");
     GRefPtr<AtspiImage> image = adoptGRef(atspi_accessible_get_image_iface(marker.get()));
     g_assert_nonnull(image.get());
+    });
 }
 
 static void testComponentHitTest(AccessibilityTest* test, gconstpointer)
@@ -923,6 +1027,7 @@ static void testComponentHitTest(AccessibilityTest* test, gconstpointer)
         baseDir.get());
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -952,6 +1057,7 @@ static void testComponentHitTest(AccessibilityTest* test, gconstpointer)
     g_assert_true(accessible.get() == img.get());
     accessible = adoptGRef(atspi_component_get_accessible_at_point(ATSPI_COMPONENT(documentWeb.get()), rect->x + rect->width, rect->y + rect->height, ATSPI_COORD_TYPE_WINDOW, nullptr));
     g_assert_true(accessible.get() == documentWeb.get());
+    });
 }
 
 #ifdef ATSPI_SCROLLTYPE_COUNT
@@ -970,6 +1076,7 @@ static void testComponentScrollTo(AccessibilityTest* test, gconstpointer)
         baseDir.get());
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -999,6 +1106,7 @@ static void testComponentScrollTo(AccessibilityTest* test, gconstpointer)
     topPositionAfterScrolling.reset(atspi_component_get_position(ATSPI_COMPONENT(top.get()), ATSPI_COORD_TYPE_WINDOW, nullptr));
     g_assert_cmpint(topPositionBeforeScrolling->x, ==, topPositionAfterScrolling->x);
     g_assert_cmpint(topPositionBeforeScrolling->y, ==, topPositionAfterScrolling->y);
+    });
 }
 #endif
 
@@ -1014,6 +1122,7 @@ static void testTextBasic(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1035,6 +1144,7 @@ static void testTextBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(text.get(), ==, "");
     text.reset(atspi_text_get_text(ATSPI_TEXT(p.get()), -5, 23, nullptr));
     g_assert_cmpstr(text.get(), ==, "");
+    });
 }
 
 static void testTextSurrogatePair(AccessibilityTest* test, gconstpointer)
@@ -1050,6 +1160,7 @@ static void testTextSurrogatePair(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1077,6 +1188,7 @@ static void testTextSurrogatePair(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(text.get(), ==, "This contains a 𝌆 symbol");
     text.reset(atspi_text_get_text(ATSPI_TEXT(input.get()), 16, 17, nullptr));
     g_assert_cmpstr(text.get(), ==, "𝌆");
+    });
 }
 
 static void testTextIterator(AccessibilityTest* test, gconstpointer)
@@ -1091,22 +1203,31 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
-    auto testApp = test->findTestApplication();
+    GRefPtr<AtspiAccessible> testApp;
+    GRefPtr<AtspiAccessible> documentWeb;
+    GRefPtr<AtspiAccessible> section;
+    GRefPtr<AtspiAccessible> input;
+    gint length;
+    GUniquePtr<char> text;
+    UniqueAtspiTextRange range;
+
+    test->runAtspiClient([&] {
+    testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
-    auto documentWeb = test->findDocumentWeb(testApp.get());
+    documentWeb = test->findDocumentWeb(testApp.get());
     g_assert_true(ATSPI_IS_ACCESSIBLE(documentWeb.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(documentWeb.get(), nullptr), ==, 1);
 
     auto p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 0, nullptr));
     g_assert_true(ATSPI_IS_TEXT(p.get()));
-    auto length = atspi_text_get_character_count(ATSPI_TEXT(p.get()), nullptr);
+    length = atspi_text_get_character_count(ATSPI_TEXT(p.get()), nullptr);
     g_assert_cmpint(length, ==, 84);
-    GUniquePtr<char> text(atspi_text_get_text(ATSPI_TEXT(p.get()), 0, length, nullptr));
+    text.reset(atspi_text_get_text(ATSPI_TEXT(p.get()), 0, length, nullptr));
     g_assert_cmpstr(text.get(), ==, "Text of first sentence. This is the second sentence.\nAnd this is the next paragraph.");
 
     // Character granularity.
-    UniqueAtspiTextRange range(atspi_text_get_string_at_offset(ATSPI_TEXT(p.get()), 0, ATSPI_TEXT_GRANULARITY_CHAR, nullptr));
+    range.reset(atspi_text_get_string_at_offset(ATSPI_TEXT(p.get()), 0, ATSPI_TEXT_GRANULARITY_CHAR, nullptr));
     g_assert_cmpstr(range->content, ==, "T");
     g_assert_cmpint(range->start_offset, ==, 0);
     g_assert_cmpint(range->end_offset, ==, 1);
@@ -1208,6 +1329,8 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(range->end_offset, ==, 84);
 
     // Using a text control now.
+    });
+
     test->loadHtml(
         "<html>"
         "  <body>"
@@ -1216,15 +1339,15 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
         "</html>",
         nullptr);
     test->waitUntilLoadFinished();
-
+    test->runAtspiClient([&] {
     documentWeb = test->findDocumentWeb(testApp.get());
     g_assert_true(ATSPI_IS_ACCESSIBLE(documentWeb.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(documentWeb.get(), nullptr), ==, 1);
 
-    auto section = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 0, nullptr));
+    section = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 0, nullptr));
     g_assert_true(ATSPI_IS_ACCESSIBLE(section.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(section.get(), nullptr), ==, 1);
-    auto input = adoptGRef(atspi_accessible_get_child_at_index(section.get(), 0, nullptr));
+    input = adoptGRef(atspi_accessible_get_child_at_index(section.get(), 0, nullptr));
     g_assert_true(ATSPI_IS_TEXT(input.get()));
     length = atspi_text_get_character_count(ATSPI_TEXT(input.get()), nullptr);
     g_assert_cmpint(length, ==, 19);
@@ -1250,6 +1373,8 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(range->end_offset, ==, 19);
 
     // Password field now.
+    });
+
     test->loadHtml(
         "<html>"
         "  <body>"
@@ -1258,7 +1383,7 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
         "</html>",
         nullptr);
     test->waitUntilLoadFinished();
-
+    test->runAtspiClient([&] {
     documentWeb = test->findDocumentWeb(testApp.get());
     g_assert_true(ATSPI_IS_ACCESSIBLE(documentWeb.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(documentWeb.get(), nullptr), ==, 1);
@@ -1286,6 +1411,7 @@ static void testTextIterator(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(range->content, ==, "••••••••••••••");
     g_assert_cmpint(range->start_offset, ==, 0);
     g_assert_cmpint(range->end_offset, ==, 14);
+    });
 }
 
 static void testTextExtents(AccessibilityTest* test, gconstpointer)
@@ -1300,6 +1426,7 @@ static void testTextExtents(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1336,6 +1463,7 @@ static void testTextExtents(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(offset, ==, 3);
     offset = atspi_text_get_offset_at_point(ATSPI_TEXT(p.get()), lastCharRect->x + lastCharRect->width, lastCharRect->y, ATSPI_COORD_TYPE_WINDOW, nullptr);
     g_assert_cmpint(offset, ==, 4);
+    });
 }
 
 static void testTextSelections(AccessibilityTest* test, gconstpointer)
@@ -1352,6 +1480,7 @@ static void testTextSelections(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1429,6 +1558,7 @@ static void testTextSelections(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(selection->end_offset, ==, 5);
     text.reset(atspi_text_get_text(ATSPI_TEXT(password.get()), selection->start_offset, selection->end_offset, nullptr));
     g_assert_cmpstr(text.get(), ==, "•••");
+    });
 }
 
 static void testTextAttributes(AccessibilityTest* test, gconstpointer)
@@ -1443,19 +1573,25 @@ static void testTextAttributes(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
-    auto testApp = test->findTestApplication();
+    GRefPtr<AtspiAccessible> testApp;
+    GRefPtr<AtspiAccessible> documentWeb;
+    GRefPtr<AtspiAccessible> p;
+    int startOffset, endOffset;
+    GRefPtr<GHashTable> attributes;
+
+    test->runAtspiClient([&] {
+    testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
-    auto documentWeb = test->findDocumentWeb(testApp.get());
+    documentWeb = test->findDocumentWeb(testApp.get());
     g_assert_true(ATSPI_IS_ACCESSIBLE(documentWeb.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(documentWeb.get(), nullptr), ==, 1);
 
-    auto p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 0, nullptr));
+    p = adoptGRef(atspi_accessible_get_child_at_index(documentWeb.get(), 0, nullptr));
     g_assert_true(ATSPI_IS_TEXT(p.get()));
 
     // Including default attributes.
-    int startOffset, endOffset;
-    GRefPtr<GHashTable> attributes = adoptGRef(atspi_text_get_attribute_run(ATSPI_TEXT(p.get()), 0, TRUE, &startOffset, &endOffset, nullptr));
+    attributes = adoptGRef(atspi_text_get_attribute_run(ATSPI_TEXT(p.get()), 0, TRUE, &startOffset, &endOffset, nullptr));
     g_assert_nonnull(attributes.get());
     g_assert_cmpuint(g_hash_table_size(attributes.get()), >, 1);
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "weight")), ==, "400");
@@ -1505,6 +1641,8 @@ static void testTextAttributes(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "weight")), ==, "400");
 
     // Atspi implementation handles ranges with the same attributes as one run.
+    });
+
     test->loadHtml(
         "<html>"
         "  <body>"
@@ -1513,7 +1651,7 @@ static void testTextAttributes(AccessibilityTest* test, gconstpointer)
         "</html>",
         nullptr);
     test->waitUntilLoadFinished();
-
+    test->runAtspiClient([&] {
     documentWeb = test->findDocumentWeb(testApp.get());
     g_assert_true(ATSPI_IS_ACCESSIBLE(documentWeb.get()));
     g_assert_cmpint(atspi_accessible_get_child_count(documentWeb.get(), nullptr), ==, 1);
@@ -1541,6 +1679,7 @@ static void testTextAttributes(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "weight")), ==, "400");
     g_assert_cmpint(startOffset, ==, 14);
     g_assert_cmpint(endOffset, ==, 22);
+    });
 }
 
 static void testTextStateChanged(AccessibilityTest* test, gconstpointer)
@@ -1796,6 +1935,7 @@ static void testTextReplacedObjects(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1887,6 +2027,7 @@ static void testTextReplacedObjects(AccessibilityTest* test, gconstpointer)
     g_assert_true(ATSPI_IS_TEXT(link2.get()));
     text.reset(atspi_text_get_text(ATSPI_TEXT(link2.get()), 0, -1, nullptr));
     g_assert_cmpstr(text.get(), ==, "link2");
+    });
 }
 
 static void testTextListMarkers(AccessibilityTest* test, gconstpointer)
@@ -1906,6 +2047,7 @@ static void testTextListMarkers(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -1997,6 +2139,7 @@ static void testTextListMarkers(AccessibilityTest* test, gconstpointer)
     g_assert_true(ATSPI_IS_TEXT(marker.get()));
     text.reset(atspi_text_get_text(ATSPI_TEXT(marker.get()), 0, -1, nullptr));
     g_assert_cmpstr(text.get(), ==, "1. ");
+    });
 }
 
 static void testValueBasic(AccessibilityTest* test, gconstpointer)
@@ -2066,6 +2209,7 @@ static void testHyperlinkBasic(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -2173,6 +2317,7 @@ static void testHyperlinkBasic(AccessibilityTest* test, gconstpointer)
     uri.reset(atspi_hyperlink_get_uri(ATSPI_HYPERLINK(link.get()), 0, nullptr));
     g_assert_cmpstr(uri.get(), ==, "");
     g_assert_true(atspi_hyperlink_get_object(ATSPI_HYPERLINK(link.get()), 0, nullptr) == marker.get());
+    });
 }
 
 static void testHypertextBasic(AccessibilityTest* test, gconstpointer)
@@ -2188,6 +2333,7 @@ static void testHypertextBasic(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -2258,6 +2404,7 @@ static void testHypertextBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(atspi_hypertext_get_link_index(ATSPI_HYPERTEXT(li.get()), 1, nullptr), ==, -1);
     g_assert_cmpint(atspi_hypertext_get_link_index(ATSPI_HYPERTEXT(li.get()), 13, nullptr), ==, 1);
     g_assert_cmpint(atspi_hypertext_get_link_index(ATSPI_HYPERTEXT(li.get()), 14, nullptr), ==, -1);
+    });
 }
 
 static void testActionBasic(AccessibilityTest* test, gconstpointer)
@@ -2272,6 +2419,7 @@ static void testActionBasic(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -2309,6 +2457,7 @@ static void testActionBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(localizedName.get(), ==, "jump");
     keyBinding.reset(atspi_action_get_key_binding(ATSPI_ACTION(a.get()), 0, nullptr));
     g_assert_cmpstr(keyBinding.get(), ==, "");
+    });
 }
 
 static void testDocumentBasic(AccessibilityTest* test, gconstpointer)
@@ -2330,6 +2479,7 @@ static void testDocumentBasic(AccessibilityTest* test, gconstpointer)
         "http://example.org");
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -2365,6 +2515,7 @@ static void testDocumentBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(static_cast<const char*>(g_hash_table_lookup(attributes.get(), "Title")), ==, "Document attributes");
     value.reset(atspi_document_get_document_attribute_value(ATSPI_DOCUMENT(documentWeb.get()), const_cast<char*>("Title"), nullptr));
     g_assert_cmpstr(value.get(), ==, "Document attributes");
+    });
 }
 
 static void testDocumentLoadEvents(AccessibilityTest* test, gconstpointer)
@@ -2427,6 +2578,7 @@ static void testImageBasic(AccessibilityTest* test, gconstpointer)
         baseDir.get());
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -2455,6 +2607,7 @@ static void testImageBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpstr(description.get(), ==, "This is a blank icon");
     GUniquePtr<char> locale(atspi_image_get_image_locale(ATSPI_IMAGE(img.get()), nullptr));
     g_assert_cmpstr(locale.get(), ==, "en");
+    });
 }
 
 static void testSelectionListBox(AccessibilityTest* test, gconstpointer)
@@ -2689,6 +2842,7 @@ static void testTableBasic(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -3083,6 +3237,7 @@ static void testTableBasic(AccessibilityTest* test, gconstpointer)
     g_assert_cmpint(atspi_table_get_column_extent_at(ATSPI_TABLE(table.get()), 3, 2, nullptr), ==, 3);
     cell = adoptGRef(atspi_table_get_accessible_at(ATSPI_TABLE(table.get()), 3, 2, nullptr));
     g_assert_true(cell8.get() == cell.get());
+    });
 }
 
 static void testCollectionGetMatches(AccessibilityTest* test, gconstpointer)
@@ -3098,6 +3253,7 @@ static void testCollectionGetMatches(AccessibilityTest* test, gconstpointer)
         nullptr);
     test->waitUntilLoadFinished();
 
+    test->runAtspiClient([&] {
     auto testApp = test->findTestApplication();
     g_assert_true(ATSPI_IS_ACCESSIBLE(testApp.get()));
 
@@ -3419,6 +3575,7 @@ static void testCollectionGetMatches(AccessibilityTest* test, gconstpointer)
     g_assert_true(g_array_index(matches, AtspiAccessible*, 0) == link1.get());
     g_assert_true(g_array_index(matches, AtspiAccessible*, 1) == link2.get());
     g_array_free(matches, TRUE);
+    });
 }
 
 void beforeAll()
