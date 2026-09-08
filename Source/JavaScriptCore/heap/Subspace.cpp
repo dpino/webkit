@@ -48,11 +48,9 @@ void Subspace::initialize(const HeapCellType& heapCellType, AlignedMemoryAllocat
 {
     m_heapCellType = &heapCellType;
     m_alignedMemoryAllocator = alignedMemoryAllocator;
-    m_directoryForEmptyAllocation = m_alignedMemoryAllocator->firstDirectory();
 
     JSC::Heap& heap = m_space.heap();
     heap.objectSpace().m_subspaces.append(this);
-    m_alignedMemoryAllocator->registerSubspace(this);
 }
 
 Subspace::~Subspace() = default;
@@ -74,16 +72,7 @@ void Subspace::prepareForAllocation()
             directory.prepareForAllocation();
         });
 
-    m_directoryForEmptyAllocation = m_alignedMemoryAllocator->firstDirectory();
-}
-
-MarkedBlock::Handle* Subspace::findEmptyBlockToSteal()
-{
-    for (; m_directoryForEmptyAllocation; m_directoryForEmptyAllocation = m_directoryForEmptyAllocation->nextDirectoryInAlignedMemoryAllocator()) {
-        if (MarkedBlock::Handle* block = m_directoryForEmptyAllocation->findEmptyBlockToSteal())
-            return block;
-    }
-    return nullptr;
+    m_alignedMemoryAllocator->prepareForAllocation();
 }
 
 Ref<SharedTask<BlockDirectory*()>> Subspace::parallelDirectorySource()
