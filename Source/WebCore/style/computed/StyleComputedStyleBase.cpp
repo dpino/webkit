@@ -269,26 +269,26 @@ float ComputedStyleBase::usedFontSize() const
     return fontDescription().usedSize();
 }
 
-const LineHeight& ComputedStyleBase::specifiedLineHeight() const
+const LineHeight& ComputedStyleBase::textAutosizingAdjustedLineHeight() const
 {
-    return m_inheritedData->specifiedLineHeight;
+    return m_inheritedData->textAutosizingAdjustedLineHeight;
 }
 
-void ComputedStyleBase::setSpecifiedLineHeight(LineHeight&& lineHeight)
+void ComputedStyleBase::setTextAutosizingAdjustedLineHeight(LineHeight&& lineHeight)
 {
-    SET_VAR(m_inheritedData, specifiedLineHeight, WTF::move(lineHeight));
+    SET_VAR(m_inheritedData, textAutosizingAdjustedLineHeight, WTF::move(lineHeight));
 }
 
-void ComputedStyleBase::setSpecifiedLineHeightFromAnimation(LineHeight&& lineHeight)
+void ComputedStyleBase::setLineHeightFromAnimation(LineHeight&& lineHeight)
 {
     bool specifiedLineHeightChanged = m_inheritedData->specifiedLineHeight != lineHeight;
-    bool lineHeightChanged = m_inheritedData->lineHeight != lineHeight;
-    if (specifiedLineHeightChanged || lineHeightChanged) {
+    bool textAutosizingAdjustedLineHeightChanged = m_inheritedData->textAutosizingAdjustedLineHeight != lineHeight;
+    if (specifiedLineHeightChanged || textAutosizingAdjustedLineHeightChanged) {
         auto& access = m_inheritedData.access();
         if (specifiedLineHeightChanged)
             access.specifiedLineHeight = lineHeight;
-        if (lineHeightChanged)
-            access.lineHeight = WTF::move(lineHeight);
+        if (textAutosizingAdjustedLineHeightChanged)
+            access.textAutosizingAdjustedLineHeight = WTF::move(lineHeight);
     }
 }
 

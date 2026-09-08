@@ -1498,7 +1498,9 @@ void RenderTheme::adjustButtonOrCheckboxOrColorWellOrInnerSpinButtonOrRadioStyle
     // Font
     if (auto controlFont = this->controlFont(appearance, fontCascade.get(), style.usedZoom())) {
         // If overriding the specified font with the theme font, also override the line height with the standard line height.
-        style.setLineHeight(Style::ComputedStyle::initialLineHeight());
+        style.setSpecifiedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
+        style.setTextAutosizingAdjustedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
+
         style.setFontDescription(WTF::move(controlFont.value()));
     }
 

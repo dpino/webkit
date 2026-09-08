@@ -122,9 +122,9 @@ std::optional<LayoutUnit> InlineQuirks::initialLetterAlignmentOffset(const Box& 
         return { };
     auto& primaryFontMetrics = lineBoxStyle.fontCascade().metricsOfPrimaryFont();
     auto lineHeight = [&]() -> InlineLayoutUnit {
-        if (lineBoxStyle.lineHeight().isNormal())
+        if (lineBoxStyle.textAutosizingAdjustedLineHeight().isNormal())
             return primaryFontMetrics.ascent(FontBaseline::Alphabetic) + primaryFontMetrics.descent(FontBaseline::Alphabetic);
-        return lineBoxStyle.computedLineHeight();
+        return lineBoxStyle.usedLineHeight();
     };
     auto& floatBoxGeometry = formattingContext().geometryForBox(floatBox);
     auto fontHeight = primaryFontMetrics.ascent() + primaryFontMetrics.descent();

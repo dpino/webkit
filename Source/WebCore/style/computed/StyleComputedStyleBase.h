@@ -652,9 +652,10 @@ public:
     std::pair<FontOrientation, NonCJKGlyphOrientation> NODELETE fontAndGlyphOrientation();
     float NODELETE usedFontSize() const;
     inline WebkitLocale computedLocale() const;
-    const LineHeight& NODELETE specifiedLineHeight() const;
-    void setSpecifiedLineHeight(LineHeight&&);
-    void setSpecifiedLineHeightFromAnimation(LineHeight&&);
+
+    const LineHeight& NODELETE textAutosizingAdjustedLineHeight() const;
+    void setTextAutosizingAdjustedLineHeight(LineHeight&&);
+    void setLineHeightFromAnimation(LineHeight&&);
 
     void setLetterSpacingFromAnimation(LetterSpacing&&);
     void setWordSpacingFromAnimation(WordSpacing&&);

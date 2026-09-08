@@ -1384,7 +1384,7 @@ static WebFrameLoadType NODELETE toWebFrameLoadType(WebCore::FrameLoadType frame
 
     if (auto* textControlRenderer = dynamicDowncast<WebCore::RenderTextControl>(*renderer))
         return textControlRenderer->innerLineHeight();
-    return renderer->style().computedLineHeight();
+    return renderer->style().usedLineHeight();
 }
 
 - (void)updateLayout

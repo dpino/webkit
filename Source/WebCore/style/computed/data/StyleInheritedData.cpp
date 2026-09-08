@@ -36,8 +36,8 @@ DEFINE_ALLOCATOR_WITH_HEAP_IDENTIFIER(InheritedData);
 InheritedData::InheritedData()
     : borderHorizontalSpacing(ComputedStyle::initialBorderHorizontalSpacing())
     , borderVerticalSpacing(ComputedStyle::initialBorderVerticalSpacing())
-    , lineHeight(ComputedStyle::initialLineHeight())
-    , specifiedLineHeight(ComputedStyle::initialLineHeight())
+    , specifiedLineHeight(ComputedStyle::initialSpecifiedLineHeight())
+    , textAutosizingAdjustedLineHeight(ComputedStyle::initialSpecifiedLineHeight())
     , fontData(FontData::create())
     , color(WebCore::Color::black)
     , visitedLinkColor(WebCore::Color::black)
@@ -48,8 +48,8 @@ inline InheritedData::InheritedData(const InheritedData& o)
     : RefCounted<InheritedData>()
     , borderHorizontalSpacing(o.borderHorizontalSpacing)
     , borderVerticalSpacing(o.borderVerticalSpacing)
-    , lineHeight(o.lineHeight)
     , specifiedLineHeight(o.specifiedLineHeight)
+    , textAutosizingAdjustedLineHeight(o.textAutosizingAdjustedLineHeight)
     , fontData(o.fontData)
     , color(o.color)
     , visitedLinkColor(o.visitedLinkColor)
@@ -79,8 +79,8 @@ bool InheritedData::fastPathInheritedEqual(const InheritedData& other) const
 
 bool InheritedData::nonFastPathInheritedEqual(const InheritedData& other) const
 {
-    return lineHeight == other.lineHeight
-        && specifiedLineHeight == other.specifiedLineHeight
+    return specifiedLineHeight == other.specifiedLineHeight
+        && textAutosizingAdjustedLineHeight == other.textAutosizingAdjustedLineHeight
         && fontData == other.fontData
         && borderHorizontalSpacing == other.borderHorizontalSpacing
         && borderVerticalSpacing == other.borderVerticalSpacing;
@@ -99,8 +99,8 @@ void InheritedData::dumpDifferences(TextStream& ts, const InheritedData& other) 
 
     LOG_IF_DIFFERENT(borderHorizontalSpacing);
     LOG_IF_DIFFERENT(borderVerticalSpacing);
-    LOG_IF_DIFFERENT(lineHeight);
     LOG_IF_DIFFERENT(specifiedLineHeight);
+    LOG_IF_DIFFERENT(textAutosizingAdjustedLineHeight);
     LOG_IF_DIFFERENT(color);
     LOG_IF_DIFFERENT(visitedLinkColor);
 }

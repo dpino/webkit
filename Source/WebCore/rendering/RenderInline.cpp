@@ -148,7 +148,7 @@ bool RenderInline::mayAffectLayout() const
         || !WTF::holdsAlternative<CSS::Keyword::Baseline>(style().verticalAlign())
         || !style().textEmphasisStyle().isNone()
         || (checkFonts && (!parentStyle->fontCascade().metricsOfPrimaryFont().hasIdenticalAscentDescentAndLineGap(style().fontCascade().metricsOfPrimaryFont())
-        || parentStyle->lineHeight() != style().lineHeight()))
+        || parentStyle->textAutosizingAdjustedLineHeight() != style().textAutosizingAdjustedLineHeight()))
         || hasHardLineBreakChildOnly;
 
     if (!mayAffectLayout && checkFonts) {
@@ -157,7 +157,7 @@ bool RenderInline::mayAffectLayout() const
         auto& childStyle = firstLineStyle();
         mayAffectLayout = !parentStyle->fontCascade().metricsOfPrimaryFont().hasIdenticalAscentDescentAndLineGap(childStyle.fontCascade().metricsOfPrimaryFont())
             || !WTF::holdsAlternative<CSS::Keyword::Baseline>(childStyle.verticalAlign())
-            || parentStyle->lineHeight() != childStyle.lineHeight();
+            || parentStyle->textAutosizingAdjustedLineHeight() != childStyle.textAutosizingAdjustedLineHeight();
     }
     return mayAffectLayout;
 }

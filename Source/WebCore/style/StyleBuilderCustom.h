@@ -304,13 +304,13 @@ inline void BuilderCustom::applyValueLetterSpacing(BuilderState& builderState, C
 
 inline void BuilderCustom::applyInheritLineHeight(BuilderState& builderState)
 {
-    builderState.style().setLineHeight(forwardInheritedValue(builderState.parentStyle().lineHeight()));
+    builderState.style().setTextAutosizingAdjustedLineHeight(forwardInheritedValue(builderState.parentStyle().textAutosizingAdjustedLineHeight()));
     builderState.style().setSpecifiedLineHeight(forwardInheritedValue(builderState.parentStyle().specifiedLineHeight()));
 }
 
 inline void BuilderCustom::applyInitialLineHeight(BuilderState& builderState)
 {
-    builderState.style().setLineHeight(ComputedStyle::initialLineHeight());
+    builderState.style().setTextAutosizingAdjustedLineHeight(ComputedStyle::initialSpecifiedLineHeight());
     builderState.style().setSpecifiedLineHeight(ComputedStyle::initialSpecifiedLineHeight());
 }
 
@@ -365,7 +365,7 @@ inline void BuilderCustom::applyValueLineHeight(BuilderState& builderState, CSSV
 
     auto lineHeight = toStyleFromCSSValue<LineHeight>(builderState, value, 1.0f);
 
-    auto computedLineHeight = [&] -> LineHeight {
+    auto textAutosizingAdjustedLineHeight = [&] -> LineHeight {
         if (lineHeight.isNormal())
             return lineHeight;
 
@@ -376,7 +376,7 @@ inline void BuilderCustom::applyValueLineHeight(BuilderState& builderState, CSSV
         return toStyleFromCSSValue<LineHeight>(builderState, value, multiplier);
     }();
 
-    builderState.style().setLineHeight(WTF::move(computedLineHeight));
+    builderState.style().setTextAutosizingAdjustedLineHeight(WTF::move(textAutosizingAdjustedLineHeight));
     builderState.style().setSpecifiedLineHeight(WTF::move(lineHeight));
 }
 

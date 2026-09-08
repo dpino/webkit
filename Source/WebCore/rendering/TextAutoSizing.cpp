@@ -272,7 +272,7 @@ auto TextAutoSizingValue::adjustTextNodeSizes() -> StillHasNodes
             continue;
 
         auto newParentStyle = cloneRenderStyleWithState(parentStyle);
-        newParentStyle.setLineHeight(lineHeightLength.isNormal() ? Style::LineHeight { lineHeightLength } : Style::LineHeight { Style::LineHeight::Length { static_cast<float>(lineHeight) } });
+        newParentStyle.setTextAutosizingAdjustedLineHeight(lineHeightLength.isNormal() ? Style::LineHeight { lineHeightLength } : Style::LineHeight { Style::LineHeight::Length { static_cast<float>(lineHeight) } });
         newParentStyle.setSpecifiedLineHeight(Style::LineHeight { lineHeightLength });
         newParentStyle.setFontDescription(WTF::move(fontDescription));
         parentRenderer->setStyle(WTF::move(newParentStyle));
@@ -337,11 +337,11 @@ void TextAutoSizingValue::reset()
 
         auto& parentStyle = parentRenderer->style();
         auto& originalLineHeight = parentStyle.specifiedLineHeight();
-        if (originalLineHeight == parentStyle.lineHeight())
+        if (originalLineHeight == parentStyle.textAutosizingAdjustedLineHeight())
             continue;
 
         auto newParentStyle = cloneRenderStyleWithState(parentStyle);
-        newParentStyle.setLineHeight(Style::LineHeight { originalLineHeight });
+        newParentStyle.setTextAutosizingAdjustedLineHeight(Style::LineHeight { originalLineHeight });
         newParentStyle.setFontDescription(WTF::move(fontDescription));
         parentRenderer->setStyle(WTF::move(newParentStyle));
     }

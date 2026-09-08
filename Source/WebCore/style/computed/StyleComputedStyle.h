@@ -103,7 +103,6 @@ public:
 
     static inline PageSize initialPageSize();
     static constexpr ZIndex initialUsedZIndex();
-    static inline LineHeight initialSpecifiedLineHeight();
 
     // MARK: - Logical Values
 
@@ -138,7 +137,6 @@ public:
 
     // MARK: - Derived Values
 
-    WEBCORE_EXPORT float computedLineHeight() const;
     LayoutBoxExtent imageOutsets(const Style::BorderImage&, float deviceScaleFactor) const;
     LayoutBoxExtent imageOutsets(const Style::MaskBorder&, float deviceScaleFactor) const;
     LayoutBoxExtent borderImageOutsets(float deviceScaleFactor) const;
@@ -147,6 +145,7 @@ public:
 
     // MARK: - Used Values
 
+    WEBCORE_EXPORT float usedLineHeight() const;
     const WTF::String& hyphenString() const LIFETIME_BOUND;
     float usedStrokeWidth(const IntSize& viewportSize) const;
     WebCore::Color usedStrokeColor() const;

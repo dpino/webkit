@@ -58,8 +58,8 @@ public:
     WebkitBorderSpacing borderHorizontalSpacing;
     WebkitBorderSpacing borderVerticalSpacing;
 
-    LineHeight lineHeight;
     LineHeight specifiedLineHeight;
+    LineHeight textAutosizingAdjustedLineHeight;
 
     DataRef<FontData> fontData;
     WebCore::Color color;

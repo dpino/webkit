@@ -3213,7 +3213,9 @@ static void adjustSelectListButtonStyleForVectorBasedControls(Style::ComputedSty
 #if PLATFORM(IOS_FAMILY)
     applyCommonButtonPaddingToStyleForVectorBasedControls(style);
 #endif
-    style.setLineHeight(CSS::Keyword::Normal { });
+
+    style.setSpecifiedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
+    style.setTextAutosizingAdjustedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
 }
 
 bool RenderThemeCocoa::adjustMenuListStyleForVectorBasedControls(Style::ComputedStyle& style, const Element* element) const
@@ -3233,8 +3235,10 @@ bool RenderThemeCocoa::adjustMenuListStyleForVectorBasedControls(Style::Computed
     style.setBoxShadow(CSS::Keyword::None  { });
 
     // Enforce "line-height: normal" as long as this element isn't a non-select element using `-webkit-appearance: menulist`.
-    if (element && is<HTMLSelectElement>(*element))
-        style.setLineHeight(CSS::Keyword::Normal { });
+    if (element && is<HTMLSelectElement>(*element)) {
+        style.setSpecifiedLineHeight(CSS::Keyword::Normal { });
+        style.setTextAutosizingAdjustedLineHeight(CSS::Keyword::Normal { });
+    }
 
     return true;
 }

@@ -3503,7 +3503,7 @@ static float lineHeightForEmptyContent(auto& style)
     auto& fontMetrics = style.metricsOfPrimaryFont();
     auto ascent = fontMetrics.ascent();
     auto fontHeight = fontMetrics.height();
-    return ascent + (style.computedLineHeight() - fontHeight) / 2.f;
+    return ascent + (style.usedLineHeight() - fontHeight) / 2.f;
 }
 
 std::optional<LayoutUnit> RenderBlockFlow::firstLineBaseline() const

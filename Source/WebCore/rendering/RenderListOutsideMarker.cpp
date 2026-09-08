@@ -506,7 +506,7 @@ std::pair<float, float> RenderListOutsideMarker::layoutBoundForTextContent(Strin
     auto& metricsOfPrimaryFont = style.metricsOfPrimaryFont();
     auto primaryFontHeight = metricsOfPrimaryFont.height();
 
-    if (style.lineHeight().isNormal()) {
+    if (style.textAutosizingAdjustedLineHeight().isNormal()) {
         auto maxAscentAndDescent = ascentAndDescent(metricsOfPrimaryFont);
 
         for (Ref fallbackFont : Layout::TextUtil::fallbackFontsForText(text, style, Layout::TextUtil::IncludeHyphen::No)) {
@@ -524,7 +524,7 @@ std::pair<float, float> RenderListOutsideMarker::layoutBoundForTextContent(Strin
     }
 
     auto primaryFontAscentAndDescent = ascentAndDescent(metricsOfPrimaryFont);
-    auto halfLeading = (style.computedLineHeight() - (primaryFontAscentAndDescent.first + primaryFontAscentAndDescent.second)) / 2.f;
+    auto halfLeading = (style.usedLineHeight() - (primaryFontAscentAndDescent.first + primaryFontAscentAndDescent.second)) / 2.f;
     return { primaryFontAscentAndDescent.first + halfLeading, primaryFontAscentAndDescent.second + halfLeading };
 }
 

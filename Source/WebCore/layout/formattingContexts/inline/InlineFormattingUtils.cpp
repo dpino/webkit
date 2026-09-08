@@ -79,7 +79,7 @@ InlineLayoutUnit InlineFormattingUtils::logicalTopForNextLine(const LineLayoutRe
                 return LayoutUnit { *nextLineLogicalTopCandidate };
             // We have to have a hint when intrusive floats prevented any inline content placement.
             ASSERT_NOT_REACHED();
-            return LayoutUnit { lineLogicalRect.top() + formattingContext().root().style().computedLineHeight() };
+            return LayoutUnit { lineLogicalRect.top() + formattingContext().root().style().usedLineHeight() };
         };
         auto floatConstraints = floatingContext.constraints(toLayoutUnit(lineLogicalRect.top()), nextLineLogicalTop(), FloatingContext::MayBeAboveLastFloat::Yes);
         if (floatConstraints.start && floatConstraints.end) {
@@ -192,7 +192,7 @@ InlineLayoutUnit InlineFormattingUtils::computedTextIndent(IsIntrinsicWidthMode 
 InlineLayoutUnit InlineFormattingUtils::initialLineHeight(bool isFirstLine) const
 {
     if (formattingContext().layoutState().inStandardsMode())
-        return isFirstLine ? formattingContext().root().firstLineStyle().computedLineHeight() : formattingContext().root().style().computedLineHeight();
+        return isFirstLine ? formattingContext().root().firstLineStyle().usedLineHeight() : formattingContext().root().style().usedLineHeight();
     return formattingContext().quirks().initialLineHeight();
 }
 

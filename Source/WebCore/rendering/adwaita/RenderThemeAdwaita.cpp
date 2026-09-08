@@ -343,7 +343,8 @@ void RenderThemeAdwaita::adjustSearchFieldStyle(Style::ComputedStyle& style, con
 void RenderThemeAdwaita::adjustMenuListStyle(Style::ComputedStyle& style, const Element* element) const
 {
     RenderTheme::adjustMenuListStyle(style, element);
-    style.setLineHeight(Style::ComputedStyle::initialLineHeight());
+    style.setSpecifiedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
+    style.setTextAutosizingAdjustedLineHeight(Style::ComputedStyle::initialSpecifiedLineHeight());
 }
 
 void RenderThemeAdwaita::adjustMenuListButtonStyle(Style::ComputedStyle& style, const Element* element) const

@@ -46,10 +46,5 @@ inline PageSize ComputedStyle::initialPageSize()
     return CSS::Keyword::Auto { };
 }
 
-inline LineHeight ComputedStyle::initialSpecifiedLineHeight()
-{
-    return CSS::Keyword::Normal { };
-}
-
 } // namespace Style
 } // namespace WebCore
