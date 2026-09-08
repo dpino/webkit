@@ -1390,19 +1390,7 @@ CanvasUsesAcceleratedDrawing:
     WebKitLegacy:
       "PLATFORM(IOS_FAMILY) && !PLATFORM(IOS_FAMILY_SIMULATOR)": true
       default: false
-<<<<<<< HEAD
     WebCore: false
-||||||| parent of 5d789312e4a7 ([PATCH] Disable accelerated canvas by default)
-    WebKit:
-      default: true
-    WebCore:
-      default: false
-=======
-    WebKit:
-      default: false
-    WebCore:
-      default: false
->>>>>>> 5d789312e4a7 ([PATCH] Disable accelerated canvas by default)
 
 CaptionDisplaySettingsEnabled:
   type: bool
