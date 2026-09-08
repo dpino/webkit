@@ -329,12 +329,6 @@ public:
     static JSC::Heap* heap(const JSValue); // 0 for immediate values
     static JSC::Heap* heap(const HeapCell*);
 
-    // This constant determines how many blocks we iterate between checks of our 
-    // deadline when calling Heap::isPagedOut. Decreasing it will cause us to detect 
-    // overstepping our deadline more quickly, while increasing it will cause 
-    // our scan to run faster. 
-    static constexpr unsigned s_timeCheckResolution = 16;
-
     bool isMarked(const void*);
     static bool testAndSetMarked(HeapVersion, const void*);
 
@@ -497,8 +491,7 @@ public:
     void deleteAllUnlinkedCodeBlocks(DeleteAllCodeEffort);
 
     JS_EXPORT_PRIVATE void didAllocate(size_t);
-    bool isPagedOut();
-    
+
     const JITStubRoutineSet& jitStubRoutines() { return *m_jitStubRoutines; }
     
     void addReference(JSCell*, ArrayBuffer*);

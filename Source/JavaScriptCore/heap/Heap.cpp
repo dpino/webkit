@@ -500,11 +500,6 @@ Heap::~Heap()
         WeakBlock::destroy(*this, block);
 }
 
-bool Heap::isPagedOut()
-{
-    return m_objectSpace.isPagedOut();
-}
-
 void Heap::dumpHeapStatisticsAtVMDestruction()
 {
     unsigned counter = 0;
