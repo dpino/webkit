@@ -4938,7 +4938,6 @@ PromiseIsPromiseEnabled:
   defaultValue: false
 
 PropagateDamagingInformation:
-<<<<<<< HEAD
   type: bool
   status: testable
   category: dom
@@ -4947,40 +4946,11 @@ PropagateDamagingInformation:
   condition: ENABLE(DAMAGE_TRACKING)
   defaultValue:
     default: false
+    WebKitLegacy: true
     WebKit:
       "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
-||||||| parent of 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
-   type: bool
-   status: testable
-   category: dom
-   humanReadableName: "Propagate Damaging Information"
-   humanReadableDescription: "Propagate Damaging Information"
-   condition: ENABLE(DAMAGE_TRACKING)
-   defaultValue:
-     WebKitLegacy:
-       default: false
-     WebKit:
-       "PLATFORM(GTK) || PLATFORM(WPE)": true
-       default: false
-     WebCore:
-       default: false
-=======
-   type: bool
-   status: testable
-   category: dom
-   humanReadableName: "Propagate Damaging Information"
-   humanReadableDescription: "Propagate Damaging Information"
-   condition: ENABLE(DAMAGE_TRACKING)
-   defaultValue:
-     WebKitLegacy:
-       default: true
-     WebKit:
-       "PLATFORM(GTK) || PLATFORM(WPE)": true
-       default: false
-     WebCore:
-       default: true
->>>>>>> 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
+    WebCore: true
 
 PunchOutWhiteBackgroundsInDarkMode:
   type: bool
@@ -6567,26 +6537,12 @@ UseDamagingInformationForCompositing:
   humanReadableDescription: "Use the Damaging Information to optimize compositing"
   condition: ENABLE(DAMAGE_TRACKING)
   defaultValue:
-<<<<<<< HEAD
     default: false
-||||||| parent of 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
-    WebKitLegacy:
-      default: false
-=======
-    WebKitLegacy:
-      default: true
->>>>>>> 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
+    WebKitLegacy: true
     WebKit:
       "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
-<<<<<<< HEAD
-||||||| parent of 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
-    WebCore:
-      default: false
-=======
-    WebCore:
-      default: true
->>>>>>> 5d70ed0e5268 ([PATCH] Enable damage propagation by default)
+    WebCore: true
 
 UseGPUProcessForCanvasRenderingEnabled:
   type: bool
