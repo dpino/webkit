@@ -2216,23 +2216,9 @@ ExposeSpeakersEnabled:
   condition: ENABLE(MEDIA_STREAM)
   excludeFrom: [ WebKitLegacy ]
   defaultValue:
-<<<<<<< HEAD
-    "PLATFORM(COCOA)": true
+    "PLATFORM(COCOA) || USE(GSTREAMER)": true
     default: false
     WebCore: false
-||||||| parent of 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
-    WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
-    WebCore:
-      default: false
-=======
-    WebKit:
-      "PLATFORM(COCOA) || USE(GSTREAMER)": true
-      default: false
-    WebCore:
-      default: false
->>>>>>> 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
 
 ExposeSpeakersWithoutMicrophoneEnabled:
   type: bool
@@ -2243,23 +2229,9 @@ ExposeSpeakersWithoutMicrophoneEnabled:
   condition: ENABLE(MEDIA_STREAM)
   excludeFrom: [ WebKitLegacy ]
   defaultValue:
-<<<<<<< HEAD
-    "PLATFORM(COCOA)": true
+    "PLATFORM(COCOA) || USE(GSTREAMER)": true
     default: false
     WebCore: false
-||||||| parent of 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
-    WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
-    WebCore:
-      default: false
-=======
-    WebKit:
-      "PLATFORM(COCOA) || USE(GSTREAMER)": true
-      default: false
-    WebCore:
-      default: false
->>>>>>> 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
 
 ExtendedAudioDescriptionsEnabled:
   type: bool
@@ -2919,24 +2891,13 @@ ImageCaptureEnabled:
   condition: ENABLE(MEDIA_STREAM)
   excludeFrom: [ WebKitLegacy ]
   defaultValue:
-<<<<<<< HEAD
-    "PLATFORM(COCOA)": true
     default: false
-||||||| parent of 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
-    WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
-    WebCore:
-      "PLATFORM(COCOA)": true
-      default: false
-=======
     WebKit:
       "PLATFORM(COCOA) || USE(GSTREAMER)": true
       default: false
     WebCore:
       "PLATFORM(COCOA)": true
       default: false
->>>>>>> 70b2b2196ffe ([PATCH] Enable per-element speaker selection by default)
 
 ImageControlsEnabled:
   type: bool
