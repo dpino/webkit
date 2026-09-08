@@ -192,6 +192,11 @@ WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
         return m_regExpJITCode.get();
     }
+
+    Yarr::YarrCodeBlock* getRegExpJITCodeBlockConcurrently()
+    {
+        return m_regExpJITCode.get();
+    }
 #endif
 
     bool hasValidAtom() const { return !m_atom.isNull(); }

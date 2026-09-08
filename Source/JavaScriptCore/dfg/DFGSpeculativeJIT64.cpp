@@ -3051,7 +3051,7 @@ void SpeculativeJIT::compileRegExpTestInline(Node* node)
 {
     RegExp* regExp = uncheckedDowncast<RegExp>(node->cellOperand2()->value());
 
-    auto jitCodeBlock = regExp->getRegExpJITCodeBlock();
+    auto jitCodeBlock = regExp->getRegExpJITCodeBlockConcurrently();
     ASSERT(jitCodeBlock);
     auto inlineCodeStats8Bit = jitCodeBlock->get8BitInlineStats();
 

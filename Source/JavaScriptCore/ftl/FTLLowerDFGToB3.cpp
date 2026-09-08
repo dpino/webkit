@@ -19822,7 +19822,7 @@ IGNORE_CLANG_WARNINGS_END
 
         ASSERT(!regExp->globalOrSticky());
 
-        auto jitCodeBlock = regExp->getRegExpJITCodeBlock();
+        auto jitCodeBlock = regExp->getRegExpJITCodeBlockConcurrently();
         ASSERT(jitCodeBlock);
         auto inlineCodeStats8Bit = jitCodeBlock->get8BitInlineStats();
 
