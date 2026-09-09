@@ -2588,7 +2588,6 @@ accessibility/gtk/aria-listbox-crash.html [ Pass ]
 accessibility/gtk/aria-options-and-menuitems-crash.html [ Pass ]
 accessibility/gtk/text-attribute-empty-li.html [ Pass ]
 accessibility/gtk/text-for-range-extraneous-whitespace.html [ Pass ]
-accessibility/gtk/text-for-table.html [ Pass ]
 accessibility/hang-in-isignored.html [ Pass ]
 accessibility/heading-clickpoint.html [ Pass ]
 

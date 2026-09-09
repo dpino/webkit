@@ -105,6 +105,21 @@
             "/webkit/WebKitAccessibility/collection/get-matches": {
                 "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
             },
+            "/webkit/WebKitAccessibility/text/for-range-simple": {
+                "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
+            },
+            "/webkit/WebKitAccessibility/text/for-range-list-item": {
+                "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
+            },
+            "/webkit/WebKitAccessibility/text/for-range-heading": {
+                "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
+            },
+            "/webkit/WebKitAccessibility/text/for-range-table-cell": {
+                "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
+            },
+            "/webkit/WebKitAccessibility/text/for-range-embedded-objects": {
+                "expected": {"gtk": {"status": ["FAIL", "TIMEOUT"], "bug": "webkit.org/b/279009"}}
+            },
             "/webkit/WebKitAccessibility/accessible/ignored-objects": {
                 "expected": {"gtk": {"status": ["SKIP"], "bug": "webkit.org/b/279009"}}
 	    },
