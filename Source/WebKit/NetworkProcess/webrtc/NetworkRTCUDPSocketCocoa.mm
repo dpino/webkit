@@ -312,7 +312,9 @@ void NetworkRTCUDPSocketCocoaConnections::configureParameters(nw_parameters_t pa
 {
     auto protocolStack = adoptNS(nw_parameters_copy_default_protocol_stack(parameters));
     auto options = adoptNS(nw_protocol_stack_copy_internet_protocol(protocolStack.get()));
-    nw_ip_options_set_version(options.get(), version);
+
+    if (version != nw_ip_version_any)
+        nw_ip_options_set_version(options.get(), version);
 
     setNWParametersApplicationIdentifiers(parameters, m_sourceApplicationBundleIdentifier.data(), m_sourceApplicationAuditToken, m_attributedBundleIdentifier);
     setNWParametersTrackerOptions(parameters, m_shouldBypassRelay, m_isFirstParty, m_isKnownTracker);
@@ -392,7 +394,7 @@ auto NetworkRTCUDPSocketCocoaConnections::createNWConnection(const webrtc::Socke
         auto localEndpoint = adoptNS(nw_endpoint_create_host_with_numeric_port(hostAddress.c_str(), m_address.port()));
         nw_parameters_set_local_endpoint(parameters.get(), localEndpoint.get());
     }
-    configureParameters(parameters.get(), remoteAddress.family() == AF_INET ? nw_ip_version_4 : nw_ip_version_6);
+    configureParameters(parameters.get(), ipVersionFromFamily(remoteAddress.family()));
 
     if (m_trafficClass)
         nw_parameters_set_traffic_class(parameters.get(), *m_trafficClass);
