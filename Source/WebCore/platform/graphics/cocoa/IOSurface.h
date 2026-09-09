@@ -280,6 +280,7 @@ private:
 
     std::optional<UsedFormat> m_format;
     std::optional<ColorSpace> m_colorSpace;
+    mutable std::optional<bool> m_knownIsVolatile;
     IntSize m_size;
     size_t m_totalBytes;
 #if HAVE(SUPPORT_HDR_DISPLAY)

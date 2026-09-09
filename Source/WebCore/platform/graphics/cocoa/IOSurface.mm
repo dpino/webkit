@@ -407,6 +407,7 @@ static RetainPtr<IOSurfaceRef> createSurface(IntSize size, IOSurface::Name name,
 IOSurface::IOSurface(IntSize size, const ColorSpace& colorSpace, IOSurface::Name name, Format format, UseLosslessCompression useLosslessCompression, IOSurfaceOptions options, bool& success)
     : m_format({ format, useLosslessCompression })
     , m_colorSpace(colorSpace)
+    , m_knownIsVolatile(false)
     , m_size(size)
     , m_name(name)
 {
@@ -748,10 +749,17 @@ std::optional<IOSurface::LockAndContext> IOSurface::createBitmapPlatformContext(
 
 SetNonVolatileResult IOSurface::state() const
 {
-    uint32_t previousState = 0;
-    IOReturn ret = IOSurfaceSetPurgeable(m_surface.get(), kIOSurfacePurgeableKeepCurrent, &previousState);
-    ASSERT_UNUSED(ret, ret == kIOReturnSuccess);
-    return previousState == kIOSurfacePurgeableEmpty ? SetNonVolatileResult::Empty : SetNonVolatileResult::Valid;
+    if (m_knownIsVolatile.has_value() && !*m_knownIsVolatile)
+        return SetNonVolatileResult::Valid;
+    uint32_t currentState = 0;
+    IOReturn ret = IOSurfaceSetPurgeable(m_surface.get(), kIOSurfacePurgeableKeepCurrent, &currentState);
+    if (ret != kIOReturnSuccess) {
+        ASSERT_NOT_REACHED();
+        m_knownIsVolatile = std::nullopt;
+        return SetNonVolatileResult::Valid;
+    }
+    m_knownIsVolatile = currentState != kIOSurfacePurgeableNonVolatile;
+    return currentState == kIOSurfacePurgeableEmpty ? SetNonVolatileResult::Empty : SetNonVolatileResult::Valid;
 }
 
 IOSurfaceSeed IOSurface::seed() const
@@ -761,22 +769,24 @@ IOSurfaceSeed IOSurface::seed() const
 
 bool IOSurface::isVolatile() const
 {
-    uint32_t previousState = 0;
-    IOReturn ret = IOSurfaceSetPurgeable(m_surface.get(), kIOSurfacePurgeableKeepCurrent, &previousState);
-    ASSERT_UNUSED(ret, ret == kIOReturnSuccess);
-    return previousState != kIOSurfacePurgeableNonVolatile;
+    if (!m_knownIsVolatile)
+        (void) state();
+    return m_knownIsVolatile.value_or(false);
 }
 
 SetNonVolatileResult IOSurface::setVolatile(bool isVolatile)
 {
+    if (!isVolatile && m_knownIsVolatile.has_value() && !*m_knownIsVolatile)
+        return SetNonVolatileResult::Valid;
     uint32_t previousState = 0;
     IOReturn ret = IOSurfaceSetPurgeable(m_surface.get(), isVolatile ? kIOSurfacePurgeableVolatile : kIOSurfacePurgeableNonVolatile, &previousState);
-    ASSERT_UNUSED(ret, ret == kIOReturnSuccess);
-
-    if (previousState == kIOSurfacePurgeableEmpty)
-        return SetNonVolatileResult::Empty;
-
-    return SetNonVolatileResult::Valid;
+    if (ret != kIOReturnSuccess) {
+        ASSERT_NOT_REACHED();
+        m_knownIsVolatile = std::nullopt;
+        return SetNonVolatileResult::Valid;
+    }
+    m_knownIsVolatile = isVolatile;
+    return previousState == kIOSurfacePurgeableEmpty ? SetNonVolatileResult::Empty : SetNonVolatileResult::Valid;
 }
 
 ColorSpace IOSurface::colorSpace()
