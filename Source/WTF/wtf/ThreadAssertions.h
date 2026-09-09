@@ -216,6 +216,19 @@ ALWAYS_INLINE void releaseOwnerThreadAssertion(const LockType& lock) WTF_RELEASE
     UNUSED_PARAM(lock);
 }
 
+// Declares assertIsOwnerThread() and releaseOwnerThreadAssertion() members for a class whose state is
+// guarded by lock and owned by ownerThread, so call sites need not repeat both names. Because they are
+// members, a function that also touches a second instance's guarded state asserts on that instance:
+// sourceRange.assertIsOwnerThread() grants shared access to sourceRange's lock, not to this one's.
+#define WTF_DECLARE_OWNER_THREAD_ASSERTIONS(lock, ownerThread) \
+    void assertIsOwnerThread() const WTF_ASSERTS_ACQUIRED_SHARED_LOCK(lock) \
+    { \
+        WTF::assertIsOwnerThread(lock, ownerThread); \
+    } \
+    ALWAYS_INLINE void releaseOwnerThreadAssertion() const WTF_RELEASES_SHARED_LOCK(lock) WTF_IGNORES_THREAD_SAFETY_ANALYSIS \
+    { \
+    }
+
 // Type for globally named assertions for describing access requirements.
 // Can be used, for example, to require that a variable is accessed only in
 // a known named thread.
