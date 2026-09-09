@@ -257,11 +257,6 @@ PaymentRequestEnabled:
   condition: ENABLE(PAYMENT_REQUEST)
   defaultValue: false
 
-PitchCorrectionAlgorithm:
-  type: uint32_t
-  refinedType: MediaPlayerEnums::PitchCorrectionAlgorithm
-  defaultValue: MediaPlayerEnums::PitchCorrectionAlgorithm::BestAllAround
-
 PreferMIMETypeForImages:
   type: bool
   defaultValue: false
@@ -302,12 +297,6 @@ ShouldIgnoreFontLoadCompletions:
 ShouldInjectUserScriptsInInitialEmptyDocument:
   type: bool
   defaultValue: false
-
-StorageBlockingPolicy:
-  type: uint32_t
-  refinedType: StorageBlockingPolicy
-  webcoreOnChange: storageBlockingPolicyChanged
-  defaultValue: StorageBlockingPolicy::AllowAll
 
 SuppressHDRShouldBeAllowedInFullscreenVideo:
   type: bool
