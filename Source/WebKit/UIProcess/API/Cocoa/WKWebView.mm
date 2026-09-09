@@ -441,7 +441,7 @@ static uint32_t NODELETE convertSystemLayoutDirection(NSUserInterfaceLayoutDirec
     if (!PAL::isScreenTimeFrameworkAvailable())
         return;
 
-    if (!_page->preferences().screenTimeEnabled() || !_page->mainFrame() || !_page->mainFrame()->url().protocolIsInHTTPFamily())
+    if (!protect(_page->preferences())->screenTimeEnabled() || !_page->mainFrame() || !_page->mainFrame()->url().protocolIsInHTTPFamily())
         return;
 
     if (!_screenTimeConfigurationObserver) {

@@ -43,4 +43,4 @@ Class testSTScreenTimeConfigurationClass(void);
 }
 #endif
 
-#endif
+#endif // ENABLE(SCREEN_TIME)
