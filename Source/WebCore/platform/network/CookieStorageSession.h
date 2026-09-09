@@ -123,7 +123,7 @@ private:
     void setHTTPCookiesForURL(CFHTTPCookieStorageRef, NSArray *cookies, NSURL *, NSURL *mainDocumentURL, NSString *partition, const SameSiteInfo&, ThirdPartyCookieBlockingDecision) const;
 #endif
 
-    PAL::SessionID m_sessionID;
+    const PAL::SessionID m_sessionID;
     const bool m_isInMemoryCookieStore { false };
 #if PLATFORM(COCOA)
     RetainPtr<CFURLStorageSessionRef> m_platformSession;
