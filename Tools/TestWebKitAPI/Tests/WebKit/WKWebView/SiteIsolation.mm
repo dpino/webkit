@@ -12399,22 +12399,6 @@ TEST(SiteIsolation, MultiProcessBFCacheCrossSiteToJavaScriptURL)
 
 TEST(SiteIsolation, MultiProcessBFCacheSameSiteWithDifferentCrossSiteIframes)
 {
-    // m_childFrames pollution under same-site BFCache: when a1 (a.com with
-    // b.com iframe) is cached and replaced by a2 (a.com with c.com iframe),
-    // BFCache does NOT destroy the cached frames, so no DidDestroyFrame IPC
-    // fires for b.com. Its stale WebFrameProxy stays in
-    // m_mainFrame->m_childFrames alongside the live c.com WebFrameProxy
-    // from a2.
-    //
-    // After a2 is fully loaded, the live frame tree under m_mainFrame must
-    // only reflect a2 (a.com + c.com remote). The cached b.com WebFrameProxy
-    // must hang off the WebBackForwardCacheEntry and not pollute the live
-    // tree. The b.com process itself remains in the BrowsingContextGroup
-    // while suspended (UI-driven flow does not pull RemotePageProxies out
-    // of the BCG), so getAllFrameTrees still surfaces a third tree from
-    // the suspended b.com process; that tree shows the b.com main as
-    // (remote) and its child as (remote) because the suspended WebPage's
-    // live document is empty (the cached document lives inside CachedPage).
     HTTPServer server({
         { "/a1"_s, { "<iframe src='https://b.com/bframe'></iframe>"_s } },
         { "/bframe"_s, { "b iframe content"_s } },
@@ -12428,27 +12412,27 @@ TEST(SiteIsolation, MultiProcessBFCacheSameSiteWithDifferentCrossSiteIframes)
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://a.com/a1"]]];
     [navigationDelegate waitForDidFinishNavigationAndLoadInSubframe];
 
-    checkFrameTreesInProcesses(webView.get(), {
-        { "https://a.com"_s, { { RemoteFrame } } },
-        { RemoteFrame, { { "https://b.com"_s } } },
-    });
+    EXPECT_WK_STREQ(@"https://b.com/bframe", [webView objectByEvaluatingJavaScript:@"location.href" inFrame:[webView firstChildFrame]]);
+    [webView objectByEvaluatingJavaScript:@"window.__bfcacheMarker_a1 = true"];
+    [webView objectByEvaluatingJavaScript:@"window.__iframeBfcacheMarker = true" inFrame:[webView firstChildFrame]];
 
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://a.com/a2"]]];
     [navigationDelegate waitForDidFinishNavigationAndLoadInSubframe];
 
-    // After a2 loads:
-    //  - a.com (main proc): a.com main with c.com remote child  → live tree, 1 tree
-    //  - b.com (cached proc, suspended): remote main with remote child → cached tree, 1 tree
-    //  - c.com (live iframe proc): remote main with c.com local child → live tree, 1 tree
-    // The stale b.com WebFrameProxy from a1 must be owned by the same-site
-    // BFCache entry, not by m_mainFrame->m_childFrames. The b.com process
-    // tree is still surfaced via the BCG because UI-driven BFCache leaves
-    // RemotePageProxies in place during suspension.
-    checkFrameTreesInProcesses(webView.get(), {
-        { "https://a.com"_s, { { RemoteFrame } } },
-        { RemoteFrame, { { RemoteFrame } } },
-        { RemoteFrame, { { "https://c.com"_s } } },
-    });
+    EXPECT_WK_STREQ(@"https://c.com/cframe", [webView objectByEvaluatingJavaScript:@"location.href" inFrame:[webView firstChildFrame]]);
+
+    [webView goBack];
+    [navigationDelegate waitForDidFinishNavigation];
+
+    EXPECT_WK_STREQ(@"https://a.com/a1", [webView URL].absoluteString);
+    EXPECT_TRUE([[webView objectByEvaluatingJavaScript:@"window.__bfcacheMarker_a1 ? true : false"] boolValue]);
+
+    // The iframe subtree is reattached after the main frame commits, so c.com is still the child frame for a moment after the navigation finishes.
+    while (![[webView firstChildFrame].securityOrigin.host isEqualToString:@"b.com"])
+        Util::spinRunLoop();
+
+    EXPECT_WK_STREQ(@"https://b.com/bframe", [webView objectByEvaluatingJavaScript:@"location.href" inFrame:[webView firstChildFrame]]);
+    EXPECT_TRUE([[webView objectByEvaluatingJavaScript:@"window.__iframeBfcacheMarker ? true : false" inFrame:[webView firstChildFrame]] boolValue]);
 }
 
 TEST(SiteIsolation, IframePushStateBackForwardRoutesToIframe)
