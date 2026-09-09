@@ -1213,7 +1213,12 @@ void CanvasRenderingContext2DBase::fillInternal(const Path& path, CanvasFillRule
         clearCanvas();
         c->fillPath(path);
     } else {
-        willUpdateContents(targetSwitcher ? targetSwitcher->expandedBounds() : path.fastBoundingRect());
+#if !USE(COORDINATED_GRAPHICS)
+        if (isEntireBackingStoreDirty())
+            willUpdateContents(std::nullopt);
+        else
+#endif
+            willUpdateContents(targetSwitcher ? targetSwitcher->expandedBounds() : path.fastBoundingRect());
         c->fillPath(path);
     }
 
@@ -1249,7 +1254,12 @@ void CanvasRenderingContext2DBase::strokeInternal(const Path& path)
         clearCanvas();
         c->strokePath(path);
     } else {
-        willUpdateContents(targetSwitcher ? targetSwitcher->expandedBounds() : inflatedStrokeRect(path.fastBoundingRect()));
+#if !USE(COORDINATED_GRAPHICS)
+        if (isEntireBackingStoreDirty())
+            willUpdateContents(std::nullopt);
+        else
+#endif
+            willUpdateContents(targetSwitcher ? targetSwitcher->expandedBounds() : inflatedStrokeRect(path.fastBoundingRect()));
         c->strokePath(path);
     }
 }
@@ -2473,7 +2483,11 @@ void CanvasRenderingContext2DBase::clearAccumulatedDirtyRect()
 
 bool CanvasRenderingContext2DBase::isEntireBackingStoreDirty() const
 {
+#if USE(COORDINATED_GRAPHICS)
     return m_dirtyRect == backingStoreBounds();
+#else
+    return m_dirtyRect.contains(backingStoreBounds());
+#endif
 }
 
 const Vector<CanvasRenderingContext2DBase::State, 1>& CanvasRenderingContext2DBase::stateStack()
