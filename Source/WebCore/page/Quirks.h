@@ -259,7 +259,7 @@ public:
     bool NODELETE shouldDisableElementFullscreenQuirk() const;
     bool NODELETE shouldIgnorePlaysInlineRequirementQuirk() const;
 
-    bool shouldAllowPopupFromMicrosoftOfficeToOneDrive() const { return m_quirksData.quirkIsEnabled(SiteSpecificQuirk::ShouldAllowPopupFromMicrosoftOfficeToOneDrive); }
+    bool shouldAllowPopupFromMicrosoftOfficeToOneDrive() const { return m_quirksData.quirkIsEnabled(QuirkBehaviors::shouldAllowPopupFromMicrosoftOfficeToOneDrive); }
     bool needsPopupFromMicrosoftOfficeToOneDrive(const URL& targetURL) const;
 
     WEBCORE_EXPORT bool needsConsistentQueryParameterFilteringQuirk(const URL&) const;
@@ -364,9 +364,9 @@ private:
     mutable QuirkBitSet m_probedQuirks;
 
     template<typename Probe>
-    bool quirkIsEnabledAfterProbing(SiteSpecificQuirk quirk, NOESCAPE Probe&& probe) const
+    bool quirkIsEnabledAfterProbing(const QuirkBehavior& quirk, NOESCAPE Probe&& probe) const
     {
-        auto index = static_cast<size_t>(quirk);
+        auto index = static_cast<size_t>(quirk.id);
         if (!m_probedQuirks.get(index)) {
             m_probedQuirks.set(index);
             m_quirksData.setQuirkState(quirk, probe());
