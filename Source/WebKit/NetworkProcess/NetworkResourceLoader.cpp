@@ -46,6 +46,7 @@
 #include "NetworkSchemeRegistry.h"
 #include "NetworkSession.h"
 #include "NetworkStorageManager.h"
+#include "NetworkStorageSession.h"
 #include "PreconnectTask.h"
 #include "PrivateRelayed.h"
 #include "QualifiedServerTrustFetch.h"
@@ -76,7 +77,6 @@
 #include <WebCore/LinkHeader.h>
 #include <WebCore/LinkRelAttribute.h>
 #include <WebCore/NetworkLoadMetrics.h>
-#include <WebCore/NetworkStorageSession.h>
 #include <WebCore/OriginAccessPatterns.h>
 #include <WebCore/PendingStreamState.h>
 #include <WebCore/RegistrableDomain.h>
@@ -2306,7 +2306,7 @@ void NetworkResourceLoader::logCookieInformation() const
     logCookieInformation(protect(m_connection), "NetworkResourceLoader"_s, reinterpret_cast<const void*>(this), *networkStorageSession, originalRequest().firstPartyForCookies(), SameSiteInfo::create(originalRequest()), originalRequest().url(), originalRequest().httpReferrer(), frameID(), pageID(), coreIdentifier());
 }
 
-static void logBlockedCookieInformation(NetworkConnectionToWebProcess& connection, ASCIILiteral label, const void* loggedObject, const WebCore::NetworkStorageSession& networkStorageSession, const URL& firstParty, const SameSiteInfo& sameSiteInfo, const URL& url, const String& referrer, std::optional<FrameIdentifier> frameID, std::optional<PageIdentifier> pageID, std::optional<WebCore::ResourceLoaderIdentifier> identifier)
+static void logBlockedCookieInformation(NetworkConnectionToWebProcess& connection, ASCIILiteral label, const void* loggedObject, const NetworkStorageSession& networkStorageSession, const URL& firstParty, const SameSiteInfo& sameSiteInfo, const URL& url, const String& referrer, std::optional<FrameIdentifier> frameID, std::optional<PageIdentifier> pageID, std::optional<WebCore::ResourceLoaderIdentifier> identifier)
 {
     ASSERT(NetworkResourceLoader::shouldLogCookieInformation(connection, networkStorageSession.sessionID()));
 
@@ -2333,7 +2333,7 @@ static void logBlockedCookieInformation(NetworkConnectionToWebProcess& connectio
 #undef LOCAL_LOG_IF_ALLOWED
 }
 
-static void logCookieInformationInternal(NetworkConnectionToWebProcess& connection, ASCIILiteral label, const void* loggedObject, const WebCore::NetworkStorageSession& networkStorageSession, const URL& firstParty, const WebCore::SameSiteInfo& sameSiteInfo, const URL& url, const String& referrer, std::optional<FrameIdentifier> frameID, std::optional<PageIdentifier> pageID, std::optional<WebCore::ResourceLoaderIdentifier> identifier)
+static void logCookieInformationInternal(NetworkConnectionToWebProcess& connection, ASCIILiteral label, const void* loggedObject, const NetworkStorageSession& networkStorageSession, const URL& firstParty, const WebCore::SameSiteInfo& sameSiteInfo, const URL& url, const String& referrer, std::optional<FrameIdentifier> frameID, std::optional<PageIdentifier> pageID, std::optional<WebCore::ResourceLoaderIdentifier> identifier)
 {
     ASSERT(NetworkResourceLoader::shouldLogCookieInformation(connection, networkStorageSession.sessionID()));
 

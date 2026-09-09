@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Apple Inc. All rights reserved.
+ * Copyright (C) 2026 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -25,14 +25,23 @@
 
 #pragma once
 
-#include <wtf/Function.h>
+#include <utility>
+#include <wtf/Forward.h>
+#include <wtf/Vector.h>
 
 namespace WebCore {
+class ResourceRequest;
+class ResourceResponse;
+}
+
+namespace WebKit {
 
 class NetworkStorageSession;
 
-WEBCORE_EXPORT void startObservingCookieChanges(NetworkStorageSession&, Function<void()>&&);
-WEBCORE_EXPORT void stopObservingCookieChanges(NetworkStorageSession&);
+namespace NetworkCache {
 
-}
+Vector<std::pair<String, String>> collectVaryingRequestHeaders(NetworkStorageSession*, const WebCore::ResourceRequest&, const WebCore::ResourceResponse&);
+bool verifyVaryingRequestHeaders(NetworkStorageSession*, const Vector<std::pair<String, String>>& varyingRequestHeaders, const WebCore::ResourceRequest&);
 
+} // namespace NetworkCache
+} // namespace WebKit
