@@ -312,7 +312,7 @@ private:
     void NODELETE didWriteSelectionToPasteboard() final { }
     void NODELETE getClientPasteboardData(const std::optional<SimpleRange>&, Vector<std::pair<String, RefPtr<SharedBuffer>>>&) final { }
     void NODELETE requestCandidatesForSelection(const VisibleSelection&) final { }
-    void NODELETE handleAcceptedCandidateWithSoftSpaces(TextCheckingResult) final { }
+    void NODELETE handleAcceptedCandidateWithSoftSpaces(const TextCheckingResult&) final { }
 
     void registerUndoStep(UndoStep&) final;
     void registerRedoStep(UndoStep&) final;
@@ -409,7 +409,7 @@ private:
         void NODELETE checkGrammarOfString(StringView, Vector<GrammarDetail>&, int*, int*) final { }
 
 #if USE(UNIFIED_TEXT_CHECKING)
-        Vector<TextCheckingResult> NODELETE checkTextOfParagraph(StringView, OptionSet<TextCheckingType>, const VisibleSelection&) final { return Vector<TextCheckingResult>(); }
+        Vector<TextCheckingResult> NODELETE checkTextOfParagraph(StringView, OptionSet<TextCheckingType>, const VisibleSelection&) final { return { }; }
 #endif
 
         void NODELETE getGuessesForWord(const String&, const String&, const VisibleSelection&, Vector<String>&) final { }
