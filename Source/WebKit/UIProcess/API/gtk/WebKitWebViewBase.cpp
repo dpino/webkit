@@ -3231,16 +3231,11 @@ void webkitWebViewBaseSynthesizeMouseEvent(WebKitWebViewBase* webViewBase, Mouse
         break;
     case MouseEventType::Motion:
         webEventType = WebEventType::MouseMove;
-        if (buttons & GDK_BUTTON1_MASK)
-            webEventButton = WebMouseEventButton::Left;
-        else if (buttons & GDK_BUTTON2_MASK)
-            webEventButton = WebMouseEventButton::Middle;
-        else if (buttons & GDK_BUTTON3_MASK)
-            webEventButton = WebMouseEventButton::Right;
-        else if (buttons & GDK_BUTTON4_MASK)
-            webEventButton = WebMouseEventButton::Back;
-        else if (buttons & GDK_BUTTON5_MASK)
-            webEventButton = WebMouseEventButton::Forward;
+        // Per the UI Events spec, MouseEvent.button for mousemove (and the
+        // mouseenter/mouseleave/mouseover/mouseout events derived from it) must
+        // be 0; the currently held buttons are reported through .buttons only.
+        // Keep whatever button the caller passed explicitly (used by the touch
+        // drag emulation) but never synthesize one from the held-buttons mask.
 
         if (priv->lastMotionEvent)
             movementDelta = FloatPoint(x, y) - priv->lastMotionEvent->globalPosition;
