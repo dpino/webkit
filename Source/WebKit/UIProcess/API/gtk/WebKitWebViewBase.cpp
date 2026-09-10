@@ -1270,6 +1270,16 @@ static gboolean webkitWebViewBaseKeyPressed(WebKitWebViewBase* webViewBase, unsi
     }
 #endif
 
+#if ENABLE(CONTEXT_MENUS)
+    // GTK4 removed GtkWidget::popup-menu, which on GTK3 turned the Menu and
+    // Shift+F10 keys into a context-menu request. Handle them explicitly.
+    if (keyval == GDK_KEY_Menu || (keyval == GDK_KEY_F10 && (state & GDK_SHIFT_MASK))) {
+        priv->contextMenuEvent = event;
+        priv->pageProxy->handleContextMenuKeyEvent();
+        return GDK_EVENT_STOP;
+    }
+#endif
+
     auto filterResult = priv->inputMethodFilter.filterKeyEvent(event);
     if (!filterResult.handled) {
         priv->pageProxy->handleKeyboardEvent(NativeWebKeyboardEvent::create(event, filterResult.keyText, isAutoRepeat,
@@ -3288,6 +3298,18 @@ void webkitWebViewBaseSynthesizeKeyEvent(WebKitWebViewBase* webViewBase, KeyEven
         }
 #endif
 
+#if USE(GTK4) && ENABLE(CONTEXT_MENUS)
+        if (priv->activeContextMenuProxy && keyval == GDK_KEY_Escape) {
+            gtk_popover_popdown(GTK_POPOVER(priv->activeContextMenuProxy->gtkWidget()));
+            return;
+        }
+
+        if (keyval == GDK_KEY_Menu || (keyval == GDK_KEY_F10 && (modifiers & GDK_SHIFT_MASK))) {
+            priv->contextMenuEvent = nullptr;
+            priv->pageProxy->handleContextMenuKeyEvent();
+            return;
+        }
+#endif
 #if !USE(GTK4) && ENABLE(CONTEXT_MENUS)
         if (priv->activeContextMenuProxy && keyval == GDK_KEY_Escape) {
             gtk_menu_shell_deactivate(GTK_MENU_SHELL(priv->activeContextMenuProxy->gtkWidget()));
