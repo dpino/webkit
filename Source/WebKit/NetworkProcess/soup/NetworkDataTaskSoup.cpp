@@ -49,7 +49,9 @@
 #include <pal/text/TextEncoding.h>
 #include <wtf/MainThread.h>
 #include <wtf/glib/RunLoopSourcePriority.h>
+#include <wtf/ASCIICType.h>
 #include <wtf/text/MakeString.h>
+#include <wtf/text/StringBuilder.h>
 
 namespace WebKit {
 using namespace WebCore;
@@ -782,6 +784,36 @@ static bool shouldRedirectAsGET(SoupMessage* message, bool crossOrigin)
     return false;
 }
 
+// The Location header is a byte sequence (isomorphic-decoded by libsoup into
+// Latin-1 code units). Percent-encode every non-ASCII byte verbatim so that URL
+// parsing does not re-encode it using UTF-8 (which would turn a raw 0xE2 byte
+// into "%C3%A2"). This matches the isomorphic-encode handling of redirect
+// targets used by other ports and by https://github.com/whatwg/fetch/issues/883.
+static String percentEncodeNonASCIIBytes(const String& value)
+{
+    bool hasNonASCII = false;
+    for (unsigned i = 0; i < value.length(); ++i) {
+        if (value[i] > 0x7F) {
+            hasNonASCII = true;
+            break;
+        }
+    }
+    if (!hasNonASCII)
+        return value;
+
+    StringBuilder builder;
+    for (unsigned i = 0; i < value.length(); ++i) {
+        char16_t character = value[i];
+        if (character <= 0x7F) {
+            builder.append(static_cast<LChar>(character));
+            continue;
+        }
+        auto byte = static_cast<uint8_t>(character);
+        builder.append('%', upperNibbleToASCIIHexDigit(byte), lowerNibbleToASCIIHexDigit(byte));
+    }
+    return builder.toString();
+}
+
 void NetworkDataTaskSoup::continueHTTPRedirection()
 {
     ASSERT(m_soupMessage);
@@ -797,7 +829,7 @@ void NetworkDataTaskSoup::continueHTTPRedirection()
     m_networkLoadMetrics.redirectCount = m_currentRequest.redirectCount();
 
     ResourceRequest request = m_currentRequest;
-    URL redirectedURL = URL(m_response.url(), m_response.httpHeaderField(HTTPHeaderName::Location));
+    URL redirectedURL = URL(m_response.url(), percentEncodeNonASCIIBytes(m_response.httpHeaderField(HTTPHeaderName::Location)));
     if (!redirectedURL.hasFragmentIdentifier() && request.url().hasFragmentIdentifier())
         redirectedURL.setFragmentIdentifier(request.url().fragmentIdentifier());
     request.setURL(WTF::move(redirectedURL));
