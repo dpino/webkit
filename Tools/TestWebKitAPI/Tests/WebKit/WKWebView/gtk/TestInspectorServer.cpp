@@ -128,18 +128,22 @@ public:
         loadURI(shouldStartHTTPServer ? "http://127.0.0.1:2999/" : "inspector://127.0.0.1:2999");
         waitUntilLoadFinished();
 
-        for (unsigned i = 0; i < 5; ++i) {
+        // The remote inspector learns about a target and its committed URL through
+        // separate asynchronous notifications from the web process, so right after
+        // the target shows up its URL can still be the initial "about:blank".
+        // Reload the list until the expected target URL has propagated.
+        for (unsigned i = 0; i < 20; ++i) {
             size_t mainResourceDataSize = 0;
             const char* mainResourceData = this->mainResourceData(mainResourceDataSize);
             g_assert_nonnull(mainResourceData);
-            if (g_strrstr_len(mainResourceData, mainResourceDataSize, "No targets found")) {
-                webkit_web_view_reload(m_webView.get());
-                waitUntilLoadFinished();
-                continue;
-            }
-
-            if (g_strrstr_len(mainResourceData, mainResourceDataSize, "Inspectable targets"))
+            bool hasTargets = g_strrstr_len(mainResourceData, mainResourceDataSize, "Inspectable targets");
+            bool hasTargetURL = g_strrstr_len(mainResourceData, mainResourceDataSize, "127.0.0.1:2999");
+            bool hasBlankTarget = g_strrstr_len(mainResourceData, mainResourceDataSize, "about:blank");
+            if (hasTargets && hasTargetURL && !hasBlankTarget)
                 return true;
+
+            webkit_web_view_reload(m_webView.get());
+            waitUntilLoadFinished();
         }
 
         return false;
