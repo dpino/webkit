@@ -53,14 +53,16 @@ NetworkMDNSRegister::NetworkMDNSRegister(NetworkConnectionToWebProcess& connecti
             return;
         }
 
-#if PLATFORM(GTK)
-        // Check if the connection to the system bus was refused, don't log an error when that
-        // happens because it is expected when running as a Flatpak app.
-        if (g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+        // Don't log an error when the system bus or the Avahi service are simply
+        // not available (common in sandboxed/CI environments and for Flatpak
+        // apps). Only genuinely unexpected failures should be logged.
+        if (g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_CANCELLED)
+            || g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_NOT_FOUND)
+            || g_error_matches(error.get(), G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN)
+            || g_error_matches(error.get(), G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER))
             return;
-#endif
-        if (!g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_CANCELLED))
-            LOG_ERROR("Unable to connect to the Avahi daemon: %s", error->message);
+
+        LOG_ERROR("Unable to connect to the Avahi daemon: %s", error->message);
     }, this);
 }
 
