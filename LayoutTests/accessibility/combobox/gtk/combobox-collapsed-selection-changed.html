@@ -41,17 +41,17 @@ if (window.testRunner && window.accessibilityController) {
     eventSender.keyDown("upArrow");
     eventSender.keyDown("upArrow");
 
-    window.setTimeout(function() {
+    // ATSPI sends one selection change notification per run loop iteration; other
+    // platforms send one per selection change. The notification is delivered
+    // asynchronously (over D-Bus for ATSPI), so poll for the expected count
+    // instead of assuming it has arrived by the next run loop turn.
+    var expectedNotifications = accessibilityController.platformName == "atspi" ? "1" : "4";
+    shouldBecomeEqual("selectionChangedNotifications", expectedNotifications, function() {
         if (window.accessibilityController)
             eventTarget.removeNotificationListener();
-
-        // ATSPI sends one selection change notification per run loop iteration.
-        if (accessibilityController.platformName == "atspi")
-            shouldBe("selectionChangedNotifications", "1");
-        else
-            shouldBe("selectionChangedNotifications", "4");
+        shouldBe("selectionChangedNotifications", expectedNotifications);
         finishJSTest();
-    }, 0);
+    });
 }
 </script>
 <script src="../../../resources/js-test-post.js"></script>
