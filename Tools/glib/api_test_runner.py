@@ -519,6 +519,14 @@ class TestRunner(object):
                             crashed_tests.setdefault(test, []).append(test_case)
                         elif result == "PASS":
                             passed_tests.setdefault(test, []).append(test_case)
+                elif self.is_glib_test(test):
+                    # The GLib test runner reports genuine startup and shutdown
+                    # crashes as explicit 'beforeAll'/'afterAll' CRASH results, so
+                    # an empty result set here means the binary ran and exited
+                    # cleanly without executing any subtest (for example when all
+                    # of its subtests are skipped or are not applicable to the
+                    # current platform or configuration). That is not a failure.
+                    sys.stdout.write("%s did not run any subtest (nothing applicable to run).\n" % test)
                 else:
                     # No subtests were emitted, either the test binary didn't exist, or we don't know how to run it, or it crashed.
                     sys.stderr.write("ERROR: %s failed to run, as it didn't emit any subtests.\n" % test)
