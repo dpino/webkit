@@ -472,12 +472,12 @@ std::optional<FloatRect> LegacyRenderSVGRoot::computeFloatVisibleRectInContainer
             adjustedRect.intersect(snappedIntRect(borderBoxRect()));
     }
 
-    if (m_hasBoxDecorations || hasRenderOverflow()) {
-        // The selectionRect can project outside of the overflowRect, so take their union
-        // for repainting to avoid selection painting glitches.
-        LayoutRect decoratedRepaintRect = unionRect(localSelectionRect(false), visualOverflowRect());
-        adjustedRect.unite(decoratedRepaintRect);
-    }
+    // The selection rect of a selected SVG root can project outside of the repainted descendant, so include
+    // it to avoid selection painting glitches. Neither the whole border box nor the visual overflow are
+    // included otherwise, since that would turn the repaint of any descendant into a repaint of the whole
+    // SVG root, whenever that has box decorations or overflows its viewport.
+    if (m_hasBoxDecorations || hasRenderOverflow())
+        adjustedRect.unite(localSelectionRect());
 
     auto rects = RepaintRects { LayoutRect(enclosingIntRect(adjustedRect)) };
     auto rectsInContainer = RenderReplaced::computeVisibleRectsInContainer(rects, container, context);
