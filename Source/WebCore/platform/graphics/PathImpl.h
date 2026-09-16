@@ -73,6 +73,9 @@ public:
     virtual void add(PathContinuousRoundedRect) = 0;
     virtual void add(PathCloseSubpath) = 0;
 
+    // Replaces a point of the path, if the implementation can do that without rebuilding the path.
+    virtual bool setPointAtIndex(size_t, FloatPoint) { return false; }
+
     void addLinesForRect(const FloatRect&);
     static Vector<PathSegment, 10> beziersForRoundedRect(const FloatRoundedRect&);
 

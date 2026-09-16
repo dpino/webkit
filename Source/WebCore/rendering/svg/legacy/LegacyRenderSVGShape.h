@@ -92,6 +92,8 @@ protected:
     Path& ensurePath() LIFETIME_BOUND;
 
     virtual void updateShapeFromElement() = 0;
+    virtual std::optional<FloatRect> updateChangedShapeFromElement() { return std::nullopt; }
+    void setPath(Path&&);
     virtual bool NODELETE isEmpty() const;
     virtual bool shapeDependentStrokeContains(const FloatPoint&, PointCoordinateSpace = GlobalCoordinateSpace);
     virtual bool shapeDependentFillContains(const FloatPoint&, const WindRule) const;
@@ -131,6 +133,8 @@ private:
     FloatRect objectBoundingBox() const final { return m_fillBoundingBox; }
     FloatRect calculateStrokeBoundingBox() const;
     void updateRepaintBoundingBox();
+    bool canRepaintChangedGeometryOnly() const;
+    FloatRect approximateStrokeBoundingBoxForChangedGeometry(FloatRect) const;
 
     bool setupNonScalingStrokeContext(AffineTransform&, GraphicsContextStateSaver&);
 

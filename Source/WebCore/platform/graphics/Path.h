@@ -69,6 +69,9 @@ public:
     void addRoundedRect(const LayoutRoundedRect&);
     void closeSubpath();
 
+    // Replaces a point of the path, if that is possible without rebuilding it.
+    WEBCORE_EXPORT bool setPointAtIndex(size_t, FloatPoint);
+
     WEBCORE_EXPORT void addPath(const Path&, const AffineTransform&);
 
     void applySegments(const PathSegmentApplier&) const;

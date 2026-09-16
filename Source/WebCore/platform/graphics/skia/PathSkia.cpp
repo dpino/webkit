@@ -73,6 +73,27 @@ PathSkia::PathSkia(const SkPathBuilder& builder)
 {
 }
 
+Ref<PathSkia> PathSkia::create(SkPathBuilder&& builder)
+{
+    return adoptRef(*new PathSkia(WTF::move(builder)));
+}
+
+PathSkia::PathSkia(SkPathBuilder&& builder)
+    : m_builder(WTF::move(builder))
+{
+}
+
+bool PathSkia::setPointAtIndex(size_t index, FloatPoint point)
+{
+    if (index >= static_cast<size_t>(m_builder.countPoints()))
+        return false;
+
+    // A snapshot taken earlier keeps its own copy of the path data, so it is not affected by this.
+    m_builder.setPoint(index, SkPoint::Make(SkFloatToScalar(point.x()), SkFloatToScalar(point.y())));
+    resetPlatformPath();
+    return true;
+}
+
 PathSkia::PathSkia(SkPath&& skPath)
     : m_builder(skPath)
     , m_platformPath(WTF::move(skPath))

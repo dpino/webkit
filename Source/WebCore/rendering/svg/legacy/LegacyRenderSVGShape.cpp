@@ -146,9 +146,18 @@ void LegacyRenderSVGShape::layout()
     LayoutRepainter repainter(*this, checkForRepaintOverride, { }, RepaintOutlineBounds::No);
 
     bool updateCachedBoundariesInParents = false;
+    std::optional<FloatRect> changedGeometryRepaintRect;
 
     if (m_needsShapeUpdate || m_needsBoundariesUpdate) {
-        updateShapeFromElement();
+        std::optional<FloatRect> changedGeometryBoundingBox;
+        if (!m_needsBoundariesUpdate)
+            changedGeometryBoundingBox = updateChangedShapeFromElement();
+
+        if (!changedGeometryBoundingBox)
+            updateShapeFromElement();
+        else if (canRepaintChangedGeometryOnly())
+            changedGeometryRepaintRect = *changedGeometryBoundingBox == FloatRect { } ? FloatRect { } : approximateStrokeBoundingBoxForChangedGeometry(*changedGeometryBoundingBox);
+
         m_needsShapeUpdate = false;
         updateRepaintBoundingBox();
         m_needsBoundariesUpdate = false;
@@ -159,6 +168,7 @@ void LegacyRenderSVGShape::layout()
         m_localTransform = protect(graphicsElement())->animatedLocalTransform();
         m_needsTransformUpdate = false;
         updateCachedBoundariesInParents = true;
+        changedGeometryRepaintRect = std::nullopt;
     }
 
     setHasScalingAncestor(SVGRenderSupport::computeHasScalingAncestor(*this));
@@ -173,8 +183,45 @@ void LegacyRenderSVGShape::layout()
             parent->invalidateCachedBoundaries();
     }
 
-    repainter.repaintAfterLayout();
+    if (changedGeometryRepaintRect) {
+        // The rest of the previously painted shape stays as it is.
+        if (checkForRepaintOverride == LayoutRepainter::CheckForRepaint::Yes && !changedGeometryRepaintRect->isEmpty())
+            repaintRectangle(enclosingLayoutRect(*changedGeometryRepaintRect));
+    } else
+        repainter.repaintAfterLayout();
     clearNeedsLayout();
+}
+
+bool LegacyRenderSVGShape::canRepaintChangedGeometryOnly() const
+{
+    if (!everHadLayout() || !style().fill().isNone() || hasNonScalingStroke() || style().usedOutlineWidth())
+        return false;
+    return !SVGResourcesCache::cachedResourcesForRenderer(*this);
+}
+
+FloatRect LegacyRenderSVGShape::approximateStrokeBoundingBoxForChangedGeometry(FloatRect boundingBox) const
+{
+    if (style().stroke().isNone())
+        return boundingBox;
+
+    float strokeWidth = this->strokeWidth();
+    if (strokeWidth <= 0)
+        return boundingBox;
+
+    // Matches the outset SVGRenderSupport::calculateApproximateStrokeBoundingBox() uses for paths.
+    float delta = strokeWidth / 2;
+    auto& style = this->style();
+    if (style.joinStyle() == LineJoin::Miter) {
+        auto miter = style.strokeMiterLimit().value.value;
+        if (miter < std::numbers::sqrt2 && style.capStyle() == LineCap::Square)
+            delta *= std::numbers::sqrt2;
+        else
+            delta *= std::max(miter, 1.0f);
+    } else if (style.capStyle() == LineCap::Square)
+        delta *= std::numbers::sqrt2;
+
+    boundingBox.inflate(delta);
+    return boundingBox;
 }
 
 Path* LegacyRenderSVGShape::nonScalingStrokePath(const Path* path, const AffineTransform& strokeTransform) const
@@ -542,6 +589,12 @@ float LegacyRenderSVGShape::strokeWidthForMarkerUnits() const
 
     float scaleFactor = clampTo<float>(std::sqrt((xScale * xScale + yScale * yScale) / 2));
     return strokeWidth / scaleFactor;
+}
+
+void LegacyRenderSVGShape::setPath(Path&& path)
+{
+    m_path = makeUnique<Path>(WTF::move(path));
+    m_path->setNotTransient();
 }
 
 Path& LegacyRenderSVGShape::ensurePath()

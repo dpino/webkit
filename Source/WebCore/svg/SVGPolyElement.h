@@ -35,6 +35,7 @@ public:
 
     SVGPointList& points() { return m_points->baseVal(); }
     SVGPointList& animatedPoints() { return m_points->animVal(); }
+    bool isAnimatingPoints() const { return m_points->isAnimating(); }
 
     size_t approximateMemoryCost() const override;
 

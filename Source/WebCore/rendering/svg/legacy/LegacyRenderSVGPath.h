@@ -43,6 +43,7 @@ private:
     ASCIILiteral renderName() const override { return "RenderSVGPath"_s; }
 
     void updateShapeFromElement() override;
+    std::optional<FloatRect> updateChangedShapeFromElement() override;
 
     void strokeShape(GraphicsContext&) const override;
     bool shapeDependentStrokeContains(const FloatPoint&, PointCoordinateSpace = GlobalCoordinateSpace) override;
@@ -62,6 +63,8 @@ private:
 
     Vector<FloatPoint> m_zeroLengthLinecapLocations;
     Vector<MarkerPosition> m_markerPositions;
+    Vector<FloatPoint> m_polylinePoints;
+    uint64_t m_polylinePointsIdentifier { 0 };
 };
 
 } // namespace WebCore

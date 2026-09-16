@@ -30,8 +30,13 @@
 
 #include "Gradient.h"
 #include "LegacyRenderSVGShapeInlines.h"
+#if USE(SKIA)
+#include "PathSkia.h"
+#endif
 #include "SVGElementTypeHelpers.h"
 #include "SVGPathElement.h"
+#include "SVGPointList.h"
+#include "SVGPolylineElement.h"
 #include "SVGResources.h"
 #include "SVGResourcesCache.h"
 #include "SVGSubpathData.h"
@@ -57,6 +62,18 @@ void LegacyRenderSVGPath::updateShapeFromElement()
     m_fillBoundingBox = ensurePath().boundingRect();
     m_strokeBoundingBox = std::nullopt;
     m_approximateStrokeBoundingBox = std::nullopt;
+    // Remember the points of a polyline, to find out later which of them changed.
+    m_polylinePointsIdentifier = 0;
+    if (RefPtr polyline = dynamicDowncast<SVGPolylineElement>(graphicsElement())) {
+        m_polylinePoints = std::as_const(*polyline).points().items().map([](auto& point) { return point->value(); });
+        if (!polyline->isAnimatingPoints()) {
+            // The changes the point list recorded so far are part of the remembered points.
+            auto& pointList = polyline->points();
+            pointList.takeChangedItemRange();
+            m_polylinePointsIdentifier = pointList.itemsIdentifier();
+        }
+    } else
+        m_polylinePoints.clear();
     processMarkerPositions();
     updateZeroLengthSubpaths();
 
@@ -79,6 +96,142 @@ void LegacyRenderSVGPath::updateShapeFromElement()
     // https://bugs.webkit.org/show_bug.cgi?id=263348
     if (!m_markerPositions.isEmpty())
         strokeBoundingBox();
+}
+
+static FloatRect boundingBoxOfPoints(const Vector<FloatPoint>& points, size_t startIndex, size_t endIndex)
+{
+    float minX = points[startIndex].x();
+    float minY = points[startIndex].y();
+    float maxX = minX;
+    float maxY = minY;
+    for (size_t i = startIndex + 1; i <= endIndex; ++i) {
+        minX = std::min(minX, points[i].x());
+        minY = std::min(minY, points[i].y());
+        maxX = std::max(maxX, points[i].x());
+        maxY = std::max(maxY, points[i].y());
+    }
+    return { minX, minY, maxX - minX, maxY - minY };
+}
+
+static Path polylinePath(const Vector<FloatPoint>& points)
+{
+#if USE(SKIA)
+    // Build the Skia path right away, instead of path segments that would be converted into it whenever the
+    // polyline is painted. A polyline with two points keeps its single segment, so it is still recognized as a line.
+    if (points.size() > 2) {
+        SkPathBuilder builder;
+        builder.moveTo(SkFloatToScalar(points[0].x()), SkFloatToScalar(points[0].y()));
+        for (size_t i = 1; i < points.size(); ++i)
+            builder.lineTo(SkFloatToScalar(points[i].x()), SkFloatToScalar(points[i].y()));
+        return Path { PathSkia::create(WTF::move(builder)) };
+    }
+#endif
+
+    Vector<PathSegment> segments;
+    segments.reserveInitialCapacity(points.size());
+    segments.append(PathSegment { PathMoveTo { points[0] } });
+    for (size_t i = 1; i < points.size(); ++i)
+        segments.append(PathSegment { PathLineTo { points[i] } });
+    return Path { WTF::move(segments) };
+}
+
+std::optional<FloatRect> LegacyRenderSVGPath::updateChangedShapeFromElement()
+{
+    RefPtr polyline = dynamicDowncast<SVGPolylineElement>(graphicsElement());
+    if (!polyline || !hasPath() || m_polylinePoints.size() < 2 || shouldGenerateMarkerPositions())
+        return std::nullopt;
+
+    auto& points = std::as_const(*polyline).points().items();
+    size_t oldPointCount = m_polylinePoints.size();
+    size_t newPointCount = points.size();
+    if (newPointCount < oldPointCount)
+        return std::nullopt;
+
+    // The point list records which points were replaced or appended, as long as no points were inserted or removed.
+    // Animations change the animated point list without recording it, so all points are compared while animating.
+    size_t firstIndexToCompare = 0;
+    size_t endIndexToCompare = oldPointCount;
+    if (polyline->isAnimatingPoints()) {
+        if (m_polylinePointsIdentifier)
+            return std::nullopt;
+    } else {
+        auto& pointList = polyline->points();
+        if (!m_polylinePointsIdentifier || pointList.itemsIdentifier() != m_polylinePointsIdentifier)
+            return std::nullopt;
+        auto changedItemRange = pointList.takeChangedItemRange();
+        if (!changedItemRange)
+            return FloatRect { };
+        firstIndexToCompare = std::min<size_t>(changedItemRange->first, oldPointCount);
+        endIndexToCompare = std::min<size_t>(changedItemRange->last + 1, oldPointCount);
+    }
+
+    // Find the range of points that were replaced or appended.
+    std::optional<size_t> firstChangedIndex;
+    size_t lastChangedIndex = 0;
+    for (size_t i = firstIndexToCompare; i < endIndexToCompare; ++i) {
+        if (points[i]->value() == m_polylinePoints[i])
+            continue;
+        if (!firstChangedIndex)
+            firstChangedIndex = i;
+        lastChangedIndex = i;
+    }
+    if (newPointCount > oldPointCount) {
+        if (!firstChangedIndex)
+            firstChangedIndex = oldPointCount;
+        lastChangedIndex = newPointCount - 1;
+    }
+    if (!firstChangedIndex)
+        return FloatRect { };
+
+    // The lines and joins next to a changed point render differently as well.
+    size_t startIndex = *firstChangedIndex ? *firstChangedIndex - 1 : 0;
+    auto changedGeometryBoundingBox = boundingBoxOfPoints(m_polylinePoints, startIndex, std::min(lastChangedIndex + 1, oldPointCount - 1));
+
+    // Replaced points shrink the bounding box of the shape, if they were the ones it touched. Appended points can only extend it.
+    bool mayShrinkFillBoundingBox = false;
+    if (*firstChangedIndex < oldPointCount) {
+        auto replacedBoundingBox = boundingBoxOfPoints(m_polylinePoints, *firstChangedIndex, std::min(lastChangedIndex, oldPointCount - 1));
+        mayShrinkFillBoundingBox = replacedBoundingBox.x() <= m_fillBoundingBox.x() || replacedBoundingBox.y() <= m_fillBoundingBox.y()
+            || replacedBoundingBox.maxX() >= m_fillBoundingBox.maxX() || replacedBoundingBox.maxY() >= m_fillBoundingBox.maxY();
+    }
+
+    m_polylinePoints.resize(newPointCount);
+    for (size_t i = *firstChangedIndex; i <= lastChangedIndex; ++i)
+        m_polylinePoints[i] = points[i]->value();
+    auto newGeometryBoundingBox = boundingBoxOfPoints(m_polylinePoints, startIndex, std::min(lastChangedIndex + 1, newPointCount - 1));
+    changedGeometryBoundingBox.uniteEvenIfEmpty(newGeometryBoundingBox);
+
+    if (*firstChangedIndex == oldPointCount) {
+        for (size_t i = oldPointCount; i < newPointCount; ++i)
+            path().addLineTo(m_polylinePoints[i]);
+    } else {
+        // Replace the changed points of the existing path, which not every kind of path can do.
+        bool updatedPathInPlace = true;
+        for (size_t i = *firstChangedIndex; i <= lastChangedIndex && updatedPathInPlace; ++i) {
+            if (i < oldPointCount)
+                updatedPathInPlace = path().setPointAtIndex(i, m_polylinePoints[i]);
+            else
+                path().addLineTo(m_polylinePoints[i]);
+        }
+        if (!updatedPathInPlace)
+            setPath(polylinePath(m_polylinePoints));
+    }
+
+    if (mayShrinkFillBoundingBox)
+        m_fillBoundingBox = boundingBoxOfPoints(m_polylinePoints, 0, newPointCount - 1);
+    else
+        m_fillBoundingBox.uniteEvenIfEmpty(newGeometryBoundingBox);
+    m_strokeBoundingBox = std::nullopt;
+    m_approximateStrokeBoundingBox = std::nullopt;
+
+    // A polyline is a single subpath. It has a non-zero length once two of its points differ.
+    if (m_fillBoundingBox.width() || m_fillBoundingBox.height())
+        m_zeroLengthLinecapLocations.clear();
+    else
+        updateZeroLengthSubpaths();
+
+    m_shapeType = path().definitelySingleLine() ? ShapeType::Line : ShapeType::Path;
+    return changedGeometryBoundingBox;
 }
 
 FloatRect LegacyRenderSVGPath::adjustStrokeBoundingBoxForMarkersAndZeroLengthLinecaps(RepaintRectCalculation repaintRectCalculation, FloatRect strokeBoundingBox) const

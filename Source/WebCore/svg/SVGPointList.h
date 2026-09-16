@@ -27,6 +27,7 @@
 
 #include "SVGPoint.h"
 #include "SVGValuePropertyList.h"
+#include <optional>
 
 namespace WebCore {
 
@@ -52,6 +53,34 @@ public:
 
     bool parse(StringView);
     String valueAsString() const override;
+
+    // Identifies the current items of the list. It changes whenever items are inserted, removed or cleared, but not
+    // when items are replaced, appended or change their values, which are recorded as the changed item range.
+    uint64_t itemsIdentifier() const { return m_itemsIdentifier; }
+
+    struct ItemRange {
+        unsigned first;
+        unsigned last;
+    };
+    // Returns the range of items that were replaced, appended or changed their values since the last call.
+    std::optional<ItemRange> takeChangedItemRange() { return std::exchange(m_changedItemRange, std::nullopt); }
+
+private:
+    Ref<SVGPoint> insertAt(unsigned index, Ref<SVGPoint>&&) final;
+    Ref<SVGPoint> replaceAt(unsigned index, Ref<SVGPoint>&&) final;
+    Ref<SVGPoint> removeAt(unsigned index) final;
+    Ref<SVGPoint> append(Ref<SVGPoint>&&) final;
+    void detachItems() final;
+    void commitPropertyChange(SVGProperty*) final;
+
+    static uint64_t nextItemsIdentifier();
+    std::optional<unsigned> indexOfItem(const SVGProperty*) const;
+    void itemDidChange(unsigned index);
+    void itemsDidChangeStructurally();
+
+    uint64_t m_itemsIdentifier { nextItemsIdentifier() };
+    std::optional<ItemRange> m_changedItemRange;
+    unsigned m_lastChangedItemIndex { 0 };
 };
 
 }

@@ -46,6 +46,7 @@ class PathSkia final : public PathImpl {
 public:
     WEBCORE_EXPORT static Ref<PathSkia> create(std::span<const PathSegment> = { });
     static Ref<PathSkia> create(SkPath&&);
+    static Ref<PathSkia> create(SkPathBuilder&&);
     static PlatformPathPtr emptyPlatformPath();
 
     PlatformPathPtr platformPath() const LIFETIME_BOUND;
@@ -68,6 +69,8 @@ public:
     void add(PathContinuousRoundedRect) final;
     void add(PathCloseSubpath) final;
 
+    bool setPointAtIndex(size_t, FloatPoint) final;
+
     bool applyElements(const PathElementApplier&) const final;
 
     bool transform(const AffineTransform&) final;
@@ -80,6 +83,7 @@ public:
 private:
     PathSkia() = default;
     explicit PathSkia(const SkPathBuilder&);
+    explicit PathSkia(SkPathBuilder&&);
     explicit PathSkia(SkPath&&);
 
     void ensurePlatformPath() const

@@ -137,6 +137,13 @@ const PathImpl* Path::asImpl() const
     return nullptr;
 }
 
+bool Path::setPointAtIndex(size_t index, FloatPoint point)
+{
+    if (auto* impl = asImpl())
+        return impl->setPointAtIndex(index, point);
+    return false;
+}
+
 void Path::setNotTransient()
 {
     if (RefPtr impl = asImpl())
