@@ -469,6 +469,76 @@ void GraphicsContextSkia::fillPath(const Path& path)
     drawSkiaPath(skiaPathCopy, paint);
 }
 
+static std::optional<SkPath> strokePathCulledToClip(const SkPath& path, const SkPaint& paint, const SkCanvas& canvas)
+{
+    // Culling only pays off for paths with many segments.
+    static constexpr int minimumVerbCountForCulling = 16;
+    if (path.countVerbs() < minimumVerbCountForCulling || path.getSegmentMasks() != SkPath::kLine_SegmentMask || paint.getPathEffect())
+        return std::nullopt;
+
+    auto strokeWidth = paint.getStrokeWidth();
+    if (strokeWidth <= 0)
+        return std::nullopt;
+
+    auto localClipBounds = canvas.getLocalClipBounds();
+    if (localClipBounds.isEmpty())
+        return std::nullopt;
+
+    auto outset = strokeWidth / 2;
+    if (paint.getStrokeJoin() == SkPaint::kMiter_Join)
+        outset *= std::max<SkScalar>(paint.getStrokeMiter(), 1);
+    if (paint.getStrokeCap() == SkPaint::kSquare_Cap)
+        outset = std::max(outset, strokeWidth / 2 * std::numbers::sqrt2_v<SkScalar>);
+
+    auto cullRect = localClipBounds.makeOutset(outset, outset);
+    if (cullRect.contains(path.getBounds()))
+        return std::nullopt;
+
+    // Walk the points of the path directly, one point per move and per line, instead of iterating its segments.
+    auto points = path.points();
+    SkPathBuilder builder(path.getFillType());
+    builder.incReserve(points.size());
+    bool didCullLine = false;
+    bool previousLineWasKept = false;
+    size_t pointIndex = 0;
+    SkPoint lineStart { };
+    for (auto verb : path.verbs()) {
+        if (verb == SkPathVerb::kMove) {
+            if (pointIndex >= points.size())
+                return std::nullopt;
+            lineStart = points[pointIndex++];
+            previousLineWasKept = false;
+            continue;
+        }
+
+        // Closing a contour joins its last line with its first one, which culling cannot preserve.
+        if (verb != SkPathVerb::kLine)
+            return std::nullopt;
+
+        if (pointIndex >= points.size())
+            return std::nullopt;
+        auto lineEnd = points[pointIndex++];
+
+        // SkRect::intersects() is not used, since it treats the bounds of horizontal and vertical lines as empty.
+        auto [minX, maxX] = std::minmax(lineStart.fX, lineEnd.fX);
+        auto [minY, maxY] = std::minmax(lineStart.fY, lineEnd.fY);
+        if (maxX < cullRect.fLeft || minX > cullRect.fRight || maxY < cullRect.fTop || minY > cullRect.fBottom) {
+            didCullLine = true;
+            previousLineWasKept = false;
+        } else {
+            if (!previousLineWasKept)
+                builder.moveTo(lineStart);
+            builder.lineTo(lineEnd);
+            previousLineWasKept = true;
+        }
+        lineStart = lineEnd;
+    }
+
+    if (!didCullLine)
+        return std::nullopt;
+    return builder.detach();
+}
+
 void GraphicsContextSkia::strokePath(const Path& path)
 {
     if (path.isEmpty())
@@ -483,7 +553,15 @@ void GraphicsContextSkia::strokePath(const Path& path)
     if (drawPathAsSingleElement(path, strokePaint))
         return;
 
-    drawSkiaPath(*path.platformPath(), strokePaint);
+    auto& skiaPath = *path.platformPath();
+    if (!hasDropShadow()) {
+        if (auto culledPath = strokePathCulledToClip(skiaPath, strokePaint, m_canvas)) {
+            drawSkiaPath(*culledPath, strokePaint);
+            return;
+        }
+    }
+
+    drawSkiaPath(skiaPath, strokePaint);
 }
 
 sk_sp<SkImageFilter> GraphicsContextSkia::createDropShadowFilterIfNeeded(ShadowStyle shadowStyle) const
