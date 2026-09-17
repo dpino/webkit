@@ -213,7 +213,14 @@ void LocalFrameViewLayoutContext::performLayouts(bool canDeferUpdateLayerPositio
         // When performing a subtree layout, we may need to perform layout for each subtree.
         // The above might have been done in single pass, but calling performLayout() multiple times
         // has some nice side-effects such as reporting "Layout" events in the inspector with specific subtree areas.
-        while (performLayout(canDeferUpdateLayerPositions, true) && !m_subtreeLayoutRoots.isEmpty()) { }
+        // Each performLayout() ends in didLayout(), which runs a full layer position update walk from
+        // the RenderView layer unless it is deferred. One walk per dirty subtree root means walking the
+        // same layer tree once for every root, so defer across the loop and flush the merged update
+        // once, which is what a single full document layout does anyway.
+        while (performLayout(true, true) && !m_subtreeLayoutRoots.isEmpty()) { }
+
+        if (!canDeferUpdateLayerPositions)
+            flushUpdateLayerPositions();
 #ifndef NDEBUG
         // This function may be called recursively so let's do the checking when all the subtrees have been processed.
         if (m_subtreeLayoutRoots.isEmpty())
