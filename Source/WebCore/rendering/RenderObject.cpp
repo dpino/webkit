@@ -597,6 +597,15 @@ RenderElement* RenderObject::markContainingBlocksForLayout(RenderElement* layout
     if (is<RenderView>(*this))
         return downcast<RenderElement>(this);
 
+    // When only the children of an SVG root or of a box with size and layout containment changed,
+    // stop here like marking from a deeper descendant does. These boundaries also contain all their
+    // out-of-flow descendants, which other layout boundaries do not (see webkit.org/b/254666).
+    if (!layoutRoot && container()) {
+        bool onlyChildrenNeedLayout = (normalChildNeedsLayout() || outOfFlowChildNeedsLayout()) && !selfNeedsLayout() && !needsSimplifiedNormalFlowLayout() && !needsOutOfFlowMovementLayout();
+        if (auto* element = dynamicDowncast<RenderElement>(*this); element && onlyChildrenNeedLayout && (element->isRenderOrLegacyRenderSVGRoot() || (element->shouldApplyLayoutContainment() && element->shouldApplySizeContainment())))
+            return element;
+    }
+
     CheckedPtr ancestor = container();
 
     bool simplifiedNormalFlowLayout = needsSimplifiedNormalFlowLayout() && !selfNeedsLayout() && !normalChildNeedsLayout();
