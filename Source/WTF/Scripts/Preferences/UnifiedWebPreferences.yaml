@@ -9115,7 +9115,6 @@ UnifyDamagedRegions:
      WebKitLegacy:
        default: false
      WebKit:
-       "PLATFORM(GTK) || PLATFORM(WPE)": true
        default: false
      WebCore:
        default: false
