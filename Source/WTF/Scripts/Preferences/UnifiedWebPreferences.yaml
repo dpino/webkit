@@ -6325,7 +6325,7 @@ UnifyDamagedRegions:
   defaultValue:
     default: false
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
+      "PLATFORM(GTK) || PLATFORM(WPE)": false
       default: false
 
 UpdateSceneGeometryEnabled:
@@ -6422,7 +6422,6 @@ UseDamagingInformationForCompositing:
     default: false
     WebKitLegacy: true
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore: true
 
