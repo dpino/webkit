@@ -4256,11 +4256,11 @@ InlineTransformFastPathEnabled:
   humanReadableDescription: "Apply inline style transform updates without a style recalc"
   defaultValue:
     WebKitLegacy:
-      default: false
+      default: true
     WebKit:
-      default: false
+      default: true
     WebCore:
-      default: false
+      default: true
 
 InputMethodUsesCorrectKeyEventOrder:
   type: bool
