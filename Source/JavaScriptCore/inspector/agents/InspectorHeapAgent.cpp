@@ -188,7 +188,7 @@ Protocol::ErrorStringOr<std::tuple<String, RefPtr<Protocol::Debugger::FunctionDe
         return makeUnexpected(errorString);
 
     // String preview.
-    JSCell* cell = optionalNode->cell;
+    JSCell* cell = optionalNode->cell();
     if (cell->isString())
         return { { asString(cell)->tryGetValue(), nullptr, nullptr } };
 
@@ -237,7 +237,7 @@ Protocol::ErrorStringOr<Ref<Protocol::Runtime::RemoteObject>> InspectorHeapAgent
     if (!optionalNode)
         return makeUnexpected(errorString);
 
-    JSCell* cell = optionalNode->cell;
+    JSCell* cell = optionalNode->cell();
     Structure* structure = cell->structure();
     if (!structure)
         return makeUnexpected("Unable to get object details - Structure"_s);

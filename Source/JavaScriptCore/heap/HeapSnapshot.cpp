@@ -44,10 +44,10 @@ HeapSnapshot::~HeapSnapshot() = default;
 void HeapSnapshot::appendNode(const HeapSnapshotNode& node)
 {
     ASSERT(!m_finalized);
-    ASSERT(!m_previous || !m_previous->nodeForCell(node.cell));
+    ASSERT(!m_previous || !m_previous->nodeForCell(node.cell()));
 
     m_nodes.append(node);
-    m_filter.add(std::bit_cast<uintptr_t>(node.cell));
+    m_filter.add(std::bit_cast<uintptr_t>(node.cell()));
 }
 
 void HeapSnapshot::sweepCell(JSCell* cell)
@@ -61,15 +61,14 @@ void HeapSnapshot::sweepCell(JSCell* cell)
         while (start != end) {
             unsigned middle = std::midpoint(start, end);
             HeapSnapshotNode& node = m_nodes[middle];
-            if (cell == node.cell) {
-                // Cells should always have 0 as low bits.
-                // Mark this cell for removal by setting the low bit.
-                ASSERT(!(reinterpret_cast<intptr_t>(node.cell) & CellToSweepTag));
-                node.cell = reinterpret_cast<JSCell*>(reinterpret_cast<intptr_t>(node.cell) | CellToSweepTag);
+            if (cell == node.cell()) {
+                // Mark this cell for removal.
+                ASSERT(!node.isDead());
+                node.markDead();
                 m_hasCellsToSweep = true;
                 return;
             }
-            if (cell < node.cell)
+            if (cell < node.cell())
                 end = middle;
             else
                 start = middle + 1;
@@ -86,9 +85,9 @@ void HeapSnapshot::shrinkToFit()
         m_filter.reset();
         m_nodes.removeAllMatching(
             [&] (const HeapSnapshotNode& node) -> bool {
-                bool willRemoveCell = std::bit_cast<intptr_t>(node.cell) & CellToSweepTag;
+                bool willRemoveCell = node.isDead();
                 if (!willRemoveCell)
-                    m_filter.add(std::bit_cast<uintptr_t>(node.cell));
+                    m_filter.add(std::bit_cast<uintptr_t>(node.cell()));
                 return willRemoveCell;
             });
         m_nodes.shrinkToFit();
@@ -119,13 +118,13 @@ void HeapSnapshot::finalize()
     // Assert there are no duplicates or nullptr cells.
     JSCell* previousCell = nullptr;
     for (auto& node : m_nodes) {
-        ASSERT(node.cell);
-        ASSERT(!(reinterpret_cast<intptr_t>(node.cell) & CellToSweepTag));
-        if (node.cell == previousCell) {
+        ASSERT(node.cell());
+        ASSERT(!node.isDead());
+        if (node.cell() == previousCell) {
             dataLog("Seeing same cell twice: ", RawPointer(previousCell), "\n");
-            ASSERT(node.cell != previousCell);
+            ASSERT(node.cell() != previousCell);
         }
-        previousCell = node.cell;
+        previousCell = node.cell();
     }
 #endif
 }
@@ -141,9 +140,9 @@ std::optional<HeapSnapshotNode> HeapSnapshot::nodeForCell(JSCell* cell)
         while (start != end) {
             unsigned middle = std::midpoint(start, end);
             HeapSnapshotNode& node = m_nodes[middle];
-            if (cell == node.cell)
+            if (cell == node.cell())
                 return std::optional<HeapSnapshotNode>(node);
-            if (cell < node.cell)
+            if (cell < node.cell())
                 end = middle;
             else
                 start = middle + 1;

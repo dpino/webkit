@@ -29,6 +29,7 @@
 #include <JavaScriptCore/JSExportMacros.h>
 #include <functional>
 #include <wtf/CheckedPtr.h>
+#include <wtf/CompactPointerTuple.h>
 #include <wtf/HashMap.h>
 #include <wtf/HashSet.h>
 #include <wtf/Lock.h>
@@ -47,11 +48,15 @@ typedef unsigned NodeIdentifier;
 
 struct HeapSnapshotNode {
     HeapSnapshotNode(JSCell* cell, unsigned identifier)
-        : cell(cell)
+        : m_cell(cell, false)
         , identifier(identifier)
     { }
 
-    JSCell* cell;
+    JSCell* cell() const { return m_cell.pointer(); }
+    bool isDead() const { return m_cell.type(); }
+    void markDead() { m_cell.setType(true); }
+
+    CompactPointerTuple<JSCell*, bool> m_cell;
     NodeIdentifier identifier;
 };
 

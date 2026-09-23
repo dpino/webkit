@@ -312,7 +312,7 @@ void HeapSnapshotBuilder::setLabelForCell(JSCell* cell, const String& label)
 
 String HeapSnapshotBuilder::descriptionForNode(const HeapSnapshotNode& node)
 {
-    JSCell* cell = node.cell;
+    JSCell* cell = node.cell();
 
     if (cell->isString())
         return emptyString(); // FIXME: get part of string.
@@ -372,21 +372,21 @@ void HeapSnapshotBuilder::dumpToStream(PrintStream& out)
     };
 
     auto appendNodeJSON = [&] (const HeapSnapshotNode& node) {
-        if (m_client && m_client->heapSnapshotBuilderIgnoreNode(*this, node.cell))
+        if (m_client && m_client->heapSnapshotBuilderIgnoreNode(*this, node.cell()))
             return;
 
         unsigned flags = 0;
 
-        allowedNodeIdentifiers.set(node.cell, node.identifier);
+        allowedNodeIdentifiers.set(node.cell(), node.identifier);
 
-        String className = node.cell->classInfo()->className;
-        if (node.cell->isObject() && className == JSObject::info()->className) {
+        String className = node.cell()->classInfo()->className;
+        if (node.cell()->isObject() && className == JSObject::info()->className) {
             flags |= static_cast<unsigned>(NodeFlags::ObjectSubtype);
 
             // Skip calculating a class name if this object has a `constructor` own property.
             // These cases are typically F.prototype objects and we want to treat these as
             // "Object" in snapshots and not get the name of the prototype's parent.
-            JSObject* object = asObject(node.cell);
+            JSObject* object = asObject(node.cell());
             if (JSGlobalObject* globalObject = object->realmMayBeNull()) {
                 PropertySlot slot(object, PropertySlot::InternalMethodType::VMInquiry, &vm);
                 if (!object->getOwnPropertySlot(object, globalObject, vm.propertyNames->constructor, slot))
@@ -395,7 +395,7 @@ void HeapSnapshotBuilder::dumpToStream(PrintStream& out)
         }
 
         if (m_client)
-            className = m_client->heapSnapshotBuilderOverrideClassName(*this, node.cell, className);
+            className = m_client->heapSnapshotBuilderOverrideClassName(*this, node.cell(), className);
 
         auto result = classNameIndexes.add(className, nextClassNameIndex);
         if (result.isNewEntry)
@@ -404,19 +404,19 @@ void HeapSnapshotBuilder::dumpToStream(PrintStream& out)
 
         void* wrappedAddress = nullptr;
         unsigned labelIndex = 0;
-        if (!node.cell->isString() && !node.cell->isHeapBigInt()) {
-            Structure* structure = node.cell->structure();
+        if (!node.cell()->isString() && !node.cell()->isHeapBigInt()) {
+            Structure* structure = node.cell()->structure();
             if (!structure || !structure->realm())
                 flags |= static_cast<unsigned>(NodeFlags::Internal);
 
             if (m_snapshotType == SnapshotType::GCDebuggingSnapshot) {
                 StringBuilder nodeLabel(OverflowPolicy::RecordOverflow);
-                auto it = m_cellLabels.find(node.cell);
+                auto it = m_cellLabels.find(node.cell());
                 if (it != m_cellLabels.end())
                     nodeLabel.append(it->value);
 
                 if (nodeLabel.isEmpty()) {
-                    if (auto* object = dynamicDowncast<JSObject>(node.cell)) {
+                    if (auto* object = dynamicDowncast<JSObject>(node.cell())) {
                         if (auto* function = dynamicDowncast<JSFunction>(object))
                             nodeLabel.append(function->calculatedDisplayName(vm));
                     }
@@ -442,17 +442,17 @@ void HeapSnapshotBuilder::dumpToStream(PrintStream& out)
                     labelIndex = result.iterator->value;
                 }
 
-                wrappedAddress = m_wrappedObjectPointers.get(node.cell);
+                wrappedAddress = m_wrappedObjectPointers.get(node.cell());
             }
         }
 
-        if (m_client && m_client->heapSnapshotBuilderIsElement(*this, node.cell))
+        if (m_client && m_client->heapSnapshotBuilderIsElement(*this, node.cell()))
             flags |= static_cast<unsigned>(NodeFlags::ElementSubtype);
 
         // <nodeId>, <sizeInBytes>, <nodeClassNameIndex>, <flags>, [<labelIndex>, <cellAddress>, <wrappedAddress>]
-        out.print(',', node.identifier, ',', node.cell->estimatedSizeInBytes(vm), ',', classNameIndex, ',', flags);
+        out.print(',', node.identifier, ',', node.cell()->estimatedSizeInBytes(vm), ',', classNameIndex, ',', flags);
         if (m_snapshotType == SnapshotType::GCDebuggingSnapshot)
-            out.print(',', labelIndex, ",\"0x"_s, hex(reinterpret_cast<uintptr_t>(node.cell), Lowercase), "\",\"0x"_s, hex(reinterpret_cast<uintptr_t>(wrappedAddress), Lowercase), '"');
+            out.print(',', labelIndex, ",\"0x"_s, hex(reinterpret_cast<uintptr_t>(node.cell()), Lowercase), "\",\"0x"_s, hex(reinterpret_cast<uintptr_t>(wrappedAddress), Lowercase), '"');
     };
 
     bool firstEdge = true;
