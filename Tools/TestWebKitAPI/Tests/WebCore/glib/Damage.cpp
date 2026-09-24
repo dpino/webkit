@@ -693,7 +693,7 @@ TEST(Damage, RectsForPainting)
     EXPECT_EQ(damage.rects(), damage.rectsForPainting());
 }
 
-TEST(Damage, RectsForPainting)
+TEST(Damage, RectsForPainting2)
 {
     // The function should return the original rect when theres only a single one.
     Damage damage(IntSize { 512, 512 });
