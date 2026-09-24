@@ -1,0 +1,25 @@
+Tests that a tap whose touch events are not handled produces a synthetic click without dispatching a second pair of pointer events, and that a tap whose touch events are handled does not produce a synthetic click.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Tap with unhandled touch events:
+PASS count('pointerdown', 'unhandled') is 1
+PASS pointerTypes('pointerdown', 'unhandled') is "touch"
+PASS count('pointerup', 'unhandled') is 1
+PASS pointerTypes('pointerup', 'unhandled') is "touch"
+PASS count('mousedown', 'unhandled') is 1
+PASS count('mouseup', 'unhandled') is 1
+PASS count('click', 'unhandled') is 1
+
+Tap with handled touch events:
+PASS count('pointerdown', 'handled') is 1
+PASS count('pointerup', 'handled') is 1
+PASS count('mousedown', 'handled') is 0
+PASS count('mouseup', 'handled') is 0
+PASS count('click', 'handled') is 0
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+
