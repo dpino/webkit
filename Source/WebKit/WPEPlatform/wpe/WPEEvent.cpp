@@ -79,6 +79,19 @@ struct WPEEventTouchForTesting {
     WPEModifiers modifiers { static_cast<WPEModifiers>(0) };
     Vector<WPETouchPoint> touchPoints;
 };
+
+// Return the touch point that changed, or the first one if none did.
+static const WPETouchPoint* primaryTouchPointForTesting(const Vector<WPETouchPoint>& touchPoints)
+{
+    if (touchPoints.isEmpty())
+        return nullptr;
+
+    for (const auto& point : touchPoints) {
+        if (point.state != WPETouchPointState::Stationary)
+            return &point;
+    }
+    return &touchPoints[0];
+}
 #endif
 
 /**
@@ -315,6 +328,18 @@ gboolean wpe_event_get_position(WPEEvent* event, double* x, double* y)
                 *y = touch.y;
             return TRUE;
         },
+#if ENABLE(DEVELOPER_MODE)
+        [&x, &y](const WPEEventTouchForTesting& touch) -> gboolean {
+            auto* point = primaryTouchPointForTesting(touch.touchPoints);
+            if (!point)
+                return FALSE;
+            if (x)
+                *x = point->x;
+            if (y)
+                *y = point->y;
+            return TRUE;
+        },
+#endif
         [](const auto&) -> gboolean { return FALSE; }
     );
 }
@@ -593,6 +618,13 @@ guint32 wpe_event_touch_get_sequence_id(WPEEvent* event)
 {
     g_return_val_if_fail(event, 0);
     g_return_val_if_fail(event->type == WPE_EVENT_TOUCH_DOWN || event->type == WPE_EVENT_TOUCH_UP || event->type == WPE_EVENT_TOUCH_MOVE || event->type == WPE_EVENT_TOUCH_CANCEL, 0);
+
+#if ENABLE(DEVELOPER_MODE)
+    if (wpeEventIsTouchForTesting(event)) {
+        auto* point = primaryTouchPointForTesting(wpeEventTouchPointsForTesting(event));
+        return point ? point->sequenceID : 0;
+    }
+#endif
 
     return std::get<WPEEventTouch>(event->variant).sequenceID;
 }
