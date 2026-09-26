@@ -837,22 +837,41 @@ void LocalFrameViewLayoutContext::scheduleSubtreeLayout(RenderElement& layoutRoo
     }
 
     // Combine new subtree with existing ones to make sure we store only independent subtrees.
+    Vector<const RenderElement*, 32> newRootChain;
+    RenderElement* ancestorRootOfNewRoot = nullptr;
+    for (CheckedPtr<RenderElement> renderer = &layoutRoot; renderer; renderer = renderer->container()) {
+        if (m_subtreeLayoutRoots.contains(renderer.get())) {
+            ancestorRootOfNewRoot = renderer.get();
+            break;
+        }
+        newRootChain.append(renderer.get());
+    }
+
+    if (ancestorRootOfNewRoot) {
+        // New subtree is a subtree of existing subtree.
+        layoutRoot.markContainingBlocksForLayout(ancestorRootOfNewRoot);
+        ASSERT(!ancestorRootOfNewRoot->container() || is<RenderView>(ancestorRootOfNewRoot->container()) || !ancestorRootOfNewRoot->container()->needsLayout());
+        return;
+    }
+
     for (auto* subtreeLayoutRoot : m_subtreeLayoutRoots) {
-        if (subtreeLayoutRoot->isAncestorContainerOfRenderer(layoutRoot)) {
-            // New subtree is a subtree of existing subtree.
-            layoutRoot.markContainingBlocksForLayout(subtreeLayoutRoot);
-            ASSERT(!subtreeLayoutRoot->container() || is<RenderView>(subtreeLayoutRoot->container()) || !subtreeLayoutRoot->container()->needsLayout());
-            return;
+        bool newRootIsAncestor = false;
+        for (CheckedPtr<RenderElement> renderer = subtreeLayoutRoot; renderer; renderer = renderer->container()) {
+            if (newRootChain.contains(renderer.get())) {
+                newRootIsAncestor = renderer.get() == &layoutRoot;
+                break;
+            }
         }
-        if (layoutRoot.isAncestorContainerOfRenderer(*subtreeLayoutRoot)) {
-            // Existing subtree is a subtree of new subtree.
-            subtreeLayoutRoot->markContainingBlocksForLayout(&layoutRoot);
-            ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
-            InspectorInstrumentation::didScheduleLayout(layoutRoot);
-            removeSubtreeLayoutRoot(*subtreeLayoutRoot);
-            addSubtreeLayoutRoot(layoutRoot);
-            return;
-        }
+        if (!newRootIsAncestor)
+            continue;
+
+        // Existing subtree is a subtree of new subtree.
+        subtreeLayoutRoot->markContainingBlocksForLayout(&layoutRoot);
+        ASSERT(!layoutRoot.container() || is<RenderView>(layoutRoot.container()) || !layoutRoot.container()->needsLayout());
+        InspectorInstrumentation::didScheduleLayout(layoutRoot);
+        removeSubtreeLayoutRoot(*subtreeLayoutRoot);
+        addSubtreeLayoutRoot(layoutRoot);
+        return;
     }
 
     // We already have a pending subtree layout. Just add new subtree to collection.
