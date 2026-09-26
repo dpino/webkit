@@ -335,8 +335,8 @@ bool LocalFrameViewLayoutContext::performLayout(bool canDeferUpdateLayerPosition
             }
         }
 #endif
-        for (auto* subtreeLayoutRoot : m_subtreeLayoutRoots)
-            subtreeLayoutRoot->absoluteQuads(layoutAreas);
+        if (InspectorInstrumentation::hasFrontends())
+            layoutRoot->absoluteQuads(layoutAreas);
 
         if (subtreeLayoutRoot)
             removeSubtreeLayoutRoot(*subtreeLayoutRoot);
