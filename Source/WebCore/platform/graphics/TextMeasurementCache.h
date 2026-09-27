@@ -162,6 +162,10 @@ public:
         // The width cache is not really profitable unless we're doing expensive glyph transformations.
         if (!shapingContext.hasKerningOrLigatures)
             return nullptr;
+        // A directional override forces the shaping direction, which changes kerning and
+        // glyph selection, and the cache key is only the text.
+        if (run.directionalOverride())
+            return nullptr;
         // Word spacing and letter spacing can change the width of a word.
         if (shapingContext.hasWordSpacingOrLetterSpacing)
             return nullptr;
