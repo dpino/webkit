@@ -186,10 +186,10 @@ void Pasteboard::write(const PasteboardImage& pasteboardImage)
         m_selectionData->setImage(pasteboardImage.image.get());
     } else {
         SelectionData data;
-        if (!pasteboardImage.url.url.isEmpty()) {
-            data.setURL(pasteboardImage.url.url, pasteboardImage.url.title);
+        // Do not copy the image URL along with the image. It makes the clipboard expose extra
+        // text/uri-list and text/plain items, and sites end up pasting the URL instead of the image.
+        if (!pasteboardImage.url.markup.isEmpty())
             data.setMarkup(pasteboardImage.url.markup);
-        }
         data.setImage(pasteboardImage.image.get());
         platformStrategies()->pasteboardStrategy()->writeToClipboard(m_name, WTF::move(data));
     }
