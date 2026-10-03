@@ -6367,7 +6367,7 @@ void LocalFrameView::enableAutoSizeMode(bool enable, const IntSize& viewSize, Au
 void LocalFrameView::forceLayout(bool allowSubtreeLayout)
 {
     CheckedRef layoutContext = this->layoutContext();
-    if (!allowSubtreeLayout && layoutContext.isSubtreeLayout())
+    if (!allowSubtreeLayout && layoutContext->isSubtreeLayout())
         layoutContext->convertSubtreeLayoutToFullLayout();
     layoutContext->layout();
 }
