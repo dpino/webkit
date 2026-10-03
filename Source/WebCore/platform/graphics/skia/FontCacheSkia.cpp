@@ -433,7 +433,7 @@ std::unique_ptr<FontPlatformData> FontCache::createFontPlatformData(const FontDe
 }
 
 #if !OS(ANDROID) && !PLATFORM(WIN)
-static bool findFontFileForFace(const char* fontConfigObjectName, const AtomString& fontFaceName, CString& filePath, int& ttcIndex)
+static bool findFontFileForFace(const char* fontConfigObjectName, const AtomString& fontFaceName, UTF8CString& filePath, int& ttcIndex)
 {
     std::unique_ptr<FcPattern, decltype(&FcPatternDestroy)> pattern(FcPatternCreate(), FcPatternDestroy);
     if (!FcPatternAddString(pattern.get(), fontConfigObjectName, reinterpret_cast<const FcChar8*>(fontFaceName.string().utf8().data())))
@@ -452,7 +452,7 @@ static bool findFontFileForFace(const char* fontConfigObjectName, const AtomStri
     int index = 0;
     FcPatternGetInteger(matched, FC_INDEX, 0, &index);
 
-    filePath = CString(reinterpret_cast<const char*>(file));
+    filePath = UTF8CString::unsafeFromUTF8(reinterpret_cast<const char*>(file));
     ttcIndex = index;
     return true;
 }
@@ -460,13 +460,13 @@ static bool findFontFileForFace(const char* fontConfigObjectName, const AtomStri
 std::unique_ptr<FontPlatformData> FontCache::createFontPlatformDataForFace(const FontDescription& fontDescription, const AtomString& fontFaceName, const FontCreationContext& fontCreationContext, OptionSet<FontLookupOptions> options)
 {
     // @font-face src: local(<name>) must match a locally installed font by its full font name or PostScript name.
-    CString filePath;
+    UTF8CString filePath;
     int ttcIndex = 0;
     if (!findFontFileForFace(FC_POSTSCRIPT_NAME, fontFaceName, filePath, ttcIndex)
         && !findFontFileForFace(FC_FULLNAME, fontFaceName, filePath, ttcIndex))
         return nullptr;
 
-    auto typeface = fontManager().makeFromFile(filePath.data(), ttcIndex);
+    auto typeface = fontManager().makeFromFile(filePath.legacyCStringPointer(), ttcIndex);
     if (!typeface)
         return nullptr;
 
