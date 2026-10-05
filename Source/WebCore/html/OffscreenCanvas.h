@@ -168,6 +168,8 @@ public:
     void dispatchEvent(Event&) final;
     bool isDetached() const { return m_detached; };
 
+    void scheduleCommitToPlaceholderCanvas();
+
 private:
     OffscreenCanvas(ScriptExecutionContext&, IntSize, RefPtr<PlaceholderRenderingContextSource>&&);
 
@@ -187,8 +189,6 @@ private:
     void derefEventTarget() final { RefCounted::deref(); }
 
     void didUpdateSizeProperties(bool sizeChanged);
-
-    void scheduleCommitToPlaceholderCanvas();
 
     std::unique_ptr<CanvasRenderingContext> m_context;
     RefPtr<PlaceholderRenderingContextSource> m_placeholderSource;

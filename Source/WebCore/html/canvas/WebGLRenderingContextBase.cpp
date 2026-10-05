@@ -60,6 +60,7 @@
 #include "EXTsRGB.h"
 #include "EventLoop.h"
 #include "EventNames.h"
+#include "FloatRect.h"
 #include "FrameLoader.h"
 #include "GraphicsContext.h"
 #include "GraphicsContextGLImageExtractor.h"
@@ -731,7 +732,33 @@ void WebGLRenderingContextBase::willUpdateDrawingBufferContents(WebGLRenderingCo
         m_readDrawingBuffer.clear();
         updateMemoryCost();
     }
-    willUpdateCanvasContents();
+    Ref canvas = canvasBase();
+    if (RefPtr offscreenCanvas = dynamicDowncast<OffscreenCanvas>(canvas))
+        offscreenCanvas->scheduleCommitToPlaceholderCanvas();
+    if (m_pendingWillUpdateContents)
+        m_pendingWillUpdateContents->unite(FloatRect { { }, canvas->size() });
+    else
+        m_pendingWillUpdateContents = FloatRect { { }, canvas->size() };
+
+    canvas->addCanvasNeedingPreparationForDisplayOrFlush();
+}
+
+static inline FloatRect toLayerCoordinates(const FloatRect& rect, float canvasHeight)
+{
+    // WebGL canvas has Y inverted, so we need to invert it back to get layer coordinates.
+    return FloatRect { { rect.x(), canvasHeight - rect.maxY() }, rect.size() };
+}
+
+void WebGLRenderingContextBase::flushPendingWillUpdateContents()
+{
+    Ref canvas = canvasBase();
+    if (m_damage && !m_damage->isEmpty()) {
+        for (const auto& rect : m_damage->rectsForPainting())
+            canvas->willUpdateContents(toLayerCoordinates(rect, canvas->height()), ShouldApplyPostProcessingToDirtyRect::No);
+        m_damage.reset();
+    } else if (m_pendingWillUpdateContents)
+        canvas->willUpdateContents(*m_pendingWillUpdateContents, ShouldApplyPostProcessingToDirtyRect::No);
+    m_pendingWillUpdateContents.reset();
 }
 
 bool WebGLRenderingContextBase::clearIfComposited(WebGLRenderingContextBase::CallerType caller, GCGLbitfield mask)
@@ -3222,6 +3249,25 @@ void WebGLRenderingContextBase::sampleCoverage(GCGLfloat value, GCGLboolean inve
     if (isContextLost())
         return;
     protect(graphicsContextGL())->sampleCoverage(value, invert);
+}
+
+void WebGLRenderingContextBase::damage(Float32List&& rects)
+{
+    if (isContextLost())
+        return;
+
+    auto values = rects.span();
+    if (values.size() % 4) {
+        synthesizeGLError(GraphicsContextGL::INVALID_VALUE, "damage"_s, "length of rects is not a multiple of 4"_s);
+        return;
+    }
+
+    if (values.empty())
+        return;
+
+    m_damage = std::make_optional<Damage>(clampedCanvasSize(), Damage::Mode::Rectangles, 5);
+    for (size_t i = 0; i < values.size(); i += 4)
+        m_damage->add(FloatRect(values[i], values[i + 1], values[i + 2], values[i + 3]));
 }
 
 void WebGLRenderingContextBase::scissor(GCGLint x, GCGLint y, GCGLsizei width, GCGLsizei height)
@@ -5893,6 +5939,7 @@ void WebGLRenderingContextBase::prepareForDisplay()
 
     clearIfComposited(CallerTypeOther);
     m_defaultFramebuffer->resolveColorIntoResult();
+    flushPendingWillUpdateContents();
     protect(graphicsContextGL())->prepareForDisplay();
     m_defaultFramebuffer->markAllUnpreservedBuffersDirty();
 

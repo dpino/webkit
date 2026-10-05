@@ -128,6 +128,9 @@ public:
 
     RefPtr<ImageBuffer> createImageForNoiseInjection() const;
 
+    void addCanvasNeedingPreparationForDisplayOrFlush();
+    void removeCanvasNeedingPreparationForDisplayOrFlush();
+
 protected:
     explicit CanvasBase(IntSize, ScriptExecutionContext&);
 
@@ -137,8 +140,6 @@ protected:
     void setSize(const IntSize&);
 
     String lastFillText() const { return m_lastFillText; }
-    void addCanvasNeedingPreparationForDisplayOrFlush();
-    void removeCanvasNeedingPreparationForDisplayOrFlush();
 
 private:
     bool NODELETE shouldInjectNoiseBeforeReadback() const;

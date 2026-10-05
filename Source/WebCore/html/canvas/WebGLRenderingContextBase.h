@@ -29,6 +29,7 @@
 
 #include "AlphaPremultiplication.h"
 #include "CanvasElementImage.h"
+#include "Damage.h"
 #include "EventLoop.h"
 #include "GPUBasedCanvasRenderingContext.h"
 #include "GraphicsContextGL.h"
@@ -383,6 +384,8 @@ public:
     using Float32List = TypedList<Float32Array, float>;
     using Int32List = TypedList<Int32Array, int>;
     using Uint32List = TypedList<Uint32Array, uint32_t>;
+
+    void damage(Float32List&& rects);
 
     void uniform1f(const WebGLUniformLocation*, GCGLfloat x);
     void uniform2f(const WebGLUniformLocation*, GCGLfloat x, GCGLfloat y);
@@ -819,6 +822,11 @@ protected:
     HashSet<GCGLenum> m_supportedTexImageSourceFormats;
     HashSet<GCGLenum> m_supportedTexImageSourceTypes;
     WeakPtrFactory<WebGLRenderingContextBase> m_contextObjectWeakPtrFactory;
+
+    std::optional<Damage> m_damage;
+    std::optional<FloatRect> m_pendingWillUpdateContents;
+
+    void flushPendingWillUpdateContents();
 
     // Helpers for getParameter and other similar functions.
     bool getBooleanParameter(GCGLenum);
