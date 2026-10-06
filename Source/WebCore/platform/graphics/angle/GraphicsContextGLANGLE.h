@@ -445,6 +445,7 @@ protected:
     GCGLErrorCodeSet m_errors;
     bool m_isForWebGL2 { false };
     bool m_failNextStatusCheck { false };
+    bool m_failNextDrawingBufferAllocation { false };
     GraphicsContextGLState m_state;
 
     GCGLDisplay m_displayObj { nullptr };
