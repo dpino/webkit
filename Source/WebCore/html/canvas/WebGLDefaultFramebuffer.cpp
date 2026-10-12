@@ -28,6 +28,7 @@
 #if ENABLE(WEBGL)
 #include "WebGLDefaultFramebuffer.h"
 
+#include "Damage.h"
 #include "IntRect.h"
 #include "WebGL2RenderingContext.h"
 #include "WebGLFramebuffer.h"
@@ -114,7 +115,7 @@ WebGLDefaultFramebuffer::~WebGLDefaultFramebuffer()
     ASSERT(!m_fbo && !m_colorBuffer && !m_depthStencilBuffer);
 }
 
-void WebGLDefaultFramebuffer::resolveColorIntoResult(std::optional<IntRect> rect)
+void WebGLDefaultFramebuffer::resolveColorIntoResult(std::optional<IntRect> rect, const Damage* damage)
 {
     if (!m_fbo) // Aliased renders straight into the result FBO; nothing to resolve.
         return;
@@ -129,7 +130,34 @@ void WebGLDefaultFramebuffer::resolveColorIntoResult(std::optional<IntRect> rect
     // READ_BUFFER. The result FBO is the draw framebuffer here, so its READ_BUFFER is not touched.
     ScopedEnableReadBuffer0 scopedReadBuffer { context, *this };
     IntRect srcRect = (context->isWebGL2() && rect) ? *rect : IntRect { { }, m_size };
+
+    // The passed damage alone is not enough as the target is backed by multiple buffers.
+    std::optional<Damage> actualDamage;
+    if (damage && !damage->isEmpty()) {
+        actualDamage = *damage;
+        if (m_previousDamage)
+            actualDamage->add(*m_previousDamage);
+        if (m_previousPreviousDamage)
+            actualDamage->add(*m_previousPreviousDamage);
+        m_previousPreviousDamage = WTF::move(m_previousDamage);
+        m_previousDamage = *damage;
+    } else {
+        m_previousDamage = std::nullopt;
+        m_previousPreviousDamage = std::nullopt;
+    }
+
     // To just resolve color, blit with fallback is allowed.
+    if (actualDamage) {
+        for (const auto& damageRect : actualDamage->rectsForPainting()) {
+            IntRect clippedRect = intersection(damageRect, srcRect);
+            if (clippedRect.isEmpty())
+                continue;
+            gl->blitFramebufferWithFallback(clippedRect.x(), clippedRect.y(), clippedRect.maxX(), clippedRect.maxY(),
+                clippedRect.x(), clippedRect.y(), clippedRect.maxX(), clippedRect.maxY(),
+                GraphicsContextGL::COLOR_BUFFER_BIT, GraphicsContextGL::NEAREST);
+        }
+        return;
+    }
     gl->blitFramebufferWithFallback(srcRect.x(), srcRect.y(), srcRect.maxX(), srcRect.maxY(),
         srcRect.x(), srcRect.y(), srcRect.maxX(), srcRect.maxY(),
         GraphicsContextGL::COLOR_BUFFER_BIT, GraphicsContextGL::NEAREST);

@@ -5938,7 +5938,7 @@ void WebGLRenderingContextBase::prepareForDisplay()
         return;
 
     clearIfComposited(CallerTypeOther);
-    m_defaultFramebuffer->resolveColorIntoResult();
+    m_defaultFramebuffer->resolveColorIntoResult(std::nullopt, m_damage ? &*m_damage : nullptr);
     flushPendingWillUpdateContents();
     protect(graphicsContextGL())->prepareForDisplay();
     m_defaultFramebuffer->markAllUnpreservedBuffersDirty();

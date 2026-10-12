@@ -27,6 +27,7 @@
 
 #if ENABLE(WEBGL)
 
+#include "Damage.h"
 #include "WebGLRenderingContextBase.h"
 #include "WebGLUtilities.h"
 #include <optional>
@@ -56,8 +57,9 @@ public:
 
     // Resolves/blits the rendered color into the result FBO (id 0) so that the WebGL
     // implementation can read the canvas contents from it. No-op for the direct-rendering
-    // case, where the default framebuffer is the result FBO.
-    void resolveColorIntoResult(std::optional<IntRect> = std::nullopt);
+    // case, where the default framebuffer is the result FBO. When damage is provided, only
+    // its rects are resolved instead of the whole framebuffer.
+    void resolveColorIntoResult(std::optional<IntRect> = std::nullopt, const Damage* = nullptr);
 
     // For default-FB reads (readPixels, copyTexImage, etc.): when antialias is in
     // effect, resolves the requested rect into the result FBO and binds the GL read
@@ -127,6 +129,8 @@ private:
     GCGLbitfield m_dirtyBuffers { 0 };
     bool m_drawBufferIsNone { false }; // Of m_fbo state.
     bool m_readBufferIsNone { false }; // Of m_fbo state.
+    std::optional<Damage> m_previousDamage;
+    std::optional<Damage> m_previousPreviousDamage;
 };
 
 }
